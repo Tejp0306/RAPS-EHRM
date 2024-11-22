@@ -1,4 +1,5 @@
-﻿using EHRM.DAL.Repositories;
+﻿using EHRM.DAL.Database;
+using EHRM.DAL.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace EHRM.DAL.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRoleRepository RoleRepository { get; }
+        IGenericRepository<T> GetRepository<T>() where T : class;
         Task SaveAsync();
     }
+
 }

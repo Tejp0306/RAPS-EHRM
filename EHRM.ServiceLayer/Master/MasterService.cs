@@ -28,13 +28,14 @@ namespace EHRM.ServiceLayer.Master
                 {
                     RoleName = model.RoleName,
                     RoleDescription = model.RoleDescription,
-                    IsActive = true,  // Default to active
+                    IsActive = true,
                     IsDeleted = false,
                     CreatedBy = createdBy,
                     CreateDate = DateTime.Now
                 };
 
-                await _unitOfWork.RoleRepository.AddRoleAsync(newRole);
+                var roleRepository = _unitOfWork.GetRepository<Role>();
+                await roleRepository.AddAsync(newRole);
                 await _unitOfWork.SaveAsync();
 
                 return new Result
@@ -58,7 +59,8 @@ namespace EHRM.ServiceLayer.Master
         {
             try
             {
-                var roleToDelete = await _unitOfWork.RoleRepository.GetRoleByIdAsync(id);
+                var roleRepository = _unitOfWork.GetRepository<Role>();  // Using generic repository
+                var roleToDelete = await roleRepository.GetByIdAsync(id);  // Fetch role by ID
 
                 if (roleToDelete == null)
                 {
@@ -70,7 +72,7 @@ namespace EHRM.ServiceLayer.Master
                 }
 
                 // Perform hard delete
-                await _unitOfWork.RoleRepository.DeleteRoleAsync(id); // Call the delete method in the repository
+                await roleRepository.DeleteAsync(id);  // Call delete method in the generic repository
                 await _unitOfWork.SaveAsync();
 
                 return new Result
@@ -91,7 +93,8 @@ namespace EHRM.ServiceLayer.Master
 
         public async Task<Result> GetAllRolesAsync()
         {
-            var roles = await _unitOfWork.RoleRepository.GetAllRolesAsync();
+            var roleRepository = _unitOfWork.GetRepository<Role>();  // Using generic repository
+            var roles = await roleRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = roles };
         }
 
@@ -100,7 +103,8 @@ namespace EHRM.ServiceLayer.Master
         {
             try
             {
-                var role = await _unitOfWork.RoleRepository.GetRoleByIdAsync(id);
+                var roleRepository = _unitOfWork.GetRepository<Role>();  // Using generic repository
+                var role = await roleRepository.GetByIdAsync(id);  // Fetch role by ID
 
                 if (role == null)
                 {
@@ -139,7 +143,8 @@ namespace EHRM.ServiceLayer.Master
         {
             try
             {
-                var existingRole = await _unitOfWork.RoleRepository.GetRoleByIdAsync(id);
+                var roleRepository = _unitOfWork.GetRepository<Role>();  // Using generic repository
+                var existingRole = await roleRepository.GetByIdAsync(id);  // Fetch existing role by ID
 
                 if (existingRole == null)
                 {
@@ -150,12 +155,13 @@ namespace EHRM.ServiceLayer.Master
                     };
                 }
 
+                // Update role properties
                 existingRole.RoleName = model.RoleName;
                 existingRole.RoleDescription = model.RoleDescription;
                 existingRole.UpdatedBy = updatedBy;
                 existingRole.UpdateDate = DateTime.Now;
 
-                await _unitOfWork.RoleRepository.UpdateRoleAsync(existingRole);
+                await roleRepository.UpdateAsync(existingRole);  // Call update method in the generic repository
                 await _unitOfWork.SaveAsync();
 
                 return new Result

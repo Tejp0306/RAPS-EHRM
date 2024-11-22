@@ -11,14 +11,22 @@ namespace EHRM.DAL.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly EhrmContext _context;
+        private readonly Dictionary<Type, object> _repositories;
 
         public UnitOfWork(EhrmContext context)
         {
             _context = context;
-            RoleRepository = new RoleRepository(_context);
+            _repositories = new Dictionary<Type, object>();
         }
 
-        public IRoleRepository RoleRepository { get; private set; }
+        public IGenericRepository<T> GetRepository<T>() where T : class
+        {
+            if (!_repositories.ContainsKey(typeof(T)))
+            {
+                _repositories[typeof(T)] = new GenericRepository<T>(_context);
+            }
+            return (IGenericRepository<T>)_repositories[typeof(T)];
+        }
 
         public async Task SaveAsync()
         {
@@ -30,5 +38,7 @@ namespace EHRM.DAL.UnitOfWork
             _context.Dispose();
         }
     }
+
+
 
 }

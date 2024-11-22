@@ -16,4 +16,5 @@ namespace EHRM.ServiceLayer.Master
         Task<Result> GetRoleByIdAsync(int id);
         Task<Result> GetAllRolesAsync();
     }
+
 }
