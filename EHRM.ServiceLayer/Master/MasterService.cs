@@ -69,11 +69,8 @@ namespace EHRM.ServiceLayer.Master
                     };
                 }
 
-                roleToDelete.IsDeleted = true;
-                roleToDelete.DeletedBy = "System";  // Soft delete by default
-                roleToDelete.UpdateDate = DateTime.Now;
-
-                await _unitOfWork.RoleRepository.UpdateRoleAsync(roleToDelete);
+                // Perform hard delete
+                await _unitOfWork.RoleRepository.DeleteRoleAsync(id); // Call the delete method in the repository
                 await _unitOfWork.SaveAsync();
 
                 return new Result
