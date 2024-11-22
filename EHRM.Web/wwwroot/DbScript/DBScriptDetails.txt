@@ -1,0 +1,120 @@
+﻿//Role Table
+CREATE TABLE Roles (
+    Id INT IDENTITY(1,1) PRIMARY KEY, -- Auto-incrementing primary key
+    RoleName NVARCHAR(100), -- Role Name (Now nullable)
+    RoleDescription NVARCHAR(255) NULL, -- Role Description (optional)
+    
+    IsActive BIT , -- Indicates if the role is active (1 = Active, 0 = Inactive)
+    IsDeleted BIT , -- Indicates if the role is deleted (1 = Deleted, 0 = Not Deleted)
+    
+    DeletedBy NVARCHAR(50) NULL, -- User who deleted the role
+    CreatedBy NVARCHAR(50) NULL, -- User who created the role (nullable)
+    UpdatedBy NVARCHAR(50) NULL, -- User who last updated the role
+    
+    CreateDate DATETIME, -- Date and time when the role was created
+    UpdateDate DATETIME -- Date and time when the role was last updated
+);
+
+
+//Team
+
+CREATE TABLE Team (
+    Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
+    Name VARCHAR(255), -- Name of the team
+    Description VARCHAR(MAX), -- Description of the team
+    IsActive BIT, -- Indicates if the team is active
+    IsDeleted BIT, -- Indicates if the team is deleted
+    DeletedBy INT, -- User ID of who deleted the record
+    CreatedBy INT, -- User ID of who created the record
+    UpdatedBy INT, -- User ID of who last updated the record
+    CreateDate DATETIME, -- Record creation date
+    UpdateDate DATETIME -- Last update date
+);
+
+//Holiday
+
+CREATE TABLE Holiday (
+    Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
+    TeamId INT, -- Foreign Key referencing Team table
+    Name VARCHAR(255), -- Name of the holiday
+    Description VARCHAR(MAX), -- Description of the holiday
+    IsActive BIT, -- Indicates if the holiday is active
+    IsDeleted BIT, -- Indicates if the holiday is deleted
+    DeletedBy INT, -- User ID of who deleted the record
+    CreatedBy INT, -- User ID of who created the record
+    UpdatedBy INT, -- User ID of who last updated the record
+    CreateDate DATETIME, -- Record creation date
+    UpdateDate DATETIME, -- Last update date
+    FOREIGN KEY (TeamId) REFERENCES Team(Id) ON DELETE CASCADE -- Enable cascading delete
+);
+
+//NoticeBoard 
+
+CREATE TABLE NoticeBoard (
+    Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
+    HeadingName VARCHAR(255), -- Heading of the notice
+    Description VARCHAR(MAX), -- Description of the notice
+    Image VARBINARY(MAX), -- Image (stored as binary data)
+    IsActive BIT, -- Indicates if the notice is active
+    IsDeleted BIT, -- Indicates if the notice is deleted
+    DeletedBy INT, -- User ID of who deleted the record
+    CreatedBy INT, -- User ID of who created the record
+    UpdatedBy INT, -- User ID of who last updated the record
+    CreateDate DATETIME, -- Record creation date
+    UpdateDate DATETIME -- Last update date
+);
+
+
+//MainMenue
+
+CREATE TABLE MainMenu (
+    Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
+    Name VARCHAR(255), -- Name of the menu item
+    Icon VARBINARY(MAX), -- Icon for the menu item (optional, stored as binary data)
+    IsActive BIT -- Indicates if the menu item is active
+);
+
+
+//SubMenu
+
+CREATE TABLE SubMenu (
+    Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
+    Name VARCHAR(255), -- Name of the submenu item
+    Controller VARCHAR(255), -- Controller associated with the submenu item
+    Action VARCHAR(255), -- Action associated with the submenu item
+    MainMenuId INT, -- Foreign Key referencing MainMenu table
+    RoleId INT, -- Foreign Key referencing Role table
+    IsActive BIT, -- Indicates if the submenu item is active
+    FOREIGN KEY (MainMenuId) REFERENCES MainMenu(Id), -- Foreign Key for MainMenuId
+    FOREIGN KEY (RoleId) REFERENCES Roles(Id) -- Foreign Key for RoleId
+);
+
+//EmpType
+
+CREATE TABLE EmpType (
+    Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
+    EmpType VARCHAR(255), -- The type of the employee
+    IsActive BIT -- Indicates if the employee type is active
+);
+
+
+//Post
+CREATE TABLE Post (
+    Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
+    PostName VARCHAR(255), -- Name of the post
+    TotalPosition INT, -- Total number of positions available for this post
+    Description VARCHAR(MAX), -- Description of the post
+    IsActive BIT -- Indicates if the post is active
+);
+
+----------------------------------------------------------------------------------------------------------------
+
+Scaffold-DbContext "Server=DESKTOP-S1TNCS5\SQLEXPRESS;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database
+//This bellow script will be used to update the database when we add any table or column.
+Scaffold-DbContext "Server=DESKTOP-S1TNCS5\SQLEXPRESS;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database -Force
+
+-------------------------------------------------------------------------------------------------------------------
+Nuget Package:
+Microsoft.EntityFrameworkCore.SqlServer  8.02  Dtae 20-Nov-2024
+Microsoft.EntityFrameworkCore.Tools  8.02
+Microsoft.EntityFrameworkCore.Design 8.02

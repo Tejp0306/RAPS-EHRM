@@ -1,0 +1,76 @@
+﻿body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+    margin: 20px 0;
+}
+
+.btn-custom {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+
+.table-container {
+    margin-top: 30px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+table {
+    width: 100%;
+}
+/* Custom button styles for better look */
+.view-btn, .edit-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .view-btn:hover {
+        background-color: #007bff;
+        color: white;
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+    }
+
+    .edit-btn:hover {
+        background-color: #ffc107;
+        color: white;
+        box-shadow: 0 4px 8px rgba(255, 193, 7, 0.4);
+    }
+
+    .view-btn i, .edit-btn i {
+        margin-right: 6px; /* Space between icon and text */
+    }
+
+.d-flex.justify-content-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Optional: Make the table more readable */
+.table th, .table td {
+    vertical-align: middle;
+}
