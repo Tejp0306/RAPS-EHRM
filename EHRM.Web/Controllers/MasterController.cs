@@ -37,28 +37,20 @@ namespace EHRM.Web.Controllers
 
                 if (updateResult != null)
                 {
+
                     var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
                     if (updateResponse?.success == true)
                     {
-
-                        var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
-                        if (updateResponse?.success == true)
-                        {
-                            TempData["ToastType"] = "success"; // Store success message
-                            TempData["ToastMessage"] = "Record Has been updated ";
-                            return RedirectToAction("MsterRoles"); // Redirect to the list of roles
-                        }
-                        else
-                        {
-                            ViewBag.ErrorMessage = updateResponse?.message; // Display error message
-                            return View(model); // Return to the same view with the provided model
-                        }
+                        TempData["ToastType"] = "success"; // Store success message
+                        TempData["ToastMessage"] = "Record Has been updated ";
+                        return RedirectToAction("MsterRoles"); // Redirect to the list of roles
                     }
                     else
                     {
                         ViewBag.ErrorMessage = updateResponse?.message; // Display error message
                         return View(model); // Return to the same view with the provided model
                     }
+
                 }
                 else
                 {
@@ -73,24 +65,22 @@ namespace EHRM.Web.Controllers
                 var result = await _master.CreateRoleAsync(model, createdById);
 
 
-                    // Handle the result of the create operation
-                    if (result.Success)
-                    {
+                // Handle the result of the create operation
+                if (result.Success)
+                {
 
                     TempData["ToastType"] = "success";  // Success, danger, warning, info
                     TempData["ToastMessage"] = "Operation completed successfully!";
                     return RedirectToAction("MsterRoles"); // Redirect to the list of roles
-                    }
-                    else
-                    {
-                        ViewBag.ErrorMessage = result.Message; // Display error message
-                        return View(model); // Return to the same view with the provided model
-                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.Message; // Display error message
+                    return View(model); // Return to the same view with the provided model
                 }
             }
-
         }
-
+    
         [HttpGet]
         public async Task<JsonResult> GetAllRolesData()
         {
@@ -256,8 +246,6 @@ namespace EHRM.Web.Controllers
                 {
                     return Json(new { Success = true, Message = "Notice not deleted !" });
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -269,8 +257,6 @@ namespace EHRM.Web.Controllers
 
         //Post Handle Addholiday form submission
         [HttpPost]
-
-
         public async Task<IActionResult> SaveHoliday(HolidayViewModel model)
         {  // Check if the role exists based on the model ID
             if (model.Id > 0)
@@ -420,14 +406,6 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No holidays found." });
             }
         }
-
-
-
-
-
-
-
-
         #endregion
     }
 }

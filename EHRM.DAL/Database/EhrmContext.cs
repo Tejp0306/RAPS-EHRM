@@ -19,15 +19,15 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<Holiday> Holidays { get; set; }
 
-    public virtual DbSet<MainMenu> MainMenus { get; set; }
+    //public virtual DbSet<MainMenu> MainMenus { get; set; }
 
-    public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
+    //public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
 
-    public virtual DbSet<Post> Posts { get; set; }
+    //public virtual DbSet<Post> Posts { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
-    public virtual DbSet<SubMenu> SubMenus { get; set; }
+    //public virtual DbSet<SubMenu> SubMenus { get; set; }
 
     public virtual DbSet<Team> Teams { get; set; }
 
@@ -80,42 +80,42 @@ public partial class EhrmContext : DbContext
                 .HasConstraintName("FK__Holiday__TeamId__3B75D760");
         });
 
-        modelBuilder.Entity<MainMenu>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__MainMenu__3214EC079D17E828");
+        //modelBuilder.Entity<MainMenu>(entity =>
+        //{
+        //    entity.HasKey(e => e.Id).HasName("PK__MainMenu__3214EC079D17E828");
 
-            entity.ToTable("MainMenu");
+        //    entity.ToTable("MainMenu");
 
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-        });
+        //    entity.Property(e => e.Name)
+        //        .HasMaxLength(255)
+        //        .IsUnicode(false);
+        //});
 
-        modelBuilder.Entity<NoticeBoard>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__NoticeBo__3214EC078625739F");
+        //modelBuilder.Entity<NoticeBoard>(entity =>
+        //{
+        //    entity.HasKey(e => e.Id).HasName("PK__NoticeBo__3214EC078625739F");
 
-            entity.ToTable("NoticeBoard");
+        //    entity.ToTable("NoticeBoard");
 
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).IsUnicode(false);
-            entity.Property(e => e.HeadingName)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
+        //    entity.Property(e => e.CreateDate).HasColumnType("datetime");
+        //    entity.Property(e => e.Description).IsUnicode(false);
+        //    entity.Property(e => e.HeadingName)
+        //        .HasMaxLength(255)
+        //        .IsUnicode(false);
+        //    entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        //});
 
-        modelBuilder.Entity<Post>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Post__3214EC07FB479F9B");
+        //modelBuilder.Entity<Post>(entity =>
+        //{
+        //    entity.HasKey(e => e.Id).HasName("PK__Post__3214EC07FB479F9B");
 
-            entity.ToTable("Post");
+        //    entity.ToTable("Post");
 
-            entity.Property(e => e.Description).IsUnicode(false);
-            entity.Property(e => e.PostName)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-        });
+        //    entity.Property(e => e.Description).IsUnicode(false);
+        //    entity.Property(e => e.PostName)
+        //        .HasMaxLength(255)
+        //        .IsUnicode(false);
+        //});
 
         modelBuilder.Entity<Role>(entity =>
         {
