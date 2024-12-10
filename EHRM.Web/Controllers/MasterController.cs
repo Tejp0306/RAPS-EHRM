@@ -10,7 +10,7 @@ namespace EHRM.Web.Controllers
         private readonly IMasterService _master;
         public MasterController(IMasterService master)
         {
-             
+
             _master = master;
         }
         public IActionResult Index()
@@ -20,59 +20,60 @@ namespace EHRM.Web.Controllers
 
         public IActionResult NoticeBoard()
         {
-            return View();  
+            return View();
         }
-        public IActionResult MsterRoles() { 
-         return View();
+        public IActionResult MsterRoles()
+        {
+            return View();
         }
         [HttpPost]
         public async Task<IActionResult> SaveRoles(RoleViewModel model)
         {  // Check if the role exists based on the model ID
-                if (model.Id > 0)
-                {
-                    // Update the role details
-                    string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
-                    var updateResult = await UpdateRoleDetails(model.Id, updatedBy, model);
+            if (model.Id > 0)
+            {
+                // Update the role details
+                string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
+                var updateResult = await UpdateRoleDetails(model.Id, updatedBy, model);
 
-                    if (updateResult != null)
+                if (updateResult != null)
+                {
+                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
                     {
-                        var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
-                        if (updateResponse?.success == true)
-                        {
-                            TempData["SuccessMessage"] = updateResponse?.message; // Store success message
-                            return RedirectToAction("MsterRoles"); // Redirect to the list of roles
-                        }
-                        else
-                        {
-                            ViewBag.ErrorMessage = updateResponse?.message; // Display error message
-                            return View(model); // Return to the same view with the provided model
-                        }
+                        TempData["SuccessMessage"] = updateResponse?.message; // Store success message
+                        return RedirectToAction("MsterRoles"); // Redirect to the list of roles
                     }
                     else
                     {
-                        ViewBag.ErrorMessage = "Unexpected error occurred during role update."; // Display generic error
+                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
                         return View(model); // Return to the same view with the provided model
                     }
                 }
                 else
                 {
-                    // Create a new role
-                    string createdById = "waseem"; // Replace with logic to fetch the actual user ID
-                    var result = await _master.CreateRoleAsync(model, createdById);
-
-                    // Handle the result of the create operation
-                    if (result.Success)
-                    {
-                        TempData["SuccessMessage"] = result.Message; // Store success message
-                        return RedirectToAction("MsterRoles"); // Redirect to the list of roles
-                    }
-                    else
-                    {
-                        ViewBag.ErrorMessage = result.Message; // Display error message
-                        return View(model); // Return to the same view with the provided model
-                    }
+                    ViewBag.ErrorMessage = "Unexpected error occurred during role update."; // Display generic error
+                    return View(model); // Return to the same view with the provided model
                 }
-           
+            }
+            else
+            {
+                // Create a new role
+                string createdById = "waseem"; // Replace with logic to fetch the actual user ID
+                var result = await _master.CreateRoleAsync(model, createdById);
+
+                // Handle the result of the create operation
+                if (result.Success)
+                {
+                    TempData["SuccessMessage"] = result.Message; // Store success message
+                    return RedirectToAction("MsterRoles"); // Redirect to the list of roles
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.Message; // Display error message
+                    return View(model); // Return to the same view with the provided model
+                }
+            }
+
         }
 
         [HttpGet]
@@ -128,7 +129,7 @@ namespace EHRM.Web.Controllers
             catch (Exception ex)
             {
                 // Log the exception (for debugging or error tracking)
-               // _logger.LogError(ex, "Error occurred while updating role details for role ID: {RoleId}", id);
+                // _logger.LogError(ex, "Error occurred while updating role details for role ID: {RoleId}", id);
 
                 // Return a generic error response
                 return new
@@ -139,6 +140,7 @@ namespace EHRM.Web.Controllers
             }
         }
 
+   
         [HttpGet("Master/GetRoleDetails/{roleID}")]
         public async Task<JsonResult> GetRoleDetails([FromRoute] int roleID)
         {
@@ -159,5 +161,258 @@ namespace EHRM.Web.Controllers
             }
         }
 
+
+        #region Starting Holidays
+        [HttpGet]
+
+        public IActionResult AddHoliday()
+        {
+            return View();
+
+        }
+
+        [NonAction]
+        private async Task<object> UpdateHolidayDetails(int id, string updatedBy, HolidayViewModel model)
+        {
+            try
+            {
+                // Call the service method to update the role
+                var result = await _master.UpdateHolidayAsync(id, updatedBy, model);
+
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (for debugging or error tracking)
+                // _logger.LogError(ex, "Error occurred while updating role details for role ID: {RoleId}", id);
+
+                // Return a generic error response
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the role. Please try again later."
+                };
+            }
+        }
+
+
+
+        // Get Holiday based on Id for the edit button
+
+        [HttpGet("Master/GetHolidayDetails/{holidayId}")]
+        public async Task<JsonResult> GetHolidayDetails([FromRoute] int holidayID)
+        {
+            try
+            {
+                var holiday = await _master.GetHolidayByIdAsync(holidayID);
+
+                if (holiday == null)
+                {
+                    return Json(new { success = false, message = "holiday not found." });
+                }
+
+                return Json(new { success = true, data = holiday });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the holiday details." });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteHoliday(int id)
+        {
+            try
+            {
+                // Call the service method to delete the notice from the database
+                var result = await _master.DeleteHolidayAsync(id);
+
+                // Check the result and provide feedback to the user
+                if (result.Success)
+                {
+                    return Json(new { Success = true, Message = "Notice deleted successfully!" });
+                }
+                else
+                {
+                    return Json(new { Success = true, Message = "Notice not deleted !" });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                // Store the error message in TempData if an exception occurs
+                TempData["ErrorMessage"] = $"Error deleting the notice: {ex.Message}";
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+
+        //Post Handle Addholiday form submission
+        [HttpPost]
+
+
+        public async Task<IActionResult> SaveHoliday(HolidayViewModel model)
+        {  // Check if the role exists based on the model ID
+            if (model.Id > 0)
+            {
+
+                string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
+                var updateResult = await UpdateHolidayDetails(model.Id, updatedBy, model);
+
+                if (updateResult != null)
+                {
+                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["SuccessMessage"] = updateResponse?.message; // Store success message
+                        return RedirectToAction("MsterRoles"); // Redirect to the list of roles
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                        return View(model); // Return to the same view with the provided model
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Unexpected error occurred during role update."; // Display generic error
+                    return View(model); // Return to the same view with the provided model
+                }
+            }
+            else
+            {
+                // Create a new holiday
+                string createdById = "waseem"; // Replace with logic to fetch the actual user ID
+                var result = await _master.CreateHolidayAsync(model, createdById);
+
+                // Handle the result of the create operation
+                if (result.Success)
+                {
+                    TempData["SuccessMessage"] = result.Message; // Store success message
+                    return RedirectToAction("AddHoliday"); // Redirect to the list of roles
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.Message; // Display error message
+                    return View(model); // Return to the same view with the provided model
+                }
+            }
+
+        }
+
+        //public async Task<IActionResult> AddHoliday(HolidayViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        // If validation fails, return the same view with the model and error messages
+        //        return View(model);
+        //    }
+
+        //    // Get the currently logged-in user (replace with your actual logic to retrieve the user)
+        //    string createdBy = "Arjun";
+
+        //    // Call the service to create a new holiday
+        //    var result = await _master.CreateHolidayAsync(model, createdBy);
+
+        //    if (result.Success)
+        //    {
+        //        // If successful, store a success message in TempData and redirect to a list view or confirmation page
+        //        TempData["SuccessMessage"] = result.Message;
+        //        return RedirectToAction("AddHoliday");
+        //    }
+        //    else
+        //    {
+        //        // If there's an error, add it to the ModelState and return the view with the error
+        //        ModelState.AddModelError(string.Empty, result.Message);
+        //        return View(model);
+        //    }
+        //}
+
+        [HttpGet]
+        public async Task<JsonResult> GetAllTeamData()
+        {
+            // Fetch the result from the service layer
+            var result = await _master.GetTeamAsync();
+
+            if (result.Success && result.Data != null)
+            {
+                // Attempt to cast result.Data to IEnumerable<Team>
+                if (result.Data is IEnumerable<Team> teams)
+                {
+                    // Project the team list to a simplified JSON-friendly format
+                    var teamList = teams.Select(team => new
+                    {
+                        id = team.Id, // Ensure Team class has an Id property
+                        name = team.Name // Ensure Team class has a Name property
+                    }).ToList();
+
+                    return Json(new { Success = true, Data = teamList });
+                }
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in the expected format (IEnumerable<Team>)." });
+                }
+            }
+            else
+            {
+                // Handle failure scenarios
+                return Json(new { Success = false, Message = result.Message ?? "No teams found." });
+            }
+        }
+
+
+        //Get All Holiday Data
+
+        [HttpGet]
+        public async Task<JsonResult> GetAllHolidayData()
+
+        {
+            // Fetch the result from the service layer
+            var result = await _master.GetAllHolidayAsync();
+
+            // Check if the result is successful and contains data
+            if (result.Success && result.Data != null)
+            {
+                // The data is already a list of anonymous types with TeamName included
+                var holidays = result.Data as IEnumerable<dynamic>;
+                if (holidays != null)
+                {
+                    // Use Select to map the holidays to the desired output format
+                    var holidayList = holidays.Select(holiday => new
+                    {
+                        Id = holiday.Id,
+                        Name = holiday.Name,
+                        Description = holiday.Description,
+                        HolidayDate = holiday.HolidayDate
+
+                    }).ToList(); // Convert to a List
+
+                    return Json(holidayList);
+                }
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in the expected format." });
+                }
+            }
+            else
+            {
+                // Handle the case where the service failed
+                return Json(new { Success = false, Message = result.Message ?? "No holidays found." });
+            }
+        }
+
+
+
+
+
+
+
+
+        #endregion
     }
 }

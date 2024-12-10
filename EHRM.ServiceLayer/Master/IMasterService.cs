@@ -15,6 +15,26 @@ namespace EHRM.ServiceLayer.Master
         Task<Result> DeleteRoleAsync(int id);
         Task<Result> GetRoleByIdAsync(int id);
         Task<Result> GetAllRolesAsync();
+
+        #region
+        //Holiday Screen
+        Task<Result> CreateHolidayAsync(HolidayViewModel model, string createdBy);
+
+        //Task<Result> UpdateHolidayAsync(int id, string updatedBy, HolidayViewModel model);
+
+        Task<Result> GetAllHolidayAsync();
+
+        Task<Result> DeleteHolidayAsync(int id);
+
+        Task<Result> UpdateHolidayAsync(int id, string updatedBy, HolidayViewModel model);
+
+        Task<Result> GetTeamAsync();
+
+        //Task<Result> GetAllHolidayAsync();
+        Task<Result> GetHolidayByIdAsync(int id);
+
+        
+        #endregion
     }
 
 }
