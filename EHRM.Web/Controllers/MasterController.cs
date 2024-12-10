@@ -40,8 +40,19 @@ namespace EHRM.Web.Controllers
                     var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
                     if (updateResponse?.success == true)
                     {
-                        TempData["SuccessMessage"] = updateResponse?.message; // Store success message
-                        return RedirectToAction("MsterRoles"); // Redirect to the list of roles
+
+                        var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                        if (updateResponse?.success == true)
+                        {
+                            TempData["ToastType"] = "success"; // Store success message
+                            TempData["ToastMessage"] = "Record Has been updated ";
+                            return RedirectToAction("MsterRoles"); // Redirect to the list of roles
+                        }
+                        else
+                        {
+                            ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                            return View(model); // Return to the same view with the provided model
+                        }
                     }
                     else
                     {
@@ -61,16 +72,20 @@ namespace EHRM.Web.Controllers
                 string createdById = "waseem"; // Replace with logic to fetch the actual user ID
                 var result = await _master.CreateRoleAsync(model, createdById);
 
-                // Handle the result of the create operation
-                if (result.Success)
-                {
-                    TempData["SuccessMessage"] = result.Message; // Store success message
+
+                    // Handle the result of the create operation
+                    if (result.Success)
+                    {
+
+                    TempData["ToastType"] = "success";  // Success, danger, warning, info
+                    TempData["ToastMessage"] = "Operation completed successfully!";
                     return RedirectToAction("MsterRoles"); // Redirect to the list of roles
-                }
-                else
-                {
-                    ViewBag.ErrorMessage = result.Message; // Display error message
-                    return View(model); // Return to the same view with the provided model
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = result.Message; // Display error message
+                        return View(model); // Return to the same view with the provided model
+                    }
                 }
             }
 
