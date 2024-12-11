@@ -37,7 +37,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+// To serve files from a specific folder (e.g., Files), you can do this:
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files")),
+    RequestPath = "/Files"
+});
 app.UseRouting();
 
 app.UseAuthorization();

@@ -179,5 +179,24 @@ namespace EHRM.ServiceLayer.Master
                 };
             }
         }
+
+        public async Task<string> GetFilePathByIdAsync(int id)
+        {
+            try
+            {
+                var NoticeBoardRepository = _unitOfWork.GetRepository<NoticeBoard>();  // Using generic repository
+                var nb = await NoticeBoardRepository.GetByIdAsync(id);  // Fetch role by ID
+                string FilePath = nb.Image.ToString();
+
+                return FilePath;
+                
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        #endregion
     }
 }
