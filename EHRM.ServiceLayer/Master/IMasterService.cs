@@ -15,6 +15,18 @@ namespace EHRM.ServiceLayer.Master
         Task<Result> DeleteRoleAsync(int id);
         Task<Result> GetRoleByIdAsync(int id);
         Task<Result> GetAllRolesAsync();
+
+
+        #region Team Screen
+        Task<Result> CreateTeamAsync(TeamScreenViewModel model, int createdBy);
+        Task<Result> UpdateTeamAsync(int id, int updatedBy, TeamScreenViewModel model);
+        Task<Result> DeleteTeamAsync(int id);
+        Task<Result> GetTeamByIdAsync(int id);
+        Task<Result> GetAllTeamAsync();
+
+        #endregion
     }
+
+
 
 }

@@ -1,0 +1,152 @@
+﻿/* General Container Styles */
+.container-fluid {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Team Board Form Styles */
+.team-board {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+/*    max-width: 800px;*/
+    margin-left: auto;
+    margin-right: auto;
+}
+    .team-board h1 {
+        text-align: center;
+        color: forestgreen;
+        font-size: 30px;
+        margin-bottom: 30px;
+    }
+
+/* Form item styles */
+.team-item {
+    margin-bottom: 20px;
+}
+
+    /* Label styles */
+    .team-item label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    /* Input and textarea styles */
+    .team-item input,
+    .team-item textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+/* Button styles */
+.submit-btn {
+    padding: 10px 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    /* Button hover effect */
+    .submit-btn:hover {
+        background-color: #0056b3;
+    }
+
+/* Table section styles */
+.table {
+/*    margin-top: 40px;*/
+}
+
+    .table h2 {
+/*        margin-bottom: 20px;*/
+        text-align: center;
+        color: forestgreen;
+        font-size: 30px;
+        margin-bottom: 30px;
+    }
+
+/* Responsive Table */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table-striped {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .table-striped th,
+    .table-striped td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    .table-striped th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    /* Table hover effect */
+    .table-striped tbody tr:hover {
+        background-color: #f9f9f9;
+    }
+
+/* Responsive Media Queries */
+
+/* For tablet screens and up (screen width >= 768px) */
+@media screen and (max-width: 768px) {
+    .team-item input,
+    .team-item textarea {
+        font-size: 14px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .table-responsive {
+        margin-bottom: 20px;
+        overflow-x: auto;
+    }
+
+    .table-striped th,
+    .table-striped td {
+        padding: 10px;
+    }
+}
+
+/* For smaller mobile devices (screen width <= 576px) */
+@media screen and (max-width: 576px) {
+    .team-board {
+        padding: 15px;
+    }
+
+    .team-item input,
+    .team-item textarea {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .submit-btn {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .table-striped th,
+    .table-striped td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}

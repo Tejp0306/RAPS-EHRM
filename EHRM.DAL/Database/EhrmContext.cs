@@ -15,7 +15,7 @@ public partial class EhrmContext : DbContext
     {
     }
 
-    public virtual DbSet<EmpType> EmpTypes { get; set; }
+    public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -50,6 +50,19 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.UpdatedBy).HasMaxLength(50);
         });
 
+        modelBuilder.Entity<Team>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Team__3214EC07F2BD4EF5");
+
+            entity.ToTable("Team");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).IsUnicode(false);
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
         OnModelCreatingPartial(modelBuilder);
     }
 
