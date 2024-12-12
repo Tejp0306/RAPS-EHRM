@@ -29,7 +29,5 @@ public partial class Holiday
 
     public string? HolidayDate { get; set; }
 
-   
-
     public virtual Team? Team { get; set; }
 }
