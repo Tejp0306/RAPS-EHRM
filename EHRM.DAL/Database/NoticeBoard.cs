@@ -3,23 +3,25 @@ using System.Collections.Generic;
 
 namespace EHRM.DAL.Database;
 
-public partial class Role
+public partial class NoticeBoard
 {
     public int Id { get; set; }
 
-    public string? RoleName { get; set; }
+    public string? HeadingName { get; set; }
 
-    public string? RoleDescription { get; set; }
+    public string? Description { get; set; }
+
+    public string? Image { get; set; }
 
     public bool? IsActive { get; set; }
 
     public bool? IsDeleted { get; set; }
 
-    public string? DeletedBy { get; set; }
+    public int? DeletedBy { get; set; }
 
-    public string? CreatedBy { get; set; }
+    public int? CreatedBy { get; set; }
 
-    public string? UpdatedBy { get; set; }
+    public int? UpdatedBy { get; set; }
 
     public DateTime? CreateDate { get; set; }
 
