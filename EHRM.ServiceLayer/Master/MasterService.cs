@@ -180,6 +180,169 @@ namespace EHRM.ServiceLayer.Master
             }
         }
 
+        #region AddNoticeBoard
+        public async Task<Result> CreateAddNoticeBoardAsync(AddNoticeBoardViewModel model, int createdBy, string? filepath)
+        {
+            try
+            {
+                var newNotice = new NoticeBoard
+                {
+                    HeadingName = model.HeadingName,
+                    Description = model.Description,
+                    Image=filepath,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedBy = createdBy,
+                    CreateDate = DateTime.Now
+                };
+
+                var NoticeBoardRepository = _unitOfWork.GetRepository<NoticeBoard>();
+                await NoticeBoardRepository.AddAsync(newNotice);
+                await _unitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Notice created successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error creating Notice: {ex.Message}"
+                };
+            }
+        }
+
+        public async  Task<Result> UpdateAddNoticeBoardAsync(int id, int updatedBy, AddNoticeBoardViewModel model)
+        {
+            try
+            {
+                var NoticeBoardRepository = _unitOfWork.GetRepository<NoticeBoard>();  // Using generic repository
+                var existingNotiecBoard = await NoticeBoardRepository.GetByIdAsync(id);  // Fetch existing Notice by ID
+
+                if (existingNotiecBoard == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Notice not found."
+                    };
+                }
+
+                // Update NoticeBoard properties
+                existingNotiecBoard.HeadingName = model.HeadingName;
+                existingNotiecBoard.Description = model.Description;
+                existingNotiecBoard.UpdatedBy = updatedBy;
+                existingNotiecBoard.UpdateDate = DateTime.Now;
+
+                await NoticeBoardRepository.UpdateAsync(existingNotiecBoard);  // Call update method in the generic repository
+                await _unitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Notice updated successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error updating Notice: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<Result> DeleteAddNoticeBoardAsync(int id)
+        {
+            try
+            {
+                var NoticeBoardRepository = _unitOfWork.GetRepository<NoticeBoard >();  // Using generic repository
+                var NoticeBoardToDelete = await NoticeBoardRepository.GetByIdAsync(id);  // Fetch Notice by ID
+
+                if (NoticeBoardToDelete == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Notice not found."
+                    };
+                }
+
+                // Perform hard delete
+                await NoticeBoardRepository.DeleteAsync(id);  // Call delete method in the generic repository
+                await _unitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Notice deleted successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error deleting Notice: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<Result> GetAllAddNoticeBoardAsync()
+        {
+            {
+                var NoticeBoardRepository = _unitOfWork.GetRepository<NoticeBoard>();  // Using generic repository
+                var NoticeBoard = await NoticeBoardRepository.GetAllAsync();  // Fetch all Notices
+                return new Result { Success = true, Data = NoticeBoard };
+            }
+        }
+
+        public async  Task<Result> GetAllAddNoticeBoardByIdAsync(int id)
+        {
+
+            try
+            {
+                var NoticeBoardRepository = _unitOfWork.GetRepository<NoticeBoard>();  // Using generic repository
+                var nb= await NoticeBoardRepository.GetByIdAsync(id);  // Fetch role by ID
+
+                if (nb == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Notice not found."
+                    };
+                }
+
+                var AddNoticeBoardViewModel = new AddNoticeBoardViewModel
+                {
+                    Id = nb.Id,
+                    HeadingName = nb.HeadingName,
+                    Description = nb.Description,
+                    FilePath = nb.Image
+                };
+
+                return new Result
+                {
+                    Success = true,
+                    Data = AddNoticeBoardViewModel
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error fetching role: {ex.Message}"
+                };
+            }
+        }
+
         public async Task<string> GetFilePathByIdAsync(int id)
         {
             try

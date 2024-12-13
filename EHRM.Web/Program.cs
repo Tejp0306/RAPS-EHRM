@@ -4,6 +4,7 @@ using EHRM.ServiceLayer.Master;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using EHRM.Infrastructure.Configurations;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
