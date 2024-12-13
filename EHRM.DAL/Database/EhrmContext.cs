@@ -14,18 +14,12 @@ public partial class EhrmContext : DbContext
         : base(options)
     {
     }
-
+    public virtual DbSet<EmpType> EmpTypes { get; set; }
     public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
 
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
 
     public virtual DbSet<Holiday> Holidays { get; set; }
-
-    //public virtual DbSet<MainMenu> MainMenus { get; set; }
-
-    //public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
-
-    //public virtual DbSet<Post> Posts { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -39,6 +33,18 @@ public partial class EhrmContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        modelBuilder.Entity<EmpType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__EmpType__3214EC076A9D326B");
+
+            entity.ToTable("EmpType");
+
+            entity.Property(e => e.EmpType1)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("EmpType");
+        });
         modelBuilder.Entity<NoticeBoard>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__NoticeBo__3214EC0766C3D095");

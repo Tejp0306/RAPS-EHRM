@@ -368,18 +368,11 @@ namespace EHRM.ServiceLayer.Master
                 //var teams = _unitOfWork.GetRepository<Team>();
                 await holidayRepository.AddAsync(newHoliday);
                 await _unitOfWork.SaveAsync();
-
-
-
-
-
                 return new Result
                 {
                     Success = true,
                     Message = "Holiday created successfully."
                 };
-
-
 
             }
             catch (Exception ex)

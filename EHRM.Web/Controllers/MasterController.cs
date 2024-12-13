@@ -111,8 +111,6 @@ namespace EHRM.Web.Controllers
             }
         }
 
-
-
         [NonAction]
         private async Task<object> UpdateRoleDetails(int id, string updatedBy, RoleViewModel model)
         {
@@ -178,7 +176,12 @@ namespace EHRM.Web.Controllers
                     // Get the current user ID (if using session or logged-in user info)
                     int createdBy = 1; // Replace this with the actual logic for fetching current user's ID
                     // For example: var createdBy = _userService.GetCurrentUserId();
-                    var filepath = Upload(model);
+                    var filepath = "";
+                    if (model.File!=null)
+                    {
+
+                         filepath = Upload(model);
+                    }
                     // Call the service method to create the notice in the database
                     var result = await _master.CreateAddNoticeBoardAsync(model, createdBy, filepath);
 
@@ -773,6 +776,181 @@ namespace EHRM.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while retrieving the Team details." });
             }
         }
+
+        #endregion
+
+
+        #region Emp_Type
+        public IActionResult EmployeeType()
+        {
+            return View();
+        }
+
+        [NonAction]
+        private async Task<object> UpdateEmployeeTypeDetails(int id, EmployeeTypeViewModel model)
+        {
+            try
+            {
+                // Call the service method to update the role
+                var result = await _master.UpdateEmployeeTypeAsync(id, model);
+
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (for debugging or error tracking)
+                // _logger.LogError(ex, "Error occurred while updating role details for role ID: {RoleId}", id);
+
+                // Return a generic error response
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the Employee Type. Please try again later."
+                };
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveEmployeeType(EmployeeTypeViewModel model)
+        {  // Check if the exists based on the model ID
+            if (model.Id> 0)
+            {
+                // Update the role details
+                //string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
+                var updateResult = await UpdateEmployeeTypeDetails(model.Id, model);
+
+                if (updateResult != null)
+                {
+
+                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["ToastType"] = "success"; // Store success message
+                        TempData["ToastMessage"] = "Record Has been updated ";
+                        return RedirectToAction("EmployeeType"); // Redirect to the list of roles
+                    }
+                    else
+                    {
+                        TempData["ToastType"] = "danger"; // Store error message
+                        TempData["ToastMessage"] = "An error occurred while updating the record.";
+                        return RedirectToAction("EmployeeType");  // Return to the same view with the provided model
+                    }
+
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Unexpected error occurred during Employee Type update."; // Display generic error
+                    return View(model); // Return to the same view with the provided model
+                }
+            }
+            else
+            {
+                // Create a new role
+                // string createdById = "waseem"; // Replace with logic to fetch the actual user ID
+                var result = await _master.CreateEmployeeTypeAsync(model);
+
+                // Handle the result of the create operation
+                if (result.Success)
+                {
+                    // Error handling for the case where creation fails
+                    TempData["ToastType"] = "success";  // Success, danger, warning, info
+                    TempData["ToastMessage"] = "Record saved successfully!";
+                    return RedirectToAction("EmployeeType"); // Redirect to the list of roles
+                }
+                else
+                {
+                    // Error handling for the case where creation fails
+                    TempData["ToastType"] = "danger"; // Store error message
+                    TempData["ToastMessage"] = "An error occurred while creating the record.";
+                    return RedirectToAction("EmployeeType"); // Redirect back to the EmployeeType view
+                }
+            }
+        }
+
+        [HttpGet("Master/GetEmployeeTypeDetails/{ID}")]
+        public async Task<JsonResult> GetEmployeeTypeDetails([FromRoute] int ID)
+        {
+            try
+            {
+                var et = await _master.GetEmployeeTypeIdAsync(ID);
+
+                if (et == null)
+                {
+                    return Json(new { success = false, message = "Employee Type not found." });
+                }
+
+                return Json(new { success = true, data = et });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the employee Type details." });
+            }
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetAllEmployeeTypeData()
+        {
+            // Fetch the result from the service layer
+            var result = await _master.GetAllEmployeeTypeAsync();
+
+            // Check if the result is successful and contains data
+            if (result.Success && result.Data != null)
+            {
+                var emptype = result.Data as IEnumerable<EmpType>;
+                if (emptype != null)
+                {
+                    // Return the list of roles as a JSON response
+                    var employeeTypeList = emptype.Select(emptype => new
+                    {
+                        Id = emptype.Id,
+                        EmpType1 = emptype.EmpType1,
+                        //RoleDescription = role.RoleDescription
+                    }).ToList();
+                    return Json(employeeTypeList);
+                }
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in expected format." });
+                }
+            }
+            else
+            {
+                // Handle the case where the service failed
+                return Json(new { Success = false, Message = result.Message ?? "No Employee Type found." });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteEmployeeType(int id)
+        {
+            try
+            {
+                // Call the service method to delete the notice from the database
+                var result = await _master.DeleteEmployeeTypeAsync(id);
+
+                // Check the result and provide feedback to the user
+                if (result.Success)
+                {
+                    return Json(new { Success = true, Message = "Employee Type deleted successfully!" });
+                }
+                else
+                {
+                    return Json(new { Success = true, Message = "Employee Type not deleted !" });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                // Store the error message in TempData if an exception occurs
+                TempData["ErrorMessage"] = $"Error deleting the Employee Type: {ex.Message}";
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+
 
         #endregion
     }

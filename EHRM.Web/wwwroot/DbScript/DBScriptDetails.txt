@@ -41,10 +41,11 @@ CREATE TABLE Holiday (
     IsActive BIT, -- Indicates if the holiday is active
     IsDeleted BIT, -- Indicates if the holiday is deleted
     DeletedBy INT, -- User ID of who deleted the record
-    CreatedBy INT, -- User ID of who created the record
-    UpdatedBy INT, -- User ID of who last updated the record
+    CreatedBy VARCHAR(30), -- User ID of who created the record
+    UpdatedBy VARCHAR(30), -- User ID of who last updated the record
     CreateDate DATETIME, -- Record creation date
     UpdateDate DATETIME, -- Last update date
+    HolidayDate varchar(30)
     FOREIGN KEY (TeamId) REFERENCES Team(Id) ON DELETE CASCADE -- Enable cascading delete
 );
 
@@ -54,7 +55,7 @@ CREATE TABLE NoticeBoard (
     Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
     HeadingName VARCHAR(255), -- Heading of the notice
     Description VARCHAR(MAX), -- Description of the notice
-    Image VARBINARY(MAX), -- Image (stored as binary data)
+    Image VARCHAR(MAX), -- Image (stored as binary data)
     IsActive BIT, -- Indicates if the notice is active
     IsDeleted BIT, -- Indicates if the notice is deleted
     DeletedBy INT, -- User ID of who deleted the record
