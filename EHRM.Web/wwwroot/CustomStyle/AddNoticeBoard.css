@@ -1,0 +1,147 @@
+﻿/* General Body and Layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for the Notice Board Form */
+.notice-board {
+    /*width: 80%;
+    max-width: 800px;*/
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+    /* Notice Heading */
+    .notice-board h1 {
+        text-align: center;
+        color: forestgreen;
+        font-size: 30px;
+        margin-bottom: 30px;
+    }
+
+/* Input and Textarea Styling */
+.notice-item {
+    margin-bottom: 20px;
+}
+
+    .notice-item label {
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .notice-item input[type="text"],
+    .notice-item textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+        .notice-item input[type="text"]:focus,
+        .notice-item textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+    .notice-item textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+/* Submit Button */
+.submit-btn {
+/*    width: 100%;*/
+    padding: 12px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+
+}
+
+    .submit-btn:hover {
+        background-color: #218838;
+    }
+
+/* Notice Heading */
+.table h2 {
+    text-align: center;
+    color: forestgreen;
+    font-size: 30px;
+    margin-bottom: 30px;
+}
+
+/* Table Container for Notice Details */
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Table Responsive */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Alerts for Success/Error Messages */
+.alert {
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}

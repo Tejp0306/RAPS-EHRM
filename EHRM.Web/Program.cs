@@ -4,6 +4,7 @@ using EHRM.ServiceLayer.Master;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using EHRM.Infrastructure.Configurations;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,7 +49,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+// To serve files from a specific folder (e.g., Files), you can do this:
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files")),
+    RequestPath = "/Files"
+});
 app.UseRouting();
 app.UseSession(); // Enable session before UseAutho
 
