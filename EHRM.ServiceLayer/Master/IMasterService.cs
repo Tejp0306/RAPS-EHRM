@@ -33,8 +33,17 @@ namespace EHRM.ServiceLayer.Master
         //Task<Result> GetAllHolidayAsync();
         Task<Result> GetHolidayByIdAsync(int id);
 
-        
+
         #endregion
+
+        #region Employee_Type
+        Task<Result> CreateEmployeeTypeAsync(EmployeeTypeViewModel model);
+        Task<Result> UpdateEmployeeTypeAsync(int id, EmployeeTypeViewModel model);
+        Task<Result> DeleteEmployeeTypeAsync(int id);
+        Task<Result> GetEmployeeTypeIdAsync(int id);
+        Task<Result> GetAllEmployeeTypeAsync();
+        #endregion
+
     }
 
 }
