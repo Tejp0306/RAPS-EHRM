@@ -182,7 +182,7 @@ namespace EHRM.Web.Controllers
                 //var setusers = UserClaimsHelper.GetUserClaims(User);
         //var roleId = setusers["Roleid"];
                 // Redirect to the dashboard or welcome page
-                return RedirectToAction("Welcome", "Dashboard");
+                return RedirectToAction("AddHoliday", "Master");
     }
 
     // If employee not found
@@ -208,7 +208,7 @@ namespace EHRM.Web.Controllers
             }
 
             // Redirect to the login page or another page
-            return RedirectToAction("Login", "Home");
+            return RedirectToAction("Login", "Account");
         }
     }
 }
