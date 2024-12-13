@@ -175,7 +175,7 @@ namespace EHRM.ServiceLayer.Master
                 return new Result
                 {
                     Success = false,
-                    Message = $"Error updating role: {ex.Message}"
+                    Message = $"Error fetching role: {ex.Message}"
                 };
             }
         }

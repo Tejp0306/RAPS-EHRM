@@ -157,7 +157,7 @@ namespace EHRM.Web.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "An error occurred while retrieving the role details." });
+                return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
             }
         }
 
