@@ -1,0 +1,159 @@
+﻿/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/*.container-fluid {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}*/
+
+/* Styling for the Employee Type Form */
+.Employee-Type {
+    /*    width: 80%;
+    max-width: 800px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);*/
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+    .Employee-Type h1 {
+        font-size: 2rem;
+        color: forestgreen;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+.Emp_type {
+    margin-bottom: 20px;
+}
+
+    .Emp_type label {
+        /*        font-size: 1rem;
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: inline-block;*/
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .Emp_type input {
+        width: 55%;
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        /*        background-color: #fafafa;
+        transition: border 0.3s ease;*/
+    }
+
+        .Emp_type input:focus {
+            border-color: #00838f;
+            outline: none;
+        }
+
+.submit-btn {
+/*    text-align: center;*/
+}
+
+    .submit-btn .btn-submit {
+        padding: 10px 20px;
+        font-size: 1rem;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .submit-btn .btn-submit:hover {
+            background-color: #218838;
+        }
+
+/* Styling for the Employee Details Table */
+.table {
+    margin-top: 40px;
+}
+
+    .table h2 {
+        text-align: center;
+        font-size: 1.8rem;
+        color: forestgreen;
+        margin-bottom: 20px;
+    }
+
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    table th, table td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    table tr:hover {
+        background-color: #e0f7fa;
+    }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container-fluid {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .Employee-Type {
+        padding: 15px;
+    }
+
+    .Emp_type input, .submit-btn .btn-submit {
+        font-size: 0.9rem;
+    }
+
+    table th, table td {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .table h2 {
+        font-size: 1.5rem;
+    }
+}

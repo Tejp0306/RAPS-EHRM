@@ -3,19 +3,21 @@ using System.Collections.Generic;
 
 namespace EHRM.DAL.Database;
 
-public partial class Role
+public partial class Holiday
 {
     public int Id { get; set; }
 
-    public string? RoleName { get; set; }
+    public int? TeamId { get; set; }
 
-    public string? RoleDescription { get; set; }
+    public string? Name { get; set; }
+
+    public string? Description { get; set; }
 
     public bool? IsActive { get; set; }
 
     public bool? IsDeleted { get; set; }
 
-    public string? DeletedBy { get; set; }
+    public int? DeletedBy { get; set; }
 
     public string? CreatedBy { get; set; }
 
@@ -25,5 +27,7 @@ public partial class Role
 
     public DateTime? UpdateDate { get; set; }
 
-    public virtual ICollection<SubMenu> SubMenus { get; set; } = new List<SubMenu>();
+    public string? HolidayDate { get; set; }
+
+    public virtual Team? Team { get; set; }
 }

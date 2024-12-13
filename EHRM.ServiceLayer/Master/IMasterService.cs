@@ -16,7 +16,6 @@ namespace EHRM.ServiceLayer.Master
         Task<Result> GetRoleByIdAsync(int id);
         Task<Result> GetAllRolesAsync();
 
-
         #region Team Screen
         Task<Result> CreateTeamAsync(TeamScreenViewModel model, int createdBy);
         Task<Result> UpdateTeamAsync(int id, int updatedBy, TeamScreenViewModel model);
@@ -25,6 +24,34 @@ namespace EHRM.ServiceLayer.Master
         Task<Result> GetAllTeamAsync();
 
         #endregion
+        #region
+        //Holiday Screen
+        Task<Result> CreateHolidayAsync(HolidayViewModel model, string createdBy);
+
+        //Task<Result> UpdateHolidayAsync(int id, string updatedBy, HolidayViewModel model);
+
+        Task<Result> GetAllHolidayAsync();
+
+        Task<Result> DeleteHolidayAsync(int id);
+
+        Task<Result> UpdateHolidayAsync(int id, string updatedBy, HolidayViewModel model);
+
+        Task<Result> GetTeamAsync();
+
+        //Task<Result> GetAllHolidayAsync();
+        Task<Result> GetHolidayByIdAsync(int id);
+
+
+        #endregion
+
+        #region Employee_Type
+        Task<Result> CreateEmployeeTypeAsync(EmployeeTypeViewModel model);
+        Task<Result> UpdateEmployeeTypeAsync(int id, EmployeeTypeViewModel model);
+        Task<Result> DeleteEmployeeTypeAsync(int id);
+        Task<Result> GetEmployeeTypeIdAsync(int id);
+        Task<Result> GetAllEmployeeTypeAsync();
+        #endregion
+
     }
 
 
