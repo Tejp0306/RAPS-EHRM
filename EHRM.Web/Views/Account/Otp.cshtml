@@ -1,0 +1,28 @@
+﻿ @model EHRM.Web.Models.OtpViewModel
+
+@{
+    ViewData["Title"] = "Otp";
+    Layout = null;
+}
+<link href="~/customstyle/Login.css" rel="stylesheet" />
+
+<body>
+    <div class="login-container">
+        <h2>Verify OTP</h2>
+        <form class="login-form" asp-controller="Account" asp-action="Otp" method="post">
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="text" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Otp"></label>
+                <input asp-for="Otp" type="text" />
+                <span asp-validation-for="Otp" class="text-danger"></span>
+            </div>
+            <button type="submit">Verify OTP</button>
+        </form>
+    </div>
+
+
+</body>

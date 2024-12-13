@@ -2,9 +2,14 @@
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Master;
+
+
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
+
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,7 +58,6 @@ namespace EHRM.ServiceLayer.Master
                 };
             }
         }
-
         // Soft delete a role
         public async Task<Result> DeleteRoleAsync(int id)
         {
@@ -137,7 +141,6 @@ namespace EHRM.ServiceLayer.Master
                 };
             }
         }
-
         // Update an existing role
         public async Task<Result> UpdateRoleAsync(int id, string updatedBy, RoleViewModel model)
         {
@@ -180,27 +183,163 @@ namespace EHRM.ServiceLayer.Master
             }
         }
 
-        #region AddNoticeBoard
-        public async Task<Result> CreateAddNoticeBoardAsync(AddNoticeBoardViewModel model, int createdBy, string? filepath)
+            {
+                try
+                {
+                    var EmpType = new EmpType
+                    {
+                        EmpType1 = model.EmpType1,
+                        //RoleDescription = model.RoleDescription,
+                        IsActive = true,
+                        //IsDeleted = false,
+                        //CreatedBy = createdBy,
+                        //CreateDate = DateTime.Now
+                    };
+
+                    var EmpTypeRepository = _unitOfWork.GetRepository<EmpType>();
+                    await EmpTypeRepository.AddAsync(EmpType);
+                    await _unitOfWork.SaveAsync();
+
+                    return new Result
+                    {
+                        Success = true,
+                        Message = "Employee Type created successfully."
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = $"Error creating Employee Type: {ex.Message}"
+                    };
+                }
+            }
+        }
+
+        public async Task<Result> UpdateEmployeeTypeAsync(int id, EmployeeTypeViewModel model)
         {
             try
             {
-                var newNotice = new NoticeBoard
-                {
-                    HeadingName = model.HeadingName,
-                    Description = model.Description,
-                    Image=filepath,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedBy = createdBy,
-                    CreateDate = DateTime.Now
-                };
+                var EmpTypeRepository = _unitOfWork.GetRepository<EmpType>();  // Using generic repository
+                var existingEmpType = await EmpTypeRepository.GetByIdAsync(id);  // Fetch existing role by ID
 
-                var NoticeBoardRepository = _unitOfWork.GetRepository<NoticeBoard>();
-                await NoticeBoardRepository.AddAsync(newNotice);
+                if (existingEmpType == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Employee Type not found."
+                    };
+                }
+
+                // Update role properties
+                existingEmpType.EmpType1 = model.EmpType1;
+                //existingRole.RoleDescription = model.RoleDescription;
+                //existingRole.UpdatedBy = updatedBy;
+                //existingRole.UpdateDate = DateTime.Now;
+
+                await EmpTypeRepository.UpdateAsync(existingEmpType);  // Call update method in the generic repository
                 await _unitOfWork.SaveAsync();
 
                 return new Result
+                {
+                    Success = true,
+                    Message = "Employee Type updated successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error updating Employee Type: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<Result> DeleteEmployeeTypeAsync(int id)
+        {
+            try
+            {
+                var EmpTypeRepository = _unitOfWork.GetRepository<EmpType>();  // Using generic repository
+                var EmpTypeToDelete = await EmpTypeRepository.GetByIdAsync(id);  // Fetch role by ID
+
+                if (EmpTypeToDelete == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Employee Type not found."
+                    };
+                }
+
+                // Perform hard delete
+                await EmpTypeRepository.DeleteAsync(id);  // Call delete method in the generic repository
+                await _unitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Employee Type deleted successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error deleting Employee Type: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<Result> GetEmployeeTypeIdAsync(int id)
+        {
+            try
+            {
+                var EmpTypeRepository = _unitOfWork.GetRepository<EmpType>();  // Using generic repository
+                var et = await EmpTypeRepository.GetByIdAsync(id);  // Fetch role by ID
+
+                if (et == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Employee Type not found."
+                    };
+                }
+
+                var EmployeeTypeViewModel = new EmployeeTypeViewModel
+                {
+                    Id = et.Id,
+                    EmpType1 = et.EmpType1,
+                    //RoleDescription = role.RoleDescription
+                };
+
+                return new Result
+                {
+                    Success = true,
+                    Data = EmployeeTypeViewModel
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error fetching Employee Type: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<Result> GetAllEmployeeTypeAsync()
+        {
+            var EmpTypeRepository = _unitOfWork.GetRepository<EmpType>();  // Using generic repository
+            var et = await EmpTypeRepository.GetAllAsync();  // Fetch all roles
+            return new Result { Success = true, Data = et };
+        }
+        #endregion
                 {
                     Success = true,
                     Message = "Notice created successfully."

@@ -26,7 +26,18 @@ builder.Services.AddAuthorization(options =>
 {
     // Configure other authorization policies if necessary
 });
+
+// Add session services
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // Essential for GDPR compliance
+});
+
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -45,11 +56,12 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/Files"
 });
 app.UseRouting();
+app.UseSession(); // Enable session before UseAutho
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();
