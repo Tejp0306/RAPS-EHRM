@@ -142,7 +142,6 @@ namespace EHRM.Web.Controllers
             }
         }
 
-   
         [HttpGet("Master/GetRoleDetails/{roleID}")]
         public async Task<JsonResult> GetRoleDetails([FromRoute] int roleID)
         {
@@ -162,9 +161,6 @@ namespace EHRM.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
             }
         }
-
-
-        #region  NOTICE FORM
 
         public IActionResult AddNoticeBoard()
         {
@@ -385,12 +381,7 @@ namespace EHRM.Web.Controllers
 
         }
 
-
-
-
-
         [HttpGet]
-
         public async Task<IActionResult> ShowFile(int id)
         {
             try
