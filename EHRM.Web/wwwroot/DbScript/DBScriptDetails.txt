@@ -70,7 +70,7 @@ CREATE TABLE NoticeBoard (
 CREATE TABLE MainMenu (
     Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
     Name VARCHAR(255), -- Name of the menu item
-    Icon VARBINARY(MAX), -- Icon for the menu item (optional, stored as binary data)
+    Icon VARCHAR(30), -- Icon for the menu item (optional, stored as binary data)
     IsActive BIT -- Indicates if the menu item is active
 );
 

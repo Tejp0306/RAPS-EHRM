@@ -360,6 +360,7 @@ namespace EHRM.ServiceLayer.Master
                 // Update role properties
                 existingholiday.Name = model.Name;
                 existingholiday.Description = model.Description;
+                existingholiday.HolidayDate = model.HolidayDate;
                 existingholiday.UpdatedBy = updatedBy;
                 existingholiday.UpdateDate = DateTime.Now;
 

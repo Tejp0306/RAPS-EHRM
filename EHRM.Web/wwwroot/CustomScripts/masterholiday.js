@@ -51,7 +51,7 @@ function EditHolidayDetails(holidayID) {
             // Log response for debugging
             console.log('Full Response:', response);
             console.log('Data:', response.data);
-            //debugger;
+            debugger;
             // Access the nested data object
             if (response.success && response.data && response.data.data) {
                 const holidayData = response.data.data;
