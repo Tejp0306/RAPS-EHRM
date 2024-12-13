@@ -15,7 +15,7 @@ public partial class EhrmContext : DbContext
     {
     }
 
-    public virtual DbSet<EmpType> EmpTypes { get; set; }
+    public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
 
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
 
@@ -146,31 +146,6 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.UpdatedBy).HasMaxLength(50);
         });
-
-        //modelBuilder.Entity<SubMenu>(entity =>
-        //{
-        //    entity.HasKey(e => e.Id).HasName("PK__SubMenu__3214EC07B9346644");
-
-        //    entity.ToTable("SubMenu");
-
-        //    entity.Property(e => e.Action)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.Controller)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.Name)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false);
-
-        //    entity.HasOne(d => d.MainMenu).WithMany(p => p.SubMenus)
-        //        .HasForeignKey(d => d.MainMenuId)
-        //        .HasConstraintName("FK__SubMenu__MainMen__4222D4EF");
-
-        //    entity.HasOne(d => d.Role).WithMany(p => p.SubMenus)
-        //        .HasForeignKey(d => d.RoleId)
-        //        .HasConstraintName("FK__SubMenu__RoleId__4316F928");
-        //});
 
         modelBuilder.Entity<Team>(entity =>
         {

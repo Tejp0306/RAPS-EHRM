@@ -1,4 +1,5 @@
-﻿using EHRM.DAL.Database;
+﻿using System.Security.Claims;
+using EHRM.DAL.Database;
 using EHRM.ServiceLayer.Master;
 using EHRM.ViewModel.Master;
 using Microsoft.AspNetCore.Mvc;
@@ -204,9 +205,7 @@ namespace EHRM.Web.Controllers
                 };
             }
         }
-
-
-
+        
         // Get Holiday based on Id for the edit button
 
         [HttpGet("Master/GetHolidayDetails/{holidayId}")]
@@ -246,6 +245,8 @@ namespace EHRM.Web.Controllers
                 {
                     return Json(new { Success = true, Message = "Notice not deleted !" });
                 }
+
+
             }
             catch (Exception ex)
             {
@@ -303,36 +304,7 @@ namespace EHRM.Web.Controllers
                     return View(model); // Return to the same view with the provided model
                 }
             }
-
         }
-
-        //public async Task<IActionResult> AddHoliday(HolidayViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        // If validation fails, return the same view with the model and error messages
-        //        return View(model);
-        //    }
-
-        //    // Get the currently logged-in user (replace with your actual logic to retrieve the user)
-        //    string createdBy = "Arjun";
-
-        //    // Call the service to create a new holiday
-        //    var result = await _master.CreateHolidayAsync(model, createdBy);
-
-        //    if (result.Success)
-        //    {
-        //        // If successful, store a success message in TempData and redirect to a list view or confirmation page
-        //        TempData["SuccessMessage"] = result.Message;
-        //        return RedirectToAction("AddHoliday");
-        //    }
-        //    else
-        //    {
-        //        // If there's an error, add it to the ModelState and return the view with the error
-        //        ModelState.AddModelError(string.Empty, result.Message);
-        //        return View(model);
-        //    }
-        //}
 
         [HttpGet]
         public async Task<JsonResult> GetAllTeamData()
@@ -365,7 +337,6 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No teams found." });
             }
         }
-
 
         //Get All Holiday Data
 
@@ -407,20 +378,46 @@ namespace EHRM.Web.Controllers
             }
         }
         #endregion
-
-        #region Emp_Type
-        public IActionResult EmployeeType()
+        
+        #region Team Screen
+        public IActionResult TeamScreen()
         {
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteTeamScreen(int id)
+        {
+            try
+            {
+                // Call the service method to delete the notice from the database
+                var result = await _master.DeleteTeamAsync(id);
 
+                // Check the result and provide feedback to the user
+                if (result.Success)
+                {
+                    return Json(new { Success = true, Message = "Team deleted successfully!" });
+                }
+                else
+                {
+                    return Json(new { Success = true, Message = "Team not deleted !" });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                // Store the error message in TempData if an exception occurs
+                TempData["ErrorMessage"] = $"Error deleting the Team: {ex.Message}";
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
         [NonAction]
-        private async Task<object> UpdateEmployeeTypeDetails(int id,  EmployeeTypeViewModel model)
+        private async Task<object> UpdateTeamDetails(int id, int updatedBy, TeamScreenViewModel model)
         {
             try
             {
                 // Call the service method to update the role
-                var result = await _master.UpdateEmployeeTypeAsync(id, model);
+                var result = await _master.UpdateTeamAsync(id, updatedBy, model);
 
                 // Return a structured response based on the result of the update
                 return new
@@ -438,108 +435,80 @@ namespace EHRM.Web.Controllers
                 return new
                 {
                     success = false,
-                    message = "An error occurred while updating the Employee Type. Please try again later."
+                    message = "An error occurred while updating the Team. Please try again later."
                 };
             }
         }
-
         [HttpPost]
-        public async Task<IActionResult> SaveEmployeeType(EmployeeTypeViewModel model)
-        {  // Check if the exists based on the model ID
-            if (model.Id > 0 )
+        public async Task<IActionResult> SaveTeam(TeamScreenViewModel  model)
+        {  // Check if the role exists based on the model ID
+            if (model.Id > 0)
             {
+                
                 // Update the role details
-                //string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
-                var updateResult = await UpdateEmployeeTypeDetails(model.Id, model);
+                int updatedBy = 1; // Replace with actual logic to fetch the current user ID
+                var Result = await UpdateTeamDetails(model.Id, updatedBy, model);
 
-                if (updateResult != null)
+                if (Result != null)
                 {
-
-                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    var updateResponse = Result as dynamic; // Assuming it's returning an anonymous type
                     if (updateResponse?.success == true)
                     {
-                        TempData["ToastType"] = "success"; // Store success message
-                        TempData["ToastMessage"] = "Record Has been updated ";
-                        return RedirectToAction("EmployeeType"); // Redirect to the list of roles
+                        TempData["SuccessMessage"] = updateResponse?.message; // Store success message
+                        return RedirectToAction("TeamScreen"); // Redirect to the list of roles
                     }
                     else
                     {
-                        TempData["ToastType"] = "error"; // Store error message
-                        TempData["ToastMessage"] = "An error occurred while updating the record.";
-                        return RedirectToAction("EmployeeType");  // Return to the same view with the provided model
+                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                        return View(model); // Return to the same view with the provided model
                     }
-
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = "Unexpected error occurred during Employee Type update."; // Display generic error
+                    ViewBag.ErrorMessage = "Unexpected error occurred during role update."; // Display generic error
                     return View(model); // Return to the same view with the provided model
                 }
             }
             else
             {
-                // Create a new role
-                // string createdById = "waseem"; // Replace with logic to fetch the actual user ID
-                var result = await _master.CreateEmployeeTypeAsync(model);
+                // Create a new team
+                int createdById = 1; // Replace with logic to fetch the actual user ID
+                var result = await _master.CreateTeamAsync(model, createdById);
 
                 // Handle the result of the create operation
                 if (result.Success)
                 {
-                    // Error handling for the case where creation fails
-                    TempData["ToastType"] = "success";  // Success, danger, warning, info
-                    TempData["ToastMessage"] = "Record saved successfully!";
-                    return RedirectToAction("EmployeeType"); // Redirect to the list of roles
+                    TempData["SuccessMessage"] = result.Message; // Store success message
+                    return RedirectToAction("TeamScreen"); // Redirect to the list of roles
                 }
                 else
                 {
-                    // Error handling for the case where creation fails
-                    TempData["ToastType"] = "error"; // Store error message
-                    TempData["ToastMessage"] = "An error occurred while creating the record.";
-                    return RedirectToAction("EmployeeType"); // Redirect back to the EmployeeType view
+                    ViewBag.ErrorMessage = result.Message; // Display error message
+                    return View(model); // Return to the same view with the provided model
                 }
             }
-            
-        }
 
-        [HttpGet("Master/GetEmployeeTypeDetails/{ID}")]
-        public async Task<JsonResult> GetEmployeeTypeDetails([FromRoute] int ID)
-        {
-            try
-            {
-                var et = await _master.GetEmployeeTypeIdAsync(ID);
-
-                if (et == null)
-                {
-                    return Json(new { success = false, message = "Employee Type not found." });
-                }
-
-                return Json(new { success = true, data = et });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "An error occurred while retrieving the employee Type details." });
-            }
         }
         [HttpGet]
-        public async Task<JsonResult> GetAllEmployeeTypeData()
+        public async Task<JsonResult> GetAllTeamScreenData()
         {
             // Fetch the result from the service layer
-            var result = await _master.GetAllEmployeeTypeAsync();
+            var result = await _master.GetAllTeamAsync();
 
             // Check if the result is successful and contains data
             if (result.Success && result.Data != null)
             {
-                var emptype = result.Data as IEnumerable<EmpType>;
-                if (emptype != null)
+                var team = result.Data as IEnumerable<Team>;
+                if (team != null)
                 {
-                    // Return the list of roles as a JSON response
-                    var employeeTypeList = emptype.Select(emptype => new
+                    // Return the list of Team as a JSON response
+                    var TeamScreenList = team.Select(team => new
                     {
-                        Id = emptype.Id,
-                        EmpType1 = emptype.EmpType1,
-                        //RoleDescription = role.RoleDescription
+                        Id = team.Id,
+                        Name = team.Name,
+                        Description = team.Description
                     }).ToList();
-                    return Json(employeeTypeList);
+                    return Json(TeamScreenList);
                 }
                 else
                 {
@@ -549,40 +518,29 @@ namespace EHRM.Web.Controllers
             else
             {
                 // Handle the case where the service failed
-                return Json(new { Success = false, Message = result.Message ?? "No Employee Type found." });
+                return Json(new { Success = false, Message = result.Message ?? "No Team found." });
             }
         }
-        [HttpPost]
-        public async Task<IActionResult> DeleteEmployeeType(int id)
+        [HttpGet("Master/GetTeamScreenDetails/{TeamScreenID}")]
+        public async Task<JsonResult> GetTeamScreenDetails([FromRoute] int TeamScreenID)
         {
             try
             {
-                // Call the service method to delete the notice from the database
-                var result = await _master.DeleteEmployeeTypeAsync(id);
+                var ts = await _master.GetTeamByIdAsync(TeamScreenID);
 
-                // Check the result and provide feedback to the user
-                if (result.Success)
+                if (ts == null)
                 {
-                    return Json(new { Success = true, Message = "Employee Type deleted successfully!" });
-                }
-                else
-                {
-                    return Json(new { Success = true, Message = "Employee Type not deleted !" });
+                    return Json(new { success = false, message = "Team not found." });
                 }
 
-
+                return Json(new { success = true, data = ts });
             }
             catch (Exception ex)
             {
-                // Store the error message in TempData if an exception occurs
-                TempData["ErrorMessage"] = $"Error deleting the Employee Type: {ex.Message}";
-                return Json(new { Success = false, Message = ex.Message });
+                return Json(new { success = false, message = "An error occurred while retrieving the Team details." });
             }
         }
 
-
-
         #endregion
-
     }
 }
