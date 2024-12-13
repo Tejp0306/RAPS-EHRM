@@ -8,6 +8,7 @@ namespace EHRM.Web.Controllers
     public class MasterController : Controller
     {
         private readonly IMasterService _master;
+        private readonly string _fileStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "Files");
         public MasterController(IMasterService master)
         {
              
@@ -155,7 +156,7 @@ namespace EHRM.Web.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "An error occurred while retrieving the role details." });
+                return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
             }
         }
 
