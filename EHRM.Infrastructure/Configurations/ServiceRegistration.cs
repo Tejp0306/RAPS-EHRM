@@ -1,6 +1,7 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.DAL.Repositories;
 using EHRM.DAL.UnitOfWork;
+using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));  // Register the generic repository
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IMasterService, MasterService>();
+            services.AddScoped<IMainMenuService, MainMenuService>();
         }
     }
 }

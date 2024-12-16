@@ -12,7 +12,6 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 //builder.Services.AddDbContext<EhrmContext>
 //    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("EHRMConnection")));
 //builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-//builder.Services.AddScoped<IMasterService, MasterService>();
 builder.Services.AddServices(builder.Configuration);
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

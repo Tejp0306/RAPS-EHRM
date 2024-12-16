@@ -271,7 +271,7 @@ namespace EHRM.Web.Controllers
                     if (updateResponse?.success == true)
                     {
                         TempData["SuccessMessage"] = updateResponse?.message; // Store success message
-                        return RedirectToAction("MsterRoles"); // Redirect to the list of roles
+                        return RedirectToAction("addholiday"); // Redirect to the list of roles
                     }
                     else
                     {
@@ -306,33 +306,6 @@ namespace EHRM.Web.Controllers
 
         }
 
-        //public async Task<IActionResult> AddHoliday(HolidayViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        // If validation fails, return the same view with the model and error messages
-        //        return View(model);
-        //    }
-
-        //    // Get the currently logged-in user (replace with your actual logic to retrieve the user)
-        //    string createdBy = "Arjun";
-
-        //    // Call the service to create a new holiday
-        //    var result = await _master.CreateHolidayAsync(model, createdBy);
-
-        //    if (result.Success)
-        //    {
-        //        // If successful, store a success message in TempData and redirect to a list view or confirmation page
-        //        TempData["SuccessMessage"] = result.Message;
-        //        return RedirectToAction("AddHoliday");
-        //    }
-        //    else
-        //    {
-        //        // If there's an error, add it to the ModelState and return the view with the error
-        //        ModelState.AddModelError(string.Empty, result.Message);
-        //        return View(model);
-        //    }
-        //}
 
         [HttpGet]
         public async Task<JsonResult> GetAllTeamData()
