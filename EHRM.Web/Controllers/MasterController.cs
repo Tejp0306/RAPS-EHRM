@@ -1,13 +1,16 @@
-﻿using EHRM.DAL.Database;
+﻿using System.Security.Claims;
+using EHRM.DAL.Database;
 using EHRM.ServiceLayer.Master;
 using EHRM.ViewModel.Master;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace EHRM.Web.Controllers
 {
     public class MasterController : Controller
     {
         private readonly IMasterService _master;
+        private readonly string _fileStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "Files");
         public MasterController(IMasterService master)
         {
 
@@ -22,8 +25,7 @@ namespace EHRM.Web.Controllers
         {
             return View();
         }
-        public IActionResult MsterRoles()
-        {
+        public IActionResult MsterRoles() { 
             return View();
         }
         [HttpPost]
@@ -34,10 +36,8 @@ namespace EHRM.Web.Controllers
                 // Update the role details
                 string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
                 var updateResult = await UpdateRoleDetails(model.Id, updatedBy, model);
-
                 if (updateResult != null)
                 {
-
                     var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
                     if (updateResponse?.success == true)
                     {
@@ -63,12 +63,9 @@ namespace EHRM.Web.Controllers
                 // Create a new role
                 string createdById = "waseem"; // Replace with logic to fetch the actual user ID
                 var result = await _master.CreateRoleAsync(model, createdById);
-
-
                 // Handle the result of the create operation
                 if (result.Success)
                 {
-
                     TempData["ToastType"] = "success";  // Success, danger, warning, info
                     TempData["ToastMessage"] = "Operation completed successfully!";
                     return RedirectToAction("MsterRoles"); // Redirect to the list of roles
@@ -114,8 +111,6 @@ namespace EHRM.Web.Controllers
             }
         }
 
-
-
         [NonAction]
         private async Task<object> UpdateRoleDetails(int id, string updatedBy, RoleViewModel model)
         {
@@ -145,7 +140,6 @@ namespace EHRM.Web.Controllers
             }
         }
 
-   
         [HttpGet("Master/GetRoleDetails/{roleID}")]
         public async Task<JsonResult> GetRoleDetails([FromRoute] int roleID)
         {
@@ -162,11 +156,254 @@ namespace EHRM.Web.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "An error occurred while retrieving the role details." });
+                return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
+            }
+        }
+
+        public IActionResult AddNoticeBoard()
+        {
+            return View();  
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] // Security measure to protect against CSRF attacks
+        public async Task<IActionResult> CreateNotice(AddNoticeBoardViewModel model)
+        {
+            if (model.Id == 0)
+            {
+                try
+                {
+                    // Get the current user ID (if using session or logged-in user info)
+                    int createdBy = 1; // Replace this with the actual logic for fetching current user's ID
+                    // For example: var createdBy = _userService.GetCurrentUserId();
+                    var filepath = "";
+                    if (model.File!=null)
+                    {
+
+                         filepath = Upload(model);
+                    }
+                    // Call the service method to create the notice in the database
+                    var result = await _master.CreateAddNoticeBoardAsync(model, createdBy, filepath);
+
+                    // Check if the result indicates a successful creation
+                    if (result.Success)
+                    {
+                        TempData["SuccessMessage"] = result.Message; // Store success message to show after redirection
+                        return RedirectToAction("AddNoticeBoard"); // Redirect to a list page or a page displaying notices
+                    }
+                    else
+                    {
+                        // If creation failed, add error message to TempData or ViewBag
+                        TempData["ErrorMessage"] = result.Message;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    // Handle unexpected errors
+                    TempData["ErrorMessage"] = $"Error creating notice: {ex.Message}";
+                }
+                return View(model);
+            }
+            else
+            {
+
+                var updateResult = await UpdateAddNoticeBoard(model.Id, model);
+
+                if (updateResult != null)
+                {
+                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["SuccessMessage"] = updateResponse?.message; // Store success message
+                        return RedirectToAction("AddNoticeBoard"); // Redirect to the list of roles
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                        return View(model); // Return to the same view with the provided model
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Unexpected error occurred during Notice update."; // Display generic error
+                    return View(model); // Return to the same view with the provided model
+                }
+            }
+        }
+        private string Upload(AddNoticeBoardViewModel model)
+        {
+            // Check if a file is provided, if not, simply return null (indicating no file upload)
+            if (model.File == null || model.File.Length == 0)
+            {
+                return null; // No file uploaded, return null or an empty string
+            }
+
+            // Define the directory path to store files
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
+          
+
+            // Create the folder if it doesn't exist
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            // Generate a unique file name to avoid name conflicts (optional, can use the original name)
+            FileInfo fileInfo = new FileInfo(model.File.FileName);
+            string fileName = Guid.NewGuid().ToString() + fileInfo.Extension;  // Unique file name generation
+                                                                               // You can also use model.FileName here if you want to allow users to specify the name
+
+            // Combine path with the file name to get the full file path
+           string fileNameWithPath = Path.Combine(path, fileName);
+
+            // Save the file to the specified directory
+            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+            {
+                model.File.CopyTo(stream);
+            }
+
+            // Return the full file path or file name
+            return Path.Combine("\\Files",fileName);
+        }
+
+
+        [NonAction]
+        private async Task<object> UpdateAddNoticeBoard(int id,  AddNoticeBoardViewModel model)
+        {
+            try
+            {
+                int updatedBy = 1;
+                // Call the service method to update the role
+                var result = await _master.UpdateAddNoticeBoardAsync(id, updatedBy, model); 
+
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = "Notice Updated"
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (for debugging or error tracking)
+                // _logger.LogError(ex, "Error occurred while updating role details for role ID: {RoleId}", id);
+
+                // Return a generic error response
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the role. Please try again later."
+                };
             }
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteAddNoticeBoard(int id)
+        {
+            try
+            {
+                // Call the service method to delete the notice from the database
+                var result = await _master.DeleteAddNoticeBoardAsync(id);
+
+                // Check the result and provide feedback to the user
+                if (result.Success)
+                {
+                    return Json(new { Success = true, Message = "Notice deleted successfully!" });
+                }
+                else
+                {
+                    return Json(new { Success = true, Message = "Notice not deleted !" });
+                }
+
+               
+            }
+            catch (Exception ex)
+            {
+                // Store the error message in TempData if an exception occurs
+                TempData["ErrorMessage"] = $"Error deleting the notice: {ex.Message}";
+                return Json(new { Success = false , Message = ex.Message});
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAllAddNoticeBoard()
+        {
+            // Fetch the result from the service layer
+            var result = await _master.GetAllAddNoticeBoardAsync();
+
+            // Check if the result is successful and contains data
+            if (result.Success && result.Data != null)
+            {
+                var noticeBoards = result.Data as IEnumerable<NoticeBoard>;
+                if (noticeBoards != null)
+                {
+                    // Return the list of NoticeBoards as a JSON response
+                    var noticeBoardList = noticeBoards.Select(noticeBoard => new
+                    {
+                        Id = noticeBoard.Id,
+                        HeadingName = noticeBoard.HeadingName,
+                        Description = noticeBoard.Description
+                    }).ToList();
+
+                    return Json(noticeBoardList);
+                }
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in the expected format." });
+                }
+            }
+            else
+            {
+                // Handle the case where the service failed
+                return Json(new { Success = false, Message = result.Message ?? "No NoticeBoards found." });
+            }
+        }
+      
+
+        [HttpGet]
+        public async Task<JsonResult> GetNoticeBoardDetails(int NoticeBoardID)
+        {
+            try
+            {
+                var nb = await _master.GetAllAddNoticeBoardByIdAsync(NoticeBoardID);
+
+                if (nb == null)
+                {
+                    return Json(new { success = false, message = "Notice not found." });
+                }
+
+
+                return Json(new { success = true, data = nb });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
+            }
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowFile(int id)
+        {
+            try
+            {
+                var nb = await _master.GetAllAddNoticeBoardByIdAsync(id);
+
+                if (nb == null)
+                {
+                    return Json(new { success = false, message = "Notice not found." });
+                }
+
+
+                return Json(new { success = true, data = nb });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
+            }
+        }
         #region Starting Holidays
         [HttpGet]
 
@@ -204,9 +441,7 @@ namespace EHRM.Web.Controllers
                 };
             }
         }
-
-
-
+        
         // Get Holiday based on Id for the edit button
 
         [HttpGet("Master/GetHolidayDetails/{holidayId}")]
@@ -246,6 +481,8 @@ namespace EHRM.Web.Controllers
                 {
                     return Json(new { Success = true, Message = "Notice not deleted !" });
                 }
+
+
             }
             catch (Exception ex)
             {
@@ -303,9 +540,7 @@ namespace EHRM.Web.Controllers
                     return View(model); // Return to the same view with the provided model
                 }
             }
-
         }
-
 
         [HttpGet]
         public async Task<JsonResult> GetAllTeamData()
@@ -338,7 +573,6 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No teams found." });
             }
         }
-
 
         //Get All Holiday Data
 
@@ -379,6 +613,345 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No holidays found." });
             }
         }
+        #endregion
+        
+        #region Team Screen
+        public IActionResult TeamScreen()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteTeamScreen(int id)
+        {
+            try
+            {
+                // Call the service method to delete the notice from the database
+                var result = await _master.DeleteTeamAsync(id);
+
+                // Check the result and provide feedback to the user
+                if (result.Success)
+                {
+                    return Json(new { Success = true, Message = "Team deleted successfully!" });
+                }
+                else
+                {
+                    return Json(new { Success = true, Message = "Team not deleted !" });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                // Store the error message in TempData if an exception occurs
+                TempData["ErrorMessage"] = $"Error deleting the Team: {ex.Message}";
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+        [NonAction]
+        private async Task<object> UpdateTeamDetails(int id, int updatedBy, TeamScreenViewModel model)
+        {
+            try
+            {
+                // Call the service method to update the role
+                var result = await _master.UpdateTeamAsync(id, updatedBy, model);
+
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (for debugging or error tracking)
+                // _logger.LogError(ex, "Error occurred while updating role details for role ID: {RoleId}", id);
+
+                // Return a generic error response
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the Team. Please try again later."
+                };
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveTeam(TeamScreenViewModel  model)
+        {  // Check if the role exists based on the model ID
+            if (model.Id > 0)
+            {
+                
+                // Update the role details
+                int updatedBy = 1; // Replace with actual logic to fetch the current user ID
+                var Result = await UpdateTeamDetails(model.Id, updatedBy, model);
+
+                if (Result != null)
+                {
+                    var updateResponse = Result as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["SuccessMessage"] = updateResponse?.message; // Store success message
+                        return RedirectToAction("TeamScreen"); // Redirect to the list of roles
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                        return View(model); // Return to the same view with the provided model
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Unexpected error occurred during role update."; // Display generic error
+                    return View(model); // Return to the same view with the provided model
+                }
+            }
+            else
+            {
+                // Create a new team
+                int createdById = 1; // Replace with logic to fetch the actual user ID
+                var result = await _master.CreateTeamAsync(model, createdById);
+
+                // Handle the result of the create operation
+                if (result.Success)
+                {
+                    TempData["SuccessMessage"] = result.Message; // Store success message
+                    return RedirectToAction("TeamScreen"); // Redirect to the list of roles
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.Message; // Display error message
+                    return View(model); // Return to the same view with the provided model
+                }
+            }
+
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetAllTeamScreenData()
+        {
+            // Fetch the result from the service layer
+            var result = await _master.GetAllTeamAsync();
+
+            // Check if the result is successful and contains data
+            if (result.Success && result.Data != null)
+            {
+                var team = result.Data as IEnumerable<Team>;
+                if (team != null)
+                {
+                    // Return the list of Team as a JSON response
+                    var TeamScreenList = team.Select(team => new
+                    {
+                        Id = team.Id,
+                        Name = team.Name,
+                        Description = team.Description
+                    }).ToList();
+                    return Json(TeamScreenList);
+                }
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in expected format." });
+                }
+            }
+            else
+            {
+                // Handle the case where the service failed
+                return Json(new { Success = false, Message = result.Message ?? "No Team found." });
+            }
+        }
+        [HttpGet("Master/GetTeamScreenDetails/{TeamScreenID}")]
+        public async Task<JsonResult> GetTeamScreenDetails([FromRoute] int TeamScreenID)
+        {
+            try
+            {
+                var ts = await _master.GetTeamByIdAsync(TeamScreenID);
+
+                if (ts == null)
+                {
+                    return Json(new { success = false, message = "Team not found." });
+                }
+
+                return Json(new { success = true, data = ts });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the Team details." });
+            }
+        }
+
+        #endregion
+
+
+        #region Emp_Type
+        public IActionResult EmployeeType()
+        {
+            return View();
+        }
+
+        [NonAction]
+        private async Task<object> UpdateEmployeeTypeDetails(int id, EmployeeTypeViewModel model)
+        {
+            try
+            {
+                // Call the service method to update the role
+                var result = await _master.UpdateEmployeeTypeAsync(id, model);
+
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (for debugging or error tracking)
+                // _logger.LogError(ex, "Error occurred while updating role details for role ID: {RoleId}", id);
+
+                // Return a generic error response
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the Employee Type. Please try again later."
+                };
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveEmployeeType(EmployeeTypeViewModel model)
+        {  // Check if the exists based on the model ID
+            if (model.Id> 0)
+            {
+                // Update the role details
+                //string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
+                var updateResult = await UpdateEmployeeTypeDetails(model.Id, model);
+
+                if (updateResult != null)
+                {
+
+                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["ToastType"] = "success"; // Store success message
+                        TempData["ToastMessage"] = "Record Has been updated ";
+                        return RedirectToAction("EmployeeType"); // Redirect to the list of roles
+                    }
+                    else
+                    {
+                        TempData["ToastType"] = "danger"; // Store error message
+                        TempData["ToastMessage"] = "An error occurred while updating the record.";
+                        return RedirectToAction("EmployeeType");  // Return to the same view with the provided model
+                    }
+
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Unexpected error occurred during Employee Type update."; // Display generic error
+                    return View(model); // Return to the same view with the provided model
+                }
+            }
+            else
+            {
+                // Create a new role
+                // string createdById = "waseem"; // Replace with logic to fetch the actual user ID
+                var result = await _master.CreateEmployeeTypeAsync(model);
+
+                // Handle the result of the create operation
+                if (result.Success)
+                {
+                    // Error handling for the case where creation fails
+                    TempData["ToastType"] = "success";  // Success, danger, warning, info
+                    TempData["ToastMessage"] = "Record saved successfully!";
+                    return RedirectToAction("EmployeeType"); // Redirect to the list of roles
+                }
+                else
+                {
+                    // Error handling for the case where creation fails
+                    TempData["ToastType"] = "danger"; // Store error message
+                    TempData["ToastMessage"] = "An error occurred while creating the record.";
+                    return RedirectToAction("EmployeeType"); // Redirect back to the EmployeeType view
+                }
+            }
+        }
+
+        [HttpGet("Master/GetEmployeeTypeDetails/{ID}")]
+        public async Task<JsonResult> GetEmployeeTypeDetails([FromRoute] int ID)
+        {
+            try
+            {
+                var et = await _master.GetEmployeeTypeIdAsync(ID);
+
+                if (et == null)
+                {
+                    return Json(new { success = false, message = "Employee Type not found." });
+                }
+
+                return Json(new { success = true, data = et });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the employee Type details." });
+            }
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetAllEmployeeTypeData()
+        {
+            // Fetch the result from the service layer
+            var result = await _master.GetAllEmployeeTypeAsync();
+
+            // Check if the result is successful and contains data
+            if (result.Success && result.Data != null)
+            {
+                var emptype = result.Data as IEnumerable<EmpType>;
+                if (emptype != null)
+                {
+                    // Return the list of roles as a JSON response
+                    var employeeTypeList = emptype.Select(emptype => new
+                    {
+                        Id = emptype.Id,
+                        EmpType1 = emptype.EmpType1,
+                        //RoleDescription = role.RoleDescription
+                    }).ToList();
+                    return Json(employeeTypeList);
+                }
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in expected format." });
+                }
+            }
+            else
+            {
+                // Handle the case where the service failed
+                return Json(new { Success = false, Message = result.Message ?? "No Employee Type found." });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteEmployeeType(int id)
+        {
+            try
+            {
+                // Call the service method to delete the notice from the database
+                var result = await _master.DeleteEmployeeTypeAsync(id);
+
+                // Check the result and provide feedback to the user
+                if (result.Success)
+                {
+                    return Json(new { Success = true, Message = "Employee Type deleted successfully!" });
+                }
+                else
+                {
+                    return Json(new { Success = true, Message = "Employee Type not deleted !" });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                // Store the error message in TempData if an exception occurs
+                TempData["ErrorMessage"] = $"Error deleting the Employee Type: {ex.Message}";
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+
+
         #endregion
     }
 }

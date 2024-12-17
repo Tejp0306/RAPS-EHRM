@@ -14,15 +14,13 @@ public partial class EhrmContext : DbContext
         : base(options)
     {
     }
-
     public virtual DbSet<EmpType> EmpTypes { get; set; }
+    public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
 
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
 
     public virtual DbSet<Holiday> Holidays { get; set; }
-
     public virtual DbSet<MainMenu> MainMenus { get; set; }
-
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Team> Teams { get; set; }
@@ -33,9 +31,10 @@ public partial class EhrmContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
         modelBuilder.Entity<EmpType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__EmpType__3214EC076E1B806F");
+            entity.HasKey(e => e.Id).HasName("PK__EmpType__3214EC076A9D326B");
 
             entity.ToTable("EmpType");
 
@@ -43,6 +42,19 @@ public partial class EhrmContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("EmpType");
+        });
+        modelBuilder.Entity<NoticeBoard>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__NoticeBo__3214EC0766C3D095");
+
+            entity.ToTable("NoticeBoard");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).IsUnicode(false);
+            entity.Property(e => e.HeadingName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<EmployeesCred>(entity =>
@@ -87,7 +99,6 @@ public partial class EhrmContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Holiday__TeamId__3B75D760");
         });
-
         modelBuilder.Entity<MainMenu>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__MainMenu__3214EC079D17E828");
@@ -105,7 +116,6 @@ public partial class EhrmContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC07BE865682");
-
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(50);
             entity.Property(e => e.DeletedBy).HasMaxLength(50);
