@@ -505,6 +505,7 @@ namespace EHRM.ServiceLayer.Master
                 existingholiday.Description = model.Description;
                 existingholiday.UpdatedBy = updatedBy;
                 existingholiday.UpdateDate = DateTime.Now;
+                existingholiday.TeamId = model.TeamId;
 
                 await holidayRepository.UpdateAsync(existingholiday);  // Call update method in the generic repository
                 await _unitOfWork.SaveAsync();
@@ -512,7 +513,7 @@ namespace EHRM.ServiceLayer.Master
                 return new Result
                 {
                     Success = true,
-                    Message = "Role updated successfully."
+                    Message = "Holiday updated successfully."
                 };
             }
             catch (Exception ex)

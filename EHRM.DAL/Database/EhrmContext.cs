@@ -20,16 +20,14 @@ public partial class EhrmContext : DbContext
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
 
     public virtual DbSet<Holiday> Holidays { get; set; }
-
+    public virtual DbSet<MainMenu> MainMenus { get; set; }
     public virtual DbSet<Role> Roles { get; set; }
-
-    //public virtual DbSet<SubMenu> SubMenus { get; set; }
 
     public virtual DbSet<Team> Teams { get; set; }
 
-        //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        //        => optionsBuilder.UseSqlServer("Server=DESKTOP-HB9H8DM;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-HB9H8DM;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -101,7 +99,19 @@ public partial class EhrmContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Holiday__TeamId__3B75D760");
         });
+        modelBuilder.Entity<MainMenu>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__MainMenu__3214EC079D17E828");
 
+            entity.ToTable("MainMenu");
+
+            entity.Property(e => e.Icon)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+        });
 
         modelBuilder.Entity<Role>(entity =>
         {

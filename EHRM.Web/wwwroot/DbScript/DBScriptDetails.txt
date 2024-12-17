@@ -108,6 +108,43 @@ CREATE TABLE Post (
     IsActive BIT -- Indicates if the post is active
 );
 
+//EmployeeDetails
+
+CREATE TABLE EmployeeDetails (
+    -- Personal Details
+    ID INT PRIMARY KEY IDENTITY(1,1),         -- Auto-increment Employee ID
+	PrefixName VARCHAR(6) NULL,               -- Prefix Name (e.g., Mr., Ms.)        
+    EmpId INT UNIQUE NOT NULL,                -- Unique Employee Identifier
+    Title NVARCHAR(50) NOT NULL,              -- Title
+    FirstName NVARCHAR(100) NOT NULL,         -- First Name
+    MiddleName NVARCHAR(100) NULL,            -- Middle Name
+    LastName NVARCHAR(100) NOT NULL,          -- Last Name
+    LoginID NVARCHAR(50) NOT NULL UNIQUE,     -- Login ID
+    Password NVARCHAR(255) NOT NULL,          -- Password (hashed)
+    RoleId INT NOT NULL,               -- Role
+    DateOfBirth VARCHAR(30) NOT NULL,                -- Date of Birth
+    Gender NVARCHAR(10) NOT NULL,             -- Gender
+    MaritalStatus INT NOT NULL,      -- Marital Status
+    AadharNumber NVARCHAR(20) NOT NULL UNIQUE,         -- Social Security Number
+    EmailAddress NVARCHAR(255) NOT NULL UNIQUE, -- Email Address
+    HomePhone NVARCHAR(15) NULL,              -- Home Phone
+    CellPhone NVARCHAR(15) NOT NULL,          -- Cell Phone
+    OfficePhone NVARCHAR(15) NULL,            -- Office Phone
+    TeamID INT NOT NULL,                          -- Team (Foreign Key)
+    MarriageAnniversary DATE NULL,            -- Marriage Anniversary
+ 
+    -- Address Details
+    Street NVARCHAR(255) NOT NULL,            -- Local Address: Street
+    City NVARCHAR(100) NOT NULL,              -- Local Address: City
+    Country NVARCHAR(100) NOT NULL,           -- Local Address: Country
+    ZipCode NVARCHAR(20) NULL,                -- Local Address: Zip Code
+    Nationality NVARCHAR(50) NOT NULL,        -- Nationality
+ 
+    -- Audit Information
+    CreatedAt DATETIME DEFAULT GETDATE(),     -- Record Creation Date
+    UpdatedAt DATETIME DEFAULT GETDATE()      -- Record Last Update Date
+);
+
 ----------------------------------------------------------------------------------------------------------------
 
 Scaffold-DbContext "Server=DESKTOP-S1TNCS5\SQLEXPRESS;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database

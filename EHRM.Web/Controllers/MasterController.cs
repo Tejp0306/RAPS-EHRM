@@ -508,7 +508,7 @@ namespace EHRM.Web.Controllers
                     if (updateResponse?.success == true)
                     {
                         TempData["SuccessMessage"] = updateResponse?.message; // Store success message
-                        return RedirectToAction("MsterRoles"); // Redirect to the list of roles
+                        return RedirectToAction("addholiday"); // Redirect to the list of roles
                     }
                     else
                     {
