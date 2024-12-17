@@ -5,8 +5,27 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<link href="~/customstyle/masterholiday.css" rel="stylesheet" />
+@* <link href="~/customstyle/masterholiday.css" rel="stylesheet" /> *@
+ <link href="~/customstyle/style.css" rel="stylesheet" />
 <script src="~/customscripts/masterholiday.js"></script>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+</style>
 
 
 
@@ -63,7 +82,7 @@
                     <div class="col-md-6">
                         <!-- Add Holiday Button -->
                         <div class="form-group text-center">
-                            <button type="submit" class="btn btn-success btn-block">Add Holiday</button>
+                            <button type="submit" class="btn btn-custom">Add Holiday</button>
                         </div>
                     </div>
                 </div>

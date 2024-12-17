@@ -4,35 +4,57 @@
     ViewData["Title"] = "TeamScreen";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+
+
+<style>
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+<link href="~/customstyle/style.css" rel="stylesheet" />
 <script src="~/customscripts/teamscreen.js"></script>
-<link href="~/customstyle/teamscreen.css" rel="stylesheet" />
-<div class="container-fluid">
-    <div class="team-board">
-        <h1><u>TEAM</u></h1>
-        <form asp-controller="Master" asp-action="SaveTeam" method="post" enctype="multipart/form-data">
-            <input type="hidden" id="teamScreenID" name="id" />
-            <!-- Team Name -->
-            <div class="team-item">
-                <label for="TeamName">Team Name * :</label>
-                <input asp-for="Name"  name="Name" placeholder="Enter team name" required>
-            </div>
+@* <link href="~/customstyle/teamscreen.css" rel="stylesheet" /> *@
 
-            <!-- Team Description -->
-            <div class="team-item">
-                <label for="Description">Team Description * :</label>
-                <textarea asp-for="Description" name="Description" placeholder="Enter team description" required></textarea>
-            </div>
+<div class="container mt-4">
+    <div class="form-container">
+        <h4>Team</h4>
+        <div class="card-p-4">
+            <form asp-controller="Master" asp-action="SaveTeam" method="post">
+                <input type="hidden" id="teamScreenID" name="id" />
+                <!-- Team Name -->
+                <div class="mb-3">
+                    <label for="TeamName" class="form-label">Team Name * :</label>
+                    <input asp-for="Name" name="Name" class="form-control" placeholder="Enter team name" required>
+                </div>
 
-            <!-- Submit Button -->
-            <div class="team-item">
-                <button type="submit" class="submit-btn">ADD</button>
-            </div>
-        </form>
+                <!-- Team Description -->
+                <div class="mb-3">
+                    <label for="Description" class="form-label">Team Description * :</label>
+                    <textarea asp-for="Description" name="Description" class="form-control" placeholder="Enter team description" required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-custom">ADD</button>
+            </form>
+        </div>
     </div>
 
-    <!-- Team Table -->
-    <div class="table">
-        <h2><u>TEAM DETAILS</u></h2>
+
+    <div class="container">
+        <h4>Team Details</h4>
         <div class="table-responsive">
             <table id="TeamBoardTable" class="table table-striped table-bordered">
                 <thead>
@@ -47,12 +69,23 @@
                     <!-- Sample Data (You can dynamically generate this using a backend) -->
                     <tr>
                         <td></td>
-                        
+
                     </tr>
                     <!-- More rows can be added dynamically -->
                 </tbody>
             </table>
         </div>
     </div>
+
+
+
 </div>
+
+
+    
+
+    <!-- Team Table -->
+
+
+
 
