@@ -194,6 +194,7 @@
     justify-content: center;
     background: #FFFFFF;
     border-radius: 40px;
+    text-decoration:none;
 }
 
 .content .navbar .dropdown-toggle::after {
