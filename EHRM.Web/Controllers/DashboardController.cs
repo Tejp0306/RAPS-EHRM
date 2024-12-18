@@ -13,13 +13,6 @@ namespace EHRM.Web.Controllers
         {
             return View();
         }
-        public IActionResult Manager()
-        {
-            return View();
-        }
-        public IActionResult User()
-        {
-            return View();
-        }
+       
     }
 }
