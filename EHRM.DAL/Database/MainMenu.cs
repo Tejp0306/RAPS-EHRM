@@ -12,4 +12,6 @@ public partial class MainMenu
     public string? Icon { get; set; }
 
     public bool? IsActive { get; set; }
+
+    public virtual ICollection<SubMenu> SubMenus { get; set; } = new List<SubMenu>();
 }

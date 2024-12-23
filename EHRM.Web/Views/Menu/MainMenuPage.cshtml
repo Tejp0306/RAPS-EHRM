@@ -5,8 +5,26 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+</style>
+
 <link href="~/customstyle/style.css" rel="stylesheet" />
-<link href="~/customstyle/mainmenu.css" rel="stylesheet" />
+@* <link href="~/customstyle/mainmenu.css" rel="stylesheet" /> *@
 <script src="~/customscripts/mastermenu.js"></script>
 <div class="form-container">
     <h4>Add MainMenu</h4>
