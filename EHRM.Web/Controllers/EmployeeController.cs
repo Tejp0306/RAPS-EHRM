@@ -9,7 +9,7 @@ namespace EHRM.Web.Controllers
             return View();
         }
 
-        public IActionResult Employeedetail()
+        public IActionResult AddEmployee()
         {
             return View();
         }

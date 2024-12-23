@@ -1,0 +1,687 @@
+﻿@{
+    ViewData["Title"] = "form";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/customstyle/style.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Employee Management Form</h1>
+    <div class="container-fluid mt-1">
+        <div class="row">
+            <!-- Full-width section to create the form -->
+            <div class="col-12">
+                <form>
+                    <!-- Tab navigation -->
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#personal-info" type="button" role="tab" aria-controls="personal-info" aria-selected="true">Personal Info</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#employement-type-info" type="button" role="tab" aria-controls="employement-type-info" aria-selected="false">Details</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="qualification-education-tab" data-bs-toggle="tab" data-bs-target="#qualification-education-info" type="button" role="tab" aria-controls="qualification-education-info" aria-selected="false">Qualification & Education</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="salary-grade-tab" data-bs-toggle="tab" data-bs-target="#salary-grade-info" type="button" role="tab" aria-controls="salary-grade-info" aria-selected="false">Salary Grade</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="declaration-tab" data-bs-toggle="tab" data-bs-target="#declaration-info" type="button" role="tab" aria-controls="declaration-info" aria-selected="false">Declaration</button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab content -->
+                    <div class="tab-content mt-3" id="myTabContent">
+                        <!-- Personal Info Tab -->
+                        <div class="tab-pane fade show active" id="personal-info" role="tabpanel" aria-labelledby="personal-info-tab">
+                            <div class="row">
+                                <!-- Left column (8 columns wide) for the form fields -->
+                                <div class="col-12 col-md-8">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Title and Employee ID -->
+                                            <fieldset>
+                                                <legend><i class="fas fa-user"></i> Personal Information</legend>
+                                                <div class="row mb-4">
+                                                    <!-- Title Field -->
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="title" class="form-label mt-3">Title *</label>
+                                                        <input type="text" class="form-control" id="title" placeholder="Title">
+                                                    </div>
+
+                                                    <!-- Employee ID Field -->
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="employeeId" class="form-label mt-3">Employee ID *</label>
+                                                        <input type="text" class="form-control" id="employeeId" placeholder="Enter Employee ID">
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- Name Fields -->
+                                            <div class="row mb-4">
+                                                <!-- Prefix Field -->
+                                                <div class="col-12 col-md-3">
+                                                    <label for="namePrefix" class="form-label">Prefix *</label>
+                                                    <select class="form-select" id="namePrefix">
+                                                        <option selected>Select Prefix</option>
+                                                        <option value="mr">Mr.</option>
+                                                        <option value="mrs">Mrs.</option>
+                                                        <option value="ms">Master</option>
+                                                        <option value="dr">Miss</option>
+                                                    </select>
+                                                </div>
+
+                                                <!-- First Name Field -->
+                                                <div class="col-12 col-md-3">
+                                                    <label for="firstName" class="form-label">First Name *</label>
+                                                    <input type="text" class="form-control" id="firstName" placeholder="First name">
+                                                </div>
+
+                                                <!-- Middle Name Field -->
+                                                <div class="col-12 col-md-3">
+                                                    <label for="middleName" class="form-label">Middle Name</label>
+                                                    <input type="text" class="form-control" id="middleName" placeholder="Middle name">
+                                                </div>
+
+                                                <!-- Last Name Field -->
+                                                <div class="col-12 col-md-3">
+                                                    <label for="lastName" class="form-label">Last Name *</label>
+                                                    <input type="text" class="form-control" id="lastName" placeholder="Last name">
+                                                </div>
+                                            </div>
+
+                                            <!-- Gender and Date of Birth -->
+                                            <div class="row mb-3">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="gender" class="form-label">Gender *</label>
+                                                    <select class="form-select" id="gender">
+                                                        <option selected>Select gender</option>
+                                                        <option value="male">Male</option>
+                                                        <option value="female">Female</option>
+                                                        <option value="other">Other</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="dob" class="form-label">Date of Birth *</label>
+                                                    <input type="date" class="form-control" id="dob">
+                                                </div>
+                                            </div>
+
+                                            <!-- Phone Number and Email -->
+                                            <div class="row mb-3">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="phone" class="form-label">Phone number *</label>
+                                                    <input type="text" class="form-control" id="phone" placeholder="Enter your number">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="email" class="form-label">Email Address *</label>
+                                                    <input type="email" class="form-control" id="email" placeholder="Enter Email-id">
+                                                </div>
+                                            </div>
+
+                                            <!-- Login ID and Password -->
+                                            <div class="row mb-3">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="loginId" class="form-label">Login ID *</label>
+                                                    <input type="text" class="form-control" id="loginId" placeholder="Enter Login ID">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="password" class="form-label">Password *</label>
+                                                    <input type="password" class="form-control" id="password" placeholder="Enter Password">
+                                                </div>
+                                            </div>
+
+                                            <!-- Role and Marital Status -->
+                                            <div class="row mb-3">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="role" class="form-label">Role *</label>
+                                                    <select class="form-select" id="rolem">
+                                                        <option selected>Select Role</option>
+                                                        <option value="admin">Admin</option>
+                                                        <option value="manager">Manager</option>
+                                                        <option value="employee">Employee</option>
+                                                        <option value="hr">HR</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="maritalStatus" class="form-label">Marital Status *</label>
+                                                    <select class="form-select" id="maritalStatus">
+                                                        <option selected>Select Marital Status</option>
+                                                        <option value="single">Single</option>
+                                                        <option value="married">Married</option>
+                                                        <option value="divorced">Divorced</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <!-- Social Security Number and Home Phone -->
+                                            <div class="row mb-3">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="ssn" class="form-label">Social Security Number *</label>
+                                                    <input type="text" class="form-control" id="ssn" placeholder="Enter Social Security Number">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="homePhone" class="form-label">Home Phone</label>
+                                                    <input type="text" class="form-control" id="homePhone" placeholder="Enter Home Phone Number">
+                                                </div>
+                                            </div>
+
+                                            <!-- Team Name and Office Phone -->
+                                            <div class="row mb-3">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="teamName" class="form-label">Team Name *</label>
+                                                    <select class="form-select" id="teamName">
+                                                        <option selected>Select Team</option>
+                                                        <option value="teamA">Team A</option>
+                                                        <option value="teamB">Team B</option>
+                                                        <option value="teamC">Team C</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="officePhone" class="form-label">Office Phone</label>
+                                                    <input type="text" class="form-control" id="officePhone" placeholder="Enter Office Phone Number">
+                                                </div>
+                                            </div>
+
+                                            <!-- Marriage Anniversary -->
+                                            <div class="row mb-3">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="anniversary" class="form-label">Marriage Anniversary</label>
+                                                    <input type="date" class="form-control" id="anniversary">
+                                                </div>
+                                            </div>
+
+                                            <!-- Local Address -->
+                                            <fieldset>
+                                                <legend><i class="fas fa-home"></i> Address Details</legend>
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="street" class="form-label">Street *</label>
+                                                        <input type="text" class="form-control" id="street" placeholder="Enter Street">
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="city" class="form-label">City *</label>
+                                                        <select class="form-select" id="city">
+                                                            <option selected>Select City</option>
+                                                            <option value="city1">City 1</option>
+                                                            <option value="city2">City 2</option>
+                                                            <option value="city3">City 3</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="country" class="form-label">Country *</label>
+                                                        <select class="form-select" id="country">
+                                                            <option selected>Select Country</option>
+                                                            <option value="country1">Country 1</option>
+                                                            <option value="country2">Country 2</option>
+                                                            <option value="country3">Country 3</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="zipCode" class="form-label">Zip Code (optional)</label>
+                                                        <input type="text" class="form-control" id="zipCode" placeholder="Enter Zip Code">
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- Nationality -->
+                                            <div class="row mb-3">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="nationality" class="form-label">Nationality *</label>
+                                                    <select class="form-select" id="nationality">
+                                                        <option selected>Select Nationality</option>
+                                                        <option value="nationality1">Nationality 1</option>
+                                                        <option value="nationality2">Nationality 2</option>
+                                                        <option value="nationality3">Nationality 3</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                          
+                                            <!-- Employment Details -->
+                                            <fieldset>
+                                                <legend><i class="fas fa-briefcase"></i> Employment Details</legend>
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="department" class="form-label">Department *</label>
+                                                        <select class="form-select" id="department">
+                                                            <option selected>Select Department</option>
+                                                            <option value="hr">HR</option>
+                                                            <option value="it">IT</option>
+                                                            <option value="finance">Finance</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="role" class="form-label">Role *</label>
+                                                        <select class="form-select" id="role">
+                                                            <option selected>Select Role</option>
+                                                            <option value="developer">Developer</option>
+                                                            <option value="manager">Manager</option>
+                                                            <option value="analyst">Analyst</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="joiningDate" class="form-label">Joining Date *</label>
+                                                        <input type="date" class="form-control" id="joiningDate">
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="workLocation" class="form-label">Work Location *</label>
+                                                        <input type="text" class="form-control" id="workLocation" placeholder="Enter Work Location">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="employeeStatus" class="form-label">Employee Status *</label>
+                                                        <select class="form-select" id="employeeStatus">
+                                                            <option selected>Select Employee Status</option>
+                                                            <option value="active">Active</option>
+                                                            <option value="on_leave">On Leave</option>
+                                                            <option value="terminated">Terminated</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <!-- Additional Details Section -->
+                                            <fieldset>
+                                                <legend><i class="fas fa-plus-circle"></i> Additional Details</legend>
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="emergencyContactName" class="form-label">Emergency Contact Name (optional)</label>
+                                                        <input type="text" class="form-control" id="emergencyContactName" placeholder="Enter Emergency Contact Name">
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="emergencyContactPhone" class="form-label">Emergency Contact Phone (optional)</label>
+                                                        <input type="text" class="form-control" id="emergencyContactPhone" placeholder="Enter Emergency Contact Phone">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="bankAccountNumber" class="form-label">Bank Account Number (optional)</label>
+                                                        <input type="text" class="form-control" id="bankAccountNumber" placeholder="Enter Bank Account Number">
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="tin" class="form-label">Tax Identification Number (TIN) (optional)</label>
+                                                        <input type="text" class="form-control" id="tin" placeholder="Enter TIN for tax-related purposes">
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- Save Button -->
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <button type="button" class="btn btn-primary" onclick="saveForm()">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right column (4 columns wide) for additional content -->
+                                <div class="col-12 col-md-4">
+                                    <div class="row form-group">
+                                        <label class="col-sm-4 col-form-label">Photo:</label>
+                                        <div class="col-sm-4">
+
+                                            <img ng-model="empimg" style="height:200px;width:200px;" id="EmpImg" src="@TempData["pimphoto"]" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <input type="file" id="ProfileImg" name="ProfileImg" data-extensions=".jpg,.png,.jpeg,.jfif" onchange="FileUpload(this);" required" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Emp_type and appointment details Tab -->
+                        <div class="tab-pane fade" id="employement-type-info" role="tabpanel" aria-labelledby="employement-type-tab">
+                            <div class="row">
+                                <!-- Left column (12 columns wide for the form fields) -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Employment Type and Appointment Details -->
+                                            <fieldset>
+                                                <legend><i class="fas fa-briefcase"></i> Employment Type and Appointment Details</legend>
+
+                                                <!-- Employee Type and Appointment Date -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="employeeType" class="form-label">Employee Type *</label>
+                                                        <select class="form-select" id="employeeType">
+                                                            <option selected>Select Employee Type</option>
+                                                            <option value="temporary">Temporary</option>
+                                                            <option value="permanent">Permanent</option>
+                                                            <option value="contract">Contract</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="appointmentDate" class="form-label">Appointment Date *</label>
+                                                        <input type="date" class="form-control" id="appointmentDate">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Start Date and End Date -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="startDate" class="form-label">Start Date *</label>
+                                                        <input type="date" class="form-control" id="startDate">
+                                                    </div>
+                                                    <div class="col-12 col-md-6" id="endDateRow">
+                                                        <label for="endDate" class="form-label">End Date (optional)</label>
+                                                        <input type="date" class="form-control" id="endDate">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Total Service and Appointed Service -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="totalService" class="form-label">Total Service *</label>
+                                                        <input type="text" class="form-control" id="totalService" placeholder="Enter Total Service (years/months)">
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="appointedService" class="form-label">Appointed Service *</label>
+                                                        <input type="text" class="form-control" id="appointedService" placeholder="Enter Appointed Service (years/months)">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Employment Status and Manager Name -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="employmentStatus" class="form-label">Employment Status *</label>
+                                                        <select class="form-select" id="employmentStatus">
+                                                            <option selected>Select Employment Status</option>
+                                                            <option value="active">Active</option>
+                                                            <option value="on_leave">On Leave</option>
+                                                            <option value="terminated">Terminated</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="managerName" class="form-label">Manager Name</label>
+                                                        <select class="form-select" id="managerName">
+                                                            <option selected>Select Manager</option>
+                                                            <option value="manager1">Manager 1</option>
+                                                            <option value="manager2">Manager 2</option>
+                                                            <option value="manager3">Manager 3</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- Save Button -->
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <button type="button" class="btn btn-primary" onclick="saveEmploymentDetails()">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Qualification Tab -->
+                        <div class="tab-pane fade" id="qualification-education-info" role="tabpanel" aria-labelledby="qualification-education-tab">
+                            <div class="row">
+                                <!-- Left column (12 columns wide for the form fields) -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Qualification and Education Details -->
+                                            <fieldset>
+                                                <legend><i class="fas fa-graduation-cap"></i> Qualification and Education</legend>
+
+                                                <!-- Course Name and Concentration -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="courseName" class="form-label">Course Name *</label>
+                                                        <input type="text" class="form-control" id="courseName" placeholder="Enter Course Name">
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="concentration" class="form-label">Concentration (optional)</label>
+                                                        <input type="text" class="form-control" id="concentration" placeholder="Enter Concentration or Area of Focus">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Qualification Earned and Institution -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="qualificationEarned" class="form-label">Qualification Earned *</label>
+                                                        <select class="form-select" id="qualificationEarned">
+                                                            <option selected>Select Qualification</option>
+                                                            <option value="degree">Degree</option>
+                                                            <option value="diploma">Diploma</option>
+                                                            <option value="certificate">Certificate</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="institution" class="form-label">Institution *</label>
+                                                        <input type="text" class="form-control" id="institution" placeholder="Enter Institution Name">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Country and Date Passed -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="country" class="form-label">Country *</label>
+                                                        <select class="form-select" id="country">
+                                                            <option selected>Select Country of Institution</option>
+                                                            <option value="usa">USA</option>
+                                                            <option value="india">India</option>
+                                                            <option value="uk">UK</option>
+                                                            <!-- Add more countries as needed -->
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="datePassed" class="form-label">Date Passed *</label>
+                                                        <input type="date" class="form-control" id="datePassed">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Details and Upload Document -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="details" class="form-label">Details (optional)</label>
+                                                        <input type="text" class="form-control" id="details" placeholder="Enter additional details (e.g., honors, awards)">
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="uploadDocument" class="form-label">Upload Document (optional)</label>
+                                                        <input type="file" class="form-control" id="uploadDocument">
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- Save Button -->
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <button type="button" class="btn btn-primary" onclick="saveQualificationDetails()">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Salary Grade Tab -->
+                        <div class="tab-pane fade" id="salary-grade-info" role="tabpanel" aria-labelledby="salary-grade-tab">
+                            <div class="row">
+                                <!-- Left column (12 columns wide for the form fields) -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Salary Grade Details -->
+                                            <fieldset>
+                                                <legend><i class="fas fa-dollar-sign"></i> Salary Grade</legend>
+
+                                                <!-- CTC (Cost to Company) -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="ctc" class="form-label">CTC (Cost to Company)</label>
+                                                        <input type="text" class="form-control" id="ctc" placeholder="Enter CTC">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Start Year and End Year -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="startYear" class="form-label">Start Year</label>
+                                                        <input type="number" class="form-control" id="startYear" placeholder="Enter Start Year">
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="endYear" class="form-label">End Year</label>
+                                                        <input type="number" class="form-control" id="endYear" placeholder="Enter End Year">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Description -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <label for="description" class="form-label">Description</label>
+                                                        <textarea class="form-control" id="description" placeholder="Enter Salary Grade Description" rows="3"></textarea>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- Save Button -->
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <button type="button" class="btn btn-primary" onclick="saveSalaryGradeDetails()">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Declaration Tab -->
+                        <div class="tab-pane fade" id="declaration-info" role="tabpanel" aria-labelledby="declaration-tab">
+                            <div class="row">
+                                <!-- Left column (12 columns wide for the form fields) -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Declaration Details -->
+                                            <fieldset>
+                                                <legend><i class="fas fa-pen"></i> Declaration</legend>
+
+                                                <!-- Declaration Statement -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <label class="form-label">Declaration Statement</label>
+                                                        <p>
+                                                            As a representative of the HR department, I hereby confirm that the information provided in this form has been accurately recorded based on the details submitted by the concerned employee and verified in accordance with company policies and procedures.
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <!-- HR Representative Details -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="hrName" class="form-label">HR Representative Name</label>
+                                                        <input type="text" class="form-control" id="hrName" placeholder="Enter Name" required>
+                                                    </div>
+
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="hrDesignation" class="form-label">HR Representative Designation</label>
+                                                        <input type="text" class="form-control" id="hrDesignation" placeholder="Enter Designation" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="hrEmployeeID" class="form-label">Employee ID</label>
+                                                        <input type="text" class="form-control" id="hrEmployeeID" placeholder="Enter Employee ID" required>
+                                                    </div>
+
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="hrContact" class="form-label">HR Contact Information</label>
+                                                        <input type="text" class="form-control" id="hrContact" placeholder="Enter Contact Information" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="declarationDate" class="form-label">Date</label>
+                                                        <input type="date" class="form-control" id="declarationDate" required>
+                                                    </div>
+
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="hrSignature" class="form-label">Signature</label>
+                                                        <input type="text" class="form-control" id="hrSignature" placeholder="Enter Signature" required>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Verification Checklist -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <label class="form-label">Verification Checklist</label>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="yes" id="infoCrossChecked">
+                                                            <label class="form-check-label" for="infoCrossChecked">
+                                                                Information cross-checked with submitted documents
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-12 col-md-6">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="yes" id="mandatoryFieldsCompleted">
+                                                            <label class="form-check-label" for="mandatoryFieldsCompleted">
+                                                                All mandatory fields completed
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </fieldset>
+
+                                            <!-- Save Button -->
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <button type="button" class="btn btn-primary" onclick="saveDeclarationDetails()">Save Declaration</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+      $(document).ready(function(){
+
+       $("#ProfileImg").change(function () {
+
+         readPicURL(this, 'EmpImg');
+    });
+    });
+      function readPicURL(input, imageid)
+    {
+        if (input.files && input.files[0])
+        {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#' + imageid).attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
