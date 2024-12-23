@@ -7,11 +7,13 @@ public partial class EmployeesCred
 {
     public int Id { get; set; }
 
-    public string? EmpId { get; set; }
+    public int? EmpId { get; set; }
 
     public string Email { get; set; } = null!;
 
     public string TempPassword { get; set; } = null!;
+
+    public int? RoleId { get; set; }
 
     public bool Active { get; set; }
 
@@ -23,5 +25,5 @@ public partial class EmployeesCred
 
     public int? LockoutDuration { get; set; }
 
-    public int? RoleId { get; set; }
+    public virtual EmployeeDetail? Emp { get; set; }
 }

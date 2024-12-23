@@ -77,7 +77,6 @@ CREATE TABLE MainMenu (
 
 
 //SubMenu
-
 CREATE TABLE SubMenu (
     Id INT IDENTITY(1,1) PRIMARY KEY, -- Primary Key with auto-increment
     Name VARCHAR(255), -- Name of the submenu item
@@ -85,9 +84,11 @@ CREATE TABLE SubMenu (
     Action VARCHAR(255), -- Action associated with the submenu item
     MainMenuId INT, -- Foreign Key referencing MainMenu table
     RoleId INT, -- Foreign Key referencing Role table
+    EmpId INT, -- Foreign Key referencing EmployeeDetails table
     IsActive BIT, -- Indicates if the submenu item is active
-    FOREIGN KEY (MainMenuId) REFERENCES MainMenu(Id), -- Foreign Key for MainMenuId
-    FOREIGN KEY (RoleId) REFERENCES Roles(Id) -- Foreign Key for RoleId
+    FOREIGN KEY (MainMenuId) REFERENCES MainMenu(Id) ON DELETE CASCADE, -- Foreign Key for MainMenuId
+    FOREIGN KEY (RoleId) REFERENCES Roles(Id) ON DELETE CASCADE, -- Foreign Key for RoleId
+    FOREIGN KEY (EmpId) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE -- Foreign Key for EmpId
 );
 
 //EmpType

@@ -3,6 +3,7 @@ using EHRM.DAL.Repositories;
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
+//using EHRM.ServiceLayer.SubMenu;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IMasterService, MasterService>();
             services.AddScoped<IMainMenuService, MainMenuService>();
+            //services.AddScoped<ISubMenuService, SubMenuService>();
         }
     }
 }

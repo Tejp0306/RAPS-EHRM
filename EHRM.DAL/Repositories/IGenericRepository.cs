@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EHRM.DAL.Database;
+using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +15,9 @@ namespace EHRM.DAL.Repositories
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
+        Task<List<EmployeeDetail>> GetByRoleIdAsync(int RoleId);
+        // Methods for executing stored procedures
+     
+
     }
 }

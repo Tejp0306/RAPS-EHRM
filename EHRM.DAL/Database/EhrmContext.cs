@@ -14,14 +14,20 @@ public partial class EhrmContext : DbContext
         : base(options)
     {
     }
+
     public virtual DbSet<EmpType> EmpTypes { get; set; }
-    public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
+
+    public virtual DbSet<EmployeeDetail> EmployeeDetails { get; set; }
 
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
 
     public virtual DbSet<Holiday> Holidays { get; set; }
+
     public virtual DbSet<MainMenu> MainMenus { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<SubMenu> SubMenus { get; set; }
 
     public virtual DbSet<Team> Teams { get; set; }
 
@@ -31,10 +37,9 @@ public partial class EhrmContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<EmpType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__EmpType__3214EC076A9D326B");
+            entity.HasKey(e => e.Id).HasName("PK__EmpType__3214EC076E1B806F");
 
             entity.ToTable("EmpType");
 
@@ -43,33 +48,71 @@ public partial class EhrmContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("EmpType");
         });
-        modelBuilder.Entity<NoticeBoard>(entity =>
+
+        modelBuilder.Entity<EmployeeDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__NoticeBo__3214EC0766C3D095");
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC274F1CDAE1");
 
-            entity.ToTable("NoticeBoard");
+            entity.HasIndex(e => e.EmailAddress, "UQ__Employee__49A14740CEA8BCE2").IsUnique();
 
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).IsUnicode(false);
-            entity.Property(e => e.HeadingName)
-                .HasMaxLength(255)
+            entity.HasIndex(e => e.LoginId, "UQ__Employee__4DDA2839A97C8315").IsUnique();
+
+            entity.HasIndex(e => e.AadharNumber, "UQ__Employee__5003EE65F93986E2").IsUnique();
+
+            entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB98960A2D7E").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.AadharNumber).HasMaxLength(20);
+            entity.Property(e => e.CellPhone).HasMaxLength(15);
+            entity.Property(e => e.City).HasMaxLength(100);
+            entity.Property(e => e.Country).HasMaxLength(100);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DateOfBirth)
+                .HasMaxLength(30)
                 .IsUnicode(false);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.EmailAddress).HasMaxLength(255);
+            entity.Property(e => e.FirstName).HasMaxLength(100);
+            entity.Property(e => e.Gender).HasMaxLength(10);
+            entity.Property(e => e.HomePhone).HasMaxLength(15);
+            entity.Property(e => e.LastName).HasMaxLength(100);
+            entity.Property(e => e.LoginId)
+                .HasMaxLength(50)
+                .HasColumnName("LoginID");
+            entity.Property(e => e.MiddleName).HasMaxLength(100);
+            entity.Property(e => e.Nationality).HasMaxLength(50);
+            entity.Property(e => e.OfficePhone).HasMaxLength(15);
+            entity.Property(e => e.Password).HasMaxLength(255);
+            entity.Property(e => e.PrefixName)
+                .HasMaxLength(6)
+                .IsUnicode(false);
+            entity.Property(e => e.Street).HasMaxLength(255);
+            entity.Property(e => e.TeamId).HasColumnName("TeamID");
+            entity.Property(e => e.Title).HasMaxLength(50);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ZipCode).HasMaxLength(20);
         });
 
         modelBuilder.Entity<EmployeesCred>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC077B71D268");
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC0750A424E2");
 
             entity.ToTable("EmployeesCred");
 
-            entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB987208FE69").IsUnique();
+            entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB98CDE7C574").IsUnique();
 
             entity.Property(e => e.Email).HasMaxLength(255);
-            entity.Property(e => e.EmpId).HasMaxLength(20);
             entity.Property(e => e.LockoutEndTime).HasColumnType("datetime");
-            entity.Property(e => e.RoleId).HasDefaultValue(0);
             entity.Property(e => e.TempPassword).HasMaxLength(255);
+
+            entity.HasOne(d => d.Emp).WithOne(p => p.EmployeesCred)
+                .HasPrincipalKey<EmployeeDetail>(p => p.EmpId)
+                .HasForeignKey<EmployeesCred>(d => d.EmpId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Employees__EmpId__0A9D95DB");
         });
 
         modelBuilder.Entity<Holiday>(entity =>
@@ -99,6 +142,7 @@ public partial class EhrmContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Holiday__TeamId__3B75D760");
         });
+
         modelBuilder.Entity<MainMenu>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__MainMenu__3214EC079D17E828");
@@ -116,6 +160,7 @@ public partial class EhrmContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC07BE865682");
+
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(50);
             entity.Property(e => e.DeletedBy).HasMaxLength(50);
@@ -123,6 +168,39 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.RoleName).HasMaxLength(100);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<SubMenu>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__SubMenu__3214EC07ECE6B36F");
+
+            entity.ToTable("SubMenu");
+
+            entity.Property(e => e.Action)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Controller)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.SubMenus)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmpId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__SubMenu__EmpId__7D439ABD");
+
+            entity.HasOne(d => d.MainMenu).WithMany(p => p.SubMenus)
+                .HasForeignKey(d => d.MainMenuId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__SubMenu__MainMen__7B5B524B");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.SubMenus)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__SubMenu__RoleId__7C4F7684");
         });
 
         modelBuilder.Entity<Team>(entity =>
