@@ -17,6 +17,7 @@ namespace EHRM.ViewModel.SubMenu
         public string? Action { get; set; }
 
         public int? MainMenuId { get; set; }
+        public string? MainMenuName { get; set; } // Nullable
 
         public int? RoleId { get; set; }
 

@@ -160,10 +160,10 @@ namespace EHRM.Web.Controllers
             }
         }
 
-        public IActionResult AddNoticeBoard()
-        {
-            return View();  
-        }
+        //public IActionResult AddNoticeBoard()
+        //{
+        //    return View();  
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken] // Security measure to protect against CSRF attacks
