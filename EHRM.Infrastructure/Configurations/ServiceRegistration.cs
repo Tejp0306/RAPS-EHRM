@@ -77,5 +77,8 @@ namespace EHRM.Infrastructure.Configurations
             });
         
     }
+
+        }
+
     }
 }

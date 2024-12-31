@@ -24,4 +24,6 @@ public partial class Role
     public DateTime? CreateDate { get; set; }
 
     public DateTime? UpdateDate { get; set; }
+
+    public virtual ICollection<SubMenu> SubMenus { get; set; } = new List<SubMenu>();
 }

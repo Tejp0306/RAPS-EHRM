@@ -1,5 +1,7 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.DAL.Repositories;
+using EHRM.ViewModel.Proc;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,8 @@ namespace EHRM.DAL.UnitOfWork
     {
         IGenericRepository<T> GetRepository<T>() where T : class;
         Task SaveAsync();
+        Task<List<SubMenuProcDetails>> ExecuteStoredProcedureAsync(params SqlParameter[] parameters);
+
     }
 
 }

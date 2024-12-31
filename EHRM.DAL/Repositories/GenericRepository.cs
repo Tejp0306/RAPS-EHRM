@@ -1,4 +1,6 @@
 ﻿using EHRM.DAL.Database;
+using EHRM.DAL.Proc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,10 +20,12 @@ namespace EHRM.DAL.Repositories
             _context = context;
         }
 
+    
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
-        }
+          
+            }
 
         public async Task<T> GetByIdAsync(int id)
         {
@@ -46,6 +50,14 @@ namespace EHRM.DAL.Repositories
                 _context.Set<T>().Remove(entity);
             }
         }
+
+        public async Task<List<EmployeeDetail>> GetByRoleIdAsync(int RoleId)
+        {
+            return await _context.Set<EmployeeDetail>().Where(x => x.RoleId == RoleId).ToListAsync();
+        }
+
+
+
     }
 
 
