@@ -21,7 +21,7 @@ namespace EHRM.Web.Controllers
             return View();
         }
 
-        public IActionResult NoticeBoard()
+        public IActionResult AddNoticeBoard()
         {
             return View();
         }
