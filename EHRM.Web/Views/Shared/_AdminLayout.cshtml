@@ -1,4 +1,29 @@
-﻿<!DOCTYPE html>
+﻿@using EHRM.ViewModel.MainMenu
+@using EHRM.ViewModel.SubMenu
+@using Newtonsoft.Json
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    // Get session data for menus with null checks
+    var groupedFoUserDetailsJson = HttpContextAccessor.HttpContext?.Session?.GetString("GroupByUserDetails");
+
+    // Deserialize the JSON string using Newtonsoft.Json
+    var userDetails = !string.IsNullOrEmpty(groupedFoUserDetailsJson)
+        ? JsonConvert.DeserializeObject<Dictionary<string, object>>(groupedFoUserDetailsJson)
+        : null;
+    var groupedSubMenusJson = HttpContextAccessor.HttpContext?.Session?.GetString("GroupedSubMenus");
+    var groupedSubMenus = !string.IsNullOrEmpty(groupedSubMenusJson)
+        ? JsonConvert.DeserializeObject<List<MainMenuViewModel>>(groupedSubMenusJson)
+        : new List<MainMenuViewModel>(); // Using the strongly-typed MainMenuViewModel
+
+    // Current route info
+    var currentController = HttpContextAccessor.HttpContext?.Request?.RouteValues["controller"]?.ToString()?.ToLower() ?? string.Empty;
+    var currentAction = HttpContextAccessor.HttpContext?.Request?.RouteValues["action"]?.ToString()?.ToLower() ?? string.Empty;
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -21,7 +46,9 @@
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
+    <!--JS-->
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <!-- Libraries Stylesheet -->
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="~/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
@@ -36,11 +63,59 @@
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <!-- DataTables Responsive CSS -->
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+
     <style>
-        /* Custom CSS to center the dropdown menu */
-        .dropdown-item {
-            text-align: center;
+        .sidebar {
+            background-color: #f8f9fa;
+            border-right: 2px solid #e2e6ea;
         }
+
+        .nav-item .nav-link {
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+
+        .nav-link:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown-item {
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
+            .dropdown-item:hover {
+                background-color: #e9ecef;
+            }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .notification-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-left 10s linear infinite;
+            transition: all 0.3s ease;
+        }
+
+        /* Keyframes for scrolling effect */
+        @@keyframes scroll-left {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Stop scrolling when mouse hovers */
+        .notification-text:hover {
+            animation-play-state: paused; /* Pause animation on hover */
+        }
+
     </style>
 </head>
 
@@ -55,38 +130,60 @@
         <!-- Spinner End -->
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <a href="index.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>EHRM</h3>
-                </a>
-                @*  <div class="d-flex align-items-center ms-4 mb-4">
-                <div class="position-relative">
-                <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
-                </div>
-                <div class="ms-3">
-                <h6 class="mb-0">Jhon Doe</h6>
-                <span>Admin</span>
-                </div>
-                </div> *@
-                <div class="navbar-nav w-100">
-                    <a href="index.html" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-laptop me-2"></i>Elements
-                        </a>
-                        <div class="dropdown-menu bg-transparent border-0 dropdown-menu-center">
-                            <a href="button.html" class="dropdown-item">
-                                <i class="fa fa-plus me-2"></i>Add
-                            </a>
-                        </div>
-                    </div>
-                    <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>
+            <nav class="navbar bg-light navbar-light d-flex flex-column">
+                <a href="@Url.Action("Dashboard", "Dashboard")" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary">
+                        <i class="fa fa-briefcase me-2"></i> EHRM
 
+                    </h3>
+                </a>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="~/pic/profile.png" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+                    <div class="ms-3">
+
+                        <h6 class="mb-0">@((userDetails?["Item2"]?.ToString()) ?? "Guest")</h6>
+                        <span>Admin</span>
+                    </div>
+                </div>
+                <div class="navbar-nav w-100">
+                    <a href="@Url.Action("Dashboard", "Dashboard")"
+                       class="nav-item nav-link @(currentController == "dashboard" && currentAction == "dashboard" ? "active" : "")">
+                        <i class="fa fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    @foreach (var menu in groupedSubMenus) // Loop through the strongly-typed MainMenuViewModel
+                    {
+                        var isDropdownActive = menu.SubMenus.Any(submenu =>
+                        submenu.Controller?.ToLower() == currentController &&
+                        submenu.Action?.ToLower() == currentAction);
+
+                        <div class="nav-item dropdown">
+
+                            <a href="#" class="nav-link dropdown-toggle  @(isDropdownActive ? "active" : "")"
+                               data-bs-toggle="dropdown">
+                                <i class="@menu.Icon me-2"></i>@menu.Name
+                            </a>
+                            <ul class="dropdown-menu bg-transparent border-0">
+                                @foreach (var submenu in menu.SubMenus)
+                                {
+                                    <li>
+                                        <a href="@Url.Action(submenu.Action, submenu.Controller)"
+                                           class="dropdown-item @(submenu.Controller?.ToLower() == currentController && submenu.Action?.ToLower() == currentAction ? "active" : "")">
+                                            <i class="fa fa-circle me-1"></i>@submenu.Name
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
 
                 </div>
             </nav>
         </div>
+
+
         <!-- Sidebar End -->
         <!-- Content Start -->
         <div class="content">
@@ -98,20 +195,25 @@
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
-                </form>
+                @*  <form class="d-none d-md-flex ms-4">
+                <input class="form-control border-0" type="search" placeholder="Search">
+                </form> *@
+                <div style="overflow: hidden; width: 100%; background-color: #007bff; padding: 10px; color: white; font-weight: bold; border: 1px solid #0056b3; border-radius: 5px;">
+                    <i class="fa fa-info-circle me-2"></i>
+                    <span class="notification-text">This is a notification message that will scroll from right to left.</span>
+                </div>
+
                 <div class="navbar-nav align-items-center ms-auto">
- 
+
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img class="rounded-circle me-lg-2" src="~/pic/profile.png" alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">John Doe</span>
+                            <span class="d-none d-lg-inline-flex">@((userDetails?["Item2"]?.ToString()) ?? "Guest")</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="#" class="dropdown-item">My Profile</a>
                             <a href="#" class="dropdown-item">Settings</a>
-                            <a asp-controller="Home" asp-action="Logout" class="dropdown-item">Log Out</a>
+                            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Log Out</a>
                         </div>
                     </div>
                 </div>
@@ -146,7 +248,6 @@
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/chart/chart.min.js"></script>
     <script src="~/lib/easing/easing.min.js"></script>
     <script src="~/lib/waypoints/waypoints.min.js"></script>
@@ -165,6 +266,14 @@
 
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>
+    <script>
+
+        // Spinner removal on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('spinner').classList.remove('show');
+        });
+    </script>
+
 
 
 </body>
