@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using EHRM.ViewModel.MainMenu;
 using EHRM.ViewModel.SubMenu;
 using EHRM.ServiceLayer.Utility;
+using NuGet.Common;
 
 
 namespace EHRM.Web.Controllers
@@ -103,10 +104,18 @@ namespace EHRM.Web.Controllers
                 employeeCred.FirstName+" "+employeeCred.LastName,
                 employeeCred.RoleId
             );
+            // Store token in a cookie
+            HttpContext.Response.Cookies.Append("JwtToken", jwtToken, new CookieOptions
+            {
+                HttpOnly = true, // Prevent access from client-side scripts
+                Secure = true,  // Use HTTPS in production
+                SameSite = SameSiteMode.Strict
+            });
+
 
             // Store JWT token in session
             HttpContext.Session.SetString("JwtToken", jwtToken);
-            HttpContext.Response.Headers.Add("Authorization", $"Bearer {jwtToken}");
+           // HttpContext.Response.Headers.Add("Authorization", $"Bearer {jwtToken}");
 
             string otp = GenerateOtp();
             await SendOtp(employeeCred.Email, otp);

@@ -39,7 +39,7 @@ namespace EHRM.ServiceLayer.Helpers
 
                 // Generate the JWT token
                 var token = new JwtSecurityToken(
-                    issuer: "https://localhost:5000/",  // Use your actual API URL here
+                    issuer: "https://localhost:7075/",  // Use your actual API URL here
                     audience: "https://localhost:7075/", // Use your actual frontend URL here
                     claims: claims,
                     expires: DateTime.Now.AddMinutes(30), // Token expiration time

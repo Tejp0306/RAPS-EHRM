@@ -12,7 +12,7 @@ namespace EHRM.Web.Controllers
         {
             return View();
         }
-       // [Authorize(Policy = "Authorized")]
+       [Authorize]
         public IActionResult Dashboard()
         {
             var userSession = HttpContext.Session.GetString("JwtToken");
