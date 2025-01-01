@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EHRM.ServiceLayer", "EHRM.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EHRM.ViewModel", "EHRM.ViewModel\EHRM.ViewModel.csproj", "{9E90A273-7AA3-4B41-B26E-1BA1D489677E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EHRM.Infrastructure", "EHRM.Infrastructure\EHRM.Infrastructure.csproj", "{0CA9E54F-CF6F-40F6-9AAD-5AD09E7D04EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EHRM.Infrastructure", "EHRM.Infrastructure\EHRM.Infrastructure.csproj", "{0CA9E54F-CF6F-40F6-9AAD-5AD09E7D04EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{FD2F427B-794E-4E9C-9024-51C00478FB20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{0CA9E54F-CF6F-40F6-9AAD-5AD09E7D04EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CA9E54F-CF6F-40F6-9AAD-5AD09E7D04EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CA9E54F-CF6F-40F6-9AAD-5AD09E7D04EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD2F427B-794E-4E9C-9024-51C00478FB20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD2F427B-794E-4E9C-9024-51C00478FB20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD2F427B-794E-4E9C-9024-51C00478FB20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD2F427B-794E-4E9C-9024-51C00478FB20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
