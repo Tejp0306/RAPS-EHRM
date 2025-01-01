@@ -168,7 +168,3 @@ Scaffold-DbContext "Server=DESKTOP-S1TNCS5\SQLEXPRESS;Database=EHRM;Trusted_Conn
 Scaffold-DbContext "Server=DESKTOP-S1TNCS5\SQLEXPRESS;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database -Force
 
 -------------------------------------------------------------------------------------------------------------------
-Nuget Package:
-Microsoft.EntityFrameworkCore.SqlServer  8.02  Dtae 20-Nov-2024
-Microsoft.EntityFrameworkCore.Tools  8.02
-Microsoft.EntityFrameworkCore.Design 8.02

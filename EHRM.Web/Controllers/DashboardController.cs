@@ -4,16 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EHRM.Web.Controllers
 {
-   
 
+    [Authorize]
     public class DashboardController : Controller
     {
         public IActionResult Index()
         {
             return View();
         }
-       [Authorize]
+      
         public IActionResult Dashboard()
+        
         {
             var userSession = HttpContext.Session.GetString("JwtToken");
             if (string.IsNullOrEmpty(userSession))
