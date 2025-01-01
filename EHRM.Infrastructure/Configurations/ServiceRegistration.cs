@@ -4,6 +4,7 @@ using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Helpers;
 using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
+using Logger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -17,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Logger.LoggerService;
 
 namespace EHRM.Infrastructure.Configurations
 {
@@ -32,7 +34,7 @@ namespace EHRM.Infrastructure.Configurations
             // Custom Services
             services.AddScoped<IMasterService, MasterService>();
             services.AddScoped<IMainMenuService, MainMenuService>();
-
+            services.AddSingleton<ILoggerManager, LoggerManager>();
             // HttpContextAccessor
             services.AddHttpContextAccessor();
 

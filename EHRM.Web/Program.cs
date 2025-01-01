@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using EHRM.Infrastructure.Middleware;
+using EHRM.Infrastructure.Extension;
+using Logger;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +22,8 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 // Ensure AppUser is initialize
 builder.Services.AddServices(builder.Configuration);
 var app = builder.Build();
-
+var logger = app.Services.GetRequiredService<ILoggerManager>();
+app.ConfigureExceptionHandler(logger);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
