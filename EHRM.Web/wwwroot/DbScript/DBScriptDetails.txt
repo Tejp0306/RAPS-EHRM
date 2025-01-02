@@ -164,6 +164,22 @@ CREATE TABLE AssetsDb (
     UpdatedBy INT,  -- Assuming this is the ID of the user who updated the record
     UpdateDate DATETIME  -- DATETIME is better for storing date and time
 );
+
+CREATE TABLE [EHRM].[dbo].[EmployeesCred] (
+    [Id] INT IDENTITY(1,1) PRIMARY KEY, -- Auto-increment primary key
+    [EmpId] NVARCHAR(50) NOT NULL, -- Employee ID
+    [Email] NVARCHAR(100) NOT NULL, -- Email address
+    [TempPassword] NVARCHAR(255) NOT NULL, -- Temporary password
+    [FirstName] NVARCHAR(50) NOT NULL, -- First name
+    [LastName] NVARCHAR(50) NOT NULL, -- Last name
+    [RoleId] INT NOT NULL, -- Role ID (assuming it's an integer)
+    [Active] BIT NOT NULL, -- Active status (1 for active, 0 for inactive)
+    [FailedLoginAttempts] INT NOT NULL DEFAULT 0, -- Count of failed login attempts
+    [IsLockedOut] BIT NOT NULL DEFAULT 0, -- Indicates if the account is locked
+    [LockoutEndTime] DATETIME NULL, -- Lockout end time, null if not locked
+    [LockoutDuration] INT NOT NULL DEFAULT 0 -- Lockout duration in minutes
+);
+
 ----------------------------------------------------------------------------------------------------------------
 
 Scaffold-DbContext "Server=DESKTOP-S1TNCS5\SQLEXPRESS;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database
@@ -171,7 +187,3 @@ Scaffold-DbContext "Server=DESKTOP-S1TNCS5\SQLEXPRESS;Database=EHRM;Trusted_Conn
 Scaffold-DbContext "Server=DESKTOP-S1TNCS5\SQLEXPRESS;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database -Force
 
 -------------------------------------------------------------------------------------------------------------------
-Nuget Package:
-Microsoft.EntityFrameworkCore.SqlServer  8.02  Dtae 20-Nov-2024
-Microsoft.EntityFrameworkCore.Tools  8.02
-Microsoft.EntityFrameworkCore.Design 8.02

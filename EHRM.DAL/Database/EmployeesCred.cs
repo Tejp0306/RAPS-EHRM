@@ -13,6 +13,10 @@ public partial class EmployeesCred
 
     public string TempPassword { get; set; } = null!;
 
+    public string? FirstName { get; set; }
+
+    public string? LastName { get; set; }
+
     public int? RoleId { get; set; }
 
     public bool Active { get; set; }

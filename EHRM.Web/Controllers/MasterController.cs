@@ -21,7 +21,7 @@ namespace EHRM.Web.Controllers
             return View();
         }
 
-        public IActionResult NoticeBoard()
+        public IActionResult AddNoticeBoard()
         {
             return View();
         }
@@ -160,10 +160,10 @@ namespace EHRM.Web.Controllers
             }
         }
 
-        public IActionResult AddNoticeBoard()
-        {
-            return View();  
-        }
+        //public IActionResult AddNoticeBoard()
+        //{
+        //    return View();  
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken] // Security measure to protect against CSRF attacks
@@ -404,9 +404,11 @@ namespace EHRM.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
             }
         }
-        #region Starting Holidays
-        [HttpGet]
 
+        #region Starting Holidays
+
+        [HttpGet]
+        //Action method to Show the view of holiday screen
         public IActionResult AddHoliday()
         {
             return View();
@@ -414,11 +416,12 @@ namespace EHRM.Web.Controllers
         }
 
         [NonAction]
+        //Update Holiday Details
         private async Task<object> UpdateHolidayDetails(int id, string updatedBy, HolidayViewModel model)
         {
             try
             {
-                // Call the service method to update the role
+                // Call the service method to update the Holiday
                 var result = await _master.UpdateHolidayAsync(id, updatedBy, model);
 
                 // Return a structured response based on the result of the update
@@ -437,18 +440,19 @@ namespace EHRM.Web.Controllers
                 return new
                 {
                     success = false,
-                    message = "An error occurred while updating the role. Please try again later."
+                    message = "An error occurred while updating the Holiday. Please try again later."
                 };
             }
         }
         
-        // Get Holiday based on Id for the edit button
+        // Get Holiday based on Id for the edit button functionality
 
         [HttpGet("Master/GetHolidayDetails/{holidayId}")]
         public async Task<JsonResult> GetHolidayDetails([FromRoute] int holidayID)
         {
             try
             {
+                // Call the service method to Get holiday based on the ID
                 var holiday = await _master.GetHolidayByIdAsync(holidayID);
 
                 if (holiday == null)
@@ -469,17 +473,19 @@ namespace EHRM.Web.Controllers
         {
             try
             {
-                // Call the service method to delete the notice from the database
+                // Call the service method to delete the Holiday from the database
                 var result = await _master.DeleteHolidayAsync(id);
 
-                // Check the result and provide feedback to the user
+                // Toaster message if Deleted successfully
                 if (result.Success)
                 {
-                    return Json(new { Success = true, Message = "Notice deleted successfully!" });
+                    TempData["ToastType"] = "success";
+                    TempData["ToastMessage"] = "Holiday Deleted Successfully"; // Store success message
+                    return RedirectToAction("addholiday");
                 }
                 else
                 {
-                    return Json(new { Success = true, Message = "Notice not deleted !" });
+                    return Json(new { Success = true, Message = "Holiday not deleted !" });
                 }
 
 
@@ -487,7 +493,7 @@ namespace EHRM.Web.Controllers
             catch (Exception ex)
             {
                 // Store the error message in TempData if an exception occurs
-                TempData["ErrorMessage"] = $"Error deleting the notice: {ex.Message}";
+                TempData["ErrorMessage"] = $"Error deleting the Holiday: {ex.Message}";
                 return Json(new { Success = false, Message = ex.Message });
             }
         }
@@ -495,7 +501,7 @@ namespace EHRM.Web.Controllers
         //Post Handle Addholiday form submission
         [HttpPost]
         public async Task<IActionResult> SaveHoliday(HolidayViewModel model)
-        {  // Check if the role exists based on the model ID
+        {  // Check if the holiday data ID exists based on the model ID
             if (model.Id > 0)
             {
 
@@ -507,8 +513,9 @@ namespace EHRM.Web.Controllers
                     var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
                     if (updateResponse?.success == true)
                     {
-                        TempData["SuccessMessage"] = updateResponse?.message; // Store success message
-                        return RedirectToAction("addholiday"); // Redirect to the list of roles
+                        TempData["ToastType"] = "success";
+                        TempData["ToastMessage"] = "Holiday Updated Successfully"; // Store success message
+                        return RedirectToAction("addholiday"); // Redirect to the list of Holiday
                     }
                     else
                     {
@@ -531,8 +538,9 @@ namespace EHRM.Web.Controllers
                 // Handle the result of the create operation
                 if (result.Success)
                 {
-                    TempData["SuccessMessage"] = result.Message; // Store success message
-                    return RedirectToAction("AddHoliday"); // Redirect to the list of roles
+                    TempData["ToastType"] = "success"; // Store success message
+                    TempData["ToastMessage"] = "Holiday Saved Successfully";
+                    return RedirectToAction("AddHoliday"); // Redirect to the list of Holiday
                 }
                 else
                 {
@@ -831,7 +839,7 @@ namespace EHRM.Web.Controllers
                     if (updateResponse?.success == true)
                     {
                         TempData["ToastType"] = "success"; // Store success message
-                        TempData["ToastMessage"] = "Record Has been updated ";
+                        TempData["ToastMessage"] = "Record has been updated ";
                         return RedirectToAction("EmployeeType"); // Redirect to the list of roles
                     }
                     else

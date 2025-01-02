@@ -1,6 +1,5 @@
 ﻿using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.MainMenu;
-using EHRM.ViewModel.Master;
 using EHRM.ViewModel.Proc;
 using EHRM.ViewModel.SubMenu;
 
