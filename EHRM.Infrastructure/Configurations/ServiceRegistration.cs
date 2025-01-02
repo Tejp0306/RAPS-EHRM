@@ -2,17 +2,25 @@
 using EHRM.DAL.Repositories;
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Employee;
+using EHRM.ServiceLayer.Helpers;
+
 using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
-//using EHRM.ServiceLayer.SubMenu;
+using Logger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Logger.LoggerService;
 
 namespace EHRM.Infrastructure.Configurations
 {
@@ -25,10 +33,53 @@ namespace EHRM.Infrastructure.Configurations
             // Register Generic Repository
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));  // Register the generic repository
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            // Custom Services
             services.AddScoped<IMasterService, MasterService>();
             services.AddScoped<IMainMenuService, MainMenuService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             //services.AddScoped<ISubMenuService, SubMenuService>();
+            services.AddSingleton<ILoggerManager, LoggerManager>();
+            // HttpContextAccessor
+            services.AddHttpContextAccessor();
+
+            // Add JWT Authentication
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                  .AddJwtBearer(options =>
+                  {
+                      options.TokenValidationParameters = new TokenValidationParameters
+                      {
+                          ValidateIssuer = true,
+                          ValidateAudience = true,
+                          ValidateLifetime = true,
+                          ValidateIssuerSigningKey = true,
+                          ValidIssuer = configuration["Jwt:Issuer"],
+                          ValidAudience = configuration["Jwt:Issuer"],
+                          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                      };
+                      // Read token from cookies
+                      options.Events = new JwtBearerEvents
+                      {
+                          OnMessageReceived = context =>
+                          {
+                              context.Token = context.Request.Cookies["JwtToken"];
+                              return Task.CompletedTask;
+                          }
+                      };
+                  });
+
+
+            // Add Distributed Memory Cache and Session
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+                options.Cookie.HttpOnly = true; // Set cookie options
+                options.Cookie.IsEssential = true; // Make the session cookie essential
+            });
+
         }
+
     }
+
 }
+
