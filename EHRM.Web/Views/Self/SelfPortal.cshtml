@@ -1,0 +1,173 @@
+﻿
+@{
+    ViewData["Title"] = "SelfPortal";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self Portal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .profile-section {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+            .profile-section img {
+                max-width: 150px;
+                border-radius: 50%;
+            }
+
+            .profile-section .labels {
+                font-weight: bold;
+            }
+
+            .profile-section .form-control {
+                background-color: #f9f9f9;
+            }
+
+        .edit-btn {
+            cursor: pointer;
+            color: #007bff;
+        }
+
+        .profile-header {
+            text-align: center;
+            width:200px;
+            height:200px;
+        }
+
+            .profile-header img {
+                width:auto;
+                /* height: 150px; */
+                border-radius: 50%;
+            }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="col-12 bg-secondary text-white text-center py-1 mb-4">
+            <h2 class="mb-0 text-white">Profile</h2>
+        </div>
+
+        <!-- Main Row -->
+        <div class="row justify-content-center">
+            <!-- Profile Section -->
+            <div class="col-md-4 text-center">
+                <!-- Profile Image Section -->
+                <div class="col-md-4 text-center">
+                    <div class="profile-header">
+                        <img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" alt="Profile Image" class="img-fluid rounded-circle">
+                        <h4 class="font-weight-bold">John Doe</h4>
+                        <span class="text-black-50">JD@mail.com.my</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Settings Form Section (Take full width of the screen) -->
+            <div class="col-md-8">
+                <!-- This section now takes up the remaining space -->
+                <!-- Profile Settings Form -->
+                <div class="">
+                    <div class="row mt-2">
+                        <!--Emp_ID Name and Surname fields (6 columns each) -->
+                        <div class="col-md-4">
+                            <label class="labels">Employee ID *</label>
+                            <input type="text" class="form-control" placeholder="Enter Employee ID" value="">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="labels">First Name</label>
+                            <input type="text" class="form-control" placeholder="First Name" value="">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="labels">Last Name</label>
+                            <input type="text" class="form-control" placeholder="Surname" value="">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <!-- Mobile Number field (12 columns) -->
+                        <div class="col-md-6">
+                            <label class="labels">Mobile Number</label>
+                            <input type="text" class="form-control" placeholder="Enter phone number" value="">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="labels">Date of Birth *</label>
+                            <input type="text" class="form-control" placeholder="Enter Your D.O.B" value="">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <!-- Address fields (6 columns each) -->
+                        <div class="col-md-6">
+                            <label class="labels">Address Line 1</label>
+                            <input type="text" class="form-control" placeholder="Enter address line 1" value="">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="labels">Address Line 2</label>
+                            <input type="text" class="form-control" placeholder="Enter address line 2" value="">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <!-- Postcode, State, Area (4 columns each) -->
+                        <div class="col-md-4">
+                            <label class="labels">Postcode</label>
+                            <input type="text" class="form-control" placeholder="Enter postcode" value="">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="labels">State</label>
+                            <input type="text" class="form-control" placeholder="Enter state" value="">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="labels">Area</label>
+                            <input type="text" class="form-control" placeholder="Enter area" value="">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <!-- Email and Education fields (6 columns each) -->
+                        <div class="col-md-6">
+                            <label class="labels">Email ID</label>
+                            <input type="email" class="form-control" placeholder="Enter email ID" value="">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="labels">Education</label>
+                            <input type="text" class="form-control" placeholder="Education" value="">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <!-- Country and State/Region (6 columns each) -->
+                        <div class="col-md-6">
+                            <label class="labels">Country</label>
+                            <input type="text" class="form-control" placeholder="Country" value="">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="labels">State/Region</label>
+                            <input type="text" class="form-control" placeholder="State/Region" value="">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <!-- Manager and Team Region -->
+                        <div class="col-md-6">
+                            <label class="labels">Manager Name</label>
+                            <input type="text" class="form-control" placeholder="Enter Manager Name" value="" id="modalCountry">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="labels">Team Name</label>
+                            <input type="text" class="form-control" placeholder="Enter Team Name" value="" id="modalStateRegion">
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <button class="btn btn-primary profile-button" type="button">Save Profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
