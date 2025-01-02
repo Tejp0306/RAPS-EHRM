@@ -56,8 +56,10 @@ namespace EHRM.DAL.Repositories
             return await _context.Set<EmployeeDetail>().Where(x => x.RoleId == RoleId).ToListAsync();
         }
 
-
-
+        public async Task<List<EmployeeDetail>> GetByTeamIdAsync(int TeamId)
+        {
+            return await _context.Set<EmployeeDetail>().Where(x => x.TeamId == TeamId).ToListAsync();
+        }
     }
 
 

@@ -9,6 +9,6 @@ namespace EHRM.ViewModel.Master
     public class TeamViewModel
     {
         public int Id { get; set; }
-        public int Name { get; set; }
+        public string? Name { get; set; }
     }
 }

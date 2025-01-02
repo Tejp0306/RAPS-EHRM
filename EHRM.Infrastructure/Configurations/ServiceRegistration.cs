@@ -1,9 +1,9 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.DAL.Repositories;
 using EHRM.DAL.UnitOfWork;
+using EHRM.ServiceLayer.Asset;
 using EHRM.ServiceLayer.Employee;
 using EHRM.ServiceLayer.Helpers;
-
 using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
 using Logger;
@@ -38,6 +38,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IMainMenuService, MainMenuService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             //services.AddScoped<ISubMenuService, SubMenuService>();
+            services.AddScoped<IAssetService, AssetService>();
             services.AddSingleton<ILoggerManager, LoggerManager>();
             // HttpContextAccessor
             services.AddHttpContextAccessor();
@@ -76,6 +77,7 @@ namespace EHRM.Infrastructure.Configurations
                 options.Cookie.HttpOnly = true; // Set cookie options
                 options.Cookie.IsEssential = true; // Make the session cookie essential
             });
+
 
         }
 

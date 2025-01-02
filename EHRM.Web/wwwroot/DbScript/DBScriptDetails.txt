@@ -146,6 +146,25 @@ CREATE TABLE EmployeeDetails (
     UpdatedAt DATETIME DEFAULT GETDATE()      -- Record Last Update Date
 );
 
+//Asset
+CREATE TABLE AssetsDb (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    TeamId INT,
+    EmpId INT,
+    Name VARCHAR(255),
+    Category VARCHAR(255),  -- If it's a string, adjust the size, use VARCHAR(MAX) only for very large text
+    Value INT,
+    Status VARCHAR(255),
+    Summary VARCHAR(MAX),  -- This is fine for large summaries
+    IssueDate DATETIME,  -- Use DATETIME for storing date and time
+    IsActive BIT,
+    IsDeleted BIT,
+    DeletedBy INT,  -- Assuming this is the ID of the user who deleted
+    CreatedBy INT,  -- Assuming this is the ID of the user who created the record
+    UpdatedBy INT,  -- Assuming this is the ID of the user who updated the record
+    UpdateDate DATETIME  -- DATETIME is better for storing date and time
+);
+
 CREATE TABLE [EHRM].[dbo].[EmployeesCred] (
     [Id] INT IDENTITY(1,1) PRIMARY KEY, -- Auto-increment primary key
     [EmpId] NVARCHAR(50) NOT NULL, -- Employee ID

@@ -16,8 +16,8 @@ namespace EHRM.DAL.Repositories
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
         Task<List<EmployeeDetail>> GetByRoleIdAsync(int RoleId);
-        // Methods for executing stored procedures
-     
+        Task<List<EmployeeDetail>> GetByTeamIdAsync(int RoleId);
+
 
     }
 }
