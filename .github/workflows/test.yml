@@ -1,0 +1,17 @@
+name: Test GitHub Actions Runner
+
+on:
+  push:
+    branches: [ actions-runner ]
+
+jobs:
+  test-runner:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Runner test
+        run: |
+          echo "GitHub Actions runner is working properly!"
