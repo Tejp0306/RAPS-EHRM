@@ -59,6 +59,8 @@ public partial class EmployeeDetail
 
     public DateTime? UpdatedAt { get; set; }
 
+    public string? Image { get; set; }
+
     public virtual EmployeesCred? EmployeesCred { get; set; }
 
     public virtual ICollection<SubMenu> SubMenus { get; set; } = new List<SubMenu>();

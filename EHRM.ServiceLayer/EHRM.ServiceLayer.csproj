@@ -11,8 +11,4 @@
     <ProjectReference Include="..\EHRM.ViewModel\EHRM.ViewModel.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="NewFolder\" />
-  </ItemGroup>
-
 </Project>

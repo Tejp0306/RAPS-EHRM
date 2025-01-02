@@ -1,7 +1,9 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.DAL.Repositories;
 using EHRM.DAL.UnitOfWork;
+using EHRM.ServiceLayer.Employee;
 using EHRM.ServiceLayer.Helpers;
+
 using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
 using Logger;
@@ -34,6 +36,8 @@ namespace EHRM.Infrastructure.Configurations
             // Custom Services
             services.AddScoped<IMasterService, MasterService>();
             services.AddScoped<IMainMenuService, MainMenuService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            //services.AddScoped<ISubMenuService, SubMenuService>();
             services.AddSingleton<ILoggerManager, LoggerManager>();
             // HttpContextAccessor
             services.AddHttpContextAccessor();
