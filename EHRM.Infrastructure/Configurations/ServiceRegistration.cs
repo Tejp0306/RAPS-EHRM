@@ -1,6 +1,7 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.DAL.Repositories;
 using EHRM.DAL.UnitOfWork;
+using EHRM.ServiceLayer.Asset;
 using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
 //using EHRM.ServiceLayer.SubMenu;
@@ -27,6 +28,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IMasterService, MasterService>();
             services.AddScoped<IMainMenuService, MainMenuService>();
             //services.AddScoped<ISubMenuService, SubMenuService>();
+            services.AddScoped<IAssetService, AssetService>();
         }
     }
 }

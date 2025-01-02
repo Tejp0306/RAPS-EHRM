@@ -15,6 +15,7 @@ public partial class EhrmContext : DbContext
     {
     }
 
+    public virtual DbSet<AssetsDb> AssetsDbs { get; set; }
     public virtual DbSet<EmpType> EmpTypes { get; set; }
 
     public virtual DbSet<EmployeeDetail> EmployeeDetails { get; set; }
@@ -37,6 +38,25 @@ public partial class EhrmContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AssetsDb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Asset__3214EC0757B44263");
+
+            entity.ToTable("AssetsDb");
+
+            entity.Property(e => e.Category)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.IssueDate).HasColumnType("datetime");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Summary).IsUnicode(false);
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
         modelBuilder.Entity<EmpType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__EmpType__3214EC076E1B806F");

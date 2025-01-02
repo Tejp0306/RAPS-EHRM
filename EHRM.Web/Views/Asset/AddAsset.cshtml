@@ -1,0 +1,223 @@
+﻿@model AssetViewModel
+@using EHRM.ViewModel.Asset
+
+@{
+    ViewData["Title"] = "AddAsset";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    /* Custom button styling */
+    .btn-custom {
+        background-color: green; /* Blue background */
+        color: #FFFFFF; /* White text */
+        border: none; /* Remove border */
+        padding: 0.5rem 1rem; /* Add padding for size */
+        font-size: 1rem; /* Font size */
+        border-radius: 0.25rem; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth background transition */
+    }
+
+        .btn-custom:hover {
+            background-color:green; /* Darker blue on hover */
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+    /* Custom background color and text color */
+    .custom-bg {
+        background-color: #F3F6F9; /* Light gray background */
+    }
+
+    .custom-text {
+        color: #333333; /* Dark text for contrast on light background */
+    }
+
+    /* Custom background color and text color */
+    .custom-bg {
+        background-color: #F3F6F9; /* Light gray background */
+    }
+
+    .custom-text {
+        color: #333333; /* Dark text color for contrast */
+    }
+</style>
+
+<div class="container mt-1">
+        <div class="col-12 custom-bg custom-text text-center py-1 mb-2">
+            <h3 class="mb-0">Add New Asset</h3>
+        </div>
+
+
+        <!-- Add New Asset Form -->
+    <div class="asset-form mb-5">
+        @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+        {
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    // Call the showToast function directly with TempData values
+                    showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+                });
+            </script>
+        }
+        <div class="card">
+            <div class="card-body">
+                <form id="AssetForm" asp-controller="Asset" asp-action="SaveAsset" method="post" onsubmit="return validateForm()">
+                    <input type="hidden" id="assetID" name="id" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="assetName" class="form-label">Asset Name</label>
+                            <input asp-for="Name" class="form-control" id="assetName" placeholder="Enter asset name" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="assetCategory" class="form-label">Category</label>
+                            <select asp-for="Category" class="form-select" id="assetCategory" required>
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="software">Software</option>
+                                <option value="hardware">Hardware</option>
+                                <option value="server">Server</option>
+                                <option value="cloud-service">Cloud Service</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="assetValue" class="form-label">Asset Value</label>
+                            <input asp-for="Value" class="form-control" id="assetValue" placeholder="Enter asset value" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="assetStatus" class="form-label">Status</label>
+                            <select asp-for="Status" class="form-select" id="assetStatus" required>
+                                <option value="" disabled selected>Select Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="under-maintenance">Under Maintenance</option>
+                                <option value="retired">Retired</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="teamName" class="form-label">Team Name</label>
+                            <select asp-for="TeamId" class="form-control" id="TeamId" onchange="GetEmployeeDetail(this.value)" required>
+                                <option value="" selected disabled>-- Select Team Name --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="appointedTo" class="form-label">Appointed To</label>
+                            <select asp-for="EmpId" class="form-control" id="appointedTo" required>
+                                <option value="" selected disabled>-- Appointed Name --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="IssueDate">Issue Date</label>
+                            <input asp-for="IssueDate" type="text" class="form-control" name="IssueDate" id="IssueDate" data-start-day='1' data-picker-type='date' placeholder="Select Issue Date" required readonly />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="appointedTo" class="form-label">Summary (e.g. Model Number)</label>
+                            <textarea asp-for="Summary" class="form-control" id="summary" rows="2" placeholder="Assigned employee/team details" required></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-custom">Add Asset</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+        <!-- Asset List Table -->
+    <div class="row">
+        <div class="col-12 custom-bg custom-text text-center py-1 mb-2">
+            <h3 class="mb-0">Asset List</h3>
+        </div>
+
+    </div>
+    <div class="table-responsive">
+        <table id="assetTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Asset ID</th>
+                    <th>Asset Name</th>
+                    <th>Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Sample Data (You can dynamically generate this using a backend) -->
+                <tr>
+                    <td></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="viewAssetModal" tabindex="-1" aria-labelledby="viewAssetLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewAssetLabel">Asset Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Table to display asset data -->
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Asset Name</th>
+                            <td id="name"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Category</th>
+                            <td id="category"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Status</th>
+                            <td id="status"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Summary</th>
+                            <td id="summarym"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Issue-Date</th>
+                            <td id="issuedate"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Value</th>
+                            <td id="value"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS and jQuery (if not already included in the page) -->
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+ *@
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="~/customscripts/asset.js"></script>
+<script>
+    $('#IssueDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: '1950:2070',
+        dateFormat: 'dd-MM-yy',
+        minDate: '0',
+        defaultDate: new window.Date
+    });
+
+</script>
