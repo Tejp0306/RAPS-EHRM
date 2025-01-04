@@ -1,4 +1,5 @@
-﻿* {
+﻿/* Global Reset */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -12,15 +13,11 @@ body {
 }
 
 /* Typography Styles */
-h1, h2, h3, p, h4  {
+h1, h2, h3, p {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 10px 0;
     color: #333;
-}
-
-label {
-    margin:3px;
 }
 
 h1 {
@@ -105,6 +102,16 @@ button:focus, .btn:focus {
     outline-offset: 2px;
 }
 
+.page-heading {
+    color: #007bff; /* Primary blue color */
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+    font-family: Arial, sans-serif;
+}
 /* Responsive Typography */
 @media (max-width: 768px) {
     h1 {
