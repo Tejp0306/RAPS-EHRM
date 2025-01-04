@@ -61,7 +61,23 @@ public partial class EmployeeDetail
 
     public string? Image { get; set; }
 
+    public int? Age { get; set; }
+
+    public bool? IsProfileCompleted { get; set; }
+
+    public bool? Active { get; set; }
+
+    public int? CreatedById { get; set; }
+
+    public virtual ICollection<Declaration> Declarations { get; set; } = new List<Declaration>();
+
     public virtual EmployeesCred? EmployeesCred { get; set; }
+
+    public virtual ICollection<EmployementTypeDetail> EmployementTypeDetails { get; set; } = new List<EmployementTypeDetail>();
+
+    public virtual ICollection<Qualification> Qualifications { get; set; } = new List<Qualification>();
+
+    public virtual ICollection<Salary> Salaries { get; set; } = new List<Salary>();
 
     public virtual ICollection<SubMenu> SubMenus { get; set; } = new List<SubMenu>();
 }

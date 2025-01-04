@@ -90,26 +90,35 @@ function getEmployeeData() {
 
             { data: 'id' },
             { data: 'name' },
-            { data: 'email'},
+            { data: 'email' },
             {
-
+                data: 'profileStatus',
+                render: function (data) {
+                    // Check profile status and apply color
+                    if (data === 'Profile Incomplete') {
+                        return `<span class="badge bg-danger">${data}</span>`; // Red for incomplete
+                    } else if (data === 'Profile Complete') {
+                        return `<span class="badge bg-success">${data}</span>`; // Green for complete
+                    }
+                    return data; // Default case (if any unexpected value)
+                }
+            },
+            {
                 data: 'id',
                 render: function (data) {
-                    console.log(data);
-                    //debugger;
                     return `
-                                <div class="d-flex justify-content-center">
-                                    <button class="btn btn-warning btn-sm mx-1 view-btn" data-id="${data}">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </button>
-                                    <button class="btn btn-danger btn-sm mx-1 delete-btn" data-id="${data}">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                    <button class="btn btn-success btn-sm mx-1 view-btn" data-id="${data}" >
-                                        <i class="bi bi-pencil"></i> View
-                                    </button>
-                                </div>
-                            `;
+                        <div class="d-flex justify-content-center">
+                            <button class="btn btn-warning btn-sm mx-1 edit-btn" data-id="${data}">
+                                <i class="bi bi-pencil"></i> Edit/Complete
+                            </button>
+                            <button class="btn btn-success btn-sm mx-1 delete-btn" data-id="${data}">
+                                <i class="bi bi-trash"></i> Activate Account
+                            </button>
+                            <button class="btn btn-success btn-sm mx-1 view-btn" data-id="${data}">
+                                <i class="bi bi-pencil"></i> View
+                            </button>
+                        </div>
+                    `;
                 },
                 orderable: false // Disable sorting on the Action column
             }
@@ -130,4 +139,131 @@ function getEmployeeData() {
         }
 
     });
+    $('#employeeTable').on('click', '.edit-btn', function () {
+        const EmpId = $(this).data('id');
+        GetAllEmployeeDetailsData(EmpId);
+        // 
+        // Add logic for viewing details in a modal or new page
+    });
+}
+
+// Handle View Button Click
+function GetAllEmployeeDetailsData(EmpId) {
+    // Construct the URL based on EmpId
+    const url = EmpId ? `/Employee/AddEmployee/${EmpId}` : '/Employee/AddEmployee';
+    console.log('Navigating to:', url);
+
+    // Redirect to the URL
+    window.location.href = url;
+}
+
+function ClAge() {
+    var dateBirth = $('#DateOfBirth').val(); // Get the date of birth from the input field
+    // Manually set the URL path
+    var url = '/Employee/GetAge'; // Adjust this path if needed, make sure it's correct
+    $.ajax({
+        url: url,
+        type: 'POST', // POST method
+        data: { dateBirth: dateBirth }, // Send dateBirth in the request body
+        success: function (response) {
+            debugger;
+            if (response.success) {
+                var age = response.age; // Extract age from the JSON response
+
+                if (age >= 18) {
+                    $('#Age').val(age); // Set the age in the input field
+                } else {
+                    alert("The applicant's age must be 18 years or above.");
+                    location.reload();
+                }
+            } else {
+                alert(response.message || "Unable to calculate age. Please check the date of birth format.");
+            }
+        },
+        error: function () {
+            alert("An error occurred while calculating age. Please try again.");
+        }
+    });
+}
+
+//This is for Generate LoginId Based on First Name
+
+function CheckExistingEmpId() {
+    var empId = $('#EmpId').val(); // Get the EmpId from the input field
+    var url = '/Employee/CheckExistingEmpId'; // Correct the URL to match your action method
+
+    $.ajax({
+        url: url,
+        type: 'POST', // POST method
+        data: { empId: empId }, // Send EmpId in the request body
+        success: function (response) {
+            debugger;
+            if (response.flag > 0) { // Check if the flag is greater than 0
+                $('#lblEmpIdError').text("EmpId is already in use. Please use another EmpId.☒"); 
+                $('#EmpId').val(""); // Clear the input field
+            }
+            else {
+                $('#lblEmpIdError').text("");
+            }
+        },
+        error: function () {
+            alert("An error occurred while checking the EmpId. Please try again.");
+        }
+    });
+}
+
+function GenerateLoginId() {
+    var firstName = $('#FirstName').val(); // Get the first name from the input field
+    var url = '/Employee/GenerateLogin';;
+    $.ajax({
+        url: url,
+        type: 'POST', // POST method
+        data: { firstName: firstName }, // Send firstName in the request body
+        success: function (response) {
+            debugger;
+            if (response.success) {
+                var loginId = response.loginId;
+                var password = response.password;
+                $('#LoginId').val(loginId); // Set the loginId in the corresponding input field
+                $('#Password').val(password);
+            }
+        },
+        error: function () {
+            alert("An error occurred while generating the login ID. Please try again.");
+        }
+    });
+}
+
+function ValidateEmail() {
+    var email = $('#EmailAddress').val(); // Get email from the input field
+    var lblError = document.getElementById("lblError");
+    lblError.innerHTML = ""; // Clear any previous error message
+
+    // Corrected email regex pattern
+/*    var expr = /^[\w-\.]+@([\w-]+\.)+[a-zA-Z]{2,7}$/;*/
+    var expr = /^[\w-\.]+@([\w-]+\.)+[a-zA-Z]{2,6}$/;
+
+    if (!expr.test(email)) {
+        lblError.innerHTML = "Invalid email address.";
+    }
+}
+
+
+function validate_ConfirmEmail() {
+    /*  alert("test")*/
+    var pass = document.getElementById('EmailAddress').value;
+    var confirm_pass = document.getElementById('emailC').value;
+    if (pass != confirm_pass) {
+        document.getElementById('wrong_email_alert').style.color = 'red';
+        document.getElementById('wrong_email_alert').innerHTML
+            = '☒ Use same Email';
+        document.getElementById('btnsubmit').disabled = true;
+        document.getElementById('btnsubmit').style.opacity = (0.4);
+    } else {
+        document.getElementById('wrong_email_alert').style.color = 'green';
+        document.getElementById('wrong_email_alert').innerHTML =
+            '🗹 Email Matched';
+        document.getElementById('btnsubmit').disabled = false;
+        document.getElementById('btnsubmit').style.opacity = (1);
+    }
 }

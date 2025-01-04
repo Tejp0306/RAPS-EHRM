@@ -779,7 +779,7 @@ namespace EHRM.Web.Controllers
 
                 return Json(new { success = true, data = ts });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new { success = false, message = "An error occurred while retrieving the Team details." });
             }
@@ -809,7 +809,7 @@ namespace EHRM.Web.Controllers
                     message = result.Message
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (for debugging or error tracking)
                 // _logger.LogError(ex, "Error occurred while updating role details for role ID: {RoleId}", id);
@@ -894,7 +894,7 @@ namespace EHRM.Web.Controllers
 
                 return Json(new { success = true, data = et });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new { success = false, message = "An error occurred while retrieving the employee Type details." });
             }

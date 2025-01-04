@@ -3,33 +3,43 @@ using EHRM.ServiceLayer.Employee;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.Master;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EHRM.Web.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employee;
-
-        public EmployeeController(IEmployeeService employee)
+        private readonly EhrmContext _context;  
+        public EmployeeController(IEmployeeService employee, EhrmContext context)
         {
-
             _employee = employee;
+            _context = context; 
         }
         public IActionResult Index()
         {
             return View();
         }
-
-        public IActionResult addemployee()
+        [HttpGet("Employee/AddEmployee/{EmpId?}")]
+        public async Task<IActionResult> AddEmployee(int? EmpId = null)
         {
-            return View();
+            if (EmpId.HasValue)
+            {
+                var res = await _employee.GetAllEmployeeRecordDetails(EmpId.Value);
+                // Return the result model to the view if EmpId is provided
+                return View(res);
+            }
+            else
+            {
+                // Return a default or empty model if EmpId is not provided
+                var defaultModel = new List<GetAllEmployeeViewModel>();
+                return View();
+            }
         }
-
         public IActionResult employeeview()
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> SavePersonalInfoAsync(EmployeeViewModel model)
         {
@@ -40,7 +50,13 @@ namespace EHRM.Web.Controllers
 
                 filepath = Upload(model);
             }
-            string createdById = "Arjun"; // Replace with logic to fetch the actual user ID
+            else
+            {
+                TempData["ToastType"] = "warning";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Profile Image is Mandatory!";
+                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+            }
+            int createdById = 101; // Replace with logic to fetch the actual user ID
             var result = await _employee.SavePersonalInfoAsync(model, createdById, filepath);
             // Handle the result of the create operation
             if (result.Success)
@@ -55,11 +71,6 @@ namespace EHRM.Web.Controllers
                 return View(model); // Return to the same view with the provided model
             }
         }
-
-      
-
-
-        // Get Role Data for the role dropdown
 
         [HttpGet]
         public async Task<JsonResult> GetRole()
@@ -92,7 +103,6 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No Roles found." });
             }
         }
-
         private string Upload(EmployeeViewModel model)
         {
             // Check if a file is provided, if not, simply return null (indicating no file upload)
@@ -128,12 +138,7 @@ namespace EHRM.Web.Controllers
             // Return the full file path or file name
             return Path.Combine("\\ProfileImage", fileName);
         }
-
-
-        //Get Employee data for employee view data table
-
         public async Task<JsonResult> GetEmployeeData()
-
         {
             // Fetch the result from the service layer
             var result = await _employee.GetEmployeeDataAsync();
@@ -148,10 +153,10 @@ namespace EHRM.Web.Controllers
                     // Use Select to map the holidays to the desired output format
                     var EmployeeList = Employee.Select(emp => new
                     {
-                        Id=emp.Id,
+                        Id = emp.EmpId,
                         Name = emp.FirstName + ' ' + emp.LastName,
-                        Email= emp.EmailAddress
-
+                        Email = emp.EmailAddress,
+                        ProfileStatus = CheckProfileStatus(emp.IsProfileCompleted)
 
                     }).ToList(); // Convert to a List
 
@@ -170,10 +175,17 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No holidays found." });
             }
         }
+        // Non-action method to check profile completion status
+        [NonAction]
+        private string CheckProfileStatus(bool isProfileCompleted)
+        {
+            if (!isProfileCompleted)
+            {
+                return "Profile Incomplete";
+            }
 
-
-        // Get Team Data for the team dropdown
-
+            return "Profile Complete";
+        }
         public async Task<JsonResult> GetTeamData()
         {
             // Fetch the result from the service layer
@@ -204,8 +216,55 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No teams found." });
             }
         }
+        [HttpPost]
+        public async Task<JsonResult> GetAge(string dateBirth)
+        {
+            if (DateTime.TryParse(dateBirth, out DateTime dob))
+            {
+                var today = DateTime.Today;
+                var age = today.Year - dob.Year;
 
+                // Adjust if the birthday has not occurred yet this year
+                if (dob.Date > today.AddYears(-age))
+                {
+                    age--;
+                }
+                return Json(new { success = true, age });
+            }
+            return Json(new { success = false, message = "Invalid date format" });
+        }
+        [HttpPost]
+        public async Task<JsonResult> GenerateLogin(string firstName)
+        {
+            // Get the current year
+            int currentYear = DateTime.Now.Year;
+
+            // Generate the LoginId by appending the current year to the first name
+            string loginId = $"{firstName.ToLower()}.{currentYear}";
+            string password = $"{firstName.ToLower()}{currentYear}@" + GenerateRandomPassword();
+            // Return the result as a JSON response
+            return Json(new { success = true, loginId , password });
+        }
+        // Example of a helper method to generate a random password (you can customize the logic)
+        [HttpPost]
+        public async Task<JsonResult> CheckExistingEmpId(int empId)
+        {
+            // Check if the employee ID exists in the EmployeeDetails table
+            bool isExist = await _context.EmployeeDetails.AnyAsync(x => x.EmpId == empId);
+
+            // Return a flag: 1 if exists, 0 otherwise
+            return Json(new { flag = isExist ? 1 : 0 });
+        }
+
+        private string GenerateRandomPassword(int length = 8)
+        {
+            var random = new Random();
+            const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            var password = new string(Enumerable.Repeat(validChars, length)
+                                                .Select(s => s[random.Next(s.Length)]).ToArray());
+            return password;
+        }
 
     }
-    
+
 }

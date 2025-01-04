@@ -135,7 +135,7 @@ CREATE TABLE EmployeeDetails (
     MarriageAnniversary DATE NULL,            -- Marriage Anniversary
  
     -- Address Details
-    Street NVARCHAR(255) NOT NULL,            -- Local Address: Street
+    Street NVARCHAR(Max) NOT NULL,            -- Local Address: Street
     City NVARCHAR(100) NOT NULL,              -- Local Address: City
     Country NVARCHAR(100) NOT NULL,           -- Local Address: Country
     ZipCode NVARCHAR(20) NULL,                -- Local Address: Zip Code
@@ -144,6 +144,10 @@ CREATE TABLE EmployeeDetails (
     -- Audit Information
     CreatedAt DATETIME DEFAULT GETDATE(),     -- Record Creation Date
     UpdatedAt DATETIME DEFAULT GETDATE()      -- Record Last Update Date
+    Age INT,
+    IsProfileCompleted BIT DEFAULT 0,
+    Active BIT DEFAULT 0
+    createdById INT,
 );
 
 //Asset
