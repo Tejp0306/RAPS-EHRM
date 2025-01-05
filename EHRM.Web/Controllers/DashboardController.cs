@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EHRM.Web.Controllers
 {
 
-    [Authorize]
+   
     public class DashboardController : Controller
     {
         public IActionResult Index()

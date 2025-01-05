@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EHRM.ViewModel.Employee
 {
-    
-    public class EmployeeViewModel
+    public class GetAllEmployeeViewModel
     {
         public int Id { get; set; }
 
@@ -68,16 +66,10 @@ namespace EHRM.ViewModel.Employee
         public DateTime? CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
-
-    }
-    public class EmployeeName
-    {
-        public int Id { get; set; }
-
-        public int EmpId { get; set; }
-
-        public string? FullName { get; set; }
-
-
+        // You can add other related entity lists similarly
+        public List<QualificationViewModel> Qualifications { get; set; } = new List<QualificationViewModel>();
+        public List<EmploymentTypeDetailViewModel> EmploymentDetails { get; set; } = new List<EmploymentTypeDetailViewModel>();
+        public List<DeclarationViewModel> Declarations { get; set; } = new List<DeclarationViewModel>();
+        public List<SalaryViewModel> SalaryDetails { get; set; } = new List<SalaryViewModel>();
     }
 }

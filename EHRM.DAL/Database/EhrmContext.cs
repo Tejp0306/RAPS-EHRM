@@ -15,12 +15,15 @@ public partial class EhrmContext : DbContext
     {
     }
 
-    public virtual DbSet<AssetsDb> AssetsDbs { get; set; }
+    public virtual DbSet<Declaration> Declarations { get; set; }
+
     public virtual DbSet<EmpType> EmpTypes { get; set; }
 
     public virtual DbSet<EmployeeDetail> EmployeeDetails { get; set; }
 
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
+
+    public virtual DbSet<EmployementTypeDetail> EmployementTypeDetails { get; set; }
 
     public virtual DbSet<Holiday> Holidays { get; set; }
 
@@ -28,35 +31,50 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
 
+    public virtual DbSet<Qualification> Qualifications { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<Salary> Salaries { get; set; }
 
     public virtual DbSet<SubMenu> SubMenus { get; set; }
 
     public virtual DbSet<Team> Teams { get; set; }
 
-
-
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("Server=DESKTOP-S1TNCS5\\SQLEXPRESS;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AssetsDb>(entity =>
+        modelBuilder.Entity<Declaration>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Asset__3214EC0757B44263");
+            entity.HasKey(e => e.Id).HasName("PK__Declarat__3214EC072D152592");
 
-            entity.ToTable("AssetsDb");
+            entity.ToTable("Declaration");
 
-            entity.Property(e => e.Category)
-                .HasMaxLength(255)
+            entity.Property(e => e.Date)
+                .HasMaxLength(25)
                 .IsUnicode(false);
-            entity.Property(e => e.IssueDate).HasColumnType("datetime");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
+            entity.Property(e => e.HrContactInfo)
+                .HasMaxLength(25)
                 .IsUnicode(false);
-            entity.Property(e => e.Status)
-                .HasMaxLength(255)
+            entity.Property(e => e.HrRepresentativeDesignation)
+                .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Summary).IsUnicode(false);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.HrRepresentativeName)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+            entity.Property(e => e.Signature)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.Declarations)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmpId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Declarati__EmpId__1BC821DD");
         });
+
         modelBuilder.Entity<EmpType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__EmpType__3214EC076A9D326B");
@@ -83,12 +101,14 @@ public partial class EhrmContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.AadharNumber).HasMaxLength(20);
+            entity.Property(e => e.Active).HasDefaultValue(false);
             entity.Property(e => e.CellPhone).HasMaxLength(15);
             entity.Property(e => e.City).HasMaxLength(100);
             entity.Property(e => e.Country).HasMaxLength(100);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.CreatedById).HasColumnName("createdById");
             entity.Property(e => e.DateOfBirth)
                 .HasMaxLength(30)
                 .IsUnicode(false);
@@ -96,6 +116,7 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.FirstName).HasMaxLength(100);
             entity.Property(e => e.Gender).HasMaxLength(10);
             entity.Property(e => e.HomePhone).HasMaxLength(15);
+            entity.Property(e => e.IsProfileCompleted).HasDefaultValue(false);
             entity.Property(e => e.LastName).HasMaxLength(100);
             entity.Property(e => e.LoginId)
                 .HasMaxLength(50)
@@ -107,7 +128,6 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.PrefixName)
                 .HasMaxLength(6)
                 .IsUnicode(false);
-            entity.Property(e => e.Street).HasMaxLength(255);
             entity.Property(e => e.TeamId).HasColumnName("TeamID");
             entity.Property(e => e.Title).HasMaxLength(50);
             entity.Property(e => e.UpdatedAt)
@@ -135,6 +155,27 @@ public partial class EhrmContext : DbContext
                 .HasForeignKey<EmployeesCred>(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Employees__EmpId__0A9D95DB");
+        });
+
+        modelBuilder.Entity<EmployementTypeDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Employem__3214EC0772C11FAE");
+
+            entity.Property(e => e.AppointmentDate)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+            entity.Property(e => e.EndDate)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+            entity.Property(e => e.StartDate)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.EmployementTypeDetails)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmpId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Employeme__EmpId__160F4887");
         });
 
         modelBuilder.Entity<Holiday>(entity =>
@@ -194,6 +235,44 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<Qualification>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Qualific__3214EC077E73E8EF");
+
+            entity.ToTable("Qualification");
+
+            entity.Property(e => e.Concentration)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CountryName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CourseName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Details)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Document)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InstitutionName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.PassedDate)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.QualificationEarned)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.Qualifications)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmpId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Qualifica__EmpId__1EA48E88");
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC07E8F35265");
@@ -205,6 +284,29 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.RoleName).HasMaxLength(100);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Salary>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Salary__3214EC07BDA43C9C");
+
+            entity.ToTable("Salary");
+
+            entity.Property(e => e.Ctc).HasColumnName("CTC");
+            entity.Property(e => e.Description).IsUnicode(false);
+            entity.Property(e => e.Endyear)
+                .HasMaxLength(25)
+                .IsUnicode(false)
+                .HasColumnName("ENDYEAR");
+            entity.Property(e => e.StartYear)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.Salaries)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmpId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Salary__EmpId__18EBB532");
         });
 
         modelBuilder.Entity<SubMenu>(entity =>

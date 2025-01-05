@@ -8,7 +8,9 @@ using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
 using Logger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
@@ -68,7 +70,14 @@ namespace EHRM.Infrastructure.Configurations
                       };
                   });
 
-
+            // Add controllers with views and apply a global authorization filter
+            services.AddControllersWithViews(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
             // Add Distributed Memory Cache and Session
             services.AddDistributedMemoryCache();
             services.AddSession(options =>

@@ -16,10 +16,12 @@ using EHRM.ViewModel.SubMenu;
 using EHRM.ServiceLayer.Utility;
 using NuGet.Common;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace EHRM.Web.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         //private readonly ILogger<HomeController> _logger;
@@ -56,6 +58,7 @@ namespace EHRM.Web.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+     
         public IActionResult Login()
         {
             return View();
@@ -136,100 +139,6 @@ namespace EHRM.Web.Controllers
                 throw ex;
             }
         }
-
-
-        //public async Task<IActionResult> SaveLogin(LoginViewModel model)
-        //{
-        //    try
-        //    {
-        //        if (!ModelState.IsValid)
-        //        {
-        //            TempData["ToastType"] = "danger";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Please fill out all fields correctly!";
-        //            return RedirectToAction("Login");
-        //        }
-
-        //        var employeeCred = await _context.EmployeesCreds.FirstOrDefaultAsync(e => e.Email == model.Email && e.Active == true);
-        //        if (employeeCred == null)
-        //        {
-        //            TempData["ToastType"] = "warning";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Invalid login attempt. Email not found.";
-        //            return RedirectToAction("Login");
-        //        }
-
-        //        if (employeeCred.IsLockedOut && !IsLockoutExpired(employeeCred))
-        //        {
-        //            var minutesLeft = GetLockoutTimeRemaining(employeeCred);
-        //            TempData["ToastType"] = "warning";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = $"Your account is locked. Try again in {minutesLeft} minutes or contact the administrator.";
-        //            return RedirectToAction("Login");
-        //        }
-
-        //        if (employeeCred.IsLockedOut)
-        //        {
-        //            ResetLockout(employeeCred);
-        //        }
-
-        //        if (employeeCred.TempPassword != model.Password)
-        //        {
-        //            await HandleFailedLoginAttempt(employeeCred);
-        //            TempData["ToastType"] = "warning";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Invalid login attempt. Your account may be locked after multiple attempts.";
-        //            return RedirectToAction("Login");
-        //        }
-
-        //        await HandleSuccessfulLogin(employeeCred);
-
-        //        // Generate JWT Token
-        //        string jwtToken = JwtSessionHelper.GenerateJwtToken(
-        //            employeeCred.EmpId.ToString(),
-        //            employeeCred.Email,
-        //            employeeCred.FirstName + " " + employeeCred.LastName,
-        //            employeeCred.RoleId
-        //        );
-
-        //        // Store token in a cookie
-        //        HttpContext.Response.Cookies.Append("JwtToken", jwtToken, new CookieOptions
-        //        {
-        //            HttpOnly = true, // Prevent access from client-side scripts
-        //            Secure = true,  // Use HTTPS in production
-        //            SameSite = SameSiteMode.Strict
-        //        });
-
-        //        // Store JWT token in session
-        //        HttpContext.Session.SetString("JwtToken", jwtToken);
-        //        // Check the MagicOTP configuration
-        //        var magicOtpConfig = _configuration.GetSection("MagicOTP");
-        //        bool key = magicOtpConfig.GetValue<bool>("key");
-
-        //        if (!key)
-        //        {
-        //            // Generate OTP and send email
-        //            string otp = GenerateOtp();
-        //            await SendOtp(employeeCred.Email, otp);
-
-        //            HttpContext.Session.SetString("Otp", otp);
-        //            HttpContext.Session.SetString("OtpExpiry", DateTime.Now.AddMinutes(3).ToString()); // Store OTP expiry
-        //            TempData["ToastType"] = "Success";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Login successful. Please enter the OTP sent to your registered email.";
-        //        }
-        //        else
-        //        {
-        //            // Magic OTP is enabled, skip OTP generation
-        //            TempData["ToastType"] = "Success";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Login successful. Since Magic OTP is enabled, no OTP will be sent.";
-        //        }
-
-        //        return RedirectToAction("Otp", "Account");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-
-
-
         private bool IsLockoutExpired(EmployeesCred employeeCred)
         {
             return employeeCred.LockoutEndTime.HasValue && employeeCred.LockoutEndTime.Value <= DateTime.Now;
@@ -306,6 +215,7 @@ namespace EHRM.Web.Controllers
             // Call the SendEmail method to send the OTP
             otpemail.SendEmail(email, subject, body);
         }
+  
         [HttpPost]
 
         public async Task<IActionResult> Otp(OtpViewModel model)
