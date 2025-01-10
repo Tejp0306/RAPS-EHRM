@@ -31,6 +31,42 @@ CREATE TABLE Team (
     UpdateDate DATETIME -- Last update date
 );
 
+//Stored Procedure GetSubMenuAllDetails
+
+USE [EHRM]
+GO
+/****** Object:  StoredProcedure [dbo].[GetSubMenuAllDetails]    Script Date: 1/7/2025 8:36:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[GetSubMenuAllDetails]
+	(@Id INT)
+AS
+BEGIN
+
+
+	SELECT 
+    sm.Id As Id,
+	sm.Action As Action,
+	sm.Controller As Controller,
+	mm.Id As MainMenuId,
+	r.Id As RoleId,
+	e.EmpId As EmployeeId,
+    sm.Name AS SubMenuName,        
+    mm.Name AS MainMenuName,        
+    r.RoleName AS RoleName,             
+    e.FirstName + ' ' + e.LastName AS EmployeeName 
+FROM   SubMenu sm
+Left   JOIN  MainMenu mm ON sm.MainMenuId = mm.Id  
+left JOIN  Roles r ON sm.RoleId = r.Id            
+left JOIN  EmployeeDetails e ON sm.EmpId = e.EmpId  
+WHERE sm.IsActive = 1 and sm.Id=@Id; 
+END
+
+
+
 //Holiday
 
 CREATE TABLE Holiday (
