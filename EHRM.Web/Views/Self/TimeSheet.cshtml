@@ -3,21 +3,55 @@
     ViewData["Title"] = "TimeSheet";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<style>
+    .scrolling-text {
+        font-size: 16px;
+        color: red;
+    }
+
+</style>
 <div class="container-fluid my-0">
-    <div class="card shadow">
-      <div class="row">
-          <div class="col-lg=10 col-md-10 col-sm-10">
-                <div class="card-header text-center  text-black">
-                    <h3>RAPS Consulting Inc.</h3>
-                    <h5>TIME SHEET</h5>
+    <div class="card">
+        <div class="row">
+            <div class="col-lg-10 col-md-10 col-sm-10">
+                <div class="card-header text-center text-black">
+                    <h5>RAPS Consulting Inc.</h5>
+                    <h6>TIME SHEET</h6>
                 </div>
-          </div>
-          <div class="col-lg-2 col-md-2 col-sm-2">
-              ss
-          </div>
-      </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <!-- Placeholder for Profile Picture -->
+                <img src="~/pic/rapslogo.png" alt="Profile Picture" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+            </div>
+        </div>
         <div class="card-body">
             <form>
+                <div class="row mb-3">
+                    <div class="col-md-2">
+                        <!-- Dropdown for selecting month with default to current month -->
+                        <select id="monthSelector" class="form-select" onchange="generateTimesheetRows();">
+                            <option value="0">January</option>
+                            <option value="1">February</option>
+                            <option value="2">March</option>
+                            <option value="3">April</option>
+                            <option value="4">May</option>
+                            <option value="5">June</option>
+                            <option value="6">July</option>
+                            <option value="7">August</option>
+                            <option value="8">September</option>
+                            <option value="9">October</option>
+                            <option value="10">November</option>
+                            <option value="11">December</option>
+                        </select>
+                    </div>
+                    <div class="col-md-10">
+                        <!-- Notification Marquee -->
+                        <div class="scrolling-text">
+                            * All timesheets for the previous month should be submitted by 10th of the current month.
+                        </div>
+                    </div>
+                </div>
+                <hr />
                 <div class="row mb-2">
                     <div class="col-md-6">
                         <label for="employeeName" class="form-label">Name of Employee:</label>
@@ -50,23 +84,8 @@
                             <th>Remarks</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- Example Rows (can add as needed) -->
-                        <tr>
-                            <td>1-Dec-24</td>
-                            <td>Sunday</td>
-                            <td><input type="number" class="form-control" min="0" step="1"></td>
-                            <td><input type="text" class="form-control"></td>
-                            <td><input type="text" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>2-Dec-24</td>
-                            <td>Monday</td>
-                            <td><input type="number" class="form-control" min="0" step="1"></td>
-                            <td><input type="text" class="form-control"></td>
-                            <td><input type="text" class="form-control"></td>
-                        </tr>
-                        <!-- Repeat rows for all dates -->
+                    <tbody id="timesheet-rows">
+                        <!-- Rows will be dynamically generated here -->
                     </tbody>
                 </table>
 
@@ -113,3 +132,67 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    // Function to generate timesheet rows based on the selected month
+    function generateTimesheetRows() {
+        const timesheetRows = document.getElementById('timesheet-rows');
+        const monthSelector = document.getElementById('monthSelector');
+        const selectedMonth = parseInt(monthSelector.value); // Get selected month from dropdown
+        const currentYear = new Date().getFullYear(); // Get current year
+
+        // Get the number of days in the selected month
+        const daysInMonth = new Date(currentYear, selectedMonth + 1, 0).getDate();
+
+        // Clear existing rows
+        timesheetRows.innerHTML = '';
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(currentYear, selectedMonth, day);
+            const dayOfWeek = date.toLocaleString('en-us', { weekday: 'long' });
+            const formattedDate = `${day}-${selectedMonth + 1}-${currentYear}`;
+
+            // Create the row with specific styling for weekends
+            const row = document.createElement('tr');
+
+            // If the day is Saturday or Sunday, apply the yellow background
+            const weekendStyle = (dayOfWeek === "Saturday" || dayOfWeek === "Sunday") ? 'background-color: yellow;' : '';
+
+            row.innerHTML = `
+                <td>${formattedDate}</td>
+                <td>${dayOfWeek}</td>
+                <td><input type="number" class="form-control hours-input" min="0" step="1"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+            `;
+
+            // Apply the weekend background style
+            row.style = weekendStyle;
+
+            timesheetRows.appendChild(row);
+        }
+
+        // Add event listener to each "hours" input field
+        const hoursInputs = document.querySelectorAll('.hours-input');
+        hoursInputs.forEach(input => {
+            input.addEventListener('input', updateTotalHours);
+        });
+    }
+
+    // Function to calculate and update the total hours worked
+    function updateTotalHours() {
+        let totalHours = 0;
+        const hoursInputs = document.querySelectorAll('.hours-input');
+        hoursInputs.forEach(input => {
+            const value = parseFloat(input.value) || 0; // Get value or 0 if not a number
+            totalHours += value;
+        });
+
+        // Update the total hours field
+        document.getElementById('totalHours').value = totalHours;
+    }
+
+    // Default to current month on page load
+    window.onload = generateTimesheetRows;
+</script>
