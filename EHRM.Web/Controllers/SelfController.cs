@@ -82,6 +82,9 @@ namespace EHRM.Web.Controllers
                 return View("GetProfileData", model);
             }
         }
-        
+        public IActionResult TimeSheet()
+        {
+            return View();
+        }
     }
 }
