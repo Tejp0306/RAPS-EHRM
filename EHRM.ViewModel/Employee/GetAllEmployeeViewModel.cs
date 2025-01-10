@@ -33,6 +33,8 @@ namespace EHRM.ViewModel.Employee
 
         public int RoleId { get; set; }
 
+        public string RoleName { get; set; }
+
         public string DateOfBirth { get; set; } = null!;
 
         public string Gender { get; set; } = null!;
@@ -50,6 +52,7 @@ namespace EHRM.ViewModel.Employee
         public string? OfficePhone { get; set; }
 
         public int TeamId { get; set; }
+        public string TeamName { get; set; }
 
         public DateOnly? MarriageAnniversary { get; set; }
 

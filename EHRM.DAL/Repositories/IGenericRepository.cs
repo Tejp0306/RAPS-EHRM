@@ -18,6 +18,10 @@ namespace EHRM.DAL.Repositories
         Task<List<EmployeeDetail>> GetByRoleIdAsync(int RoleId);
         Task<List<EmployeeDetail>> GetByTeamIdAsync(int RoleId);
 
+        Task<List<EmployeeDetail>> GetByEmpIdDOB(int EmpId, String DOB);
+        
+
+
 
     }
 }

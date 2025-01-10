@@ -3,7 +3,8 @@ using EHRM.DAL.Repositories;
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Asset;
 using EHRM.ServiceLayer.Employee;
-using EHRM.ServiceLayer.Helpers;
+using EHRM.ServiceLayer.Self;
+using EHRM.ServiceLayer.HR;
 using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
 using Logger;
@@ -17,11 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using static Logger.LoggerService;
 
 namespace EHRM.Infrastructure.Configurations
@@ -39,7 +36,10 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IMasterService, MasterService>();
             services.AddScoped<IMainMenuService, MainMenuService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<ISelfService, SelfService>();
+
             //services.AddScoped<ISubMenuService, SubMenuService>();
+            services.AddScoped<IHrService, HrService>();
             services.AddScoped<IAssetService, AssetService>();
             services.AddSingleton<ILoggerManager, LoggerManager>();
             // HttpContextAccessor
