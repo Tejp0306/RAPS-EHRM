@@ -18,5 +18,10 @@ namespace EHRM.Web.Controllers
         {
             return View();
         }
+        public IActionResult TimeSheet()
+        {
+            return View();
+        }
+      
     }
 }
