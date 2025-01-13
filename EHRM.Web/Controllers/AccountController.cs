@@ -17,6 +17,7 @@ using EHRM.ServiceLayer.Utility;
 using NuGet.Common;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Authorization;
+using EHRM.Web.Utility;
 
 
 namespace EHRM.Web.Controllers
@@ -28,15 +29,19 @@ namespace EHRM.Web.Controllers
         private readonly EhrmContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IConfiguration _configuration; 
+        private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public AccountController(EhrmContext context, IWebHostEnvironment webHostEnvironment, IServiceProvider serviceProvider, IConfiguration configuration)
+
+        public AccountController(EhrmContext context, IWebHostEnvironment webHostEnvironment, IServiceProvider serviceProvider, IConfiguration configuration, IEmailService emailService )
         {
             //_logger = logger;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _serviceProvider = serviceProvider;
             _configuration = configuration;
+            _emailService = emailService;
+
         }
 
         public IActionResult Index()
@@ -204,7 +209,7 @@ namespace EHRM.Web.Controllers
         }
         private async Task SendOtp(string email, string otp)
         {
-            EmailService otpemail = new EmailService();
+            
             string template = await GetTemplateFromFile("OTPEmailTemplate");
             string body = template.Replace("{{otp}}", otp);
 
@@ -213,9 +218,10 @@ namespace EHRM.Web.Controllers
             //string logoPath = Path.Combine(_webHostEnvironment.WebRootPath, "pic", "logo.png");
 
             // Call the SendEmail method to send the OTP
-            otpemail.SendEmail(email, subject, body);
+            _emailService.SendEmail(email, subject, body);
+
         }
-  
+
         [HttpPost]
 
         public async Task<IActionResult> Otp(OtpViewModel model)

@@ -179,7 +179,7 @@ namespace EHRM.ServiceLayer.Employee
                                         Description = salary.Description
                                     }
                                 },
-                               Qualifications = qualification == null ? new List<QualificationViewModel>() : new List<QualificationViewModel>
+                                           Qualifications = qualification == null ? new List<QualificationViewModel>() : new List<QualificationViewModel>
                                 {
                                     new QualificationViewModel
                                     {
@@ -191,7 +191,7 @@ namespace EHRM.ServiceLayer.Employee
                                     }
                                 },
 
-                          EmploymentDetails = etype == null ? new List<EmploymentTypeDetailViewModel>() : new List<EmploymentTypeDetailViewModel>
+                                           EmploymentDetails = etype == null ? new List<EmploymentTypeDetailViewModel>() : new List<EmploymentTypeDetailViewModel>
                                 {
                                     new EmploymentTypeDetailViewModel
                                     {
@@ -205,7 +205,7 @@ namespace EHRM.ServiceLayer.Employee
                                     }
                                 },
 
-                          Declarations = declaration == null ? new List<DeclarationViewModel>() : new List<DeclarationViewModel>
+                                           Declarations = declaration == null ? new List<DeclarationViewModel>() : new List<DeclarationViewModel>
                                 {
                                     new DeclarationViewModel
                                     {
@@ -310,6 +310,13 @@ namespace EHRM.ServiceLayer.Employee
                 {
                     Success = true,
                     Message = "Data Saved successfully."
+                };
+            }
+            catch (Exception) { 
+              throw;
+            }
+            }
+   
         public async Task<Result> GetManagerAsync()
         {
             try
@@ -326,8 +333,8 @@ namespace EHRM.ServiceLayer.Employee
                     .Select(e => new GetAllEmployeeViewModel
                     {
                         EmpId = e.EmpId,
-                        FirstName = e.FirstName, 
-                        LastName=e.LastName
+                        FirstName = e.FirstName,
+                        LastName = e.LastName
                     })
                     .ToList();  // Get the first matching employee
 
@@ -363,7 +370,7 @@ namespace EHRM.ServiceLayer.Employee
             {
                 var employeeProfileRepository = _UnitOfWork.GetRepository<EmployeesDeclaration>();  // Using generic repository
                 var employee = await employeeProfileRepository.GetByDeclarationEmpIdDOB(EmpId, DOB);  // Fetch employee based on empid and DOB
-                                                                                           //Viewbag.employee=employee;
+                                                                                                      //Viewbag.employee=employee;
                 return employee;
             }
         }
@@ -456,11 +463,6 @@ namespace EHRM.ServiceLayer.Employee
 
         #endregion
 
-                // Log exception or handle it appropriately
-                throw new Exception("An error occurred while retrieving the manager details.", ex);
-            }
-        }
-
-
     }
+
 }
