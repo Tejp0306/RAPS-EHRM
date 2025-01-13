@@ -16,7 +16,7 @@ namespace EHRM.ViewModel.Employee
         public int EmpId { get; set; }
 
         public string Title { get; set; } = null!;
-
+        public string? Name { get; set; } 
         public string FirstName { get; set; } = null!;
 
         public string? MiddleName { get; set; }
@@ -67,6 +67,7 @@ namespace EHRM.ViewModel.Employee
         public string Nationality { get; set; } = null!;
 
         public DateTime? CreatedAt { get; set; }
+        public int ManagerId { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
         // You can add other related entity lists similarly

@@ -249,6 +249,11 @@
                                             <!-- Employment Type and Appointment Details -->
                                             <fieldset>
                                                 <legend><i class="fas fa-briefcase"></i> Employment Type and Appointment Details</legend> <!-- Employee Type and Appointment Date -->
+                                                <div class="col-4 col-md-4">
+                                                    <input asp-for="EmpId" type="hidden" value="@TempData["EmpId"]" />
+                                                    <label for="EmpId" class="form-label">EMP-ID  *</label>
+                                                    <input asp-for="EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+                                                </div>
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6">
                                                         <label for="employeeType" class="form-label">Employee Type *</label> <select class="form-select" id="employeeType">
@@ -258,7 +263,9 @@
                                                             <option value="contract">Contract</option>
                                                         </select>
                                                     </div>
-                                                    <div class="col-12 col-md-6"> <label for="appointmentDate" class="form-label">Appointment Date *</label> <input type="text" class="form-control" name="appointmentDate" id="appointmentDate" data-start-day='1' data-picker-type='date' placeholder="Select Appointment Date" readonly /> </div>
+                                                    <div class="col-12 col-md-6"> <label for="appointmentDate" class="form-label">Appointment Date *</label> 
+                                                        <input type="text" class="form-control" name="appointmentDate" id="appointmentDate" data-start-day='1' data-picker-type='date' placeholder="Select Appointment Date" onchange="calculateServiceDuration(this.value)" readonly />
+                                                    </div>
                                                 </div> <!-- Start Date and End Date -->
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6"> <label for="startDate" class="form-label">Start Date *</label> <input type="text" class="form-control" name="startdate" id="startdate" data-start-day='1' data-picker-type='date' placeholder="Select Start Date" readonly /> </div>
@@ -266,7 +273,9 @@
                                                 </div> <!-- Total Service and Appointed Service -->
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6"> <label for="totalService" class="form-label">Total Service *</label> <input type="text" class="form-control" id="totalService" placeholder="Enter Total Service (years/months)"> </div>
-                                                    <div class="col-12 col-md-6"> <label for="appointedService" class="form-label">Appointed Service *</label> <input type="text" class="form-control" id="appointedService" placeholder="Enter Appointed Service (years/months)"> </div>
+                                                    <div class="col-12 col-md-6"> <label for="appointedService" class="form-label">Appointed Service *</label>
+                                                        <input type="text" class="form-control" id="appointedService" placeholder="Enter Appointed Service (years/months)">
+                                                        </div>
                                                 </div> <!-- Employment Status and Manager Name -->
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6">
@@ -278,17 +287,15 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-12 col-md-6">
-                                                        <label for="managerName" class="form-label">Manager Name</label> <select class="form-select" id="managerName">
+                                                        <label for="ManagerId" class="form-label">Manager Name</label>
+                                                        <select class="form-select" id="ManagerId">
                                                             <option selected>Select Manager</option>
-                                                            <option value="manager1">Manager 1</option>
-                                                            <option value="manager2">Manager 2</option>
-                                                            <option value="manager3">Manager 3</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                             </fieldset> <!-- Save Button -->
                                             <div class="row mb-3">
-                                                <div class="col-12"> <button type="button" class="btn btn-primary" id="saveButton" disabled onclick="saveEmploymentDetails()">Save</button> </div>
+                                                <div class="col-12"> <button type="button" class="btn btn-primary" id="saveButton" >Save</button> </div>
                                             </div>
                                         </form>
                                     </div>
@@ -305,6 +312,11 @@
                                         <!-- Qualification and Education Details -->
                                         <fieldset>
                                             <legend><i class="fas fa-graduation-cap"></i> Qualification and Education</legend> <!-- Course Name and Concentration -->
+                                            <div class="col-4 col-md-4">
+                                              
+                                                <label for="EmpId" class="form-label">EMP-ID  *</label>
+                                                <input asp-for="EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+                                            </div>
                                             <div class="row mb-3">
                                                 <div class="col-12 col-md-6"> <label for="courseName" class="form-label">Course Name *</label> <input type="text" class="form-control" id="courseName" placeholder="Enter Course Name"> </div>
                                                 <div class="col-12 col-md-6"> <label for="concentration" class="form-label">Concentration (optional)</label> <input type="text" class="form-control" id="concentration" placeholder="Enter Concentration or Area of Focus"> </div>
@@ -353,6 +365,10 @@
                                         <!-- Salary Grade Details -->
                                         <fieldset>
                                             <legend><i class="fas fa-dollar-sign"></i> Salary Grade</legend> <!-- CTC (Cost to Company) -->
+                                            <div class="col-4 col-md-4">
+                                                <label for="EmpId" class="form-label">EMP-ID  *</label>
+                                                <input asp-for="EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+                                            </div>
                                             <div class="row mb-3">
                                                 <div class="col-12 col-md-6"> <label for="ctc" class="form-label">CTC (Cost to Company)</label> <input type="text" class="form-control" id="ctc" placeholder="Enter CTC"> </div>
                                             </div> <!-- Start Year and End Year -->
@@ -382,6 +398,10 @@
                                         <form>
                                             <fieldset>
                                                 <legend><i class="fas fa-pen"></i> Declaration</legend> <!-- Declaration Statement -->
+                                                <div class="col-4 col-md-4">
+                                                    <label for="EmpId" class="form-label">EMP-ID  *</label>
+                                                    <input asp-for="EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+                                                </div>
                                                 <div class="row mb-3">
                                                     <div class="col-12">
                                                         <label class="form-label">Declaration Statement</label>

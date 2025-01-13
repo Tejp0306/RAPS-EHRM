@@ -2,9 +2,47 @@
     getRole();
     getTeam();
     getEmployeeData();
+    getManager();
 });
 
+function getManager() {
 
+    $.ajax({
+        url: '/Employee/GetManager', // Replace with your actual controller action
+        method: 'GET',
+
+        success: function (response) {
+
+
+
+            if (response.success) {
+                const res = response.data; // Assuming Data contains the array of teams
+                debugger;
+                // Populate the dropdown
+                const resDropdown = $('#ManagerId');
+                resDropdown.empty(); // Clear any existing options
+
+                // Add a default option
+                resDropdown.append('<option value="" disabled selected>Select Role</option>');
+                res.forEach(res => {
+                    resDropdown.append(`<option value="${res.empid}">${res.name}</option>`); // Adjust key names as needed
+                });
+
+
+
+                // Loop through the array and append options
+
+            } else {
+                console.error('Error:', response.Message);
+            }
+        },
+        error: function (error) {
+            console.error('AJAX Error:', error);
+        }
+    });
+
+
+}
 function getRole() {
 
     $.ajax({
@@ -266,4 +304,37 @@ function validate_ConfirmEmail() {
         document.getElementById('btnsubmit').disabled = false;
         document.getElementById('btnsubmit').style.opacity = (1);
     }
+}
+
+
+function calculateServiceDuration(appointmentDate) {
+    debugger;
+    const appointmentDateObj = new Date(appointmentDate);
+    const currentDate = new Date();
+
+    // Calculate the difference in years, months, and days
+    let yearsDifference = currentDate.getFullYear() - appointmentDateObj.getFullYear();
+    let monthsDifference = currentDate.getMonth() - appointmentDateObj.getMonth();
+    let daysDifference = currentDate.getDate() - appointmentDateObj.getDate();
+
+    // If the month difference is negative, adjust the year difference
+    if (monthsDifference < 0) {
+        monthsDifference += 12;
+        yearsDifference--;
+    }
+
+    // If the days difference is negative, adjust the month difference
+    if (daysDifference < 0) {
+        const previousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 0);
+        const daysInPreviousMonth = previousMonth.getDate();
+        daysDifference += daysInPreviousMonth;
+        monthsDifference--;
+    }
+
+    // Prepare result in years, months, and days
+    let result = `${yearsDifference} year${yearsDifference !== 1 ? "s" : ""}, ${monthsDifference} month${monthsDifference !== 1 ? "s" : ""}, ${daysDifference} day${daysDifference !== 1 ? "s" : ""}`;
+
+    // Update the appointedService input with calculated time difference
+    const appointedServiceInput = document.getElementById("appointedService");
+    appointedServiceInput.value = result;
 }

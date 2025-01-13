@@ -13,8 +13,10 @@ CREATE TABLE Roles (
     
     CreateDate DATETIME, -- Date and time when the role was created
     UpdateDate DATETIME -- Date and time when the role was last updated
-);
 
+);
+    alter table Roles
+Add RoleId INT
 
 //Team
 
@@ -31,6 +33,8 @@ CREATE TABLE Team (
     UpdateDate DATETIME -- Last update date
 );
 
+alter table Team
+Add TeamId INT
 //Stored Procedure GetSubMenuAllDetails
 
 USE [EHRM]
