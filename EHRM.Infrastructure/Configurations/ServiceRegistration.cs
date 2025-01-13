@@ -44,6 +44,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IHrService, HrService>();
             services.AddScoped<IAssetService, AssetService>();
             services.AddSingleton<ILoggerManager, LoggerManager>();
+            services.AddSingleton<IEmailService, EmailService>();
             // HttpContextAccessor
             services.AddHttpContextAccessor();
 

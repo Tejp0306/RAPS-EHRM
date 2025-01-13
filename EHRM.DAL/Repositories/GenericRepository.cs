@@ -61,10 +61,16 @@ namespace EHRM.DAL.Repositories
             return await _context.Set<EmployeeDetail>().Where(x => x.TeamId == TeamId).ToListAsync();
         }
 
+        public async Task<List<EmployeesDeclaration>> GetByDeclarationEmpIdDOB(int EmpId, DateTime DOB)
+        {
+            return await _context.Set<EmployeesDeclaration>().Where(x => x.EmpId == EmpId && x.DateOfBirth == DOB).ToListAsync();
+        }
+
         public async Task<List<EmployeeDetail>> GetByEmpIdDOB(int EmpId, String DOB)
         {
             return await _context.Set<EmployeeDetail>().Where(x => x.EmpId == EmpId && x.DateOfBirth==DOB).ToListAsync();
         }
+
 
     }
 
