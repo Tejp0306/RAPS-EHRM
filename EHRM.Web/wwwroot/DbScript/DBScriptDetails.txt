@@ -85,6 +85,16 @@ CREATE TABLE Holiday (
     FOREIGN KEY (TeamId) REFERENCES Team(Id) ON DELETE CASCADE -- Enable cascading delete
 );
 
+//Add Probation Question
+
+CREATE TABLE ProbationEvaluationQuestions (
+    QuestionID INT IDENTITY(1,1) PRIMARY KEY, -- Unique identifier, auto-incremented
+    Question NVARCHAR(MAX) NOT NULL,          -- The text of the question (supports Unicode)
+    CreatedAt DATETIME,
+	IsActive BIT
+);
+
+
 //NoticeBoard 
 
 CREATE TABLE NoticeBoard (

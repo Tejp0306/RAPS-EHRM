@@ -7,6 +7,7 @@ using EHRM.ServiceLayer.Self;
 using EHRM.ServiceLayer.HR;
 using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
+using EHRM.ServiceLayer.Review;
 using Logger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +38,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IMainMenuService, MainMenuService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<ISelfService, SelfService>();
+            services.AddScoped<IReviewService, ReviewService>();
 
             //services.AddScoped<ISubMenuService, SubMenuService>();
             services.AddScoped<IHrService, HrService>();
