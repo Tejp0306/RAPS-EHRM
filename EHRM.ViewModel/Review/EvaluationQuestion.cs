@@ -9,6 +9,11 @@ namespace EHRM.ViewModel.Review
     public class EvaluationQuestion
     {
         public int Id { get; set; }
-        public string Text { get; set; }
+
+        public string Question { get; set; } = null!;
+
+        public DateTime? CreatedAt { get; set; }
+
+        public bool? IsActive { get; set; }
     }
 }

@@ -214,7 +214,7 @@ public partial class EhrmContext : DbContext
             entity.ToTable("MainMenu");
 
             entity.Property(e => e.Icon)
-                .HasMaxLength(50)
+                .HasMaxLength(30)
                 .IsUnicode(false);
             entity.Property(e => e.Name)
                 .HasMaxLength(255)

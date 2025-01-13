@@ -60,11 +60,11 @@
                         @foreach (var question in Model)
                         {
                             <tr>
-                                <td class="text-center">@($"Ques {question.Id}")</td>
-                                <td>@question.Text</td> <!-- Displaying question text here -->
-                                <td><input type="text" class="form-control" name="question-@question.Id-1"></td>
-                                <td><input type="text" class="form-control" name="question-@question.Id-2"></td>
-                                <td><input type="text" class="form-control" name="question-@question.Id-3"></td>
+                                <td class="text-center">@($"Ques {question.Id}")</td> <!-- Displaying Question ID -->
+                                <td>@question.Question</td> <!-- Displaying the question text -->
+                                <td><input type="text" class="form-control"></td>  <!-- First input field -->
+                                <td><input type="text" class="form-control"></td>  <!-- Second input field -->
+                                <td><input type="text" class="form-control"></td>  <!-- Third input field -->
                             </tr>
                         }
                     </tbody>
