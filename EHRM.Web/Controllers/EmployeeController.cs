@@ -1,6 +1,8 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.ServiceLayer.Employee;
+using EHRM.ServiceLayer.Utility;
 using EHRM.ViewModel.Employee;
+using EHRM.ViewModel.EmployeeDeclaration;
 using EHRM.ViewModel.Master;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

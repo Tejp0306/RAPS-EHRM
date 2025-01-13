@@ -2,6 +2,7 @@
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
+using EHRM.ViewModel.EmployeeDeclaration;
 using EHRM.ViewModel.MainMenu;
 using System;
 using System.Collections.Generic;
@@ -324,7 +325,7 @@ namespace EHRM.ServiceLayer.Employee
         {
             {
                 var employeeProfileRepository = _UnitOfWork.GetRepository<EmployeesDeclaration>();  // Using generic repository
-                var employee = await employeeProfileRepository.GetByEmpIdDOB(EmpId, DOB);  // Fetch employee based on empid and DOB
+                var employee = await employeeProfileRepository.GetByDeclarationEmpIdDOB(EmpId, DOB);  // Fetch employee based on empid and DOB
                                                                                            //Viewbag.employee=employee;
                 return employee;
             }

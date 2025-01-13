@@ -1,5 +1,7 @@
-﻿using EHRM.ServiceLayer.Models;
+﻿using EHRM.DAL.Database;
+using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
+using EHRM.ViewModel.EmployeeDeclaration;
 
 
 namespace EHRM.ServiceLayer.Employee
