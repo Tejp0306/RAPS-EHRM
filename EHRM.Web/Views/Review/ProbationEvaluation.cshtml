@@ -1,0 +1,109 @@
+﻿@model List<EHRM.ViewModel.Review.EvaluationQuestion>
+@{
+    ViewData["Title"] = "ProbationEvaluation";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .question-header {
+        font-weight: bold;
+        color: #5A5A5A;
+    }
+
+    .evaluation-table th, .evaluation-table td {
+        vertical-align: middle;
+    }
+
+        .evaluation-table td input {
+            width: 100%;
+        }
+
+    .section-title {
+        margin-top: 30px;
+        font-weight: bold;
+    }
+</style>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h2>Probation Evaluation</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <!-- Employee Information -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="doj" class="form-label">DOJ</label>
+                        <input type="date" class="form-control" id="doj" name="doj">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="manager" class="form-label">Reporting Manager</label>
+                        <input type="text" class="form-control" id="manager" name="manager">
+                    </div>
+                </div>
+
+                <!-- Evaluation Table -->
+                <table class="table table-bordered evaluation-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Criteria</th>
+                            <th class="text-center">Question</th> <!-- Added this column -->
+                            <th class="text-center">1st Month</th>
+                            <th class="text-center">2nd Month</th>
+                            <th class="text-center">3rd Month</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var question in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@($"Ques {question.Id}")</td> <!-- Displaying Question ID -->
+                                <td>@question.Question</td> <!-- Displaying the question text -->
+                                <td><input type="text" class="form-control"></td>  <!-- First input field -->
+                                <td><input type="text" class="form-control"></td>  <!-- Second input field -->
+                                <td><input type="text" class="form-control"></td>  <!-- Third input field -->
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Remarks Section -->
+                <div class="section-title">Recommendation and remarks from reporting manager</div>
+                <div class="mb-3">
+                    <textarea class="form-control" id="remarks" name="remarks" rows="4"></textarea>
+                </div>
+
+                <!-- Confirmation Section -->
+                <div class="section-title">Confirmation with remarks</div>
+                <div class="mb-3">
+                    <select class="form-select" id="confirmation" name="confirmation">
+                        <option selected>Choose...</option>
+                        <option value="extend">Extend Probation period</option>
+                        <option value="terminate">Termination</option>
+                    </select>
+                </div>
+
+                <!-- Manager Signature -->
+                <div class="section-title">Manager Signature</div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="manager-signature" name="manager-signature">
+                </div>
+
+                <!-- Date -->
+                <div class="section-title">Date</div>
+                <div class="mb-3">
+                    <input type="date" class="form-control" id="date" name="date">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+

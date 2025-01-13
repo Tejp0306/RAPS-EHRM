@@ -19,5 +19,8 @@ namespace EHRM.DAL.Repositories
         Task<List<EmployeeDetail>> GetByTeamIdAsync(int RoleId);
         Task<List<EmployeesDeclaration>> GetByDeclarationEmpIdDOB(int EmpId, DateTime DOB);
 
+        Task<List<EmployeeDetail>> GetByEmpIdDOB(int EmpId, String DOB);
+        
+
     }
 }

@@ -78,6 +78,10 @@ namespace EHRM.ViewModel.Employee
 
         public string? FullName { get; set; }
 
+        public string? DOB { get; set; }
+
+
+
 
     }
 }

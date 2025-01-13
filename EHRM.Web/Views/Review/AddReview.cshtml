@@ -1,0 +1,60 @@
+﻿@using EHRM.ViewModel.Review
+@model EvaluationQuestion
+
+@{
+    ViewData["Title"] = "AddReview";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+
+<script src="~/customscripts/Probation.js"></script>
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2>Probation Evaluation Question</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
+                Add Question
+            </button>
+        </div>
+        <div class="container mt-3">
+            <div class="table-responsive">
+                <table id="AddReviewTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic content will be added by DataTable -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Adding Question -->
+<div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addQuestionModalLabel">Add New Question</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Review" asp-action="SaveQuestions" id="addQuestionForm">
+                    <div class="mb-3">
+                        <input type="hidden" id="Id" name="Id" />
+                        <label for="questionName" class="form-label">Question</label>
+                        <textarea asp-for="Question" class="form-control" id="Question" name="Question" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

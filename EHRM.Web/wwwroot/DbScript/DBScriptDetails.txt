@@ -13,8 +13,10 @@ CREATE TABLE Roles (
     
     CreateDate DATETIME, -- Date and time when the role was created
     UpdateDate DATETIME -- Date and time when the role was last updated
-);
 
+);
+    alter table Roles
+Add RoleId INT
 
 //Team
 
@@ -30,6 +32,44 @@ CREATE TABLE Team (
     CreateDate DATETIME, -- Record creation date
     UpdateDate DATETIME -- Last update date
 );
+
+alter table Team
+Add TeamId INT
+//Stored Procedure GetSubMenuAllDetails
+
+USE [EHRM]
+GO
+/****** Object:  StoredProcedure [dbo].[GetSubMenuAllDetails]    Script Date: 1/7/2025 8:36:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[GetSubMenuAllDetails]
+	(@Id INT)
+AS
+BEGIN
+
+
+	SELECT 
+    sm.Id As Id,
+	sm.Action As Action,
+	sm.Controller As Controller,
+	mm.Id As MainMenuId,
+	r.Id As RoleId,
+	e.EmpId As EmployeeId,
+    sm.Name AS SubMenuName,        
+    mm.Name AS MainMenuName,        
+    r.RoleName AS RoleName,             
+    e.FirstName + ' ' + e.LastName AS EmployeeName 
+FROM   SubMenu sm
+Left   JOIN  MainMenu mm ON sm.MainMenuId = mm.Id  
+left JOIN  Roles r ON sm.RoleId = r.Id            
+left JOIN  EmployeeDetails e ON sm.EmpId = e.EmpId  
+WHERE sm.IsActive = 1 and sm.Id=@Id; 
+END
+
+
 
 //Holiday
 
@@ -48,6 +88,16 @@ CREATE TABLE Holiday (
     HolidayDate varchar(30)
     FOREIGN KEY (TeamId) REFERENCES Team(Id) ON DELETE CASCADE -- Enable cascading delete
 );
+
+//Add Probation Question
+
+CREATE TABLE ProbationEvaluationQuestions (
+    QuestionID INT IDENTITY(1,1) PRIMARY KEY, -- Unique identifier, auto-incremented
+    Question NVARCHAR(MAX) NOT NULL,          -- The text of the question (supports Unicode)
+    CreatedAt DATETIME,
+	IsActive BIT
+);
+
 
 //NoticeBoard 
 

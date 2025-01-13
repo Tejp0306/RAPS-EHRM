@@ -1,24 +1,26 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "VerificationScreen";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+@using EHRM.ViewModel.Employee
+@model GetAllEmployeeViewModel
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <div class="container rounded bg-white mt-5 mb-5">
     <form>
         <div class="row">
             <!-- Verification Heading Outside the Card -->
             <div class="col-12 bg-secondary text-center py-1 mb-4">
-                <h2 class="mb-0 text-white">Verification</h2>
+                <h3 class="mb-0 text-white">Verification</h3>
             </div>
 
             <!-- Profile Picture Section (2/12 columns) -->
             <div class="col-md-2 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                    <img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                    <span class="font-weight-bold">Edogaru</span>
-                    <span class="text-black-50">edogaru@mail.com.my</span>
+                    <img class="rounded-circle mt-5" width="150px" src="@Model.FileName">
+                    <span class="font-weight-bold">@Model.FirstName @Model.LastName</span>
+                    <span class="text-black-50">@Model.EmailAddress</span>
                     <span> </span>
                 </div>
             </div>
@@ -31,11 +33,11 @@
                         <div class="row mt-2">
                             <div class="col-md-6">
                                 <label class="labels">Employee ID *</label>
-                                <input type="text" class="form-control" placeholder="Enter Employee ID" value="">
+                                <input type="text" class="form-control" placeholder="Enter Employee ID" value="@Model.EmpId" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Title *</label>
-                                <textarea class="form-control" placeholder="Enter Title" rows="1"></textarea>
+                                <textarea class="form-control" placeholder="Enter Title" rows="1" disabled>@Model.Title</textarea>
                             </div>
                         </div>
 
@@ -43,11 +45,11 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Full Name *</label>
-                                <input type="text" class="form-control" placeholder="Enter Full Name" value="">
+                                <input type="text" class="form-control" placeholder="Enter Full Name" value="@Model.FirstName @Model.LastName" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Login ID *</label>
-                                <input type="text" class="form-control" placeholder="Enter Login ID" value="">
+                                <input type="text" class="form-control" placeholder="Enter Login ID" value="@Model.LoginId" disabled>
                             </div>
                         </div>
 
@@ -55,11 +57,11 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Role *</label>
-                                <textarea class="form-control" placeholder="Enter Role" rows="1"></textarea>
+                                <textarea class="form-control" placeholder="Enter Role" rows="1" disabled>@Model.RoleName</textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Date of Birth *</label>
-                                <input type="text" class="form-control" placeholder="Enter Your D.O.B" value="">
+                                <input type="text" class="form-control" placeholder="Enter Your D.O.B" value="@Model.DateOfBirth" disabled>
                             </div>
                         </div>
 
@@ -67,11 +69,11 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Gender *</label>
-                                <textarea class="form-control" placeholder="Enter Gender" rows="1"></textarea>
+                                <textarea class="form-control" placeholder="Enter Gender" rows="1" disabled>@Model.Gender</textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Team Name *</label>
-                                <textarea class="form-control" placeholder="Enter Team Name" rows="1"></textarea>
+                                <textarea class="form-control" placeholder="Enter Team Name" rows="1" disabled>@Model.TeamName</textarea>
                             </div>
                         </div>
 
@@ -79,11 +81,11 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Phone Number *</label>
-                                <input type="text" class="form-control" placeholder="Enter Phone Number" value="">
+                                <input type="text" class="form-control" placeholder="Enter Phone Number" value="@Model.CellPhone" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Email Address *</label>
-                                <input type="email" class="form-control" placeholder="Enter Email Address" value="">
+                                <input type="email" class="form-control" placeholder="Enter Email Address" value="@Model.EmailAddress" disabled>
                             </div>
                         </div>
 
@@ -91,11 +93,11 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Marital Status</label>
-                                <input type="text" class="form-control" placeholder="Enter Marital Status" value="">
+                                <input type="text" class="form-control" placeholder="Enter Marital Status" value="@Model.MaritalStatus" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Marriage Anniversary</label>
-                                <input type="text" class="form-control" placeholder="Enter Marriage Anniversary Date" value="">
+                                <input type="text" class="form-control" placeholder="Enter Marriage Anniversary Date" value="@Model.MarriageAnniversary" disabled>
                             </div>
                         </div>
 
@@ -103,11 +105,11 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Home Phone</label>
-                                <input type="text" class="form-control" placeholder="Enter Home Number" value="">
+                                <input type="text" class="form-control" placeholder="Enter Home Number" value="@Model.HomePhone" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Street *</label>
-                                <input type="text" class="form-control" placeholder="Enter Street" value="">
+                                <input type="text" class="form-control" placeholder="Enter Street" value="@Model.Street" disabled>
                             </div>
                         </div>
 
@@ -115,52 +117,40 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">City *</label>
-                                <input type="text" class="form-control" placeholder="Enter City" value="">
+                                <input type="text" class="form-control" placeholder="Enter City" value="@Model.City" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Country *</label>
-                                <input type="text" class="form-control" placeholder="Enter Country" value="">
+                                <input type="text" class="form-control" placeholder="Enter Country" value="@Model.Country" disabled>
                             </div>
                         </div>
 
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Zip Code (optional)</label>
-                                <input type="text" class="form-control" placeholder="Enter Zip Code" value="">
+                                <input type="text" class="form-control" placeholder="Enter Zip Code" value="@Model.ZipCode" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Nationality *</label>
-                                <input type="text" class="form-control" placeholder="Enter Nationality" value="">
-                            </div>
-                        </div>
-
-                        <!-- Employment Details Section -->
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <label class="labels">Department *</label>
-                                <input type="text" class="form-control" placeholder="Enter Department Name" value="">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="labels">Role *</label>
-                                <input type="text" class="form-control" placeholder="Enter Role Name" value="">
+                                <input type="text" class="form-control" placeholder="Enter Nationality" value="@Model.ZipCode" disabled>
                             </div>
                         </div>
 
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Joining Date *</label>
-                                <input type="text" class="form-control" placeholder="Enter Joining Date" value="">
+                                <input type="text" class="form-control" placeholder="Enter Joining Date" value="@Model.EmploymentDetails[0].AppointmentDate" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Work Location *</label>
-                                <input type="text" class="form-control" placeholder="Enter Work Location" value="">
+                                <input type="text" class="form-control" placeholder="Enter Work Location" value="" disabled>
                             </div>
                         </div>
 
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Employee Status *</label>
-                                <input type="text" class="form-control" placeholder="Enter Employee Status" value="">
+                                <input type="text" class="form-control" placeholder="Enter Employee Status" value="@Model.EmploymentDetails[0].EmploymentStatusId" disabled>
                             </div>
                         </div>
 
@@ -168,22 +158,22 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Emergency Contact Name </label>
-                                <input type="text" class="form-control" placeholder="Enter Emergency Contact Name" value="">
+                                <input type="text" class="form-control" placeholder="Enter Emergency Contact Name" value="" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Emergency Contact Number </label>
-                                <input type="text" class="form-control" placeholder="Enter Emergency Contact Number" value="">
+                                <input type="text" class="form-control" placeholder="Enter Emergency Contact Number" value="" disabled>
                             </div>
                         </div>
 
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Bank Account Number</label>
-                                <input type="text" class="form-control" placeholder="Enter Bank Account Number" value="">
+                                <input type="text" class="form-control" placeholder="Enter Bank Account Number" value="" disabled>
                             </div>
                             <div class="col-md-6">
-                                <label class="labels">Tax Identification Number (TIN)</label>
-                                <input type="text" class="form-control" placeholder="Enter TIN for tax-related purposes" value="">
+                                <label class="labels">Aadhar Card Number</label>
+                                <input type="text" class="form-control" placeholder="Enter Aadhar Card Number" value="@Model.AadharNumber" disabled>
                             </div>
                         </div>
                     </div>
@@ -197,49 +187,49 @@
                     <!-- Employee Type -->
                     <div class="col-md-12">
                         <label class="labels">Employee Type *</label>
-                        <input type="text" class="form-control" placeholder="Enter Employment Type" required>
+                        <input type="text" class="form-control" placeholder="Enter Employment Type" required value="@Model.EmploymentDetails[0].EmpTypeName" disabled>
                     </div><br>
 
                     <!-- Appointment Date -->
                     <div class="col-md-12">
                         <label class="labels">Appointment Date *</label>
-                        <input type="text" class="form-control" placeholder="Enter Appointment Date" required>
+                        <input type="text" class="form-control" placeholder="Enter Appointment Date" required value="@Model.EmploymentDetails[0].AppointmentDate" disabled>
                     </div><br>
 
                     <!-- Start Date -->
                     <div class="col-md-12">
                         <label class="labels">Start Date *</label>
-                        <input type="text" class="form-control" placeholder="Enter Start Date" required>
+                        <input type="text" class="form-control" placeholder="Enter Start Date" required value="@Model.EmploymentDetails[0].AppointmentDate" disabled>
                     </div><br>
 
                     <!-- End Date (Optional for Temporary Employees) -->
                     <div class="col-md-12">
                         <label class="labels">End Date (optional for temporary employees)</label>
-                        <input type="text" class="form-control" placeholder="Enter End Date">
+                        <input type="text" class="form-control" placeholder="Enter End Date" disabled>
                     </div><br>
 
                     <!-- Total Service -->
                     <div class="col-md-12">
                         <label class="labels">Total Service *</label>
-                        <input type="text" class="form-control" placeholder="Enter Total Service" required>
+                        <input type="text" class="form-control" placeholder="Enter Total Service" required disabled>
                     </div><br>
 
                     <!-- Appointed Service -->
                     <div class="col-md-12">
                         <label class="labels">Appointed Service *</label>
-                        <input type="text" class="form-control" placeholder="Enter Appointed Service" required>
+                        <input type="text" class="form-control" placeholder="Enter Appointed Service" required disabled>
                     </div><br>
 
                     <!-- Employment Status -->
                     <div class="col-md-12">
                         <label class="labels">Employment Status *</label>
-                        <input type="text" class="form-control" placeholder="Enter Employment Status" required>
+                        <input type="text" class="form-control" placeholder="Enter Employment Status" required disabled>
                     </div><br>
 
                     <!-- Manager Name -->
                     <div class="col-md-12">
                         <label class="labels">Manager Name</label>
-                        <input type="text" class="form-control" placeholder="Enter Manager Name" required>
+                        <input type="text" class="form-control" placeholder="Enter Manager Name" required disabled>
                     </div><br>
 
                 </div>

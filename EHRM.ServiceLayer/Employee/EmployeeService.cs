@@ -21,7 +21,7 @@ namespace EHRM.ServiceLayer.Employee
             _UnitOfWork = unitOfWork;
         }
 
-        public async Task<Result> SavePersonalInfoAsync(EmployeeViewModel model, int createdById, String filepath)
+        public async Task<Result> SavePersonalInfoAsync(GetAllEmployeeViewModel model, int createdById, String filepath)
         {
             try
             {
@@ -65,7 +65,8 @@ namespace EHRM.ServiceLayer.Employee
                 return new Result
                 {
                     Success = true,
-                    Message = "Employee created successfully."
+                    Message = "Employee created successfully.",
+                    Data = newEmployeeDetails.EmpId
                 };
             }
             catch (Exception)
@@ -309,6 +310,42 @@ namespace EHRM.ServiceLayer.Employee
                 {
                     Success = true,
                     Message = "Data Saved successfully."
+        public async Task<Result> GetManagerAsync()
+        {
+            try
+            {
+                // Assuming _UnitOfWork is properly injected
+                var employeeRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
+
+                // Await GetAllAsync to get the list of employees
+                var employees = await employeeRepository.GetAllAsync();
+
+                // Filter the employee with EmpId == 4 and select necessary fields
+                var employeeWithDetails = employees
+                    .Where(e => e.RoleId == 4)  // Filtering in-memory after awaiting the result
+                    .Select(e => new GetAllEmployeeViewModel
+                    {
+                        EmpId = e.EmpId,
+                        FirstName = e.FirstName, 
+                        LastName=e.LastName
+                    })
+                    .ToList();  // Get the first matching employee
+
+                if (employeeWithDetails == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Employee not found."
+                    };
+                }
+
+                // Return the result with the employee data
+                return new Result
+                {
+                    Success = true,
+                    Message = "Employee found.",
+                    Data = employeeWithDetails
                 };
             }
             catch (Exception ex)
@@ -418,6 +455,12 @@ namespace EHRM.ServiceLayer.Employee
         }
 
         #endregion
+
+                // Log exception or handle it appropriately
+                throw new Exception("An error occurred while retrieving the manager details.", ex);
+            }
+        }
+
 
     }
 }

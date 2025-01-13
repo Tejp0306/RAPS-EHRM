@@ -14,6 +14,8 @@ namespace EHRM.ViewModel.Employee
 
         public int? EmpType { get; set; }
 
+        public string? EmpTypeName { get; set; }
+
         public string? AppointmentDate { get; set; }
 
         public string? StartDate { get; set; }
