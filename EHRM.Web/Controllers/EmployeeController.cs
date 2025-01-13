@@ -41,7 +41,7 @@ namespace EHRM.Web.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> SavePersonalInfoAsync(EmployeeViewModel model)
+        public async Task<IActionResult> SavePersonalInfoAsync(GetAllEmployeeViewModel model)
         {
 
             var filepath = "";
@@ -61,9 +61,11 @@ namespace EHRM.Web.Controllers
             // Handle the result of the create operation
             if (result.Success)
             {
+               
                 TempData["ToastType"] = "success";  // Success, danger, warning, info
                 TempData["ToastMessage"] = "Operation completed successfully!";
-                return RedirectToAction("employeeview"); // Redirect to the list of roles
+                TempData["EmpId"] = result.Data;
+                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
             }
             else
             {
@@ -86,7 +88,7 @@ namespace EHRM.Web.Controllers
                     // Project the team list to a simplified JSON-friendly format
                     var roleList = role.Select(role => new
                     {
-                        id = role.Id, // Ensure Team class has an Id property
+                        id = role.RoleId, // Ensure Team class has an Id property
                         name = role.RoleName
                     }).ToList();
 
@@ -103,7 +105,39 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No Roles found." });
             }
         }
-        private string Upload(EmployeeViewModel model)
+        [HttpGet]
+        public async Task<JsonResult> GetManager()
+        {
+            // Fetch the result from the service layer
+            var result = await _employee.GetManagerAsync();
+
+            // Check if the result is successful and contains data
+            if (result.Success && result.Data != null)
+            {
+                if (result.Data is IEnumerable<GetAllEmployeeViewModel> employeeList)
+                {
+                    // Project the employee list to a simplified JSON-friendly format
+                    var resList = employeeList.Select(e => new
+                    {
+                        empId = e.EmpId,
+                        name = e.FirstName + " " + e.LastName // Concatenate first and last names
+                    }).ToList();
+
+                    // Return the JSON response
+                    return Json(new { Success = true, Data = resList });
+                }
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in the expected format (IEnumerable<GetAllEmployeeViewModel>)." });
+                }
+            }
+            else
+            {
+                // Handle failure scenarios
+                return Json(new { Success = false, Message = result.Message ?? "No employees found." });
+            }
+        }
+        private string Upload(GetAllEmployeeViewModel model)
         {
             // Check if a file is provided, if not, simply return null (indicating no file upload)
             if (model.ProfileImg == null || model.ProfileImg.Length == 0)
@@ -199,7 +233,7 @@ namespace EHRM.Web.Controllers
                     // Project the team list to a simplified JSON-friendly format
                     var teamList = teams.Select(team => new
                     {
-                        id = team.Id, // Ensure Team class has an Id property
+                        id = team.TeamId, // Ensure Team class has an Id property
                         name = team.Name // Ensure Team class has a Name property
                     }).ToList();
 
