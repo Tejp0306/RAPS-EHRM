@@ -17,7 +17,7 @@ namespace EHRM.DAL.Repositories
         Task DeleteAsync(int id);
         Task<List<EmployeeDetail>> GetByRoleIdAsync(int RoleId);
         Task<List<EmployeeDetail>> GetByTeamIdAsync(int RoleId);
-
+        Task<List<EmployeesDeclaration>> GetByEmpIdDOB(int EmpId, DateTime DOB);
 
     }
 }

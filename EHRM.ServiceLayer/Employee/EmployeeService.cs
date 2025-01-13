@@ -224,6 +224,199 @@ namespace EHRM.ServiceLayer.Employee
             return employeeWithDetails;
         }
 
+        #region Employee Declaration
+
+        public async Task<Result> CreateDeclarationAsync(EmployeeDeclarationViewModel model)
+        {
+            try
+            {
+                var newDeclaration = new EmployeesDeclaration
+                {
+                    EmployeeName = model.EmployeeName,
+                    EmpId = model.EmpId,
+                    Designation = model.Designation,
+                    BandLevel = model.BandLevel,
+                    DateOfJoining = model.DateOfJoining,
+                    ProbationStatus = model.ProbationStatus,
+                    ProbationDate = model.ProbationDate,
+                    Location = model.Location,
+                    Project = model.Project,
+                    BloodGroup = model.BloodGroup,
+                    DateOfBirth = Convert.ToDateTime(model.DateOfBirth),
+                    Age = model.Age,
+                    Gender = model.Gender,
+                    SpouseFatherMotherName = model.SpouseFatherMotherName,
+                    RelationWithSpouse = model.RelationWithSpouse,
+                    SpouseFatherDateOfBirth = model.SpouseFatherDateOfBirth,
+                    MaritalStatus = model.MaritalStatus,
+                    OfficialContact = model.OfficialContact,
+                    PersonalContact = model.PersonalContact,
+                    OfficialEmail = model.OfficialEmail,
+                    PersonalEmail = model.PersonalEmail,
+                    TenureInRaps = model.TenureInRAPS,
+                    YearsInRaps = model.YearsInRAPS,
+                    PriorWorkExperience = model.PriorWorkExperience,
+                    TotalWorkExperience = model.TotalWorkExperience,
+                    FirstOrganisation = model.FirstOrganisation,
+                    FirstOrganisationExperience = model.FirstOrganisationExperience,
+                    SecondOrganisation = model.SecondOrganisation,
+                    SecondOrganisationExperience = model.SecondOrganisationExperience,
+                    ThirdOrganisation = model.ThirdOrganisation,
+                    ThirdOrganisationExperience = model.ThirdOrganisationExperience,
+                    FourthOrganisation = model.FourthOrganisation,
+                    FourthOrganisationExperience = model.FourthOrganisationExperience,
+                    Dependent1Name = model.Dependent1Name,
+                    Dependent1Relationship = model.Dependent1Relationship,
+                    Dependent1Dob = model.Dependent1Dob,
+                    EmergencyName1 = model.EmergencyName1,
+                    EmergencyContact1 = model.EmergencyContact1,
+                    EmergencyRelationship1 = model.EmergencyRelationship1,
+                    EmergencyName2 = model.EmergencyName2,
+                    EmergencyContact2 = model.EmergencyContact2,
+                    EmergencyRelationship2 = model.EmergencyRelationship2,
+                    XthInstitution = model.XthInstitution,
+                    XthPassingYear = model.XthPassingYear,
+                    XiithInstitution = model.XiithInstitution,
+                    XiithPassingYear = model.XiithPassingYear,
+                    BachelorInstitution = model.BachelorInstitution,
+                    BachelorCompleteYear = model.BachelorCompleteYear,
+                    BachelorDegrees = model.BachelorDegrees,
+                    MasterInstitution = model.MasterInstitution,
+                    MasterCompleteYear = model.MasterCompleteYear,
+                    FatherHusbandName = model.FatherHusbandName,
+                    UanNo = model.UanNo,
+                    AdharNo = model.AdharNo,
+                    PanCardNo = model.PanCardNo,
+                    BankName = model.BankName,
+                    AccountNumber = model.AccountNumber,
+                    IfscCode = model.IfscCode,
+                    PermanentAddress = model.PermanentAddress,
+                    PostalAddress = model.PostalAddress,
+                    Ctc = model.Ctc,
+                    FilingPerson = model.FilingPerson,
+                    FilingRecheck = model.FilingRecheck,
+                    ResignationDate = model.ResignationDate,
+                    ExitDate = model.ExitDate,
+                    ReasonForLeaving = model.ReasonForLeaving
+                };
+
+                var empDeclarationRepository = _UnitOfWork.GetRepository<EmployeesDeclaration>();
+                await empDeclarationRepository.AddAsync(newDeclaration);
+                await _UnitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Data Saved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error Saving Data: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<List<EmployeesDeclaration>> GetEmployeeDetailsByEmpIdDOB(int EmpId, DateTime DOB)
+        {
+            {
+                var employeeProfileRepository = _UnitOfWork.GetRepository<EmployeesDeclaration>();  // Using generic repository
+                var employee = await employeeProfileRepository.GetByEmpIdDOB(EmpId, DOB);  // Fetch employee based on empid and DOB
+                                                                                           //Viewbag.employee=employee;
+                return employee;
+            }
+        }
+
+        public async Task<List<EmployeeDeclarationViewModel>> GetAllEmployeeProfileDetails(int EmpId)
+        {
+            var employeeRepository = _UnitOfWork.GetRepository<EmployeesDeclaration>();
+
+            // Await the async operations to get actual collections
+            var employees = await employeeRepository.GetAllAsync();
+
+            // LINQ query to join all related tables using EmpId, with left joins to include null values for missing data
+            var employeeWithDetails = (from e in employees
+                                       where e.EmpId == EmpId  // Filter by specific EmpId if needed
+                                       select new EmployeeDeclarationViewModel
+                                       {
+                                           Id = e.Id,
+                                           EmployeeName = e.EmployeeName,
+                                           EmpId = (int)e.EmpId,
+                                           Designation = e.Designation,
+                                           BandLevel = e.BandLevel,
+                                           DateOfJoining = e.DateOfJoining,
+                                           ProbationStatus = e.ProbationStatus,
+                                           ProbationDate = e.ProbationDate,
+                                           Location = e.Location,
+                                           Project = e.Project,
+                                           BloodGroup = e.BloodGroup,
+                                           DateOfBirth = Convert.ToString(e.DateOfBirth),
+                                           Age = (int)e.Age,
+                                           Gender = e.Gender,
+                                           SpouseFatherMotherName = e.SpouseFatherMotherName,
+                                           RelationWithSpouse = e.RelationWithSpouse,
+                                           SpouseFatherDateOfBirth = e.SpouseFatherDateOfBirth,
+                                           MaritalStatus = e.MaritalStatus,
+                                           OfficialContact = e.OfficialContact,
+                                           PersonalContact = e.PersonalContact,
+                                           OfficialEmail = e.OfficialEmail,
+                                           PersonalEmail = e.PersonalEmail,
+                                           TenureInRAPS = (int)e.TenureInRaps,
+                                           YearsInRAPS = (int)e.YearsInRaps,
+                                           PriorWorkExperience = (int)e.PriorWorkExperience,
+                                           TotalWorkExperience = (int)e.TotalWorkExperience,
+                                           FirstOrganisation = e.FirstOrganisation,
+                                           FirstOrganisationExperience = (int)e.FirstOrganisationExperience,
+                                           SecondOrganisation = e.SecondOrganisation,
+                                           SecondOrganisationExperience = (int)e.SecondOrganisationExperience,
+                                           ThirdOrganisation = e.ThirdOrganisation,
+                                           ThirdOrganisationExperience = (int)e.ThirdOrganisationExperience,
+                                           FourthOrganisation = e.FourthOrganisation,
+                                           FourthOrganisationExperience = (int)e.FourthOrganisationExperience,
+                                           Dependent1Name = e.Dependent1Name,
+                                           Dependent1Relationship = e.Dependent1Relationship,
+                                           Dependent1Dob = e.Dependent1Dob,
+                                           EmergencyName1 = e.EmergencyName1,
+                                           EmergencyContact1 = e.EmergencyContact1,
+                                           EmergencyRelationship1 = e.EmergencyRelationship1,
+                                           EmergencyName2 = e.EmergencyName2,
+                                           EmergencyContact2 = e.EmergencyContact2,
+                                           EmergencyRelationship2 = e.EmergencyRelationship2,
+                                           XthInstitution = e.XthInstitution,
+                                           XthPassingYear = e.XthPassingYear,
+                                           XiithInstitution = e.XiithInstitution,
+                                           XiithPassingYear = e.XiithPassingYear,
+                                           BachelorInstitution = e.BachelorInstitution,
+                                           BachelorCompleteYear = e.BachelorCompleteYear,
+                                           BachelorDegrees = e.BachelorDegrees,
+                                           MasterInstitution = e.MasterInstitution,
+                                           MasterCompleteYear = e.MasterCompleteYear,
+                                           FatherHusbandName = e.FatherHusbandName,
+                                           UanNo = e.UanNo,
+                                           AdharNo = e.AdharNo,
+                                           PanCardNo = e.PanCardNo,
+                                           BankName = e.BankName,
+                                           AccountNumber = e.AccountNumber,
+                                           IfscCode = e.IfscCode,
+                                           PermanentAddress = e.PermanentAddress,
+                                           PostalAddress = e.PostalAddress,
+                                           Ctc = e.Ctc,
+                                           FilingPerson = e.FilingPerson,
+                                           FilingRecheck = e.FilingRecheck,
+                                           ResignationDate = e.ResignationDate,
+                                           ExitDate = e.ExitDate,
+                                           ReasonForLeaving = e.ReasonForLeaving
+
+
+                                       }).ToList();
+
+            return employeeWithDetails;
+        }
+
+        #endregion
 
     }
 }

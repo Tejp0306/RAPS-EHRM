@@ -11,5 +11,14 @@ namespace EHRM.ServiceLayer.Employee
         Task<Result> GetTeamAsync();
         Task<Result> GetEmployeeDataAsync();
         Task<List<GetAllEmployeeViewModel>> GetAllEmployeeRecordDetails(int EmpId);
+
+        #region Employee Declaration
+
+        Task<Result> CreateDeclarationAsync(EmployeeDeclarationViewModel model);
+
+        Task<List<EmployeesDeclaration>> GetEmployeeDetailsByEmpIdDOB(int EmpId, DateTime DOB);
+
+        Task<List<EmployeeDeclarationViewModel>> GetAllEmployeeProfileDetails(int EmpId);
+        #endregion
     }
 }

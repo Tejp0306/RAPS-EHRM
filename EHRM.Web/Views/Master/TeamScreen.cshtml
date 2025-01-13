@@ -16,16 +16,27 @@
         <form asp-controller="Master" asp-action="SaveTeam" method="post">
             <input type="hidden" id="teamScreenID" name="id" />
 
+            <!-- Exclamation icon button aligned to the top right corner -->
+            <button type="button" class="btn btn-link exclamation-btn" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
+                    title="Team Name: E.g., 'Managed Team'. <br> Team Description: E.g., 'Responsible for creating and maintaining the company's software products.'"
+                    style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                <i class="bi bi-exclamation-circle" style="font-size: 20px;"></i>
+            </button>
+
             <!-- Team Name -->
             <div class="mb-3">
                 <label for="TeamName" class="form-label">Team Name <span class="text-danger">*</span>:</label>
+                <div class="input-group">
                 <input asp-for="Name" id="TeamName" name="Name" class="form-control" placeholder="Enter team name" required />
+            </div>
             </div>
 
             <!-- Team Description -->
             <div class="mb-3">
                 <label for="Description" class="form-label">Team Description <span class="text-danger">*</span>:</label>
+                <div class="input-group">
                 <textarea asp-for="Description" id="Description" name="Description" class="form-control" placeholder="Enter team description" required></textarea>
+            </div>
             </div>
 
             <!-- Submit Button -->
@@ -63,12 +74,29 @@
 
 
 </div>
+<!-- Initialize Bootstrap Tooltip -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
 
-
-    
-
-    <!-- Team Table -->
-
+        // Apply custom tooltip styles using JavaScript after page load
+        var style = document.createElement('style');
+        style.innerHTML = `
+            .tooltip-inner {
+                background-color: #007bff !important;
+                color: white !important;
+                border-radius: 5px !important;
+            }
+            .tooltip-arrow {
+                border-top-color: #007bff !important;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
 
 
 

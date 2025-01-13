@@ -11,10 +11,12 @@ namespace EHRM.Web.Controllers
     {
         private readonly IEmployeeService _employee;
         private readonly EhrmContext _context;  
-        public EmployeeController(IEmployeeService employee, EhrmContext context)
+        private readonly IEmailService _emailService;
+        public EmployeeController(IEmployeeService employee, EhrmContext context, IEmailService emailService)
         {
             _employee = employee;
             _context = context; 
+            _emailService = emailService;
         }
         public IActionResult Index()
         {
@@ -265,6 +267,113 @@ namespace EHRM.Web.Controllers
             return password;
         }
 
+
+        #region EmployeeDeclaration
+        public IActionResult EmployeeDeclaration()
+        {
+            return View();
+        }
+        public IActionResult EmployeeDeclarationone()
+        {
+            return View();
+        }
+        public IActionResult EmployeeProfile(EmployeeDeclarationViewModel model)
+        {
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveDeclaration(EmployeeDeclarationViewModel model)
+        {
+
+            var result = await _employee.CreateDeclarationAsync(model);
+
+            // Handle the result of the create operation
+            if (result.Success)
+            {
+                // Success handling
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Record saved successfully!";
+
+                EmailServiceModel _email = new()
+                {
+                    RecipentMail = "waseem@rapscorp.com",  // Replace with actual recipient email
+                    CcMail = "saksham@rapscorp.com",  // Replace with actual CC email
+                    Subject = "test-email",
+                    Body = "This message is for testing purpose only! Please ignore it, Thanks,"
+                };
+
+                // Sending the email
+                _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
+                return RedirectToAction("EmployeeProfile"); // Redirect to the list of employee types
+            }
+            else
+            {
+                // Error handling for the case where creation fails
+                TempData["ToastType"] = "danger"; // Store error message
+                TempData["ToastMessage"] = "An error occurred while creating the record.";
+                return RedirectToAction("EmployeeDeclaration"); // Redirect back to the EmployeeType view
+            }
+        }
+
+        public async Task<IActionResult> GetEmployeeProfileDataByIDDOB(EmployeeDeclarationViewModel model)
+        {
+            // Fetch the result from the service layer
+
+            //string Parseddob = DateTime.ParseExact(model.DateOfBirth, "dd - MMMM - yyyy", System.Globalization.CultureInfo.InvariantCulture).ToString("dd/MM/yyyy");
+            DateTime updatedDateData = Convert.ToDateTime(model.DateOfBirth);
+            //string formattedDate = updatedDateData.ToString("dd/MM/yyyy");
+
+            var result = await _employee.GetEmployeeDetailsByEmpIdDOB(model.EmpId, updatedDateData);
+
+            if (result.Count > 0)
+            {
+                TempData["ToastType"] = "success"; // Store success message
+                TempData["ToastMessage"] = "User Found";
+
+                EmployeeDeclarationViewModel employee = new()
+                {
+                    EmpId = (int)result[0].EmpId,
+                    DateOfBirth = Convert.ToDateTime(result[0].DateOfBirth).ToString("dd/MM/yyyy"),
+
+                };
+
+                return View("EmployeeProfile", employee);
+            }
+            else
+            {
+                model.EmpId = 0;
+
+                TempData["ToastType"] = "danger"; // Store error message
+                TempData["ToastMessage"] = "User may deleted or removed";
+
+                return View("EmployeeProfile", model);
+            }
+        }
+
+        public async Task<IActionResult> EmployeeProfileDetails(int id)
+        {
+            // Fetch the result from the service layer
+            var result = await _employee.GetAllEmployeeProfileDetails(id);
+
+            if (result.Count > 0)
+            {
+                TempData["ToastType"] = "success"; // Store success message
+                TempData["ToastMessage"] = "User Found";
+                var Model = result[0];
+
+                return View("EmployeeDeclarationone", Model);
+            }
+            else
+            {
+                TempData["ToastType"] = "danger"; // Store error message
+                TempData["ToastMessage"] = "User may deleted or removed";
+
+                return View("EmployeeDeclarationone");
+            }
+            //return View();
+        }
+
+        #endregion
     }
 
 }

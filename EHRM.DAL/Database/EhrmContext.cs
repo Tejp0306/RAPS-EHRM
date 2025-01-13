@@ -15,6 +15,7 @@ public partial class EhrmContext : DbContext
     {
     }
 
+    public virtual DbSet<AssetsDb> AssetsDbs { get; set; }
     public virtual DbSet<Declaration> Declarations { get; set; }
 
     public virtual DbSet<EmpType> EmpTypes { get; set; }
@@ -22,6 +23,8 @@ public partial class EhrmContext : DbContext
     public virtual DbSet<EmployeeDetail> EmployeeDetails { get; set; }
 
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
+
+    public virtual DbSet<EmployeesDeclaration> EmployeesDeclarations { get; set; }
 
     public virtual DbSet<EmployementTypeDetail> EmployementTypeDetails { get; set; }
 
@@ -155,6 +158,180 @@ public partial class EhrmContext : DbContext
                 .HasForeignKey<EmployeesCred>(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Employees__EmpId__0A9D95DB");
+        });
+
+        modelBuilder.Entity<EmployeesDeclaration>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC0756E185D5");
+
+            entity.ToTable("EmployeesDeclaration");
+
+            entity.Property(e => e.AccountNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.AdharNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.BachelorCompleteYear)
+                .HasMaxLength(4)
+                .IsUnicode(false);
+            entity.Property(e => e.BachelorDegrees)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.BachelorInstitution)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.BandLevel)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BankName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.BloodGroup)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.Ctc)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.DateOfBirth).HasColumnType("datetime");
+            entity.Property(e => e.DateOfJoining).HasColumnType("datetime");
+            entity.Property(e => e.Dependent1Dob).HasColumnType("datetime");
+            entity.Property(e => e.Dependent1Name)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Dependent1Relationship)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Designation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyContact1)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyContact2)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyName1)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyName2)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyRelationship1)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyRelationship2)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ExitDate)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.FatherHusbandName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FilingPerson)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FilingRecheck)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.FirstOrganisation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FourthOrganisation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Gender)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.IfscCode)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.Location)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.MaritalStatus)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.MasterCompleteYear)
+                .HasMaxLength(4)
+                .IsUnicode(false);
+            entity.Property(e => e.MasterInstitution)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.OfficialContact)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.OfficialEmail)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.PanCardNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.PermanentAddress)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.PersonalContact)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.PersonalEmail)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.PostalAddress)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ProbationDate).HasColumnType("datetime");
+            entity.Property(e => e.ProbationStatus)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Project)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ReasonForLeaving)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.RelationWithSpouse)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ResignationDate)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.SecondOrganisation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.SpouseFatherDateOfBirth).HasColumnType("datetime");
+            entity.Property(e => e.SpouseFatherMotherName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.TenureInRaps).HasColumnName("TenureInRAPS");
+            entity.Property(e => e.ThirdOrganisation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.UanNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.XiithInstitution)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.XiithPassingYear)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.XthInstitution)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.XthPassingYear)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.YearsInRaps).HasColumnName("YearsInRAPS");
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.EmployeesDeclarations)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmpId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Employees__Reaso__74AE54BC");
         });
 
         modelBuilder.Entity<EmployementTypeDetail>(entity =>

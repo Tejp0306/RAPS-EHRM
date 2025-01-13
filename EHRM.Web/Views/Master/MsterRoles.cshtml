@@ -28,6 +28,12 @@
             <h4 class="card-title mb-3">Add / Edit Role</h4>
             <form asp-controller="Master" asp-action="SaveRoles" id="roleForm">
                 <input type="hidden" id="roleId" name="id" />
+                <!-- Exclamation icon button aligned to the top right corner -->
+                <button type="button" class="btn btn-link exclamation-btn" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
+                        title="Role Name: E.g., 'Admin'. <br> Role Description: E.g., 'Manages user permissions and system configurations.'"
+                        style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                    <i class="bi bi-exclamation-circle" style="font-size: 20px;"></i>
+                </button>
                 <div class="mb-3">
                 
                     <label for="roleName" class="form-label">Role Name</label>
@@ -66,5 +72,28 @@
    </div>
 </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Apply custom tooltip styles using JavaScript after page load
+        var style = document.createElement('style');
+        style.innerHTML = `
+            .tooltip-inner {
+                background-color: #007bff !important;
+                color: white !important;
+                border-radius: 5px !important;
+            }
+            .tooltip-arrow {
+                border-top-color: #007bff !important;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+
 
 
