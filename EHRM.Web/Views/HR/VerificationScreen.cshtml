@@ -139,7 +139,7 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Joining Date *</label>
-                                <input type="text" class="form-control" placeholder="Enter Joining Date" value="@Model.EmploymentDetails[0].AppointmentDate" disabled>
+                                <input type="text" class="form-control" placeholder="Enter Joining Date" value="@Model.EmploymentDetails.AppointmentDate" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">Work Location *</label>
@@ -150,7 +150,7 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label class="labels">Employee Status *</label>
-                                <input type="text" class="form-control" placeholder="Enter Employee Status" value="@Model.EmploymentDetails[0].EmploymentStatusId" disabled>
+                                <input type="text" class="form-control" placeholder="Enter Employee Status" value="@Model.EmploymentDetails.EmploymentStatusId" disabled>
                             </div>
                         </div>
 
@@ -187,19 +187,19 @@
                     <!-- Employee Type -->
                     <div class="col-md-12">
                         <label class="labels">Employee Type *</label>
-                        <input type="text" class="form-control" placeholder="Enter Employment Type" required value="@Model.EmploymentDetails[0].EmpTypeName" disabled>
+                        <input type="text" class="form-control" placeholder="Enter Employment Type" required value="@Model.EmploymentDetails.EmpTypeName" disabled>
                     </div><br>
 
                     <!-- Appointment Date -->
                     <div class="col-md-12">
                         <label class="labels">Appointment Date *</label>
-                        <input type="text" class="form-control" placeholder="Enter Appointment Date" required value="@Model.EmploymentDetails[0].AppointmentDate" disabled>
+                        <input type="text" class="form-control" placeholder="Enter Appointment Date" required value="@Model.EmploymentDetails.AppointmentDate" disabled>
                     </div><br>
 
                     <!-- Start Date -->
                     <div class="col-md-12">
                         <label class="labels">Start Date *</label>
-                        <input type="text" class="form-control" placeholder="Enter Start Date" required value="@Model.EmploymentDetails[0].AppointmentDate" disabled>
+                        <input type="text" class="form-control" placeholder="Enter Start Date" required value="@Model.EmploymentDetails.AppointmentDate" disabled>
                     </div><br>
 
                     <!-- End Date (Optional for Temporary Employees) -->

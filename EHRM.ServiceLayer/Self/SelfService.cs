@@ -127,36 +127,34 @@ namespace EHRM.ServiceLayer.Self
                                            Nationality = e.Nationality,
                                            CreatedAt = e.CreatedAt,
                                            UpdatedAt = e.UpdatedAt,
-                                           SalaryDetails = salary == null ? new List<SalaryViewModel>() : new List<SalaryViewModel>
+                                           SalaryDetails = salary == null ? new SalaryViewModel() : new SalaryViewModel
                                            {
-                                              new SalaryViewModel
-                                              {
-
-                                                 Ctc = salary.Ctc,
-
-                                              }
+                                               Id = salary.Id,
+                                               Ctc = salary.Ctc,
+                                               StartYear = salary.StartYear,
+                                               EndYear = salary.Endyear,
+                                               Description = salary.Description
                                            },
-                                           Qualifications = qualification == null ? new List<QualificationViewModel>() : new List<QualificationViewModel>
-                                {
-                                    new QualificationViewModel
-                                    {
+                                           Qualifications = qualification == null ? new QualificationViewModel() : new QualificationViewModel
+                                           {
+                                               Id = qualification.Id,
+                                               CourseName = qualification.CourseName,
+                                               InstitutionName = qualification.InstitutionName,
+                                               PassedDate = qualification.PassedDate,
+                                               Details = qualification.Details
+                                           },
 
-                                        CourseName = qualification.CourseName,
-                                        InstitutionName = qualification.InstitutionName,
-                                        PassedDate = qualification.PassedDate,
-
-                                    }
-                                },
-
-                                           EmploymentDetails = etype == null ? new List<EmploymentTypeDetailViewModel>() : new List<EmploymentTypeDetailViewModel>
-                                {
-                                    new EmploymentTypeDetailViewModel
-                                    {
-
-                                        AppointmentDate = etype.AppointmentDate,
-
-                                    }
-                                },
+                                           EmploymentDetails = etype == null ? new EmploymentTypeDetailViewModel() : new EmploymentTypeDetailViewModel
+                                           {
+                                               Id = etype.Id,
+                                               EmpType = etype.EmpType,
+                                               //EmpTypeName = GetEmpTypeName(etype.EmpType),
+                                               AppointmentDate = etype.AppointmentDate,
+                                               StartDate = etype.StartDate,
+                                               EndDate = etype.EndDate,
+                                               TotalService = etype.TotalService,
+                                               AppointedService = etype.AppointedService
+                                           },
 
                                        }).ToList();
 
