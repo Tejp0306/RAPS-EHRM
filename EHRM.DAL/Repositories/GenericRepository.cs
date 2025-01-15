@@ -71,6 +71,24 @@ namespace EHRM.DAL.Repositories
             return await _context.Set<EmployeeDetail>().Where(x => x.EmpId == EmpId && x.DateOfBirth==DOB).ToListAsync();
         }
 
+        // saksham changes
+        public async Task<List<EmployeeDetail>> GetEmployeeDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<EmployeeDetail>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+        public async Task<List<Qualification>> GetQualificationDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<Qualification>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+        public async Task<List<EmployementTypeDetail>> GetEmployementTypeDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<EmployementTypeDetail>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+        public async Task<List<Salary>> GetSalaryDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<Salary>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+
 
     }
 

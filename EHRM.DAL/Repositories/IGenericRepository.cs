@@ -20,7 +20,13 @@ namespace EHRM.DAL.Repositories
         Task<List<EmployeesDeclaration>> GetByDeclarationEmpIdDOB(int EmpId, DateTime DOB);
 
         Task<List<EmployeeDetail>> GetByEmpIdDOB(int EmpId, String DOB);
-        
+        //saksham changes
+        Task<List<EmployeeDetail>> GetEmployeeDetailsByIdAsync(int EmpId);
+        Task<List<Qualification>> GetQualificationDetailsByIdAsync(int EmpId);
+        Task<List<EmployementTypeDetail>> GetEmployementTypeDetailsByIdAsync(int EmpId);
+        Task<List<Salary>> GetSalaryDetailsByIdAsync(int EmpId);
+
+
 
     }
 }

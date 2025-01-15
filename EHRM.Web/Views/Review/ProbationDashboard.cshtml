@@ -1,0 +1,409 @@
+﻿@{
+    ViewData["Title"] = "Probation";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        margin-top: 40px;
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, #009CFF, #0056b3);
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        border-radius: 8px;
+    }
+
+    .badge-pass {
+        background-color: #28a745;
+        color: white;
+        padding: 8px 16px;
+        font-weight: bold;
+        border-radius: 20px;
+    }
+
+    .badge-fail {
+        background-color: #dc3545;
+        color: white;
+        padding: 8px 16px;
+        font-weight: bold;
+        border-radius: 20px;
+    }
+
+    .metric-card {
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        text-align: center;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .metric-card h4 {
+        font-size: 20px;
+        color: #333;
+    }
+
+    .metric-card p {
+        font-size: 24px;
+        color: #009CFF;
+        font-weight: bold;
+    }
+
+    .feedback-section textarea {
+        width: 100%;
+        height: 150px;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        background-color: #f9f9f9;
+        resize: none;
+    }
+
+    .btn-open-form {
+        background-color: #009CFF;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-open-form:hover {
+        background-color: #0056b3;
+    }
+
+    .next-steps p {
+        font-size: 18px;
+        color: #333;
+    }
+
+    .card {
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    /* Section titles styling */
+    h5.section-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    /* Adjusting layout for cards */
+    .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .col-md-3 {
+        flex: 1 1 22%; /* Flexbox for equal width */
+        min-width: 200px; /* Minimum width for each card */
+    }
+
+    /* Modify the layout to match smaller card sizing */
+    .col-md-3 .metric-card {
+        min-height: 180px; /* Reduced height for smaller cards */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+    }
+
+    .col-md-3 .metric-card h4 {
+        margin-bottom: 20px; /* Add space below header */
+    }
+
+    /* Add a small space below the charts */
+    .chart-container {
+        height: 250px;
+    }
+
+</style>
+
+<!-- Include Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<div class="container">
+    <!-- Header Section with Marking Scheme -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    Probation Evaluation Dashboard
+                    <div class="d-flex justify-content-end align-items-center" style="height: 100%;">
+                        <a href="@Url.Action("ProbationEvaluation", "Review")">
+                            <button type="button" class="btn btn-primary">Go to Evaluation Form</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Marking Scheme (1-10):</strong></p>
+                    <ul>
+                        <li><strong>1-3: Bad</strong> - Performance below expectations</li>
+                        <li><strong>4-6: Average</strong> - Meets basic requirements, but improvement needed</li>
+                        <li><strong>7-8: Good</strong> - Consistently meets expectations</li>
+                        <li><strong>9-10: Excellent</strong> - Exceeds expectations and shows exceptional performance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overview Section with Pie Charts -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <h4>Performance Rating</h4>
+                <!-- Canvas for Performance Rating chart -->
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <h4>Attendance</h4>
+                <!-- Canvas for Attendance chart with larger size -->
+                <div class="chart-container">
+                    <!-- Increased height for larger chart -->
+                    <canvas id="attendanceChart" width="400" height="300"></canvas> <!-- Set custom width and height -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <h4>Task Completion</h4>
+                <!-- Canvas for Task Completion chart -->
+                <div class="chart-container">
+                    <canvas id="taskCompletionChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <h4>Goals Achieved</h4>
+                <!-- Canvas for Goals Achieved chart with larger size -->
+                <div class="chart-container">
+                    <!-- Increased height for larger chart -->
+                    <canvas id="goalsAchievedChart" width="400" height="300"></canvas> <!-- Set custom width and height -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Section with Table -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    Evaluation Details
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Employee Name</th>
+                                <th scope="col">Questions Asked</th>
+                                <th scope="col">Feedback</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>John Doe</td>
+                                <td>5</td>
+                                <td>Great performance, but room for improvement in task completion.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Jane Smith</td>
+                                <td>15</td>
+                                <td>Consistent performance, but needs improvement in attendance.</td>
+                            </tr>
+                            <!-- Add more rows as necessary -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Script for Pie Charts -->
+<script>
+    // Performance Rating Pie Chart
+    var performanceChart = new Chart(document.getElementById('performanceChart'), {
+        type: 'pie',  // Specify the chart type as 'pie'
+        data: {
+            labels: ['Excellent (9-10)', 'Good (7-8)', 'Average (4-6)', 'Bad (1-3)'], // Labels for the chart
+            datasets: [{
+                data: [35, 40, 15, 10], // Replace with dynamic data if needed
+                backgroundColor: ['#28a745', '#007bff', '#ffc107', '#dc3545'], // Green, Blue, Yellow, Red
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+        <!-- Script for Bar Chart -->
+    var attendanceChart = new Chart(document.getElementById('attendanceChart'), {
+        type: 'bar',  // Set the chart type to 'bar'
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],  // Example labels for weeks
+            datasets: [{
+                label: 'Present',  // Label for the Present dataset
+                data: [80, 85, 90, 75],  // Example attendance percentages for Present
+                backgroundColor: '#28a745',  // Green color for Present
+                borderColor: '#ffffff',
+                borderWidth: 2
+            },
+            {
+                label: 'Absent',  // Label for the Absent dataset
+                data: [50, 55, 28, 15],  // Example attendance percentages for Absent
+                backgroundColor: '#dc3545',  // Red color for Absent
+                borderColor: '#ffffff',
+                borderWidth: 2
+            },
+            {
+                label: 'Late',  // Label for the Late dataset
+                data: [20, 15, 22, 10],  // Example attendance percentages for Late
+                backgroundColor: '#ffc107',  // Yellow color for Late
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 100  // Set max value to 100% for better representation
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + '%';  // Show percentage on tooltip
+                        }
+                    }
+                }
+            }
+        }
+    });
+    // Task Completion Pie Chart
+    var taskCompletionChart = new Chart(document.getElementById('taskCompletionChart'), {
+        type: 'pie',  // Specify the chart type as 'pie'
+        data: {
+            labels: ['Completed', 'Incomplete'], // Labels for the chart
+            datasets: [{
+                data: [80, 20], // Replace with dynamic data if needed
+                backgroundColor: ['#28a745', '#dc3545'], // Green for completed, Red for incomplete
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    var goalsAchievedChart = new Chart(document.getElementById('goalsAchievedChart'), {
+        type: 'bar',  // Set the chart type to 'bar'
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],  // Example labels for weeks
+            datasets: [{
+                label: 'Goals Achieved',  // Label for the Goals Achieved dataset
+                data: [50, 65, 80, 90],  // Example percentage of goals achieved for each week
+                backgroundColor: '#28a745',  // Green color for Present
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 100  // Set max value to 100% for better representation
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + '%';  // Show percentage on tooltip
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>

@@ -1,0 +1,283 @@
+﻿@model GetAllEmployeeViewModel
+@using EHRM.ViewModel.Employee
+@{
+    ViewData["Title"] = "SelfProfile";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f7fc;
+    }
+
+    /* Header Styling */
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .profile-header img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #007bff;
+        }
+
+        .profile-header h2 {
+            margin-top: 15px;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        .profile-header p {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+
+    /* Card Styling */
+    .card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+    }
+
+    .profile-section {
+        margin-bottom: 25px;
+    }
+
+        .profile-section h5 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        /* Input Fields */
+        .profile-section input {
+            width: 100%;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            background-color: #fafafa;
+            margin-bottom: 15px;
+        }
+
+            .profile-section input[readonly] {
+                background-color: #e9ecef;
+            }
+
+    /* Social Links */
+    .social-links a {
+        margin: 0 12px;
+        font-size: 1.25rem;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .social-links a.linkedin {
+            background-color: #0077b5;
+        }
+
+        .social-links a.twitter {
+            background-color: #1da1f2;
+        }
+
+        .social-links a.github {
+            background-color: #333;
+        }
+
+        .social-links a:hover {
+            transform: scale(1.1);
+            text-decoration: none;
+        }
+
+    /* Container */
+    .container {
+        max-width: 1200px;
+    }
+</style>
+<!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Profile Section -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center profile-header">
+                    <!-- Profile Picture -->
+                    <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Profile Picture" class="img-fluid rounded-circle">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input asp-for="Name" class="form-control text-center" id="name" value="" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age</label>
+                        <input asp-for="Age" class="form-control text-center" id="age" value="" readonly />
+                    </div>
+@* 
+                    <p class="text-muted">Web Developer</p> *@
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Details Section -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Personal Information Section -->
+                    <div class="profile-section">
+                        <h5>Personal Information</h5>
+                        <input type="hidden" id="userId" value="@ViewData["UserId"]" />
+                        <!-- First Group of Fields: Email and Phone -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input asp-for="EmailAddress" class="form-control" id="email" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input asp-for="CellPhone" class="form-control" id="phone" readonly />
+                            </div>
+                        </div>
+
+                        <!-- Second Group of Fields: Address and CTC -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="address" class="form-label">Address & Nationality</label>
+                                <input asp-for="Street" class="form-control" id="address" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ctc" class="form-label">CTC</label>
+                                <input type="text" class="form-control" id="ctc" value="" readonly />
+                            </div>
+                        </div>
+
+                        <!-- Third Group of Fields: Course Name and Institute Name -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="courseName" class="form-label">Course Name</label>
+                                <input type="text" class="form-control" id="courseName" value="" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="instituteName" class="form-label">Institute Name</label>
+                                <input type="text" class="form-control" id="instituteName" value="" readonly />
+                            </div>
+                        </div>
+
+                        <!-- Fourth Group of Fields: Passed Date and Service Start Date -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="passedDate" class="form-label">Passed Date</label>
+                                <input type="text" class="form-control" id="passedDate" value="" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="startDate" class="form-label">Service Start Date</label>
+                                <input type="text" class="form-control" id="startDate" value="" readonly />
+                            </div>
+                        </div>
+
+                        <!-- Fifth Group of Fields: Service Time -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="serviceTime" class="form-label">Service Time (Months)</label>
+                                <input type="text" class="form-control" id="serviceTime" value="0" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+     $(document).ready(function () {
+        // Get the empid from the hidden input field
+        var empid = $('#userId').val();
+
+        // Pass empid to loadEmployeeData function
+        loadEmployeeData(empid);
+        var toastType = "@TempData["ToastType"]"; // Get Toast type from TempData
+        var toastMessage = "@TempData["ToastMessage"]"; // Get Toast message from TempData
+        if (toastType && toastMessage) {
+            // If the toast type and message exist, show the toastr
+            if (toastType === "success") {
+                toastr.success(toastMessage);
+            } else if (toastType === "danger") {
+                toastr.error(toastMessage);
+            } else if (toastType === "info") {
+                toastr.info(toastMessage);
+            } else if (toastType === "warning") {
+                toastr.warning(toastMessage);
+            }
+        }
+    });
+
+      function loadEmployeeData(EmpID) {
+        $.ajax({
+            url: '/Employee/EmployeeData/' + EmpID,  // API endpoint to get employee details based on EmpID
+            method: 'GET',
+            success: function (response) {
+                console.log('Full Response:', response);
+                console.log('Data:', response.data);
+
+                if (response.success && response.data) {
+                    const TeamScreenData = response.data[0];
+
+                    // Fill the form with the employee data
+                    $('#email').val(TeamScreenData.emailAddress || '');
+                    $('#address').val(
+                        (TeamScreenData.street || '') + ', ' +
+                        (TeamScreenData.city || '') + ', ' +
+                        (TeamScreenData.country || '') + ', ' +
+                        (TeamScreenData.zipCode || '') + ', ' +
+                        (TeamScreenData.nationality || '')
+                    );
+                    $('#phone').val(TeamScreenData.cellPhone || '');
+                    $('#age').val(TeamScreenData.age || '');
+                    $('#name').val((TeamScreenData.firstName || '') + ' ' + (TeamScreenData.lastName || ''));
+                    $('#startDate').val(TeamScreenData.employmentDetails[0].appointmentDate || '');
+                    $('#ctc').val(TeamScreenData.salaryDetails[0].ctc || '');
+                    $('#courseName').val(TeamScreenData.qualifications[0].courseName || '');
+                    $('#instituteName').val(TeamScreenData.qualifications[0].institutionName || '');
+                    $('#passedDate').val(TeamScreenData.qualifications[0].passedDate || '');
+
+                    // Success toast
+                    toastr.success("Employee data retrieved successfully!");
+                } else {
+                    // Error toast if no valid data
+                    toastr.error("Error: Invalid or missing data in response.");
+                    console.error('Error: Invalid or missing data in response.');
+                }
+            },
+            error: function (error) {
+                // Error toast for AJAX failure
+                toastr.error("AJAX Error: Unable to retrieve employee data.");
+                console.error('AJAX Error:', error);
+            }
+        });
+    }
+
+</script>
+
+

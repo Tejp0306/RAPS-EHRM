@@ -19,7 +19,13 @@ namespace EHRM.Web.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ProbationEvaluationAsync()
+
+        public IActionResult ProbationDashboard()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ProbationEvaluation()
         {
             try
             {
@@ -50,7 +56,7 @@ namespace EHRM.Web.Controllers
                     // Handle failure scenarios
                     return Json(new { Success = false, Message = result.Message ?? "No teams found." });
                 }
-               
+
             }
             catch (Exception ex)
             {
