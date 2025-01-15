@@ -1,5 +1,6 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.DAL.UnitOfWork;
+using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -32,11 +33,11 @@ namespace EHRM.ServiceLayer.Self
         public async Task<List<GetAllEmployeeViewModel>> GetAllSelfEmployeeRecordDetails(int EmpId)
         {
             var employeeRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
-            
+
 
             // Await the async operations to get actual collections
             var employees = await employeeRepository.GetAllAsync();
-            
+
 
             // LINQ query to join all related tables using EmpId, with left joins to include null values for missing data
             var employeeWithDetails = (from e in employees
@@ -74,8 +75,8 @@ namespace EHRM.ServiceLayer.Self
                                            CreatedAt = e.CreatedAt,
                                            UpdatedAt = e.UpdatedAt,
                                            FileName = e.Image,
-                                       
-                               
+
+
                                        }).ToList();
 
             return employeeWithDetails;
@@ -85,5 +86,82 @@ namespace EHRM.ServiceLayer.Self
             var teamName = _context.Teams.Where(x => x.Id == teamid).Select(x => x.Name).FirstOrDefault();
             return teamName != null ? teamName : "N.A";  // Fixed missing semicolon
         }
+
+        public async Task<List<GetAllEmployeeViewModel>> GetAllEmployeeDataDetails(int EmpId)
+        {
+            var employeeRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
+            var employmentTypeRepository = _UnitOfWork.GetRepository<EmployementTypeDetail>();
+            var qualificationRepository = _UnitOfWork.GetRepository<Qualification>();
+            var salaryRepository = _UnitOfWork.GetRepository<Salary>();
+
+            // Await the async operations to get actual collections
+            var employees = await employeeRepository.GetEmployeeDetailsByIdAsync(EmpId);
+            var employmentTypes = await employmentTypeRepository.GetEmployementTypeDetailsByIdAsync(EmpId);
+            var qualifications = await qualificationRepository.GetQualificationDetailsByIdAsync(EmpId);
+            var salaries = await salaryRepository.GetSalaryDetailsByIdAsync(EmpId);
+
+
+            // LINQ query to join all related tables using EmpId, with left joins to include null values for missing data
+            var employeeWithDetails = (from e in employees
+                                       join etype in employmentTypes on e.EmpId equals etype.EmpId into etypes
+                                       from etype in etypes.DefaultIfEmpty()
+                                       join q in qualifications on e.EmpId equals q.EmpId into quals
+                                       from qualification in quals.DefaultIfEmpty()
+                                       join s in salaries on e.EmpId equals s.EmpId into sal
+                                       from salary in sal.DefaultIfEmpty()
+                                       where e.EmpId == EmpId  // Filter by specific EmpId if needed
+                                       select new GetAllEmployeeViewModel
+                                       {
+                                           Id = e.Id,
+                                           EmpId = e.EmpId,
+                                           FirstName = e.FirstName,
+                                           MiddleName = e.MiddleName,
+                                           LastName = e.LastName,
+                                           Age = e.Age ?? 0,  // Null coalescing to handle nullable Age
+                                           EmailAddress = e.EmailAddress,
+                                           CellPhone = e.CellPhone,
+                                           Street = e.Street,
+                                           City = e.City,
+                                           Country = e.Country,
+                                           ZipCode = e.ZipCode,
+                                           Nationality = e.Nationality,
+                                           CreatedAt = e.CreatedAt,
+                                           UpdatedAt = e.UpdatedAt,
+                                           SalaryDetails = salary == null ? new List<SalaryViewModel>() : new List<SalaryViewModel>
+                                           {
+                                              new SalaryViewModel
+                                              {
+
+                                                 Ctc = salary.Ctc,
+
+                                              }
+                                           },
+                                           Qualifications = qualification == null ? new List<QualificationViewModel>() : new List<QualificationViewModel>
+                                {
+                                    new QualificationViewModel
+                                    {
+
+                                        CourseName = qualification.CourseName,
+                                        InstitutionName = qualification.InstitutionName,
+                                        PassedDate = qualification.PassedDate,
+
+                                    }
+                                },
+
+                                           EmploymentDetails = etype == null ? new List<EmploymentTypeDetailViewModel>() : new List<EmploymentTypeDetailViewModel>
+                                {
+                                    new EmploymentTypeDetailViewModel
+                                    {
+
+                                        AppointmentDate = etype.AppointmentDate,
+
+                                    }
+                                },
+
+                                       }).ToList();
+
+            return employeeWithDetails;
+        }
+
     }
 }
