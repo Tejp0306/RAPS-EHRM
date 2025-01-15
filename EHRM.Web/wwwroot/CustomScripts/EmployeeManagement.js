@@ -3,6 +3,14 @@
     getTeam();
     getEmployeeData();
     getManager();
+
+    $('#employeeTable').on('click', '.activate-btn', function () {
+
+        const employeeID = $(this).data('id');
+
+        GetEmpForEmpCred(employeeID);
+        
+    });
 });
 
 function getManager() {
@@ -25,7 +33,7 @@ function getManager() {
                 // Add a default option
                 resDropdown.append('<option value="" disabled selected>Select Role</option>');
                 res.forEach(res => {
-                    resDropdown.append(`<option value="${res.empid}">${res.name}</option>`); // Adjust key names as needed
+                    resDropdown.append(`<option value="${res.empId}">${res.name}</option>`); // Adjust key names as needed
                 });
 
 
@@ -149,10 +157,11 @@ function getEmployeeData() {
                             <button class="btn btn-warning btn-sm mx-1 edit-btn" data-id="${data}">
                                 <i class="bi bi-pencil"></i> Edit/Complete
                             </button>
-                            <button class="btn btn-success btn-sm mx-1 delete-btn" data-id="${data}">
-                                <i class="bi bi-trash"></i> Activate Account
+                            <button class="btn btn-success btn-sm mx-1 activate-btn" data-id="${data}">
+                                <i class="bi bi-check-circle"></i> Activate Account
                             </button>
-                            <button class="btn btn-success btn-sm mx-1 view-btn" data-id="${data}">
+
+                            <button class="btn btn-primary btn-sm mx-1 view-btn" data-id="${data}">
                                 <i class="bi bi-pencil"></i> View
                             </button>
                         </div>
@@ -338,3 +347,18 @@ function calculateServiceDuration(appointmentDate) {
     const appointedServiceInput = document.getElementById("appointedService");
     appointedServiceInput.value = result;
 }
+
+
+//Activate employee and add employee details in employee cred table
+
+function GetEmpForEmpCred(EmpId) {
+    debugger;
+    // Construct the URL based on EmpId
+    const url = EmpId ? `/Employee/GetEmployeeForCred/${EmpId}` : '/Employee/GetEmployeeForCred';
+    console.log('Navigating to:', url);
+
+    // Redirect to the URL
+    window.location.href = url;
+
+}
+

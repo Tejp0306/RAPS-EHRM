@@ -71,9 +71,11 @@ namespace EHRM.ViewModel.Employee
 
         public DateTime? UpdatedAt { get; set; }
         // You can add other related entity lists similarly
-        public List<QualificationViewModel> Qualifications { get; set; } = new List<QualificationViewModel>();
-        public List<EmploymentTypeDetailViewModel> EmploymentDetails { get; set; } = new List<EmploymentTypeDetailViewModel>();
-        public List<DeclarationViewModel> Declarations { get; set; } = new List<DeclarationViewModel>();
-        public List<SalaryViewModel> SalaryDetails { get; set; } = new List<SalaryViewModel>();
+        public QualificationViewModel Qualifications { get; set; } 
+        public EmploymentTypeDetailViewModel EmploymentDetails { get; set; }
+        public DeclarationViewModel Declarations { get; set; } 
+        public SalaryViewModel SalaryDetails { get; set; } 
     }
+
+    
 }

@@ -1,24 +1,32 @@
 ﻿using EHRM.DAL.Database;
+using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Employee;
+using EHRM.ServiceLayer.Enumerations;
 using EHRM.ServiceLayer.Utility;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.EmployeeDeclaration;
-using EHRM.ViewModel.Master;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.Transactions;
 
 namespace EHRM.Web.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employee;
-        private readonly EhrmContext _context;  
+        private readonly EhrmContext _context;
+        private readonly IUnitOfWork _UnitOfWork;
+
+        
         private readonly IEmailService _emailService;
-        public EmployeeController(IEmployeeService employee, EhrmContext context, IEmailService emailService)
+        public EmployeeController(IEmployeeService employee, EhrmContext context, IEmailService emailService, IUnitOfWork unitOfWork )
         {
             _employee = employee;
             _context = context; 
             _emailService = emailService;
+            _UnitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
@@ -27,6 +35,31 @@ namespace EHRM.Web.Controllers
         [HttpGet("Employee/AddEmployee/{EmpId?}")]
         public async Task<IActionResult> AddEmployee(int? EmpId = null)
         {
+            
+
+            var EmployeeTypes = Enum.GetValues(typeof(EmployeeType))
+                                 .Cast<EmployeeType>()
+                                 .Select(e => new SelectListItem
+                                 {
+                                     Value = ((int)e).ToString(),  // Integer value as string
+                                     Text = e.ToString()           // Enum name as text
+                                 })
+                                 .ToList();
+
+
+            var employmentStatuses = Enum.GetValues(typeof(EmploymentStatus))
+                                 .Cast<EmploymentStatus>()
+                                 .Select(e => new SelectListItem
+                                 {
+                                     Value = ((int)e).ToString(),  // Integer value as string
+                                     Text = e.ToString()           // Enum name as text
+                                 })
+                                 .ToList();
+
+            // Pass the list of SelectListItems to ViewBag
+            ViewBag.EmployeeType = EmployeeTypes;
+            ViewBag.EmploymentStatusId = employmentStatuses;
+
             if (EmpId.HasValue)
             {
                 var res = await _employee.GetAllEmployeeRecordDetails(EmpId.Value);
@@ -44,11 +77,13 @@ namespace EHRM.Web.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public async Task<IActionResult> SavePersonalInfoAsync(GetAllEmployeeViewModel model)
-        {
 
-            var filepath = "";
+        //Save Personal Info
+        [HttpPost]
+        public async Task<IActionResult> SavePersonalInfo(GetAllEmployeeViewModel model)
+        {
+         
+           var filepath = "";
             if (model.ProfileImg != null)
             {
 
@@ -76,6 +111,104 @@ namespace EHRM.Web.Controllers
                 ViewBag.ErrorMessage = result.Message; // Display error message
                 return View(model); // Return to the same view with the provided model
             }
+        }
+
+
+        //Save Employement Info
+        [HttpPost]
+        public async Task<IActionResult> SaveEmploymentInfo(GetAllEmployeeViewModel model)
+        {
+            int createdById = 101; // Replace with logic to fetch the actual user ID
+            var result = await _employee.SaveEmploymentInfoAsync(model, createdById);
+            // Handle the result of the create operation
+            if (result.Success)
+            {
+
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Operation completed successfully!";
+                TempData["EmpId"] = result.Data;
+                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+            }
+            else
+            {
+                ViewBag.ErrorMessage = result.Message; // Display error message
+                return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+            }
+
+        }
+
+
+        //Save Qualification Details
+        [HttpPost]
+        public async Task<IActionResult> SaveQualificationInfo(GetAllEmployeeViewModel model)
+        {
+            int createdById = 101; // Replace with logic to fetch the actual user ID
+            var result = await _employee.SaveQualificationInfoAsync(model, createdById);
+            // Handle the result of the create operation
+            if (result.Success)
+            {
+
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Operation completed successfully!";
+                TempData["EmpId"] = result.Data;
+                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+            }
+            else
+            {
+                ViewBag.ErrorMessage = result.Message; // Display error message
+                return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+            }
+
+        }
+
+        //Save Salary Info
+        
+
+        [HttpPost]
+        public async Task<IActionResult> SaveSalaryInfo(GetAllEmployeeViewModel model)
+        {
+            int createdById = 101; // Replace with logic to fetch the actual user ID
+            var result = await _employee.SaveSalaryInfoAsync(model, createdById);
+            // Handle the result of the create operation
+            if (result.Success)
+            {
+
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Operation completed successfully!";
+                TempData["EmpId"] = result.Data;
+                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+            }
+            else
+            {
+                ViewBag.ErrorMessage = result.Message; // Display error message
+                return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+            }
+
+        }
+
+
+        //Save Declaration Form
+
+        [HttpPost]
+        public async Task<IActionResult> SaveDeclarationInfo(GetAllEmployeeViewModel model)
+        {
+            int createdById = 101; // Replace with logic to fetch the actual user ID
+            var result = await _employee.SaveDecalarationInfoAsync(model, createdById);
+            // Handle the result of the create operation
+            if (result.Success)
+            {
+
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Operation completed successfully!";
+                TempData["EmpId"] = result.Data;
+                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+            }
+            else
+            {
+                ViewBag.ErrorMessage = result.Message; // Display error message
+                return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+            }
+
         }
 
         [HttpGet]
@@ -213,6 +346,92 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No holidays found." });
             }
         }
+
+        //Get Employee Data for saving data in employee cred
+        [HttpGet("Employee/GetEmployeeForCred/{EmpId?}")]
+        public async Task<IActionResult> GetEmployeeForCred(int EmpId)
+        {
+            // Use TransactionScope to manage a transaction across multiple operations
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    // Fetch the result from the service layer
+                    var result = await _employee.GetEmployeeDataByEmpIdAsync(EmpId);
+
+                    // Check if the result is successful and contains valid data
+                    if (result.Success && result.Data != null)
+                    {
+                        // Assuming result.Data is a single employee object and not a list
+                        var employeeData = result.Data as dynamic;
+
+                        if (employeeData != null)
+                        {
+                            // Create a new EmployeeCredential entity
+                            var employeeCredential = new EmployeesCred
+                            {
+                                EmpId = employeeData[0].EmpId, // Assuming EmpId is part of the employee data
+                                Email = employeeData[0].EmailAddress,
+                                TempPassword = employeeData[0].Password,
+                                FirstName = employeeData[0].FirstName,
+                                LastName = employeeData[0].LastName,
+                                RoleId = employeeData[0].RoleId,
+                                LoginId = employeeData[0].LoginId,
+                            };
+
+                            // Save to the EmployeesCred table
+                            var employementdetailRepository = _UnitOfWork.GetRepository<EmployeesCred>();
+                            await employementdetailRepository.AddAsync(employeeCredential);
+                            await _UnitOfWork.SaveAsync();
+
+                            // After saving employee data, update IsProfileCompleted in EmployeeDetails table
+                            var employeeDetailsRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
+
+                            // Find the EmployeeDetails record for the given EmpId
+                            var employeeDetails = await employeeDetailsRepository.GetEmployeeDetailsByIdAsync(EmpId);
+
+                            if (employeeDetails != null)
+                            {
+                                // Set IsProfileCompleted to true
+                                employeeDetails[0].IsProfileCompleted = true;
+
+                                // Save changes to the EmployeeDetails table
+                                await _UnitOfWork.SaveAsync();
+                            }
+                            else
+                            {
+                                // Handle the case where EmployeeDetails is not found
+                                throw new Exception("EmployeeDetails not found.");
+                            }
+
+                            // If everything is successful, commit the transaction
+                            transaction.Complete();
+
+                            // Return success response
+                            return View("employeeview");
+                        }
+                        else
+                        {
+                            return View("employeeview");
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the service failed
+                        return View("employeeview");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle the error (e.g., log the exception)
+                    return Json(new { Success = false, Message = ex.Message });
+                }
+            }
+        }
+
+
+
+
         // Non-action method to check profile completion status
         [NonAction]
         private string CheckProfileStatus(bool isProfileCompleted)

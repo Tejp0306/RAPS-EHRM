@@ -22,9 +22,9 @@ namespace EHRM.ViewModel.Employee
 
         public string? Signature { get; set; }
 
-        public bool? VerificationCrossCheck { get; set; }
+        public bool VerificationCrossCheck { get; set; }
 
-        public bool? VerificationMandatory { get; set; }
+        public bool VerificationMandatory { get; set; }
 
         public bool? IsActive { get; set; }
 

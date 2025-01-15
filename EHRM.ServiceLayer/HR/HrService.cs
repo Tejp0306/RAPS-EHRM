@@ -82,58 +82,48 @@ namespace EHRM.ServiceLayer.HR
                                            CreatedAt = e.CreatedAt,
                                            UpdatedAt = e.UpdatedAt,
                                            FileName = e.Image,
-                                           SalaryDetails = salary == null ? new List<SalaryViewModel>() : new List<SalaryViewModel>
-                                {
-                                    new SalaryViewModel
-                                    {
-                                        Id = salary.Id,
-                                        Ctc = salary.Ctc,
-                                        StartYear = salary.StartYear,
-                                        EndYear = salary.Endyear,
-                                        Description = salary.Description
-                                    }
-                                },
-                                           Qualifications = qualification == null ? new List<QualificationViewModel>() : new List<QualificationViewModel>
-                                {
-                                    new QualificationViewModel
-                                    {
-                                        Id = qualification.Id,
-                                        CourseName = qualification.CourseName,
-                                        InstitutionName = qualification.InstitutionName,
-                                        PassedDate = qualification.PassedDate,
-                                        Details = qualification.Details
-                                    }
-                                },
+                                           SalaryDetails = salary == null ? new SalaryViewModel() : new SalaryViewModel
+                                           {
+                                               Id = salary.Id,
+                                               Ctc = salary.Ctc,
+                                               StartYear = salary.StartYear,
+                                               EndYear = salary.Endyear,
+                                               Description = salary.Description
+                                           },
 
-                                           EmploymentDetails = etype == null ? new List<EmploymentTypeDetailViewModel>() : new List<EmploymentTypeDetailViewModel>
-                                {
-                                    new EmploymentTypeDetailViewModel
-                                    {
-                                        Id = etype.Id,
-                                        EmpType = etype.EmpType,
-                                        EmpTypeName = GetEmpTypeName(etype.EmpType),
-                                        AppointmentDate = etype.AppointmentDate,
-                                        StartDate = etype.StartDate,
-                                        EndDate = etype.EndDate,
-                                        TotalService = etype.TotalService,
-                                        AppointedService = etype.AppointedService
-                                    }
-                                },
+                                           Qualifications = qualification == null ? new QualificationViewModel() : new QualificationViewModel
+                                           {
+                                               Id = qualification.Id,
+                                               CourseName = qualification.CourseName,
+                                               InstitutionName = qualification.InstitutionName,
+                                               PassedDate = qualification.PassedDate,
+                                               Details = qualification.Details
+                                           },
 
-                                           Declarations = declaration == null ? new List<DeclarationViewModel>() : new List<DeclarationViewModel>
-                                {
-                                    new DeclarationViewModel
-                                    {
-                                        Id = declaration.Id,
-                                        HrRepresentativeName = declaration.HrRepresentativeName,
-                                        HrRepresentativeDesignation = declaration.HrRepresentativeDesignation,
-                                        HrContactInfo = declaration.HrContactInfo,
-                                        Date = declaration.Date,
-                                        Signature = declaration.Signature,
-                                        VerificationCrossCheck = declaration.VerificationCrossCheck,
-                                        VerificationMandatory = declaration.VerificationMandatory
-                                    }
-                                }
+                                           EmploymentDetails = etype == null ? new EmploymentTypeDetailViewModel() : new EmploymentTypeDetailViewModel
+                                           {
+                                               Id = etype.Id,
+                                               EmpType = etype.EmpType,
+                                               EmpTypeName = GetEmpTypeName(etype.EmpType),
+                                               AppointmentDate = etype.AppointmentDate,
+                                               StartDate = etype.StartDate,
+                                               EndDate = etype.EndDate,
+                                               TotalService = etype.TotalService,
+                                               AppointedService = etype.AppointedService
+                                           },
+
+                                           Declarations = declaration == null ? new DeclarationViewModel() : new DeclarationViewModel
+                                           {
+                                               Id = declaration.Id,
+                                               HrRepresentativeName = declaration.HrRepresentativeName,
+                                               HrRepresentativeDesignation = declaration.HrRepresentativeDesignation,
+                                               HrContactInfo = declaration.HrContactInfo,
+                                               Date = declaration.Date,
+                                               Signature = declaration.Signature,
+                                               VerificationCrossCheck = (bool)declaration.VerificationCrossCheck,
+                                               VerificationMandatory = (bool)declaration.VerificationMandatory
+                                           }
+
 
 
                                        }).ToList();
