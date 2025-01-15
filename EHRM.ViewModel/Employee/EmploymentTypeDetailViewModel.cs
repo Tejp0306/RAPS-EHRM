@@ -17,6 +17,7 @@ namespace EHRM.ViewModel.Employee
         public string? EmpTypeName { get; set; }
 
         public string? AppointmentDate { get; set; }
+        //public string appointmentDate { get; set; }
 
         public string? StartDate { get; set; }
 
@@ -34,7 +35,7 @@ namespace EHRM.ViewModel.Employee
 
         public string? EmployeeName { get; set; } // Additional property for employee name if needed
 
-        public bool EmploymentStatuses { get; set; } // Dropdown for employment statuses
+        public int EmploymentStatuses { get; set; } // Dropdown for employment statuses
         public int Managers { get; set; } // Dropdown for managers
     }
 
