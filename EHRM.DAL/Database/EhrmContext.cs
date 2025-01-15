@@ -34,6 +34,8 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
 
+    public virtual DbSet<ProbationEvaluationQuestion> ProbationEvaluationQuestions { get; set; }
+
     public virtual DbSet<Qualification> Qualifications { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -152,6 +154,10 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.FirstName).HasMaxLength(100);
             entity.Property(e => e.LastName).HasMaxLength(100);
             entity.Property(e => e.LockoutEndTime).HasColumnType("datetime");
+            entity.Property(e => e.LoginId)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("LoginID");
             entity.Property(e => e.TempPassword).HasMaxLength(255);
 
             entity.HasOne(d => d.Emp).WithOne(p => p.EmployeesCred)

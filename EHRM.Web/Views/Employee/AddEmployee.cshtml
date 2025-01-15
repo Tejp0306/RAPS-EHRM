@@ -1,5 +1,6 @@
 ﻿@using EHRM.ViewModel.Employee
 @model GetAllEmployeeViewModel
+
 @{
     ViewData["Title"] = "form";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -9,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form</title> <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <link href="~/customstyle/style.css" rel="stylesheet" />
     <script src="~/customscripts/EmployeeManagement.js?v=1"></script>
 
@@ -36,7 +38,6 @@
                                 <div class="col-md-8 col-sm-8">
                                     <div class="card">
                                         <div class="card-body">
-
                                             <fieldset>
                                                 <legend><i class="fas fa-user"></i> Personal Information</legend>
                                                 <div class="row mb-4">
@@ -212,7 +213,7 @@
                                             <div class="row mb-3">
                                                 <div class="col-12 col-md-6">
                                                     <label for="nationality" class="form-label">Nationality *</label>
-                                                    <input asp-for="Nationality" class="form-control" placeholder="Enter Natinality" />
+                                                    <input asp-for="Nationality" class="form-control" placeholder="Enter Nationality" />
 
                                                 </div>
                                             </div>
@@ -238,206 +239,306 @@
                             </div>
                         </form>
 
-                    </div> <!-- Emp_type and appointment details Tab -->
+                    </div> 
+                    
+                    <!-- Emp_type and appointment details Tab -->
                     <div class="tab-pane fade" id="employement-type-info" role="tabpanel" aria-labelledby="employement-type-tab">
-                        <div class="row">
-                            <!-- Left column (12 columns wide for the form fields) -->
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <form>
+                        <form id="employment-info" asp-controller="Employee" asp-action="SavePersonalInfo" method="post">
+                            <div class="row">
+                                <!-- Left column (12 columns wide for the form fields) -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
                                             <!-- Employment Type and Appointment Details -->
                                             <fieldset>
                                                 <legend><i class="fas fa-briefcase"></i> Employment Type and Appointment Details</legend> <!-- Employee Type and Appointment Date -->
                                                 <div class="col-4 col-md-4">
                                                     <input asp-for="EmpId" type="hidden" value="@TempData["EmpId"]" />
                                                     <label for="EmpId" class="form-label">EMP-ID  *</label>
-                                                    <input asp-for="EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+                                                    <input asp-for="EmploymentDetails.EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]"  />
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6">
-                                                        <label for="employeeType" class="form-label">Employee Type *</label> <select class="form-select" id="employeeType">
-                                                            <option selected>Select Employee Type</option>
-                                                            <option value="temporary">Temporary</option>
-                                                            <option value="permanent">Permanent</option>
-                                                            <option value="contract">Contract</option>
+                                                        <label for="EmpType" class="form-label">Employee Type *</label>
+
+                                                        <select asp-for="EmploymentDetails.EmpType" class="form-select" id="EmpType">
+                                                            <option selected disabled>Select Employee Type</option>
+
+                                                            @if (ViewBag.EmployeeType != null)
+                                                            {
+                                                                @foreach (var employeeType in ViewBag.EmployeeType as List<SelectListItem>)
+                                                                {
+                                                                    <option value="@employeeType.Value">@employeeType.Text</option>
+                                                                }
+                                                            }
                                                         </select>
+
+
                                                     </div>
-                                                    <div class="col-12 col-md-6"> <label for="appointmentDate" class="form-label">Appointment Date *</label> 
-                                                        <input type="text" class="form-control" name="appointmentDate" id="appointmentDate" data-start-day='1' data-picker-type='date' placeholder="Select Appointment Date" onchange="calculateServiceDuration(this.value)" readonly />
+                                                    <div class="col-12 col-md-6">
+                                                        <label asp-for="EmploymentDetails.AppointmentDate" class="form-label">Appointment Date *</label>
+                                                        <input asp-for="EmploymentDetails.AppointmentDate" class="form-control" id="appointmentDate" data-start-day='1' data-picker-type='date' placeholder="Select Appointment Date" onchange="calculateServiceDuration(this.value)" readonly />
                                                     </div>
                                                 </div> <!-- Start Date and End Date -->
                                                 <div class="row mb-3">
-                                                    <div class="col-12 col-md-6"> <label for="startDate" class="form-label">Start Date *</label> <input type="text" class="form-control" name="startdate" id="startdate" data-start-day='1' data-picker-type='date' placeholder="Select Start Date" readonly /> </div>
-                                                    <div class="col-12 col-md-6" id="endDateRow"> <label for="endDate" class="form-label">End Date (optional)</label> <input type="text" class="form-control" name="enddate" id="enddate" data-start-day='1' data-picker-type='date' placeholder="Select End Date" readonly /> </div>
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="startDate" class="form-label">Start Date *</label> 
+                                                        <input asp-for="EmploymentDetails.StartDate" type="text" class="form-control" id="startdate" data-start-day='1' data-picker-type='date' placeholder="Select Start Date" readonly /> </div>
+                                                    <div class="col-12 col-md-6" id="endDateRow"> 
+                                                        <label for="endDate" class="form-label">End Date (optional)</label> 
+                                                        <input asp-for="EmploymentDetails.EndDate" type="text" class="form-control" id="enddate" data-start-day='1' data-picker-type='date' placeholder="Select End Date" readonly /> </div>
                                                 </div> <!-- Total Service and Appointed Service -->
                                                 <div class="row mb-3">
-                                                    <div class="col-12 col-md-6"> <label for="totalService" class="form-label">Total Service *</label> <input type="text" class="form-control" id="totalService" placeholder="Enter Total Service (years/months)"> </div>
-                                                    <div class="col-12 col-md-6"> <label for="appointedService" class="form-label">Appointed Service *</label>
-                                                        <input type="text" class="form-control" id="appointedService" placeholder="Enter Appointed Service (years/months)">
-                                                        </div>
+                                                    <div class="col-12 col-md-6"> <label for="totalService" class="form-label">Total Service *</label> 
+                                                        <input asp-for="EmploymentDetails.TotalService"  class="form-control" id="totalService" placeholder="Enter Total Service (years/months)"> </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="appointedService" class="form-label">Appointed Service *</label>
+                                                        <input asp-for="EmploymentDetails.AppointedService"  class="form-control" id="appointedService" placeholder="Enter Appointed Service (years/months)">
+                                                    </div>
                                                 </div> <!-- Employment Status and Manager Name -->
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6">
-                                                        <label for="employmentStatus" class="form-label">Employment Status *</label> <select class="form-select" id="employmentStatus">
-                                                            <option selected>Select Employment Status</option>
-                                                            <option value="active">Active</option>
-                                                            <option value="on_leave">On Leave</option>
-                                                            <option value="terminated">Terminated</option>
+                                                        <label for="EmploymentStatusId" class="form-label">Employment Status *</label>
+                                                        <select asp-for="EmploymentDetails.EmploymentStatusId" class="form-select">
+                                                            <option selected disabled>Select Employment Status</option>
+                                                            @if (ViewBag.EmploymentStatusId != null)
+                                                            {
+                                                                @foreach (var status in ViewBag.EmploymentStatusId as List<SelectListItem>)
+                                                                {
+                                                                    <option value="@status.Value">@status.Text</option>
+                                                                }
+                                                            }
                                                         </select>
                                                     </div>
                                                     <div class="col-12 col-md-6">
                                                         <label for="ManagerId" class="form-label">Manager Name</label>
-                                                        <select class="form-select" id="ManagerId">
+                                                        <select asp-for="EmploymentDetails.ManagerId" class="form-select" id="ManagerId">
                                                             <option selected>Select Manager</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                             </fieldset> <!-- Save Button -->
                                             <div class="row mb-3">
-                                                <div class="col-12"> <button type="button" class="btn btn-primary" id="saveButton" >Save</button> </div>
+                                                <div class="col-12"> 
+                                                   <button type="submit" class="btn btn-primary" id="saveButton">Save</button> </div>
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div> <!-- Qualification Tab -->
+                        </form>      
+                    </div> 
+                    
+                    <!-- Qualification Tab -->
                     <div class="tab-pane fade" id="qualification-education-info" role="tabpanel" aria-labelledby="qualification-education-tab">
-                        <div class="row">
-                            <!-- Left column (12 columns wide for the form fields) -->
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <!-- Qualification and Education Details -->
-                                        <fieldset>
-                                            <legend><i class="fas fa-graduation-cap"></i> Qualification and Education</legend> <!-- Course Name and Concentration -->
-                                            <div class="col-4 col-md-4">
-                                              
-                                                <label for="EmpId" class="form-label">EMP-ID  *</label>
-                                                <input asp-for="EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-12 col-md-6"> <label for="courseName" class="form-label">Course Name *</label> <input type="text" class="form-control" id="courseName" placeholder="Enter Course Name"> </div>
-                                                <div class="col-12 col-md-6"> <label for="concentration" class="form-label">Concentration (optional)</label> <input type="text" class="form-control" id="concentration" placeholder="Enter Concentration or Area of Focus"> </div>
-                                            </div> <!-- Qualification Earned and Institution -->
-                                            <div class="row mb-3">
-                                                <div class="col-12 col-md-6">
-                                                    <label for="qualificationEarned" class="form-label">Qualification Earned *</label> <select class="form-select" id="qualificationEarned">
-                                                        <option selected>Select Qualification</option>
-                                                        <option value="degree">Degree</option>
-                                                        <option value="diploma">Diploma</option>
-                                                        <option value="certificate">Certificate</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-12 col-md-6"> <label for="institution" class="form-label">Institution *</label> <input type="text" class="form-control" id="institution" placeholder="Enter Institution Name"> </div>
-                                            </div> <!-- Country and Date Passed -->
-                                            <div class="row mb-3">
-                                                <div class="col-12 col-md-6">
-                                                    <label for="country" class="form-label">Country *</label> <select class="form-select" id="country">
-                                                        <option selected>Select Country of Institution</option>
-                                                        <option value="usa">USA</option>
-                                                        <option value="india">India</option>
-                                                        <option value="uk">UK</option> <!-- Add more countries as needed -->
-                                                    </select>
-                                                </div>
-                                                <div class="col-12 col-md-6"> <label for="datePassed" class="form-label">Date Passed *</label> <input type="date" class="form-control" id="datePassed"> </div>
-                                            </div> <!-- Details and Upload Document -->
-                                            <div class="row mb-3">
-                                                <div class="col-12 col-md-6"> <label for="details" class="form-label">Details (optional)</label> <input type="text" class="form-control" id="details" placeholder="Enter additional details (e.g., honors, awards)"> </div>
-                                                <div class="col-12 col-md-6"> <label for="uploadDocument" class="form-label">Upload Document (optional)</label> <input type="file" class="form-control" id="uploadDocument"> </div>
-                                            </div>
-                                        </fieldset> <!-- Save Button -->
-                                        <div class="row mb-3">
-                                            <div class="col-12"> <button type="button" class="btn btn-primary" disabled onclick="saveQualificationDetails()">Save</button> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> <!-- Salary Grade Tab -->
-                    <div class="tab-pane fade" id="salary-grade-info" role="tabpanel" aria-labelledby="salary-grade-tab">
-                        <div class="row">
-                            <!-- Left column (12 columns wide for the form fields) -->
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <!-- Salary Grade Details -->
-                                        <fieldset>
-                                            <legend><i class="fas fa-dollar-sign"></i> Salary Grade</legend> <!-- CTC (Cost to Company) -->
-                                            <div class="col-4 col-md-4">
-                                                <label for="EmpId" class="form-label">EMP-ID  *</label>
-                                                <input asp-for="EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-12 col-md-6"> <label for="ctc" class="form-label">CTC (Cost to Company)</label> <input type="text" class="form-control" id="ctc" placeholder="Enter CTC"> </div>
-                                            </div> <!-- Start Year and End Year -->
-                                            <div class="row mb-3">
-                                                <div class="col-12 col-md-6"> <label for="startYear" class="form-label">Start Year</label> <input type="number" class="form-control" id="startYear" placeholder="Enter Start Year"> </div>
-                                                <div class="col-12 col-md-6"> <label for="endYear" class="form-label">End Year</label> <input type="number" class="form-control" id="endYear" placeholder="Enter End Year"> </div>
-                                            </div> <!-- Description -->
-                                            <div class="row mb-3">
-                                                <div class="col-12"> <label for="description" class="form-label">Description</label> <textarea class="form-control" id="description" placeholder="Enter Salary Grade Description" rows="3"></textarea> </div>
-                                            </div>
-                                        </fieldset> <!-- Save Button -->
-                                        <div class="row mb-3">
-                                            <div class="col-12"> <button type="button" class="btn btn-primary" disabled onclick="saveSalaryGradeDetails()">Save</button> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> <!-- Declaration Tab -->
-                    <div class="tab-pane fade" id="declaration-info" role="tabpanel" aria-labelledby="declaration-tab">
-                        <div class="row">
-                            <!-- Left column (12 columns wide for the form fields) -->
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <!-- Declaration Details -->
-                                        <form>
+                        <form id="qualification-education-info" asp-controller="Employee" asp-action="SaveQualificationInfo" method="post">
+                            <div class="row">
+                                <!-- Left column (12 columns wide for the form fields) -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Qualification and Education Details -->
                                             <fieldset>
-                                                <legend><i class="fas fa-pen"></i> Declaration</legend> <!-- Declaration Statement -->
+                                                <legend><i class="fas fa-graduation-cap"></i> Qualification and Education</legend> <!-- Course Name and Concentration -->
                                                 <div class="col-4 col-md-4">
+                                              
                                                     <label for="EmpId" class="form-label">EMP-ID  *</label>
-                                                    <input asp-for="EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+                                                    <input asp-for="Qualifications.EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]"  />
                                                 </div>
                                                 <div class="row mb-3">
-                                                    <div class="col-12">
-                                                        <label class="form-label">Declaration Statement</label>
-                                                        <p> As a representative of the HR department, I hereby confirm that the information provided in this form has been accurately recorded based on the details submitted by the concerned employee and verified in accordance with company policies and procedures. </p>
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="CourseName" class="form-label">Course Name *</label>
+                                                        <input asp-for="Qualifications.CourseName" type="text" class="form-control" id="CourseName" placeholder="Enter Course Name">
                                                     </div>
-                                                </div> <!-- HR Representative Details -->
-                                                <div class="row mb-3">
-                                                    <div class="col-12 col-md-6"> <label for="hrName" class="form-label">HR Representative Name</label> <input type="text" class="form-control" id="hrName" name="hrName" placeholder="Enter Name" required> </div>
-                                                    <div class="col-12 col-md-6"> <label for="hrDesignation" class="form-label">HR Representative Designation</label> <input type="text" class="form-control" id="hrDesignation" name="hrDesignation" placeholder="Enter Designation" required> </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <div class="col-12 col-md-6"> <label for="hrEmployeeID" class="form-label">Employee ID</label> <input type="text" class="form-control" id="hrEmployeeID" name="hrEmployeeID" placeholder="Enter Employee ID" required> </div>
-                                                    <div class="col-12 col-md-6"> <label for="hrContact" class="form-label">HR Contact Information</label> <input type="text" class="form-control" id="hrContact" name="hrContact" placeholder="Enter Contact Information" required> </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <div class="col-12 col-md-6"> <label for="declarationDate" class="form-label">Date</label> <input type="date" class="form-control" id="declarationDate" name="declarationDate" required> </div>
-                                                    <div class="col-12 col-md-6"> <label for="hrSignature" class="form-label">Signature</label> <input type="text" class="form-control" id="hrSignature" name="hrSignature" placeholder="Enter Signature" required> </div>
-                                                </div> <!-- Verification Checklist -->
-                                                <div class="row mb-3">
-                                                    <div class="col-12"> <label class="form-label">Verification Checklist</label> </div>
-                                                    <div class="col-12 col-md-6">
-                                                        <div class="form-check"> <input class="form-check-input" type="checkbox" value="yes" id="infoCrossChecked"> <label class="form-check-label" for="infoCrossChecked"> Information cross-checked with submitted documents </label> </div>
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="Concentration" class="form-label">Concentration (optional)</label>
+                                                        <input asp-for="Qualifications.Concentration" type="text" class="form-control" id="Concentration" placeholder="Enter Concentration or Area of Focus">
                                                     </div>
+                                                </div> <!-- Qualification Earned and Institution -->
+                                                <div class="row mb-3">
                                                     <div class="col-12 col-md-6">
-                                                        <div class="form-check"> <input class="form-check-input" type="checkbox" value="yes" id="mandatoryFieldsCompleted"> <label class="form-check-label" for="mandatoryFieldsCompleted"> All mandatory fields completed </label> </div>
+                                                        <label for="QualificationEarned" class="form-label">Qualification Earned *</label>
+                                                        <select asp-for="Qualifications.QualificationEarned" class="form-select" id="QualificationEarned">
+                                                            <option selected>Select Qualification</option>
+                                                            <option value="degree">Degree</option>
+                                                            <option value="diploma">Diploma</option>
+                                                            <option value="certificate">Certificate</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="InstitutionName" class="form-label">Institution *</label> 
+                                                        <input asp-for="Qualifications.InstitutionName" type="text" class="form-control" id="InstitutionName" placeholder="Enter Institution Name">
+                                                    </div>
+                                                </div> <!-- Country and Date Passed -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label for="CountryName" class="form-label">Country *</label>
+                                                        <select asp-for="Qualifications.CountryName" class="form-select" id="CountryName">
+                                                            <option selected>Select Country of Institution</option>
+                                                            <option value="usa">USA</option>
+                                                            <option value="india">India</option>
+                                                            <option value="uk">UK</option> <!-- Add more countries as needed -->
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="PassedDate" class="form-label">Date Passed *</label>
+                                                        <input asp-for="Qualifications.PassedDate" type="date" class="form-control" id="PassedDate">
+                                                    </div>
+                                                </div> <!-- Details and Upload Document -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="Details" class="form-label">Details (optional)</label>
+                                                        <input asp-for="Qualifications.Details" type="text" class="form-control" id="Details" placeholder="Enter additional details (e.g., honors, awards)">
+                                                    </div>
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="Document" class="form-label">Upload Document (optional)</label>
+                                                        <input asp-for="Qualifications.Document" type="file" class="form-control" id="Document">
                                                     </div>
                                                 </div>
                                             </fieldset> <!-- Save Button -->
                                             <div class="row mb-3">
-                                                <div class="col-12"> <button type="button" class="btn btn-primary" disabled onclick="saveDeclarationDetails()">Save Declaration</button> </div>
+                                                <div class="col-12"> 
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
+                    </div> 
+
+                    <!-- Salary Grade Tab -->
+                    <div class="tab-pane fade" id="salary-grade-info" role="tabpanel" aria-labelledby="salary-grade-tab">
+                        <form id="salary-grade-info" asp-controller="Employee" asp-action="SaveSalaryInfo" method="post">
+                            <div class="row">
+                                <!-- Left column (12 columns wide for the form fields) -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Salary Grade Details -->
+                                            <fieldset>
+                                                <legend><i class="fas fa-dollar-sign"></i> Salary Grade</legend> <!-- CTC (Cost to Company) -->
+                                                <div class="col-4 col-md-4">
+                                                    <label for="EmpId" class="form-label">EMP-ID  *</label>
+                                                    <input asp-for="SalaryDetails.EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="Ctc" class="form-label">CTC (Cost to Company)</label>
+                                                        <input asp-for="SalaryDetails.Ctc" type="text" class="form-control" id="Ctc" placeholder="Enter CTC">
+                                                    </div>
+                                                </div> <!-- Start Year and End Year -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="StartYear" class="form-label">Start Year</label>
+                                                        <input asp-for="SalaryDetails.StartYear" type="number" class="form-control" id="StartYear" placeholder="Enter Start Year">
+                                                    </div>
+                                                    <div class="col-12 col-md-6"> 
+                                                        <label for="EndYear" class="form-label">End Year</label>
+                                                        <input asp-for="SalaryDetails.EndYear" type="number" class="form-control" id="EndYear" placeholder="Enter End Year">
+                                                    </div>
+                                                </div> 
+                                                <!-- Description -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12"> 
+                                                        <label for="Description" class="form-label">Description</label>
+                                                        <textarea asp-for="SalaryDetails.Description" class="form-control" id="Description" placeholder="Enter Salary Grade Description" rows="3"></textarea>
+                                                    </div>
+                                                </div>
+                                            </fieldset> 
+                                            <!-- Save Button -->
+                                            <div class="row mb-3">
+                                                <div class="col-12"> 
+                                                    <button type="submit" class="btn btn-primary">Save</button> 
+                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div> 
+                    
+                    <!-- Declaration Tab -->
+                    <div class="tab-pane fade" id="declaration-info" role="tabpanel" aria-labelledby="declaration-tab">
+                        <form id="declaration-info" asp-controller="Employee" asp-action="SaveDeclarationInfo" method="post">
+                            <div class="row">
+                                <!-- Left column (12 columns wide for the form fields) -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Declaration Details -->
+                                          
+                                                <fieldset>
+                                                    <legend><i class="fas fa-pen"></i> Declaration</legend> <!-- Declaration Statement -->
+                                                    <div class="col-4 col-md-4">
+                                                        <label for="EmpId" class="form-label">EMP-ID  *</label>
+                                                        <input asp-for="Declarations.EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <label class="form-label">Declaration Statement</label>
+                                                            <p> As a representative of the HR department, I hereby confirm that the information provided in this form has been accurately recorded based on the details submitted by the concerned employee and verified in accordance with company policies and procedures. </p>
+                                                        </div>
+                                                    </div> <!-- HR Representative Details -->
+                                                    <div class="row mb-3">
+                                                        <div class="col-12 col-md-6"> 
+                                                            <label for="HrRepresentativeName" class="form-label">HR Representative Name</label>
+                                                            <input asp-for="Declarations.HrRepresentativeName" type="text" class="form-control" id="HrRepresentativeName" name="HrRepresentativeName" placeholder="Enter Name" required>
+                                                        </div>
+                                                        <div class="col-12 col-md-6"> 
+                                                            <label for="HrRepresentativeDesignation" class="form-label">HR Representative Designation</label>
+                                                            <input asp-for="Declarations.HrRepresentativeDesignation" type="text" class="form-control" id="HrRepresentativeDesignation" name="HrRepresentativeDesignation" placeholder="Enter Designation" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-12 col-md-6"> 
+                                                            <label for="hrEmployeeID" class="form-label">Employee ID</label> 
+                                                            <input type="text" class="form-control" id="hrEmployeeID" name="hrEmployeeID" placeholder="Enter Employee ID" required> </div>
+                                                        <div class="col-12 col-md-6"> 
+                                                            <label for="HrContactInfo" class="form-label">HR Contact Information</label>
+                                                            <input asp-for="Declarations.HrContactInfo" type="text" class="form-control" id="HrContactInfo" name="HrContactInfo" placeholder="Enter Contact Information" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-12 col-md-6"> 
+                                                            <label for="Date" class="form-label">Date</label>
+                                                            <input asp-for="Declarations.Date" type="date" class="form-control" id="Date" name="Date" required>
+                                                        </div>
+                                                        <div class="col-12 col-md-6"> 
+                                                            <label for="Signature" class="form-label">Signature</label>
+                                                            <input asp-for="Declarations.Signature" type="text" class="form-control" id="Signature" name="Signature" placeholder="Enter Signature" required>
+                                                        </div>
+                                                    </div> <!-- Verification Checklist -->
+                                                    <div class="row mb-3">
+                                                        <div class="col-12"> 
+                                                            <label class="form-label">Verification Checklist</label>
+                                                            </div>
+                                                        <div class="col-12 col-md-6">
+                                                            <div class="form-check"> 
+                                                                <input asp-for="Declarations.VerificationCrossCheck" class="form-check-input" type="checkbox" value="" id="VerificationCrossCheck">
+                                                                <label class="form-check-label" for="VerificationCrossCheck"> Information cross-checked with submitted documents </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-md-6">
+                                                            <div class="form-check"> 
+                                                                <input asp-for="Declarations.VerificationMandatory" class="form-check-input" type="checkbox" value="" id="VerificationMandatory">
+                                                                <label class="form-check-label" for="VerificationMandatory"> All mandatory fields completed </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset> <!-- Save Button -->
+                                                <div class="row mb-3">
+                                                    <div class="col-12"> 
+                                                        <button type="submit" class="btn btn-primary" >Save Declaration</button> </div>
+                                                </div>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 

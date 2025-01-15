@@ -3,22 +3,18 @@ using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.EmployeeDeclaration;
-using EHRM.ViewModel.MainMenu;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Transactions;
+
 
 namespace EHRM.ServiceLayer.Employee
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly IUnitOfWork _UnitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public EmployeeService(IUnitOfWork unitOfWork)
         {
-            _UnitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> SavePersonalInfoAsync(GetAllEmployeeViewModel model, int createdById, String filepath)
@@ -58,9 +54,9 @@ namespace EHRM.ServiceLayer.Employee
                     Active = true,
                     CreatedById = createdById
                 };
-                var employeedetailRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
+                var employeedetailRepository = _unitOfWork.GetRepository<EmployeeDetail>();
                 await employeedetailRepository.AddAsync(newEmployeeDetails);
-                await _UnitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
 
                 return new Result
                 {
@@ -78,7 +74,7 @@ namespace EHRM.ServiceLayer.Employee
         public async Task<Result> GetRoleAsync()
         {
 
-            var roleRepository = _UnitOfWork.GetRepository<Role>();
+            var roleRepository = _unitOfWork.GetRepository<Role>();
             var role = await roleRepository.GetAllAsync();
             return new Result { Success = true, Data = role };
 
@@ -87,7 +83,7 @@ namespace EHRM.ServiceLayer.Employee
         {
             try
             {
-                var teamsRepository = _UnitOfWork.GetRepository<Team>();
+                var teamsRepository = _unitOfWork.GetRepository<Team>();
                 var teams = await teamsRepository.GetAllAsync();
                 return new Result { Success = true, Data = teams };
             }
@@ -101,9 +97,11 @@ namespace EHRM.ServiceLayer.Employee
         {
             try
             {
-                var employeeRepository = _UnitOfWork.GetRepository<EmployeeDetail>();  // Using generic repository
+                var employeeRepository = _unitOfWork.GetRepository<EmployeeDetail>();  // Using generic repository
                 var employee = await employeeRepository.GetAllAsync();  // Fetch all roles
                 return new Result { Success = true, Data = employee };
+
+
             }
             catch (Exception)
             {
@@ -111,13 +109,15 @@ namespace EHRM.ServiceLayer.Employee
             }
         }
 
+        //Get Employee Data by EmpID
+
         public async Task<List<GetAllEmployeeViewModel>> GetAllEmployeeRecordDetails(int EmpId)
         {
-            var employeeRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
-            var employmentTypeRepository = _UnitOfWork.GetRepository<EmployementTypeDetail>();
-            var qualificationRepository = _UnitOfWork.GetRepository<Qualification>();
-            var salaryRepository = _UnitOfWork.GetRepository<Salary>();
-            var declartionRepository = _UnitOfWork.GetRepository<Declaration>();
+            var employeeRepository = _unitOfWork.GetRepository<EmployeeDetail>();
+            var employmentTypeRepository = _unitOfWork.GetRepository<EmployementTypeDetail>();
+            var qualificationRepository = _unitOfWork.GetRepository<Qualification>();
+            var salaryRepository = _unitOfWork.GetRepository<Salary>();
+            var declartionRepository = _unitOfWork.GetRepository<Declaration>();
 
             // Await the async operations to get actual collections
             var employees = await employeeRepository.GetAllAsync();
@@ -168,63 +168,71 @@ namespace EHRM.ServiceLayer.Employee
                                            CreatedAt = e.CreatedAt,
                                            UpdatedAt = e.UpdatedAt,
 
-                                           SalaryDetails = salary == null ? new List<SalaryViewModel>() : new List<SalaryViewModel>
-                                {
-                                    new SalaryViewModel
-                                    {
-                                        Id = salary.Id,
-                                        Ctc = salary.Ctc,
-                                        StartYear = salary.StartYear,
-                                        EndYear = salary.Endyear,
-                                        Description = salary.Description
-                                    }
-                                },
-                                           Qualifications = qualification == null ? new List<QualificationViewModel>() : new List<QualificationViewModel>
-                                {
-                                    new QualificationViewModel
-                                    {
-                                        Id = qualification.Id,
-                                        CourseName = qualification.CourseName,
-                                        InstitutionName = qualification.InstitutionName,
-                                        PassedDate = qualification.PassedDate,
-                                        Details = qualification.Details
-                                    }
-                                },
+                                           SalaryDetails = salary == null ? new SalaryViewModel() : new SalaryViewModel
+                                           {
+                                               Id = salary.Id,
+                                               Ctc = salary.Ctc,
+                                               StartYear = salary.StartYear,
+                                               EndYear = salary.Endyear,
+                                               Description = salary.Description
+                                           },
 
-                                           EmploymentDetails = etype == null ? new List<EmploymentTypeDetailViewModel>() : new List<EmploymentTypeDetailViewModel>
-                                {
-                                    new EmploymentTypeDetailViewModel
-                                    {
-                                        Id = etype.Id,
-                                        EmpType = etype.EmpType,
-                                        AppointmentDate = etype.AppointmentDate,
-                                        StartDate = etype.StartDate,
-                                        EndDate = etype.EndDate,
-                                        TotalService = etype.TotalService,
-                                        AppointedService = etype.AppointedService
-                                    }
-                                },
+                                           Qualifications = qualification == null ? new QualificationViewModel() : new QualificationViewModel
+                                           {
+                                               Id = qualification.Id,
+                                               CourseName = qualification.CourseName,
+                                               InstitutionName = qualification.InstitutionName,
+                                               PassedDate = qualification.PassedDate,
+                                               Details = qualification.Details
+                                           },
 
-                                           Declarations = declaration == null ? new List<DeclarationViewModel>() : new List<DeclarationViewModel>
-                                {
-                                    new DeclarationViewModel
-                                    {
-                                        Id = declaration.Id,
-                                        HrRepresentativeName = declaration.HrRepresentativeName,
-                                        HrRepresentativeDesignation = declaration.HrRepresentativeDesignation,
-                                        HrContactInfo = declaration.HrContactInfo,
-                                        Date = declaration.Date,
-                                        Signature = declaration.Signature,
-                                        VerificationCrossCheck = declaration.VerificationCrossCheck,
-                                        VerificationMandatory = declaration.VerificationMandatory
-                                    }
-                                }
+                                           EmploymentDetails = etype == null ? new EmploymentTypeDetailViewModel() : new EmploymentTypeDetailViewModel
+                                           {
+                                               Id = etype.Id,
+                                               EmpType = etype.EmpType,
+                                               //EmpTypeName = GetEmpTypeName(etype.EmpType),
+                                               AppointmentDate = etype.AppointmentDate,
+                                               StartDate = etype.StartDate,
+                                               EndDate = etype.EndDate,
+                                               TotalService = etype.TotalService,
+                                               AppointedService = etype.AppointedService
+                                           },
+
+                                           Declarations = declaration == null ? new DeclarationViewModel() : new DeclarationViewModel
+                                           {
+                                               Id = declaration.Id,
+                                               HrRepresentativeName = declaration.HrRepresentativeName,
+                                               HrRepresentativeDesignation = declaration.HrRepresentativeDesignation,
+                                               HrContactInfo = declaration.HrContactInfo,
+                                               Date = declaration.Date,
+                                               Signature = declaration.Signature,
+                                               VerificationCrossCheck = (bool)declaration.VerificationCrossCheck,
+                                               VerificationMandatory = (bool)declaration.VerificationMandatory
+                                           }
+
 
 
                                        }).ToList();
 
             return employeeWithDetails;
         }
+
+
+        
+        //Get Employee Data by EmpId
+        public async Task<Result> GetEmployeeDataByEmpIdAsync (int EmpId)
+        {
+            var employeeRepository = _unitOfWork.GetRepository<EmployeeDetail>();
+
+            // Await the async operations to get actual collections
+            var employees = await employeeRepository.GetEmployeeDetailsByIdAsync(EmpId);
+          
+            return new Result { Success = true, Data = employees };
+
+
+
+        }
+    
 
         #region Employee Declaration
 
@@ -302,9 +310,9 @@ namespace EHRM.ServiceLayer.Employee
                     ReasonForLeaving = model.ReasonForLeaving
                 };
 
-                var empDeclarationRepository = _UnitOfWork.GetRepository<EmployeesDeclaration>();
+                var empDeclarationRepository = _unitOfWork.GetRepository<EmployeesDeclaration>();
                 await empDeclarationRepository.AddAsync(newDeclaration);
-                await _UnitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
 
                 return new Result
                 {
@@ -312,17 +320,18 @@ namespace EHRM.ServiceLayer.Employee
                     Message = "Data Saved successfully."
                 };
             }
-            catch (Exception) { 
-              throw;
+            catch (Exception)
+            {
+                throw;
             }
-            }
-   
+        }
+
         public async Task<Result> GetManagerAsync()
         {
             try
             {
                 // Assuming _UnitOfWork is properly injected
-                var employeeRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
+                var employeeRepository = _unitOfWork.GetRepository<EmployeeDetail>();
 
                 // Await GetAllAsync to get the list of employees
                 var employees = await employeeRepository.GetAllAsync();
@@ -368,7 +377,7 @@ namespace EHRM.ServiceLayer.Employee
         public async Task<List<EmployeesDeclaration>> GetEmployeeDetailsByEmpIdDOB(int EmpId, DateTime DOB)
         {
             {
-                var employeeProfileRepository = _UnitOfWork.GetRepository<EmployeesDeclaration>();  // Using generic repository
+                var employeeProfileRepository = _unitOfWork.GetRepository<EmployeesDeclaration>();  // Using generic repository
                 var employee = await employeeProfileRepository.GetByDeclarationEmpIdDOB(EmpId, DOB);  // Fetch employee based on empid and DOB
                                                                                                       //Viewbag.employee=employee;
                 return employee;
@@ -377,7 +386,7 @@ namespace EHRM.ServiceLayer.Employee
 
         public async Task<List<EmployeeDeclarationViewModel>> GetAllEmployeeProfileDetails(int EmpId)
         {
-            var employeeRepository = _UnitOfWork.GetRepository<EmployeesDeclaration>();
+            var employeeRepository = _unitOfWork.GetRepository<EmployeesDeclaration>();
 
             // Await the async operations to get actual collections
             var employees = await employeeRepository.GetAllAsync();
@@ -460,6 +469,158 @@ namespace EHRM.ServiceLayer.Employee
 
             return employeeWithDetails;
         }
+
+
+        //Save Employment details
+        public async Task<Result> SaveEmploymentInfoAsync(GetAllEmployeeViewModel model, int createdById)
+        {
+            try
+            {
+                var newEmploymentDetails = new EmployementTypeDetail
+
+                {
+                    EmpId = model.EmploymentDetails.EmpId,
+                    EmpType = model.EmploymentDetails.EmpType,
+                    AppointmentDate = model.EmploymentDetails.AppointmentDate,
+                    StartDate = model.EmploymentDetails.StartDate,
+                    EmploymentStatusId = model.EmploymentDetails.EmploymentStatusId,
+                    ManagerId = model.EmploymentDetails.ManagerId
+
+                    //EmpTypeName = model.EmpTypeName,
+
+
+
+                };
+                var employementdetailRepository = _unitOfWork.GetRepository<EmployementTypeDetail>();
+                await employementdetailRepository.AddAsync(newEmploymentDetails);
+                await _unitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Employement data saved successfully.",
+
+                };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        //Save Qualification details
+        public async Task<Result> SaveQualificationInfoAsync(GetAllEmployeeViewModel model, int createdById)
+        {
+            try
+            {
+                var newQualificationDetails = new Qualification
+
+                {
+                    EmpId = model.Qualifications.EmpId,
+                    CourseName = model.Qualifications.CourseName,
+                    Concentration = model.Qualifications.Concentration,
+                    QualificationEarned = model.Qualifications.QualificationEarned,
+                    InstitutionName = model.Qualifications.InstitutionName,
+                    CountryName = model.Qualifications.CountryName,
+                    PassedDate = model.Qualifications.PassedDate,
+                    Details= model.Qualifications.Details,
+                    Document= model.Qualifications.Document
+
+                };
+                var qualificationdetailRepository = _unitOfWork.GetRepository<Qualification>();
+                await qualificationdetailRepository.AddAsync(newQualificationDetails);
+                await _unitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Employement data saved successfully.",
+
+                };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        //Save Salary details
+
+        public async Task<Result> SaveSalaryInfoAsync(GetAllEmployeeViewModel model, int createdById)
+        {
+            try
+            {
+                var newSalaryDetails = new Salary
+
+                {
+                   EmpId = model.SalaryDetails.EmpId,
+                   Ctc= model.SalaryDetails.Ctc,
+                   StartYear = model.SalaryDetails.StartYear,
+                   Endyear = model.SalaryDetails.EndYear,
+                   Description = model.SalaryDetails.Description,
+
+                };
+                var salarydetailRepository = _unitOfWork.GetRepository<Salary>();
+                await salarydetailRepository.AddAsync(newSalaryDetails);
+                await _unitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Salary data saved successfully.",
+
+                };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        //Save Declaration details
+
+        public async Task<Result> SaveDecalarationInfoAsync(GetAllEmployeeViewModel model, int createdById)
+        {
+            try
+            {
+                var newDecalarationDetails = new Declaration
+
+                {
+                    EmpId = model.Declarations.EmpId,
+                    HrRepresentativeName = model.Declarations.HrRepresentativeName,
+                    HrRepresentativeDesignation = model.Declarations.HrRepresentativeDesignation,
+                    HrContactInfo = model.Declarations.HrContactInfo,
+                    Date = model.Declarations.Date,
+                    Signature = model.Declarations.Signature,
+                    VerificationCrossCheck = model.Declarations.VerificationCrossCheck,
+                    VerificationMandatory = model.Declarations.VerificationMandatory
+                    
+
+                };
+                var declarationdetailRepository = _unitOfWork.GetRepository<Declaration>();
+                await declarationdetailRepository.AddAsync(newDecalarationDetails);
+                await _unitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Declaration data saved successfully.",
+
+                };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+
+
+
 
         #endregion
 
