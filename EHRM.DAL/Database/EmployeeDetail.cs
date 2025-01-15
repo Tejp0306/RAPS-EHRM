@@ -73,7 +73,6 @@ public partial class EmployeeDetail
 
     public virtual EmployeesCred? EmployeesCred { get; set; }
 
-    public virtual ICollection<EmployeesDeclaration> EmployeesDeclarations { get; set; } = new List<EmployeesDeclaration>();
     public virtual ICollection<EmployementTypeDetail> EmployementTypeDetails { get; set; } = new List<EmployementTypeDetail>();
 
     public virtual ICollection<Qualification> Qualifications { get; set; } = new List<Qualification>();
