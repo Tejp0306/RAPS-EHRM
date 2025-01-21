@@ -33,7 +33,7 @@ namespace EHRM.Web.Controllers
         private readonly IEmailService _emailService;
 
 
-        public AccountController(EhrmContext context, IWebHostEnvironment webHostEnvironment, IServiceProvider serviceProvider, IConfiguration configuration, IEmailService emailService )
+        public AccountController(EhrmContext context, IWebHostEnvironment webHostEnvironment, IServiceProvider serviceProvider, IConfiguration configuration, IEmailService emailService)
         {
             //_logger = logger;
             _context = context;
