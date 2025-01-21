@@ -757,7 +757,7 @@ namespace EHRM.Web.Controllers
                 }
             }
 
-        }
+       
         [HttpGet]
         public async Task<JsonResult> GetAllTeamScreenData()
         {
