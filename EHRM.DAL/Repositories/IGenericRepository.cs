@@ -25,7 +25,7 @@ namespace EHRM.DAL.Repositories
         Task<List<Qualification>> GetQualificationDetailsByIdAsync(int EmpId);
         Task<List<EmployementTypeDetail>> GetEmployementTypeDetailsByIdAsync(int EmpId);
         Task<List<Salary>> GetSalaryDetailsByIdAsync(int EmpId);
-
+        Task<EmployeesDeclaration> GetDeclarationDetailsByIdAsync(int EmpId);
 
 
     }

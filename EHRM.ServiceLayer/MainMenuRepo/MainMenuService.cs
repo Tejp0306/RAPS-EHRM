@@ -253,9 +253,9 @@ namespace EHRM.ServiceLayer.MainMenuRepo
                 var newSubMenu = new SubMenu
 
                 {
-                    Name = model.Name,
-                    Action = model.Action,
-                    Controller = model.Controller,
+                    Name = model.Name?.Trim(),
+                    Action = model.Action?.Trim(),
+                    Controller = model.Controller?.Trim(),
                     MainMenuId = model.MainMenuId,
                     RoleId = model.RoleId,
                     EmpId = model.EmpId,

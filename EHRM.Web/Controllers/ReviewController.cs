@@ -1,4 +1,5 @@
 ﻿using EHRM.DAL.Database;
+using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Review;
 using EHRM.ViewModel.Review;
 
@@ -9,11 +10,13 @@ namespace EHRM.Web.Controllers
     public class ReviewController : Controller
     {
         private readonly IReviewService _review;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public ReviewController(IReviewService review)
+        public ReviewController(IReviewService review, IUnitOfWork unitOfWork)
         {
 
             _review = review;
+            _UnitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
@@ -242,6 +245,158 @@ namespace EHRM.Web.Controllers
             }
         }
 
+        public IActionResult DeclarationDashboard()
+        {
+            return View();
+        }
+
+        // Non-action method to check profile completion status
+        [NonAction]
+        private string CheckProfileStatus(bool isProfileCompleted)
+        {
+            if (!isProfileCompleted)
+            {
+                return "Profile Incomplete";
+            }
+
+            return "Profile Complete";
+        }
+
+        public async Task<JsonResult> GetAllDetailsData()
+        {
+            // Fetch the result from the service layer
+            var result = await _review.GetAllDetailsAsync();
+
+            // Check if the result is successful and contains data
+            if (result.Success && result.Data != null)
+            {
+                var detail = result.Data as IEnumerable<EmployeesDeclaration>;
+                if (detail != null)
+                {
+                    // Return the list of roles as a JSON response
+                    var detailList = detail.Select(detail => new
+                    {
+                        Id = detail.EmpId,
+                        Name = detail.EmployeeName,
+                        Email = detail.OfficialEmail,
+                        ProfileStatus = CheckProfileStatus(detail.IsActive)
+                    }).ToList();
+                    return Json(detailList);
+                }
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in expected format." });
+                }
+            }
+            else
+            {
+                // Handle the case where the service failed
+                return Json(new { Success = false, Message = result.Message ?? "No roles found." });
+            }
+        }
+        [HttpPost]
+        public async Task<JsonResult> ActivateAccount(int empId)
+        {
+            try
+            {
+                // Call the service method to activate the account asynchronously
+                var result = await _review.ActivateEmployeeAccountAsync(empId);
+
+                // Return a response based on the success of the operation
+                if (!result.Success)
+                {
+                    return Json(new { success = false, message = result.Message });
+                }
+
+                return Json(new { success = true, message = "Employee activated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+
+        //[HttpGet("Review/GetDeclarationDetails/{EmpId?}")]
+        //public async Task<IActionResult> GetDeclarationDetails(int EmpId)
+        //{
+        //    // Use TransactionScope to manage a transaction across multiple operations
+        //    using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        //    {
+        //        try
+        //        {
+        //            // Fetch the result from the service layer
+        //            var result = await _review.GetDeclarationDataByEmpIdAsync(EmpId);
+
+        //            // Check if the result is successful and contains valid data
+        //            if (result.Success && result.Data != null)
+        //            {
+        //                // Assuming result.Data is a single employee object and not a list
+        //                var employeeData = result.Data as dynamic;
+
+        //                if (employeeData != null)
+        //                {
+        //                    // Create a new EmployeeCredential entity
+        //                    var employeeCredential = new EmployeesDeclaration
+        //                    {
+        //                        EmpId = employeeData[0].EmpId, // Assuming EmpId is part of the employee data
+        //                        //Email = employeeData[0].EmailAddress,
+        //                        //TempPassword = employeeData[0].Password,
+        //                        //FirstName = employeeData[0].FirstName,
+        //                        //LastName = employeeData[0].LastName,
+        //                        //RoleId = employeeData[0].RoleId,
+        //                        //LoginId = employeeData[0].LoginId,
+        //                    };
+
+        //                    //// Save to the EmployeesCred table
+        //                    //var employementdetailRepository = _UnitOfWork.GetRepository<EmployeesCred>();
+        //                    //await employementdetailRepository.AddAsync(employeeCredential);
+        //                    //await _UnitOfWork.SaveAsync();
+
+        //                    // After saving employee data, update IsProfileCompleted in EmployeeDetails table
+        //                    var employeeDetailsRepository = _UnitOfWork.GetRepository<EmployeesDeclaration>();
+
+        //                    // Find the EmployeeDetails record for the given EmpId
+        //                    var employeeDetails = await employeeDetailsRepository.GetEmployeeDetailsByIdAsync(EmpId);
+
+        //                    if (employeeDetails != null)
+        //                    {
+        //                        // Set IsProfileCompleted to true
+        //                        employeeDetails[0].IsProfileCompleted = true;
+
+        //                        // Save changes to the EmployeeDetails table
+        //                        await _UnitOfWork.SaveAsync();
+        //                    }
+        //                    else
+        //                    {
+        //                        // Handle the case where EmployeeDetails is not found
+        //                        throw new Exception("EmployeeDetails not found.");
+        //                    }
+
+        //                    // If everything is successful, commit the transaction
+        //                    transaction.Complete();
+
+        //                    // Return success response
+        //                    return View("employeeview");
+        //                }
+        //                else
+        //                {
+        //                    return View("employeeview");
+        //                }
+        //            }
+        //            else
+        //            {
+        //                // Handle the case where the service failed
+        //                return View("employeeview");
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            // Handle the error (e.g., log the exception)
+        //            return Json(new { Success = false, Message = ex.Message });
+        //        }
+        //    }
+        //}
     }
 }
 

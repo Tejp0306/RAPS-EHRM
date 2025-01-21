@@ -89,8 +89,9 @@ namespace EHRM.DAL.Repositories
             return await _context.Set<Salary>().Where(x => x.EmpId == EmpId).ToListAsync();
         }
 
-
+        public async Task<EmployeesDeclaration> GetDeclarationDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<EmployeesDeclaration>().Where(x => x.EmpId == EmpId).FirstOrDefaultAsync();
+        }
     }
-
-
 }

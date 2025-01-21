@@ -1,0 +1,240 @@
+﻿
+@{
+    ViewData["Title"] = "DeclarationDashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!-- Include Bootstrap CSS -->
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/customscripts/declarationdashbard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        margin-top: 40px;
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, #009CFF, #0056b3);
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        border-radius: 8px;
+    }
+
+    .metric-card {
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        text-align: center;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-card h4 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .metric-card p {
+            font-size: 24px;
+            color: #009CFF;
+            font-weight: bold;
+        }
+
+    .btn-open-form {
+        background-color: #009CFF;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-open-form:hover {
+            background-color: #0056b3;
+        }
+
+    .next-steps p {
+        font-size: 18px;
+        color: #333;
+    }
+
+    .card {
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    h5.section-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .col-md-6 {
+        flex: 1 1 48%;
+        min-width: 300px;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+</style>
+
+
+<div class="container">
+    <!-- Header Section with Marking Scheme -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    Employee Declaration Dashboard
+                    <div class="d-flex justify-content-end align-items-center" style="height: 100%;">
+                        <a href="@Url.Action("EmployeeProfile", "Employee")">
+                            <button type="button" class="btn btn-primary">Click To Search Declaration Form</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Marking Scheme (Approval Status):</strong></p>
+                    <ul>
+                        <li><strong>Approved</strong> - Declaration approved and submitted</li>
+                        <li><strong>Pending</strong> - Declaration waiting for approval</li>
+                        <li><strong>Rejected</strong> - Declaration rejected due to issues</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Group of Two Charts -->
+    <div class="row">
+        <!-- Group 2: More charts can be added here (example) -->
+        <div class="col-md-6">
+            <div class="metric-card">
+                <h4>Declaration Status</h4>
+                <div class="chart-container">
+                    <canvas id="declarationStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="metric-card">
+                <h4>Weekly Declarations</h4>
+                <div class="chart-container">
+                    <canvas id="weeklyDeclarationsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h3 class="page-heading">Declaration Details</h3>
+    <div class="table-responsive">
+        <table id="declarationTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Employee Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Sample Data (You can dynamically generate this using a backend) -->
+                <tr>
+                    <td></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+
+    // Declaration Status Chart (Corrected)
+    var declarationStatusChart = new Chart(document.getElementById('declarationStatusChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Approved', 'Total Approved'],  // Fixed typo, 'Total Appproved' -> 'Total Approved'
+            datasets: [{
+                data: [40, 60], // Modify with actual data
+                backgroundColor: ['#1e90ff', '#32cd32'],
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + '%';  // Tooltip fix
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Another Chart (Example 2)
+    var weeklyDeclarationsChart = new Chart(document.getElementById('weeklyDeclarationsChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Approved', 'Pending', 'Not Submitted'],
+            datasets: [{
+                data: [30, 50, 20], // Modify with actual data
+                backgroundColor: ['#ff1493', '#ff8c00', '#8a2be2'],
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+

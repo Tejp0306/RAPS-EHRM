@@ -175,6 +175,83 @@ namespace EHRM.ServiceLayer.Review
                 };
             }
         }
+        #region Declaration Dashboard Table
+        public async Task<Result> GetAllDetailsAsync()
+        {
+            try
+            {
+                var detailRepository = _unitOfWork.GetRepository<EmployeesDeclaration>();  // Using generic repository
+                var detail = await detailRepository.GetAllAsync();  // Fetch all roles
+                return new Result { Success = true, Data = detail };
+            }
+            catch (Exception x)
+            {
+                Console.WriteLine(x.Message);
+            }
+            return new Result();
+        }
+        public async Task<Result> ActivateEmployeeAccountAsync(int empId)
+        {
+            try
+            {
+                var employeeRepository = _unitOfWork.GetRepository<EmployeesDeclaration>();
 
+                // Fetch the employee by EmpId
+                var employee = await employeeRepository.GetDeclarationDetailsByIdAsync(empId);
+
+                if (employee == null)
+                {
+                    return new Result { Success = false, Message = "Employee not found." };
+                }
+
+                // Update the 'IsActive' field to true (1)
+                employee.IsActive = true;
+
+                // Save the changes asynchronously
+                await _unitOfWork.SaveAsync();
+
+                return new Result { Success = true, Message = "Employee activated successfully.", Data = employee };
+            }
+            catch (Exception ex)
+            {
+                return new Result { Success = false, Message = "An error occurred: " + ex.Message };
+            }
+        }
+
+
+
+
+
+        //public async Task<Result> GetDeclarationDataByEmpIdAsync(int EmpId)
+        //{
+        //    try
+        //    {
+        //        var detailRepository = _unitOfWork.GetRepository<EmployeesDeclaration>();
+
+        //        Fetch the employee record asynchronously by EmpId
+        //       var employee = await detailRepository.GetEmployeeDetailsByIdAsync(EmpId);
+
+        //        if (employee == null)
+        //        {
+        //            return new Result { Success = false, Message = "Employee not found." };
+        //        }
+
+        //        Update the 'IsActive' field to true(1)
+        //        employee.IsActive = true;
+
+        //        Save the changes asynchronously
+        //        await _unitOfWork.SaveAsync();
+
+        //        Return success result with the updated employee data
+        //        return new Result { Success = true, Data = employee };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Handle errors(e.g., log them or take necessary actions)
+        //        return new Result { Success = false, Message = "An error occurred: " + ex.Message };
+        //    }
+        //}
+
+        #endregion
     }
 }

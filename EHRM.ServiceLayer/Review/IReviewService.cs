@@ -19,5 +19,11 @@ namespace EHRM.ServiceLayer.Review
 
         Task<Result> DeleteReviewAsync(int id);
 
+        #region Declaration Dashboard Table
+        Task<Result> GetAllDetailsAsync();
+        Task<Result> ActivateEmployeeAccountAsync(int empId);
+        //Task<Result> GetDeclarationDataByEmpIdAsync(int EmpId);
+        #endregion
+
     }
 }
