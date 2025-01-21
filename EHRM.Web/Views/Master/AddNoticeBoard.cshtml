@@ -9,6 +9,15 @@
 <script src="~/customscripts/addnoticeboard.js"></script>
 <link href="~/customstyle/style.css" rel="stylesheet" />
 <div class="container mt-1">
+    @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // Call the showToast function directly with TempData values
+                showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+            });
+        </script>
+    }
     <h3 class="page-heading">Notice Board</h3>
     <div class="form-container">
         <div class="card p-4">
