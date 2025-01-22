@@ -25,7 +25,7 @@ function getManager() {
 
             if (response.success) {
                 const res = response.data; // Assuming Data contains the array of teams
-                debugger;
+
                 // Populate the dropdown
                 const resDropdown = $('#ManagerId');
                 resDropdown.empty(); // Clear any existing options

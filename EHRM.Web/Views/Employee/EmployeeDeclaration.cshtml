@@ -25,6 +25,15 @@
 
 <h3 class="page-heading">Employee Declaration Form</h3>
 <div class="container mt-4">
+    @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // Call the showToast function directly with TempData values
+                showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+            });
+        </script>
+    }
     <div class="card shadow-lg p-5">
         <form asp-controller="Employee" asp-action="SaveDeclaration" method="post">
             <!-- Employee Information -->
@@ -66,7 +75,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="function" class="form-label font-weight-bold">Function / Project / Department :</label>
-                    <input asp-for="Project" class="form-control" id="function" name="function" value="">
+                    <input asp-for="Project" class="form-control" value="">
                 </div>
             </div>
 
@@ -93,7 +102,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="spouseName" class="form-label">Spouse/Father/Mother Name :</label>
-                    <input asp-for="SpouseFatherMotherName" class="form-control" id="spouseName" name="spouseName" value="">
+                    <input asp-for="SpouseFatherMotherName" class="form-control" value="">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="relationWithSpouse" class="form-label">Relation with Employee :</label>
@@ -178,7 +187,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="secondOrganisation" class="form-label">Third Organisation Name :</label>
-                    <input asp-for="ThirdOrganisation" class="form-control" id="secondOrganisation" name="secondOrganisation" value="">
+                    <input asp-for="ThirdOrganisation" class="form-control" value="">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="secondOrganisationExperience" class="form-label">Years of Experience in Third Organisation :</label>
@@ -186,7 +195,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="secondOrganisation" class="form-label">Fourth Organisation Name :</label>
-                    <input asp-for="FourthOrganisation" class="form-control" id="secondOrganisation" name="secondOrganisation" value="">
+                    <input asp-for="FourthOrganisation" class="form-control"  value="">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="secondOrganisationExperience" class="form-label">Years of Experience in Fourth Organisation :</label>
@@ -356,12 +365,12 @@
             </h5>
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label for="resignationDate" class="form-label">Resignation Date/Termination :</label>
-                    <input asp-for="ResignationDate" class="form-control" id="resignationDate" name="resignationDate" value="">
+                    <label for="resignationDate" class="form-label">Resignation Date/Termination:</label>
+                    <input asp-for="ResignationDate" type="text" class="form-control" id="resignationDate" name="resignationDate" value="">
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label for="exitDate" class="form-label">Date of Exit :</label>
-                    <input asp-for="ExitDate" class="form-control" id="exitDate" name="exitDate" value="">
+                    <label for="exitDate" class="form-label">Date of Exit:</label>
+                    <input asp-for="ExitDate" type="text" class="form-control" id="exitDate" name="exitDate" value="">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="reasonForLeaving" class="form-label">Reason for Leaving :</label>

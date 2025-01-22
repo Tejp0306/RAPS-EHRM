@@ -213,7 +213,7 @@ namespace EHRM.Web.Controllers
                 TempData["ToastType"] = "success";  // Success, danger, warning, info
                 TempData["ToastMessage"] = "Operation completed successfully!";
                 TempData["EmpId"] = result.Data;
-                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                return RedirectToAction("employeeview"); // Redirect to the list of roles
             }
             else
             {
