@@ -13,7 +13,7 @@ namespace EHRM.ViewModel.Employee
 
         public string? PrefixName { get; set; }
 
-        public int EmpId { get; set; }
+        public int? EmpId { get; set; }
 
         public string Title { get; set; } = null!;
         public string? Name { get; set; } 
@@ -39,7 +39,7 @@ namespace EHRM.ViewModel.Employee
 
         public string Gender { get; set; } = null!;
 
-        public int MaritalStatus { get; set; }
+        public string MaritalStatus { get; set; }
 
         public string AadharNumber { get; set; } = null!;
 
@@ -74,7 +74,8 @@ namespace EHRM.ViewModel.Employee
         public QualificationViewModel Qualifications { get; set; } 
         public EmploymentTypeDetailViewModel EmploymentDetails { get; set; }
         public DeclarationViewModel Declarations { get; set; } 
-        public SalaryViewModel SalaryDetails { get; set; } 
+        public SalaryViewModel SalaryDetails { get; set; }
+        public bool IsEditable { get; set; }
     }
 
     

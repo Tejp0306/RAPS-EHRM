@@ -146,6 +146,9 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.LoginId)
                 .HasMaxLength(50)
                 .HasColumnName("LoginID");
+            entity.Property(e => e.MaritalStatus)
+                .HasMaxLength(20)
+                .IsUnicode(false);
             entity.Property(e => e.MiddleName).HasMaxLength(100);
             entity.Property(e => e.Nationality).HasMaxLength(50);
             entity.Property(e => e.OfficePhone).HasMaxLength(15);

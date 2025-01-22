@@ -2,6 +2,7 @@
 using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.EmployeeDeclaration;
+using EHRM.ViewModel.Master;
 
 
 namespace EHRM.ServiceLayer.Employee
@@ -24,6 +25,8 @@ namespace EHRM.ServiceLayer.Employee
         Task<List<GetAllEmployeeViewModel>> GetAllEmployeeRecordDetails(int EmpId);
 
         Task<Result> GetEmployeeDataByEmpIdAsync(int EmpId);
+
+       
 
         #region Employee Declaration
 

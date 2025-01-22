@@ -181,5 +181,11 @@ namespace EHRM.ViewModel.EmployeeDeclaration
         public string CcMail { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string Password { get; set; }
+
+
     }
 }

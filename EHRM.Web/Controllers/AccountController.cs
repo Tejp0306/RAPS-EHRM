@@ -14,10 +14,16 @@ using Newtonsoft.Json;
 using EHRM.ViewModel.MainMenu;
 using EHRM.ViewModel.SubMenu;
 using EHRM.ServiceLayer.Utility;
-using NuGet.Common;
-using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Authorization;
 using EHRM.Web.Utility;
+using EHRM.ServiceLayer.Employee;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using EHRM.ViewModel.EmployeeDeclaration;
+using EHRM.ViewModel.Models;
+using System.Text.Json.Nodes;
+using System.Text.Json;
+
+
 
 
 namespace EHRM.Web.Controllers
@@ -28,12 +34,14 @@ namespace EHRM.Web.Controllers
         //private readonly ILogger<HomeController> _logger;
         private readonly EhrmContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IAccountService _accountService;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public AccountController(EhrmContext context, IWebHostEnvironment webHostEnvironment, IServiceProvider serviceProvider, IConfiguration configuration, IEmailService emailService )
+        public AccountController(EhrmContext context, IWebHostEnvironment webHostEnvironment, IServiceProvider serviceProvider, IConfiguration configuration, IEmailService emailService, IAccountService accountService, IHttpContextAccessor httpContextAccessor )
         {
             //_logger = logger;
             _context = context;
@@ -41,6 +49,8 @@ namespace EHRM.Web.Controllers
             _serviceProvider = serviceProvider;
             _configuration = configuration;
             _emailService = emailService;
+            _accountService = accountService;
+            _httpContextAccessor = httpContextAccessor;
 
         }
 
@@ -54,6 +64,11 @@ namespace EHRM.Web.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult ForgotPassword()
         {
             return View();
         }
@@ -436,191 +451,6 @@ namespace EHRM.Web.Controllers
             HttpContext.Session.SetString("JwtToken", jwtToken);
         }
 
-
-        //public async Task<IActionResult> Otp(OtpViewModel model)
-        //{
-        //    try
-        //    {
-        //        // Get MagicOTP key from configuration
-        //        var magicOtpConfig = _configuration.GetSection("MagicOTP");
-        //        bool key = magicOtpConfig.GetValue<bool>("key");
-        //        string magicOTP = magicOtpConfig.GetValue<string>("Otp");
-
-        //        // If MagicOTP.key is true, skip OTP validation and proceed with login
-        //        if (key)
-        //        {
-        //            if (model.Otp != magicOTP)
-        //            {
-        //                TempData["ToastType"] = "warning";  // Success, danger, warning, info
-        //                TempData["ToastMessage"] = "Invalid Magic OTP. Please try again.";
-        //                return RedirectToAction("Otp");
-        //            }
-
-        //            var jwtToken = HttpContext.Session.GetString("JwtToken");
-        //            if (string.IsNullOrEmpty(jwtToken))
-        //            {
-        //                TempData["ToastType"] = "danger";  // Success, danger, warning, info
-        //                TempData["ToastMessage"] = "Session expired. Please log in again.";
-        //                return RedirectToAction("Login");
-        //            }
-
-        //            var (userIds, userNames, emails, roleId) = JwtSessionHelper.ExtractSessionData(jwtToken);
-
-        //            var employee = await _context.EmployeesCreds.FirstOrDefaultAsync(e => e.Email == emails && e.Active == true);
-        //            if (employee == null || !employee.Active)
-        //            {
-        //                TempData["ToastType"] = "danger";  // Success, danger, warning, info
-        //                TempData["ToastMessage"] = "Employee not found or inactive. Please contact support.";
-        //                return RedirectToAction("Login");
-        //            }
-
-        //            // Skip OTP logic, proceed to setting session and menu
-        //            var userDetails = JwtSessionHelper.ExtractSessionData(jwtToken);
-
-        //            var subMenus = await _context.SubMenus
-        //                 .Where(x => x.RoleId == roleId && x.EmpId == employee.EmpId)
-        //                 .ToListAsync();
-
-        //            var mainMenuIds = subMenus.Select(x => x.MainMenuId).Distinct().ToList();
-        //            var mainMenus = await _context.MainMenus.Where(m => mainMenuIds.Contains(m.Id)).ToListAsync();
-
-        //            var groupedSubMenusWithMainMenu = subMenus
-        //               .GroupBy(x => x.MainMenuId)
-        //               .Select(g => new MainMenuViewModel
-        //               {
-        //                   Id = g.Key ?? 0,
-        //                   Name = mainMenus.FirstOrDefault(m => m.Id == g.Key)?.Name,
-        //                   Icon = mainMenus.FirstOrDefault(m => m.Id == g.Key)?.Icon,
-        //                   SubMenus = g.Select(submenu => new SubMenuViewModel
-        //                   {
-        //                       Id = submenu.Id,
-        //                       Name = submenu.Name,
-        //                       Controller = submenu.Controller,
-        //                       Action = submenu.Action,
-        //                       MainMenuId = submenu.MainMenuId,
-        //                       MainMenuName = mainMenus.FirstOrDefault(m => m.Id == submenu.MainMenuId)?.Name,
-        //                       RoleId = submenu.RoleId,
-        //                       IsActive = submenu.IsActive
-        //                   }).ToList()
-        //               })
-        //               .ToList();
-
-        //            var jsonSettings = new JsonSerializerSettings
-        //            {
-        //                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        //            };
-        //            var jsonString = JsonConvert.SerializeObject(groupedSubMenusWithMainMenu, jsonSettings);
-
-        //            var jsonFoUserDetails = JsonConvert.SerializeObject(userDetails);
-        //            HttpContext.Session.SetString("GroupByUserDetails", jsonFoUserDetails);
-        //            HttpContext.Session.SetString("GroupedSubMenus", jsonString);
-
-        //            return RedirectToAction("Dashboard", "Dashboard");
-        //        }
-
-        //        // OTP handling when MagicOTP.key is not enabled
-        //        var otpExpiry = HttpContext.Session.GetString("OtpExpiry");
-        //        if (otpExpiry != null && DateTime.TryParse(otpExpiry, out DateTime expiry) && expiry < DateTime.Now)
-        //        {
-        //            TempData["ToastType"] = "warning";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Your OTP has expired. Please request a new one.";
-        //            return RedirectToAction("Login");
-        //        }
-
-        //        if (!ModelState.IsValid)
-        //        {
-        //            TempData["ToastType"] = "warning";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Please enter a valid OTP.";
-        //            return RedirectToAction("Otp");
-        //        }
-
-        //        var storedOtp = HttpContext.Session.GetString("Otp");
-
-        //        if (string.IsNullOrEmpty(storedOtp))
-        //        {
-        //            TempData["ToastType"] = "warning";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "OTP is not available. Please request a new one.";
-        //            return RedirectToAction("Otp");
-        //        }
-
-        //        if (model.Otp != storedOtp)
-        //        {
-        //            TempData["ToastType"] = "warning";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Invalid OTP. Please try again.";
-        //            return RedirectToAction("Otp");
-        //        }
-
-        //        var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
-        //        if (string.IsNullOrEmpty(jwtTokenFromSession))
-        //        {
-        //            TempData["ToastType"] = "danger";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Session expired. Please log in again.";
-        //            return RedirectToAction("Login");
-        //        }
-
-        //        var (userId, userName, email, roleIdFromSession) = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
-
-        //        var employeeFromSession = await _context.EmployeesCreds.FirstOrDefaultAsync(e => e.Email == email && e.Active == true);
-        //        if (employeeFromSession == null || !employeeFromSession.Active)
-        //        {
-        //            TempData["ToastType"] = "danger";  // Success, danger, warning, info
-        //            TempData["ToastMessage"] = "Employee not found or inactive. Please contact support.";
-        //            return RedirectToAction("Login");
-        //        }
-
-        //        HttpContext.Session.Remove("Otp");
-        //        var userDetailsFromSession = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
-
-        //        var subMenusFromSession = await _context.SubMenus
-        //             .Where(x => x.RoleId == roleIdFromSession && x.EmpId == employeeFromSession.EmpId)
-        //             .ToListAsync();
-
-        //        var mainMenuIdsFromSession = subMenusFromSession.Select(x => x.MainMenuId).Distinct().ToList();
-        //        var mainMenusFromSession = await _context.MainMenus.Where(m => mainMenuIdsFromSession.Contains(m.Id)).ToListAsync();
-
-        //        var groupedSubMenusWithMainMenuFromSession = subMenusFromSession
-        //           .GroupBy(x => x.MainMenuId)
-        //           .Select(g => new MainMenuViewModel
-        //           {
-        //               Id = g.Key ?? 0,
-        //               Name = mainMenusFromSession.FirstOrDefault(m => m.Id == g.Key)?.Name,
-        //               Icon = mainMenusFromSession.FirstOrDefault(m => m.Id == g.Key)?.Icon,
-        //               SubMenus = g.Select(submenu => new SubMenuViewModel
-        //               {
-        //                   Id = submenu.Id,
-        //                   Name = submenu.Name,
-        //                   Controller = submenu.Controller,
-        //                   Action = submenu.Action,
-        //                   MainMenuId = submenu.MainMenuId,
-        //                   MainMenuName = mainMenusFromSession.FirstOrDefault(m => m.Id == submenu.MainMenuId)?.Name,
-        //                   RoleId = submenu.RoleId,
-        //                   IsActive = submenu.IsActive
-        //               }).ToList()
-        //           })
-        //           .ToList();
-
-        //        var jsonSettingsForSession = new JsonSerializerSettings
-        //        {
-        //            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        //        };
-        //        var jsonStringFromSession = JsonConvert.SerializeObject(groupedSubMenusWithMainMenuFromSession, jsonSettingsForSession);
-
-        //        var jsonFoUserDetailsFromSession = JsonConvert.SerializeObject(userDetailsFromSession);
-        //        HttpContext.Session.SetString("GroupByUserDetails", jsonFoUserDetailsFromSession);
-        //        HttpContext.Session.SetString("GroupedSubMenus", jsonStringFromSession);
-
-        //        return RedirectToAction("Dashboard", "Dashboard");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-
-
-
-
-
         [HttpGet]
         public IActionResult AccessDenied()
         {
@@ -643,6 +473,128 @@ namespace EHRM.Web.Controllers
             // Redirect the user to the login page or another appropriate page
             return RedirectToAction("Login", "Account");
         }
+
+        // GET: Account/ChangePassword
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+           // _httpContextAccessor.HttpContext.Session[""];
+            // Load the ChangePassword view.
+            return View();
+        }
+
+
+        // POST: Account/ChangePassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task <IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid && model.NewPassword == model.ConfirmPassword)
+            {
+                String json = _httpContextAccessor.HttpContext.Session.GetString("GroupByUserDetails");
+
+                using (JsonDocument doc = JsonDocument.Parse(json))
+                {
+                    // Access the root element (which is a JsonObject in this case)
+                    JsonElement root = doc.RootElement;
+
+                    // Extract the "Age" value
+                    if (root.TryGetProperty("EmpId", out JsonElement ageElement))
+                    {
+                        int EmpId = ageElement.GetInt32();
+
+                        bool iscorrectpassword = await _accountService.CheckPasswordValidAsync(EmpId, model.CurrentPassword, model.NewPassword);
+
+
+                        if (iscorrectpassword == true)
+                        {
+                            // Show a success message to the user
+                            TempData["ToastType"] = "success";
+                            TempData["ToastMessage"] = "Password has been changed";
+                            return View("Login");
+
+                        }
+                        else
+                        {
+                            // Show a success message to the user
+                            TempData["ToastType"] = "danger";
+                            TempData["ToastMessage"] = "Your Current Password is incorrect";
+                            return View("Login");
+                        }
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Age property not found.");
+                    }
+                }
+
+            }
+
+            else
+            {
+                // Show a success message to the user
+                TempData["ToastType"] = "danger";
+                TempData["ToastMessage"] = "Please Enter Same New Password and Confirm Password";
+                return View("ForgotPassword");
+            }
+
+            // If we get to this point, something failed; redisplay the form.
+            return View(model);
+        }
+
+      
+    
+
+         // POST: Account/SendResetLink
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendResetLink(string email)
+        {
+            // Validate if the email exists in the system
+            var user = await _accountService.ValidateEmailAsync(email);
+
+            if (user.Exists)
+            {
+
+                EmailServiceModel _email = new()
+                {
+                    RecipentMail = user.Email,
+                    CcMail = "waseem@rapscorp.com",
+                    Subject = "Reset Your Password",
+                    Body = $@"
+                            <p>Hello {user.FirstName},</p>
+                            <p>We received a request to reset your password for your account.</p>
+                            <p>Your UserName is: <b>{user.Email}</b></p>
+                            <p>Your temporary password is: <b>{user.TempPassword}</b></p>
+                            <p>Please use this password to log in to your account. For security reasons, we recommend you change your password immediately after logging in.</p>
+                            <p>If you did not request a password reset, please contact our support team at support@rapscorp.com.</p>
+                            <p>Thank you!</p>
+                            <p>Best regards,<br>Raps Managed Services</p>"
+                      };
+
+                // Sending the email
+                    _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
+                
+
+                // Show a success message to the user
+                TempData["ToastType"] = "success";
+                TempData["ToastMessage"] = "A password reset link has been sent to your email.";
+                return RedirectToAction("Login");
+            }
+            else
+            {
+
+                // If the email doesn't exist, show an error message
+                // Show a Error message to the user
+                TempData["ToastType"] = "danger";
+                TempData["ToastMessage"] = "No account found with this email address.";
+
+                return RedirectToAction("Login"); // Return to the Login view
+            }
+        }
+
+
     }
 }
 

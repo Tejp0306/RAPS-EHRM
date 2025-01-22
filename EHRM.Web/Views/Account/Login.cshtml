@@ -19,10 +19,6 @@
     @await Html.PartialAsync("_Toaster")
     <div class="login-container">
         <h2>Login</h2>
-
-       
-       
-
         <form asp-controller="Account" asp-action="SaveLogin" class="login-form">
             @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
             {
@@ -49,7 +45,13 @@
                 </label>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
+
+            <!-- Forgot Password Link -->
+            <div class="form-group mt-3">
+                <a asp-controller="Account" asp-action="ForgotPassword" class="text-secondary">Forgot Password?</a>
+            </div>
         </form>
+
     </div>
 </body>
 </html>

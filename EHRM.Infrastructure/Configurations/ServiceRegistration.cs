@@ -38,6 +38,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IMasterService, MasterService>();
             services.AddScoped<IMainMenuService, MainMenuService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ISelfService, SelfService>();
             services.AddScoped<IReviewService, ReviewService>();
 
