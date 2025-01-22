@@ -21,7 +21,11 @@ namespace EHRM.DAL.Repositories
 
         Task<List<EmployeeDetail>> GetByEmpIdDOB(int EmpId, String DOB);
         //saksham changes
-        Task<List<EmployeeDetail>> GetEmployeeDetailsByIdAsync(int EmpId);
+        Task<List<EmployeeDetail>> GetEmployeeDetailsByIdAsync(int? EmpId);
+
+        Task<List<EmployeesCred>> GetEmployeeCredByIdAsync(int EmpId);
+
+        Task<List<EmployeesCred>> GetEmployeeEmailPasswordByEmailAsync(String email);
         Task<List<Qualification>> GetQualificationDetailsByIdAsync(int EmpId);
         Task<List<EmployementTypeDetail>> GetEmployementTypeDetailsByIdAsync(int EmpId);
         Task<List<Salary>> GetSalaryDetailsByIdAsync(int EmpId);

@@ -3,6 +3,8 @@ using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.EmployeeDeclaration;
+using EHRM.ViewModel.Master;
+using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 
 
@@ -11,10 +13,12 @@ namespace EHRM.ServiceLayer.Employee
     public class EmployeeService : IEmployeeService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly EhrmContext _context;
 
-        public EmployeeService(IUnitOfWork unitOfWork)
+        public EmployeeService(IUnitOfWork unitOfWork, EhrmContext context)
         {
             _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         public async Task<Result> SavePersonalInfoAsync(GetAllEmployeeViewModel model, int createdById, String filepath)
@@ -30,7 +34,7 @@ namespace EHRM.ServiceLayer.Employee
                     Country = model.Country,
                     DateOfBirth = model.DateOfBirth,
                     EmailAddress = model.EmailAddress,
-                    EmpId = model.EmpId,
+                    EmpId = (int)model.EmpId,
                     FirstName = model.FirstName,
                     Gender = model.Gender,
                     HomePhone = model.HomePhone,
@@ -149,7 +153,7 @@ namespace EHRM.ServiceLayer.Employee
                                            LoginId = e.LoginId,
                                            Password = e.Password,
                                            Age = e.Age ?? 0,  // Null coalescing to handle nullable Age
-                                           RoleId = e.RoleId,
+                                           RoleName = GetRoleNameById(e.RoleId),
                                            DateOfBirth = e.DateOfBirth,
                                            Gender = e.Gender,
                                            MaritalStatus = e.MaritalStatus,
@@ -158,6 +162,7 @@ namespace EHRM.ServiceLayer.Employee
                                            HomePhone = e.HomePhone,
                                            CellPhone = e.CellPhone,
                                            OfficePhone = e.OfficePhone,
+                                           TeamName = GetTeamNameById(e.TeamId),
                                            TeamId = e.TeamId,
                                            MarriageAnniversary = e.MarriageAnniversary,
                                            Street = e.Street,
@@ -167,6 +172,8 @@ namespace EHRM.ServiceLayer.Employee
                                            Nationality = e.Nationality,
                                            CreatedAt = e.CreatedAt,
                                            UpdatedAt = e.UpdatedAt,
+                                           RoleId=e.RoleId,
+                                           //ProfileImg =  e.Image,
 
                                            SalaryDetails = salary == null ? new SalaryViewModel() : new SalaryViewModel
                                            {
@@ -200,14 +207,14 @@ namespace EHRM.ServiceLayer.Employee
 
                                            Declarations = declaration == null ? new DeclarationViewModel() : new DeclarationViewModel
                                            {
-                                               Id = declaration.Id,
                                                HrRepresentativeName = declaration.HrRepresentativeName,
                                                HrRepresentativeDesignation = declaration.HrRepresentativeDesignation,
                                                HrContactInfo = declaration.HrContactInfo,
                                                Date = declaration.Date,
                                                Signature = declaration.Signature,
                                                VerificationCrossCheck = (bool)declaration.VerificationCrossCheck,
-                                               VerificationMandatory = (bool)declaration.VerificationMandatory
+                                               VerificationMandatory = (bool)declaration.VerificationMandatory,
+                                               EmployeeName = e.FirstName + e.LastName
                                            }
 
 
@@ -218,7 +225,11 @@ namespace EHRM.ServiceLayer.Employee
         }
 
 
-        
+        // Update Personal Info
+
+
+
+
         //Get Employee Data by EmpId
         public async Task<Result> GetEmployeeDataByEmpIdAsync (int EmpId)
         {
@@ -618,7 +629,32 @@ namespace EHRM.ServiceLayer.Employee
 
 
 
+        public string? GetRoleNameById(int roleId)
+        {
+            var roleName = _context.Roles
+                .Where(r => r.RoleId == roleId)
+                .Select(r => r.RoleName)
+                .FirstOrDefault();
+            return roleName;
+        }
 
+        public string? GetTeamNameById(int teamid)
+        {
+            var teamName = _context.Teams
+                .Where(t => t.TeamId == teamid)
+                .Select(t => t.Name)
+                .FirstOrDefault();
+            return teamName;
+
+        }
+
+
+        //public bool CheckUserInDbByEmpId(int Empid)
+        //{
+        //    bool check = _context.EmployeeDetails
+        //        .Where(c => c.EmpId == Empid);
+        //    return true;
+        //}
 
 
 

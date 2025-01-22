@@ -18,7 +18,7 @@ namespace EHRM.DAL.Repositories
         public GenericRepository(EhrmContext context)
         {
             _context = context;
-        }
+            }
 
     
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -61,6 +61,8 @@ namespace EHRM.DAL.Repositories
             return await _context.Set<EmployeeDetail>().Where(x => x.TeamId == TeamId).ToListAsync();
         }
 
+
+
         public async Task<List<EmployeesDeclaration>> GetByDeclarationEmpIdDOB(int EmpId, DateTime DOB)
         {
             return await _context.Set<EmployeesDeclaration>().Where(x => x.EmpId == EmpId && x.DateOfBirth == DOB).ToListAsync();
@@ -72,10 +74,32 @@ namespace EHRM.DAL.Repositories
         }
 
         // saksham changes
-        public async Task<List<EmployeeDetail>> GetEmployeeDetailsByIdAsync(int EmpId)
+        public async Task<List<EmployeeDetail>> GetEmployeeDetailsByIdAsync(int? EmpId)
         {
             return await _context.Set<EmployeeDetail>().Where(x => x.EmpId == EmpId).ToListAsync();
         }
+        //Get Emplyees details from employee cred table using empid
+        public async Task<List<EmployeesCred>> GetEmployeeCredByIdAsync(int EmpId)
+        {
+            return await _context.Set<EmployeesCred>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+
+        //Get Employees password and email from employee cred based on email
+
+        public async Task<List<EmployeesCred>> GetEmployeeEmailPasswordByEmailAsync(string email)
+        {
+            return await _context.Set<EmployeesCred>()
+                .Where(e => e.Email.ToLower() == email.ToLower())
+                .Select(e => new EmployeesCred
+                {
+                    Email = e.Email,
+                    TempPassword = e.TempPassword,
+                    FirstName = e.FirstName
+                })
+                .ToListAsync();
+        }
+
+
         public async Task<List<Qualification>> GetQualificationDetailsByIdAsync(int EmpId)
         {
             return await _context.Set<Qualification>().Where(x => x.EmpId == EmpId).ToListAsync();

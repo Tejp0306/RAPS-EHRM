@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿$(function () {
     getRole();
     getTeam();
     getEmployeeData();
@@ -48,9 +48,8 @@ function getManager() {
             console.error('AJAX Error:', error);
         }
     });
-
-
 }
+
 function getRole() {
 
     $.ajax({
@@ -63,15 +62,20 @@ function getRole() {
 
             if (response.success) {
                 const role = response.data; // Assuming Data contains the array of teams
-
+                debugger
                 // Populate the dropdown
-                const roleDropdown = $('#role');
-                roleDropdown.empty(); // Clear any existing options
+                const roleDropdown = $('#RoleId');
+                //roleDropdown.empty(); // Clear any existing options
 
                 // Add a default option
-                roleDropdown.append('<option value="" disabled selected>Select Role</option>');
+                //roleDropdown.append('<option value="" disabled selected>Select Role</option>');
+                var currentRole = $('#RoleId').val();
                 role.forEach(role => {
-                    roleDropdown.append(`<option value="${role.id}">${role.name}</option>`); // Adjust key names as needed
+                    console.log(role.id + ' -- ' + currentRole);
+                    var newroleid = role.id;
+                    if (newroleid != currentRole) {
+                        roleDropdown.append(`<option value="${role.id}">${role.name}</option>`); // Adjust key names as needed
+                    }
                 });
 
 
@@ -100,15 +104,21 @@ function getTeam() {
                 const teams = response.data; // Assuming Data contains the array of teams
 
                 // Populate the dropdown
-                const teamDropdown = $('#teamName');
-                teamDropdown.empty(); // Clear any existing options
+                const teamDropdown = $('#TeamId');
+                //teamDropdown.empty(); // Clear any existing options
 
                 // Add a default option
-                teamDropdown.append('<option value="" disabled selected>Select team</option>');
-                teams.forEach(teams => {
-                    teamDropdown.append(`<option value="${teams.id}">${teams.name}</option>`); // Adjust key names as needed
-                });
+                //teamDropdown.append('<option value="" disabled selected>Select team</option>');
 
+                var currentteam = $('#TeamId').val();
+
+                teams.forEach(teams => {
+                    console.log(teams.id + '--' + currentteam);
+                    var newteamid = teams.id;
+                    if (newteamid != currentteam) {
+                        teamDropdown.append(`<option value="${teams.id}">${teams.name}</option>`); // Adjust key names as needed
+                    }
+                });
 
 
                 // Loop through the array and append options
@@ -316,9 +326,9 @@ function validate_ConfirmEmail() {
 }
 
 
-function calculateServiceDuration(appointmentDate) {
+function calculateServiceDuration(AppointmentDate) {
     debugger;
-    const appointmentDateObj = new Date(appointmentDate);
+    const appointmentDateObj = new Date(AppointmentDate);
     const currentDate = new Date();
 
     // Calculate the difference in years, months, and days
@@ -344,7 +354,7 @@ function calculateServiceDuration(appointmentDate) {
     let result = `${yearsDifference} year${yearsDifference !== 1 ? "s" : ""}, ${monthsDifference} month${monthsDifference !== 1 ? "s" : ""}, ${daysDifference} day${daysDifference !== 1 ? "s" : ""}`;
 
     // Update the appointedService input with calculated time difference
-    const appointedServiceInput = document.getElementById("appointedService");
+    const appointedServiceInput = document.getElementById("AppointedService");
     appointedServiceInput.value = result;
 }
 

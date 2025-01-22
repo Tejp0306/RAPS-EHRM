@@ -175,7 +175,7 @@ CREATE TABLE EmployeeDetails (
     RoleId INT NOT NULL,               -- Role
     DateOfBirth VARCHAR(30) NOT NULL,                -- Date of Birth
     Gender NVARCHAR(10) NOT NULL,             -- Gender
-    MaritalStatus INT NOT NULL,      -- Marital Status
+    MaritalStatus varchar(20) NOT NULL,      -- Marital Status(updated)
     AadharNumber NVARCHAR(20) NOT NULL UNIQUE,         -- Social Security Number
     EmailAddress NVARCHAR(255) NOT NULL UNIQUE, -- Email Address
     HomePhone NVARCHAR(15) NULL,              -- Home Phone

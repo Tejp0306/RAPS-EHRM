@@ -5,6 +5,7 @@ using EHRM.ServiceLayer.Enumerations;
 using EHRM.ServiceLayer.Utility;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.EmployeeDeclaration;
+using EHRM.ViewModel.Master;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -32,47 +33,50 @@ namespace EHRM.Web.Controllers
         {
             return View();
         }
+
+
         [HttpGet("Employee/AddEmployee/{EmpId?}")]
         public async Task<IActionResult> AddEmployee(int? EmpId = null)
         {
-            
-
+            // Dropdowns for employee type and employment status
             var EmployeeTypes = Enum.GetValues(typeof(EmployeeType))
-                                 .Cast<EmployeeType>()
-                                 .Select(e => new SelectListItem
-                                 {
-                                     Value = ((int)e).ToString(),  // Integer value as string
-                                     Text = e.ToString()           // Enum name as text
-                                 })
-                                 .ToList();
+                                    .Cast<EmployeeType>()
+                                    .Select(e => new SelectListItem
+                                    {
+                                        Value = ((int)e).ToString(),
+                                        Text = e.ToString()
+                                    })
+                                    .ToList();
 
+            var EmploymentStatuses = Enum.GetValues(typeof(EmploymentStatus))
+                                         .Cast<EmploymentStatus>()
+                                         .Select(e => new SelectListItem
+                                         {
+                                             Value = ((int)e).ToString(),
+                                             Text = e.ToString()
+                                         })
+                                         .ToList();
 
-            var employmentStatuses = Enum.GetValues(typeof(EmploymentStatus))
-                                 .Cast<EmploymentStatus>()
-                                 .Select(e => new SelectListItem
-                                 {
-                                     Value = ((int)e).ToString(),  // Integer value as string
-                                     Text = e.ToString()           // Enum name as text
-                                 })
-                                 .ToList();
-
-            // Pass the list of SelectListItems to ViewBag
             ViewBag.EmployeeType = EmployeeTypes;
-            ViewBag.EmploymentStatusId = employmentStatuses;
+            ViewBag.EmploymentStatusId = EmploymentStatuses;
 
             if (EmpId.HasValue)
-            {
-                var res = await _employee.GetAllEmployeeRecordDetails(EmpId.Value);
-                // Return the result model to the view if EmpId is provided
-                return View(res);
+                {
+                // Fetch the existing employee details
+                var employee = await _employee.GetAllEmployeeRecordDetails(EmpId.Value);
+                
+                if (employee != null)
+                {
+                    return View(employee.FirstOrDefault());
+                }
             }
-            else
-            {
-                // Return a default or empty model if EmpId is not provided
-                var defaultModel = new List<GetAllEmployeeViewModel>();
-                return View();
-            }
+
+            // Return an empty model for new employee creation
+            return View(new GetAllEmployeeViewModel());
         }
+
+        
+
         public IActionResult employeeview()
         {
             return View();
@@ -82,8 +86,12 @@ namespace EHRM.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SavePersonalInfo(GetAllEmployeeViewModel model)
         {
-         
-           var filepath = "";
+
+            //if (_employee.CheckUserInDbByEmpId(model.EmpId))
+            //{
+
+            //}
+            var filepath = "";
             if (model.ProfileImg != null)
             {
 
@@ -100,7 +108,7 @@ namespace EHRM.Web.Controllers
             // Handle the result of the create operation
             if (result.Success)
             {
-               
+
                 TempData["ToastType"] = "success";  // Success, danger, warning, info
                 TempData["ToastMessage"] = "Operation completed successfully!";
                 TempData["EmpId"] = result.Data;
@@ -111,8 +119,12 @@ namespace EHRM.Web.Controllers
                 ViewBag.ErrorMessage = result.Message; // Display error message
                 return View(model); // Return to the same view with the provided model
             }
+
         }
 
+
+
+        //Update personal info
 
         //Save Employement Info
         [HttpPost]
@@ -428,8 +440,6 @@ namespace EHRM.Web.Controllers
                 }
             }
         }
-
-
 
 
         // Non-action method to check profile completion status

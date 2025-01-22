@@ -29,7 +29,7 @@ public partial class EmployeeDetail
 
     public string Gender { get; set; } = null!;
 
-    public int MaritalStatus { get; set; }
+    public string? MaritalStatus { get; set; }
 
     public string AadharNumber { get; set; } = null!;
 
