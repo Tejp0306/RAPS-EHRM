@@ -1,13 +1,17 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Models;
+using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.Master;
 using EHRM.ViewModel.Review;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EHRM.ServiceLayer.Review
 {
@@ -176,5 +180,127 @@ namespace EHRM.ServiceLayer.Review
             }
         }
 
+
+
+        #region Probation Evaluation
+       
+        public async Task<List<GetAllEmployeeViewModel>> GetEmployeeDetailsByManagerIdAsync(int managerId)
+        {
+            try
+            {
+                var employementTypeRepository = _unitOfWork.GetRepository<EmployementTypeDetail>();
+                var employeeRepository = _unitOfWork.GetRepository<EmployeeDetail>();
+                var employmentTypeDetails = await employementTypeRepository.GetAllAsync();
+                var empDEtails = await employeeRepository.GetAllAsync();
+                var empIDs = employmentTypeDetails
+                    .Where(x => x.ManagerId == managerId)
+                    .Select(x => x.EmpId)
+                    .ToList();
+                var commonEmpIds = empDEtails
+                    .Where(e => empIDs.Contains(e.EmpId))
+                    .ToList();
+                var commonDetails = commonEmpIds
+                    .Select(e => new GetAllEmployeeViewModel
+                    {
+                        EmpId = e.EmpId,
+                        FirstName = e.FirstName + " " + e.LastName  
+                    })
+                    .ToList();
+
+                return commonDetails;
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception($"An error occurred while retrieving employee details: {ex.Message}");
+            }
+        }
+
+        public async Task<Result> CreateEvaluationFormAsync(EvaluationQuestion model)
+        {
+            try
+            {
+                if(model.Items.Count == 0)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Please fill Remarks"
+                    };
+                }
+                else
+                {
+                    foreach (var item in model.Items) {
+                        var newForm = new ProbationEvaluationForm
+                        {
+                            EmpId = model.EmpId,
+                            ApplicationDate = model.ApplicationDate,
+                            ManagerId = model.ManagerId,
+                            QuestionId = item.QuestionId,
+                            Evaluation1stMonth = item.Evaluation1stMonth,
+                            Evaluation2ndMonth = item.Evaluation2ndMonth,
+                            Evaluation3rdMonth = item.Evaluation3rdMonth,
+                            Recommendation = model.Recommendation,
+                            RemarksConfirmation = model.RemarksConfirmation,
+                            ManagerSignature = model.ManagerSignature,
+                            FinalDate = model.FinalDate,
+
+                        };
+
+                        var FormRepository = _unitOfWork.GetRepository<ProbationEvaluationForm>();
+                        await FormRepository.AddAsync(newForm);
+                        await _unitOfWork.SaveAsync();
+                    }
+                    return new Result
+                    {
+                        Success = true,
+                        Message = "Record saved successfully."
+                    };
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error saving Record: {ex.Message}"
+                };
+            }
+        }
+
+
+        #endregion
+
+
+        #region Probation Dashboard
+
+        public async Task<List<EvaluationQuestion>> GetAllEvaluationDetails()
+        {
+            var employeeRepository = _unitOfWork.GetRepository<ProbationEvaluationForm>();
+            var employmentTypeRepository = _unitOfWork.GetRepository<EmployeeDetail>();
+
+            // Await the async operations to get actual collections
+            var employees = await employeeRepository.GetAllAsync();
+            var employmentTypes = await employmentTypeRepository.GetAllAsync();
+
+            // LINQ query to join EmployeeDetails and ProbationEvaluationForm using EmpId
+            var employeeWithDetails = (from e in employmentTypes
+                                       join p in employees on e.EmpId equals p.EmpId
+                                       select new EvaluationQuestion
+                                       {
+                                           Id = e.Id,
+                                           Recommendation = p.Recommendation,
+                                           RemarksConfirmation = p.RemarksConfirmation,
+                                           Details = new EmployeeViewModel
+                                           {
+                                               FirstName = e.FirstName,
+                                               LastName = e.LastName
+                                           }
+                                       }).ToList();
+
+            return employeeWithDetails;
+        }
+        #endregion
     }
 }

@@ -1,5 +1,8 @@
 ﻿using EHRM.DAL.Database;
+using EHRM.ServiceLayer.Helpers;
 using EHRM.ServiceLayer.Review;
+using EHRM.ServiceLayer.Utility;
+using EHRM.ViewModel.EmployeeDeclaration;
 using EHRM.ViewModel.Review;
 
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +12,13 @@ namespace EHRM.Web.Controllers
     public class ReviewController : Controller
     {
         private readonly IReviewService _review;
+        private readonly IEmailService _emailService;
 
-        public ReviewController(IReviewService review)
+        public ReviewController(IReviewService review, IEmailService emailService)
         {
 
             _review = review;
+            _emailService = emailService;
         }
         public IActionResult Index()
         {
@@ -29,7 +34,13 @@ namespace EHRM.Web.Controllers
         {
             try
             {
-                // Fetch the probation data
+                var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+                var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+                var name = userDetails.userName;
+                var managerId = userDetails.userId;
+                ViewData["name"] = name;
+                ViewData["managerId"] = managerId;
+
                 var result = await _review.GetAllProbationDataAsync();
 
                 if (result.Success && result.Data != null)
@@ -40,11 +51,14 @@ namespace EHRM.Web.Controllers
                         // Project the team list to a simplified JSON-friendly format
                         var questions = ques.Select(q => new EvaluationQuestion
                         {
-                            Id = q.QuestionId,
+                            QuestionId = q.QuestionId,
                             Question = q.Question
                         }).ToList();
 
-                        return View(questions);
+                        EvaluationQuestion evaluationQuestion = new EvaluationQuestion();
+                        evaluationQuestion.Items = questions;
+
+                        return View(evaluationQuestion);
                     }
                     else
                     {
@@ -242,6 +256,108 @@ namespace EHRM.Web.Controllers
             }
         }
 
+
+        #region Probation Evaluation Form
+
+        [HttpGet]
+        public async Task<IActionResult> GetEmployeeDetailsByManager()
+        {
+            // Fetch the probation data
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var name = userDetails.userName;
+            var managerId = userDetails.userId;
+            try
+            {
+
+
+                var result = await _review.GetEmployeeDetailsByManagerIdAsync(Convert.ToInt32(managerId));
+
+                //ViewData["empId"] = managerId;
+
+                //return Json(result);
+                return Json(new { success = true, data = result });
     }
+            catch (Exception ex)
+            {
+                return Json(new { success = true, massage = "error" });
+            }
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveEvaluationForm(EvaluationQuestion model)
+        {
+            var result = await _review.CreateEvaluationFormAsync(model);
+
+            // Handle the result of the create operation
+            if (result.Success)
+            {
+                // Success handling
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Form Submitted successfully!";
+
+                EmailServiceModel _email = new()
+                {
+                    RecipentMail = "rajan.singh@rapscorp.com",  // Replace with actual recipient email
+                    CcMail = "saksham@rapscorp.com",  // Replace with actual CC email
+                    Subject = "test-email",
+                    Body = "Probation Evaluation Form is submitted successfully !!"
+                };
+
+                // Sending the email
+                _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
+                return RedirectToAction("ProbationEvaluation"); // Or whatever action you want to redirect to after a successful save
+            }
+            else
+            {
+                // Error handling for the case where creation fails
+                TempData["ToastType"] = "danger"; // Store error message
+                TempData["ToastMessage"] = "An error occurred while submitting the form.";
+                return RedirectToAction("ProbationEvaluation"); // Redirect back to the EmployeeType view
+            }
+
+        }
+
+
+        #endregion
+
+
+        #region Probation Dashboard
+
+        [HttpGet]
+        public async Task<JsonResult> GetAllDetails()
+        {
+            try
+            {
+                // Call the service method to get evaluation details
+                var evaluationDetails = await _review.GetAllEvaluationDetails();
+
+                // Check if the result is null or empty
+                if (evaluationDetails == null || evaluationDetails.Count == 0)
+                {
+                    // Return JSON indicating failure and no data found
+                    return Json(new { Success = false, Message = "No evaluation details found." });
+                }
+
+                // Project the evaluation details to a simplified JSON-friendly format
+                var resList = evaluationDetails.Select(e => new
+                {
+                    id = e.Id,
+                    recommendation = e.Recommendation,
+                    remarksConfirmation = e.RemarksConfirmation,
+                    firstName = e.Details.FirstName,
+                    lastName = e.Details.LastName
+                }).ToList();
+
+                // Return the JSON response indicating success with data
+                return Json(new { Success = true, Data = resList });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (you can add logging here) and return a JSON error response
+                return Json(new { Success = false, Message = $"Internal server error: {ex.Message}" });
+            }
+        }
+        #endregion
 }
 

@@ -1,155 +1,182 @@
-﻿@model List<EHRM.ViewModel.Review.EvaluationQuestion>
+﻿@model EHRM.ViewModel.Review.EvaluationQuestion
 @{
     ViewData["Title"] = "ProbationEvaluation";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    int count=0;
 }
 <style>
-    .question-header {
+    .page-heading {
+        color: #007bff;
+        text-align: center;
         font-weight: bold;
-        color: #5A5A5A;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 5px;
+        font-family: Arial, sans-serif;
     }
 
-    .evaluation-table th, .evaluation-table td {
-        vertical-align: middle;
+    h3 {
+        font-size: 1.5rem;
     }
 
-        .evaluation-table td input {
-            width: 100%;
+    .form-container {
+        padding: 20px;
+        background-color: #f9f9f9;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
         }
-
-    .section-title {
-        margin-top: 30px;
-        font-weight: bold;
-    }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header">
-            <h2>Probation Evaluation</h2>
-        </div>
-        <div class="card-body">
-            <form method="post">
-                <!-- Employee Information -->
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="doj" class="form-label">DOJ</label>
-                        <input type="date" class="form-control" id="doj" name="doj">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="manager" class="form-label">Reporting Manager</label>
-                        <input type="text" class="form-control" id="manager" name="manager">
-                    </div>
-                </div>
+<div class="container mt-4">
+    <h3 class="page-heading">Probation Evaluation</h3>
 
-                <!-- Evaluation Table -->
-                <table class="table table-bordered evaluation-table">
-                    <thead>
-                        <tr>
-                            <th class="text-center">Criteria</th>
-                            <th class="text-center">Question</th> <!-- Added this column -->
-                            <th class="text-center">1st Month</th>
-                            <th class="text-center">2nd Month</th>
-                            <th class="text-center">3rd Month</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var question in Model)
-                        {
+    <!-- Probation Evaluation Form -->
+    <div class="form-container mb-5">
+        @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+        {
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+                });
+            </script>
+        }
+        <div class="card p-4">
+            <div class="card-body">
+                <form id="evaluationForm" asp-controller="Review" asp-action="SaveEvaluationForm" method="post" onsubmit="return ProbationForm()">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="name" class="form-label">Name</label>
+                            <select asp-for="EmpId" class="form-control"></select>
+
+                        </div>
+                        <div class="col-md-4">
+                            <label for="date" class="form-label">Application Date</label>
+                            <input asp-for="ApplicationDate" type="text" class="form-control" data-start-day='1' data-picker-type='date' placeholder="Select Date" />
+
+                        </div>
+                        <div class="col-md-4">
+                            <label for="manager" class="form-label">Reporting Manager</label>
+                            <input class="form-control" value="@ViewData["name"]" readonly>
+                            <input type="hidden" name="ManagerId" value="@ViewData["managerId"]" />
+                        </div>
+                    </div>
+
+                    <!-- Evaluation Table -->
+                    <table class="table table-bordered evaluation-table">
+                        <thead>
                             <tr>
-                                <td class="text-center">@($"Ques {question.Id}")</td> <!-- Displaying Question ID -->
-                                <td>@question.Question</td> <!-- Displaying the question text -->
-                                <td>
-                                    <select class="form-control">
-                                        <option value="">Select Marks </option> <!-- Add your options here -->
-                                        <option value="option1">1</option>
-                                        <option value="option2">2</option>
-                                        <option value="option3">3</option>
-                                        <option value="option4">4</option>
-                                        <option value="option4">5</option>
-                                        <option value="option4">6</option>
-                                        <option value="option4">7</option>
-                                        <option value="option4">8</option>
-                                        <option value="option4">9</option>
-                                        <option value="option4">10</option>
-                                    </select>
-                                </td> <!-- First dropdown -->
-                                <td>
-                                    <select class="form-control">
-                                        ect class="form-control">
-                                        <option value="">Select Marks </option> <!-- Add your options here -->
-                                        <option value="option1">1</option>
-                                        <option value="option2">2</option>
-                                        <option value="option3">3</option>
-                                        <option value="option4">4</option>
-                                        <option value="option4">5</option>
-                                        <option value="option4">6</option>
-                                        <option value="option4">7</option>
-                                        <option value="option4">8</option>
-                                        <option value="option4">9</option>
-                                        <option value="option4">10</option>
-                                    </select>
-                                </td> <!-- Second dropdown -->
-                                <td>
-                                    <select class="form-control">
-                                        ect class="form-control">
-                                        <option value="">Select Marks </option> <!-- Add your options here -->
-                                        <option value="option1">1</option>
-                                        <option value="option2">2</option>
-                                        <option value="option3">3</option>
-                                        <option value="option4">4</option>
-                                        <option value="option4">5</option>
-                                        <option value="option4">6</option>
-                                        <option value="option4">7</option>
-                                        <option value="option4">8</option>
-                                        <option value="option4">9</option>
-                                        <option value="option4">10</option>
-                                    </select>
-                                </td> <!-- Third dropdown -->
+                                <th class="text-center">Criteria</th>
+                                <th class="text-center">Question</th>
+                                <th class="text-center">1st Month</th>
+                                <th class="text-center">2nd Month</th>
+                                <th class="text-center">3rd Month</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                
+                                <tr>
+                                    <td class="text-center">@($"Ques {item.QuestionId}")</td>
+                                    <td>@item.Question</td>
+                                    <input type="hidden" asp-for="Items[count].QuestionId" value="@item.QuestionId" />
+                                    <td>
+                                        <select asp-for="Items[count].Evaluation1stMonth" class="form-control">
+                                            <option value="">Remarks</option>
+                                            @for (int i = 1; i <= 10; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select asp-for="Items[count].Evaluation2ndMonth" class="form-control">
+                                            <option value="">Remarks</option>
+                                            @for (int i = 1; i <= 10; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select asp-for="Items[count].Evaluation3rdMonth" class="form-control">
+                                            <option value="">Remarks</option>
+                                            @for (int i = 1; i <= 10; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                    </table>
 
-                        }
-                    </tbody>
-                </table>
+                    <!-- Remarks Section -->
+                    <div class="section-title">Recommendation and remarks from reporting manager</div>
+                    <div class="mb-3">
+                        <textarea asp-for="Recommendation" class="form-control" rows="4"></textarea>
 
-                <!-- Remarks Section -->
-                <div class="section-title">Recommendation and remarks from reporting manager</div>
-                <div class="mb-3">
-                    <textarea class="form-control" id="remarks" name="remarks" rows="4"></textarea>
-                </div>
+                    </div>
 
-                <!-- Confirmation Section -->
-                <div class="section-title">Confirmation with remarks</div>
-                <div class="mb-3">
-                    <select class="form-select" id="confirmation" name="confirmation">
-                        <option selected>Choose...</option>
-                        <option value="extend">Extend Probation period</option>
-                        <option value="terminate">Termination</option>
-                    </select>
-                </div>
+                    <!-- Confirmation Section -->
+                    <div class="section-title">Confirmation with remarks</div>
+                    <div class="mb-3">
+                        <select asp-for="RemarksConfirmation" class="form-select">
 
-                <!-- Manager Signature -->
-                <div class="section-title">Manager Signature</div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="manager-signature" name="manager-signature">
-                </div>
+                            <option selected>Choose...</option>
+                            <option value="extend">Extend Probation period</option>
+                            <option value="terminate">Termination</option>
+                        </select>
+                    </div>
 
-                <!-- Date -->
-                <div class="section-title">Date</div>
-                <div class="mb-3">
-                    <input type="date" class="form-control" id="date" name="date">
-                </div>
+                    <!-- Manager Signature -->
+                    <div class="section-title">Manager Signature</div>
+                    <div class="mb-3">
+                        <input asp-for="ManagerSignature" class="form-control">
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="section-title">Date</div>
+                    <div class="mb-3">
+                        <input asp-for="FinalDate" type="text" class="form-control" data-start-day='1' data-picker-type='date' placeholder="Select Final Date"  />
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-custom">Submit</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
+<script src="~/customscripts/probationevaluation.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $('#ApplicationDate,#FinalDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: '1950:2070',
+        dateFormat: 'dd-MM-yy',
+        minDate: '0',
+        defaultDate: new window.Date
+    });
 
-
+</script>

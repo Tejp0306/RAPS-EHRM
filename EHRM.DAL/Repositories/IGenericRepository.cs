@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,11 +31,9 @@ namespace EHRM.DAL.Repositories
         Task<List<EmployementTypeDetail>> GetEmployementTypeDetailsByIdAsync(int EmpId);
         Task<List<Salary>> GetSalaryDetailsByIdAsync(int EmpId);
 
+        Task<List<EmployementTypeDetail>> FindByIdAsync(int ManagerId);
+
         Task<List<Declaration>> GetDeclarationDetailsByIdAsync(int EmpId);
-
-
-
-
 
 
 
