@@ -113,7 +113,13 @@ namespace EHRM.DAL.Repositories
             return await _context.Set<Salary>().Where(x => x.EmpId == EmpId).ToListAsync();
         }
 
-
+        public async Task<List<EmployementTypeDetail>> FindByIdAsync(int ManagerId)
+        {
+            // Using asynchronous LINQ to filter based on ManagerId
+            return await _context.Set<EmployementTypeDetail>()
+                .Where(x => x.ManagerId == ManagerId)
+                .ToListAsync();
+        }
     }
 
 

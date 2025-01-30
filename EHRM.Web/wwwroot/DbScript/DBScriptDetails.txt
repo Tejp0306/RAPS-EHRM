@@ -306,6 +306,28 @@ CREATE TABLE EmployeesDeclaration (
   FOREIGN KEY (EmpId) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE 
 );
 
+
+CREATE TABLE ProbationEvaluationForm (
+    Id INT IDENTITY(1,1) PRIMARY KEY,                -- Auto-increment primary key
+    EmpId INT NOT NULL,                               -- Employee ID (foreign key can be added if necessary)
+    ApplicationDate varchar(30),                             -- Application Date (e.g., probation start date)
+    ManagerId INT NOT NULL,                           -- Manager ID (foreign key can be added if necessary)
+    QuestionId INT,
+	Evaluation1stMonth INT,                           -- Evaluation marks for the 1st month
+    Evaluation2ndMonth INT,                           -- Evaluation marks for the 2nd month
+    Evaluation3rdMonth INT,                           -- Evaluation marks for the 3rd month
+    Recommendation VARCHAR(MAX),                      -- Manager's recommendation (text field)
+    RemarksConfirmation VARCHAR(255),                 -- Remarks and confirmation from the manager
+    ManagerSignature VARCHAR(255),                    -- Manager's signature (could be stored as text)
+    FinalDate varchar(30),                                   -- Final evaluation date (when the process is completed)
+    CreatedAt DATETIME,             -- Tracks when the record was created
+    UpdatedAt DATETIME ,              -- Tracks when the record was last updated
+	FOREIGN KEY (EmpId) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE 
+);
+
+
+
+
 ----------------------------------------------------------------------------------------------------------------
 
 Scaffold-DbContext "Server=DESKTOP-S1TNCS5\SQLEXPRESS;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database

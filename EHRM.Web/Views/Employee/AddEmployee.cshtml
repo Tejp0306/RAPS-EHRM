@@ -1,8 +1,11 @@
 ﻿@using EHRM.ViewModel.Employee
 @model GetAllEmployeeViewModel
-
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = Model.EmpId.HasValue ? "View Employee" : "Add Employee";
+
+    var empIdFromSession = HttpContextAccessor.HttpContext?.Session?.GetInt32("EmpId");
 }
 
 @{
@@ -288,9 +291,11 @@
 
                                                 <!-- Employee Type and Appointment Date -->
                                                 <div class="col-4 col-md-4">
-                                                    <input type="hidden" id="emp-manage-id" name="emp-manage-id" />
+   
                                                     <label for="EmpId" class="form-label">EMP-ID *</label>
-                                                    <input asp-for="EmploymentDetails.EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" />
+                                                    <input asp-for="EmploymentDetails.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" />
+
+
                                                 </div>
 
                                                 <div class="row mb-3">
@@ -395,7 +400,8 @@
                                                 <div class="col-4 col-md-4">
                                               
                                                     <label for="EmpId" class="form-label">EMP-ID  *</label>
-                                                    <input asp-for="Qualifications.EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]"  />
+                                                 
+                                                    <input asp-for="Qualifications.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" />
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6"> 
@@ -475,7 +481,8 @@
                                                 <legend><i class="fas fa-dollar-sign"></i> Salary Grade</legend> <!-- CTC (Cost to Company) -->
                                                 <div class="col-4 col-md-4">
                                                     <label for="EmpId" class="form-label">EMP-ID  *</label>
-                                                    <input asp-for="SalaryDetails.EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+                                               
+                                                    <input asp-for="SalaryDetails.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" readonly />
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6"> 
@@ -527,7 +534,8 @@
                                                     <legend><i class="fas fa-pen"></i> Declaration</legend> <!-- Declaration Statement -->
                                                     <div class="col-4 col-md-4">
                                                         <label for="EmpId" class="form-label">EMP-ID  *</label>
-                                                        <input asp-for="Declarations.EmpId" class="form-control" id="EmpId" value="@TempData["EmpId"]" readonly />
+
+                                                    <input asp-for="Declarations.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" readonly />
                                                     </div>
                                                     <div class="row mb-3">
                                                         <div class="col-12">
@@ -592,6 +600,7 @@
                                                     <div class="row mb-3">
                                                         <div class="col-12"> 
                                                             <label class="form-label">Verification Checklist</label>
+                                                            </div>
                                                             </div>
 
                                                     <div class="col-12 col-md-6">

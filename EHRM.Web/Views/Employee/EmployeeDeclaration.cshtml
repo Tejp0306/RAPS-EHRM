@@ -22,7 +22,6 @@
     }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
 <h3 class="page-heading">Employee Declaration Form</h3>
 <div class="container mt-4">
     @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
@@ -35,7 +34,7 @@
         </script>
     }
     <div class="card shadow-lg p-5">
-        <form asp-controller="Employee" asp-action="SaveDeclaration" method="post">
+        <form id="info" asp-controller="Employee" asp-action="SaveDeclaration" method="post" onsubmit="return Form()">
             <!-- Employee Information -->
             <h5 class="text-primary mb-3">
                 <i class="fas fa-user-circle"></i> Employee Information
@@ -43,39 +42,49 @@
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label for="employeeCode" class="form-label font-weight-bold">Employee Code :</label>
-                    <input asp-for="EmpId" class="form-control" name="EmpId" value="" required>
+                    <input asp-for="EmpId" class="form-control" name="EmpId" value="" >
+                    <span id="empIdError" style="color: red; font-size:small; display: none;"></span>
+                    
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="employeeName" class="form-label font-weight-bold">Name :</label>
-                    <input asp-for="EmployeeName" class="form-control" id="employeeName" name="employeeName" value="" required>
+                    <input asp-for="EmployeeName" class="form-control" id="employeeName" name="employeeName" value="" >
+                    <span id="employeeNameError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="designation" class="form-label font-weight-bold">Designation :</label>
                     <input asp-for="Designation" class="form-control" id="designation" name="designation" value="">
+                    <span id="destinationError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="bandLevel" class="form-label font-weight-bold">Band Level/Level of Employment :</label>
                     <input asp-for="BandLevel" class="form-control" id="bandLevel" name="bandLevel" value="">
+                    <span id="bandLevelError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="DateOfJoining" class="form-label">Joining Date :</label>
                     <input asp-for="DateOfJoining" type="text" class="form-control" id="DateOfJoining" name="DateOfJoining" data-start-day='1' data-picker-type='date' placeholder="Select Probation Date" readonly>
+                    <span id="dateOfJoiningError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="probationStatus" class="form-label font-weight-bold">Probation / Confirmation Status :</label>
                     <input asp-for="ProbationStatus" class="form-control" id="probationStatus" name="probationStatus" value="">
+                    <span id="probationStatusError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="ProbationDate">Probation Date</label>
                     <input asp-for="ProbationDate" type="text" class="form-control" name="ProbationDate" id="ProbationDate" data-start-day='1' data-picker-type='date' placeholder="Select Probation Date" readonly />
+                    <span id="probationDateError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="location" class="form-label font-weight-bold">Location :</label>
                     <input asp-for="Location" class="form-control" id="location" name="location" value="">
+                    <span id="locationError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="function" class="form-label font-weight-bold">Function / Project / Department :</label>
                     <input asp-for="Project" class="form-control" value="">
+                    <span id="projectError" style="color: red; font-size:small; display: none;"></span>
                 </div>
             </div>
 
@@ -91,10 +100,12 @@
                 <div class="col-md-4 mb-3">
                     <label for="DateOfBirth">D.O.B</label>
                     <input asp-for="DateOfBirth" type="text" class="form-control" name="DateOfBirth" id="DateOfBirth" data-start-day='1' data-picker-type='date' placeholder="Select Date Of Birth" readonly />
+                    <span id="dobError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="age" class="form-label font-weight-bold">Age (Years) :</label>
                     <input asp-for="Age" class="form-control" id="age" name="age" value="">
+                    <span id="ageError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="gender" class="form-label font-weight-bold">Gender :</label>
@@ -126,18 +137,22 @@
                 <div class="col-md-4 mb-3">
                     <label for="officialContact" class="form-label font-weight-bold">Official Contact No :</label>
                     <input asp-for="OfficialContact" class="form-control" id="officialContact" name="officialContact" value="">
+                    <span id="officialContactError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="personalContact" class="form-label font-weight-bold">Personal Contact No :</label>
                     <input asp-for="PersonalContact" class="form-control" id="personalContact" name="personalContact" value="">
+                    <span id="personalContactError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="officialEmail" class="form-label font-weight-bold">Official Email Id :</label>
                     <input asp-for="OfficialEmail" class="form-control" id="officialEmail" name="officialEmail" value="">
+                    <span id="officialEmailError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="personalEmail" class="form-label font-weight-bold">Personal Email Id :</label>
                     <input asp-for="PersonalEmail" class="form-control" id="personalEmail" name="personalEmail" value"">
+                    <span id="personalEmailError" style="color: red; font-size:small; display: none;"></span>
                 </div>
             </div>
 
@@ -157,10 +172,12 @@
                 <div class="col-md-4 mb-3">
                     <label for="priorWorkExperience" class="form-label font-weight-bold">Prior Work Experience (Years) :</label>
                     <input asp-for="PriorWorkExperience" class="form-control" id="priorWorkExperience" name="priorWorkExperience" value="">
+                    <span id="priorWorkError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="totalWorkExperience" class="form-label font-weight-bold">Total Work Experience In Years :</label>
                     <input asp-for="TotalWorkExperience" class="form-control" id="totalWorkExperience" name="totalWorkExperience" value="">
+                    <span id="totalWorkError" style="color: red; font-size:small; display: none;"></span>
                 </div>
             </div>
 
@@ -211,10 +228,12 @@
                 <div class="col-md-4 mb-3">
                     <label for="dependent1Name" class="form-label">Dependent-1 Name :</label>
                     <input asp-for="Dependent1Name" class="form-control" id="dependent1Name" name="dependent1Name" value="">
+                    <span id="dependentNameError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="dependent1Relationship" class="form-label">Relationship :</label>
                     <input asp-for="Dependent1Relationship" class="form-control" id="dependent1Relationship" name="dependent1Relationship" value="">
+                    <span id="dependentRelationshipError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="Dependent1Dob">Dependent D.O.B</label>
@@ -231,14 +250,17 @@
                 <div class="col-md-4 mb-3">
                     <label for="emergencyName1" class="form-label">Emergency Name 1 :</label>
                     <input asp-for="EmergencyName1" class="form-control" id="emergencyName1" name="emergencyName1" value="">
+                    <span id="emergencyNameError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="emergencyContact1" class="form-label">Emergency Contact Number 1 :</label>
                     <input asp-for="EmergencyContact1" class="form-control" id="emergencyContact1" name="emergencyContact1" value="">
+                    <span id="emergencyContactError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="emergencyRelationship1" class="form-label">Relationship 1 :</label>
                     <input asp-for="EmergencyRelationship1" class="form-control" id="emergencyRelationship1" name="emergencyRelationship1" value="">
+                    <span id="emergencyRelationshipError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="emergencyName2" class="form-label">Emergency Name 2 :</label>
@@ -266,6 +288,7 @@
                 <div class="col-md-4 mb-3">
                     <label for="xthPassingYear" class="form-label">Xth Passing Year :</label>
                     <input asp-for="XthPassingYear" class="form-control" id="xthPassingYear" name="xthPassingYear" value="">
+                    <span id="xPassingError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="xiithInstitution" class="form-label">XIIth Institution :</label>
@@ -274,6 +297,7 @@
                 <div class="col-md-4 mb-3">
                     <label for="xiithPassingYear" class="form-label">XIIth Passing Year :</label>
                     <input asp-for="XiithPassingYear" class="form-control" id="xiithPassingYear" name="xiithPassingYear" value="">
+                    <span id="xiiPassingError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="bachelorInstitution" class="form-label">Bachelor(s) Institution :</label>
@@ -282,10 +306,12 @@
                 <div class="col-md-4 mb-3">
                     <label for="bachelorCompleteYear" class="form-label">Bachelor(s) Complete Degrees Year :</label>
                     <input asp-for="BachelorCompleteYear" class="form-control" id="bachelorCompleteYear" name="bachelorCompleteYear" value="">
+                    <span id="bachelorError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="bachelorDegrees" class="form-label">Bachelor(s) Degrees :</label>
                     <input asp-for="BachelorDegrees" class="form-control" id="bachelorDegrees" name="bachelorDegrees" value="">
+                    <span id="bachelorDegreeError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="masterInstitution" class="form-label">Master(s) Institution :</label>
@@ -294,6 +320,7 @@
                 <div class="col-md-4 mb-3">
                     <label for="masterCompleteYear" class="form-label">Master(s) Complete Year :</label>
                     <input asp-for="MasterCompleteYear" class="form-control" id="masterCompleteYear" name="masterCompleteYear" value="">
+                    <span id="masterError" style="color: red; font-size:small; display: none;"></span>
                 </div>
             </div>
 
@@ -309,34 +336,42 @@
                 <div class="col-md-4 mb-3">
                     <label for="uanNo" class="form-label">UAN No :</label>
                     <input asp-for="UanNo" class="form-control" id="uanNo" name="uanNo" value="">
+                    <span id="uanError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="adharNo" class="form-label">Adhar No :</label>
                     <input asp-for="AdharNo" class="form-control" id="adharNo" name="adharNo" value="">
+                    <span id="adharError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="panCardNo" class="form-label">Pan Card No :</label>
                     <input asp-for="PanCardNo" class="form-control" id="panCardNo" name="panCardNo" value="">
+                    <span id="panCardError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="bankName" class="form-label">Bank Name :</label>
                     <input asp-for="BankName" class="form-control" id="bankName" name="bankName" value="">
+                    <span id="bankNameError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="accountNumber" class="form-label">Account Number :</label>
                     <input asp-for="AccountNumber" class="form-control" id="accountNumber" name="accountNumber" value="">
+                    <span id="accountNumberError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="ifscCode" class="form-label">IFSC Code :</label>
                     <input asp-for="IfscCode" class="form-control" id="ifscCode" name="ifscCode" value="">
+                    <span id="ifscError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="permanentAddress" class="form-label">Permanent Address :</label>
                     <input asp-for="PermanentAddress" class="form-control" id="permanentAddress" name="permanentAddress" value="">
+                    <span id="permanentAddressError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="postalAddress" class="form-label">Postal Address :</label>
                     <input asp-for="PostalAddress" class="form-control" id="postalAddress" name="postalAddress" value="">
+                    <span id="postalAddressError" style="color: red; font-size:small; display: none;"></span>
                 </div>
             </div>
 
@@ -352,6 +387,7 @@
                 <div class="col-md-4 mb-3">
                     <label for="filingPerson" class="form-label">Filing Person/Updated by :</label>
                     <input asp-for="FilingPerson" class="form-control" id="filingPerson" name="filingPerson" value="">
+                    <span id="filingPersonError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="filingRecheck" class="form-label">Filing Recheck :</label>
@@ -367,14 +403,17 @@
                 <div class="col-md-4 mb-3">
                     <label for="resignationDate" class="form-label">Resignation Date/Termination:</label>
                     <input asp-for="ResignationDate" type="text" class="form-control" id="resignationDate" name="resignationDate" value="">
+                    <span id="resignationDateError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="exitDate" class="form-label">Date of Exit:</label>
                     <input asp-for="ExitDate" type="text" class="form-control" id="exitDate" name="exitDate" value="">
+                    <span id="exitDateError" style="color: red; font-size:small; display: none;"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="reasonForLeaving" class="form-label">Reason for Leaving :</label>
                     <input asp-for="ReasonForLeaving" class="form-control" id="reasonForLeaving" name="reasonForLeaving" value="">
+                    <span id="leavingError" style="color: red; font-size:small; display: none;"></span>
                 </div>
             </div>
 
@@ -385,6 +424,7 @@
     </div>
 
 </div>
+<script src="~/customscripts/employeedeclaration.js"></script>
 <!-- Add jQuery and Bootstrap Datepicker -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
