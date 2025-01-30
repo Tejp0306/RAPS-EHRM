@@ -30,6 +30,12 @@ namespace EHRM.DAL.Repositories
         Task<List<EmployementTypeDetail>> GetEmployementTypeDetailsByIdAsync(int EmpId);
         Task<List<Salary>> GetSalaryDetailsByIdAsync(int EmpId);
 
+        Task<List<Declaration>> GetDeclarationDetailsByIdAsync(int EmpId);
+
+
+
+
+
 
 
     }

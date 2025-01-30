@@ -25,7 +25,7 @@ namespace EHRM.DAL.Repositories
         {
             return await _context.Set<T>().ToListAsync();
           
-            }
+        }
 
         public async Task<T> GetByIdAsync(int id)
         {
@@ -78,6 +78,8 @@ namespace EHRM.DAL.Repositories
         {
             return await _context.Set<EmployeeDetail>().Where(x => x.EmpId == EmpId).ToListAsync();
         }
+
+
         //Get Emplyees details from employee cred table using empid
         public async Task<List<EmployeesCred>> GetEmployeeCredByIdAsync(int EmpId)
         {
@@ -111,6 +113,11 @@ namespace EHRM.DAL.Repositories
         public async Task<List<Salary>> GetSalaryDetailsByIdAsync(int EmpId)
         {
             return await _context.Set<Salary>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+
+        public async Task<List<Declaration>> GetDeclarationDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<Declaration>().Where(x => x.EmpId == EmpId).ToListAsync();
         }
 
 

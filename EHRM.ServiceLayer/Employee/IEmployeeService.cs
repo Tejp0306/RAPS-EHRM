@@ -26,7 +26,32 @@ namespace EHRM.ServiceLayer.Employee
 
         Task<Result> GetEmployeeDataByEmpIdAsync(int EmpId);
 
-       
+        Task<Result> UpdatePersonalInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model);
+
+        Task<Result> UpdateEmploymentInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model);
+
+        Task<Result> UpdateQualificationInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model);
+
+        Task<Result> UpdateSalaryInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model);
+
+        Task<Result> UpdateDeclarationInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model);
+
+        
+
+
+
+
+
+
+
+        bool CheckUserInDbByEmpId(int? EmpId);
+
+        bool CheckUserInEmpCredDbByEmpId(int? EmpId);
+
+        
+
+
+
 
         #region Employee Declaration
 
