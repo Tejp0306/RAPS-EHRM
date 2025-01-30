@@ -38,7 +38,7 @@ namespace EHRM.Web.Controllers
 
         [HttpGet("Employee/AddEmployee/{EmpId?}")]
         public async Task<IActionResult> AddEmployee(int? EmpId = null)
-        {
+            {
             // Dropdowns for employee type and employment status
             var EmployeeTypes = Enum.GetValues(typeof(EmployeeType))
                                     .Cast<EmployeeType>()
@@ -65,7 +65,7 @@ namespace EHRM.Web.Controllers
                 {
                 // Fetch the existing employee details
                 var employee = await _employee.GetAllEmployeeRecordDetails(EmpId.Value);
-                
+                HttpContext.Session.SetInt32("EmpId", (int)EmpId);
                 if (employee != null)
                 {
                     return View(employee.FirstOrDefault());
@@ -83,32 +83,128 @@ namespace EHRM.Web.Controllers
             return View();
         }
 
+
+        [NonAction]
+        private async Task<object> UpdatePersonalDetails(int id, string updatedBy, GetAllEmployeeViewModel model)
+        {
+            try
+            {
+                // Call the service method to update the role
+                var result = await _employee.UpdatePersonalInfoAsync(id, updatedBy, model);
+
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the role. Please try again later."
+                };
+            }
+        }
+
         //Save Personal Info
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SavePersonalInfo(GetAllEmployeeViewModel model)
         {
-
-            //if (_employee.CheckUserInDbByEmpId(model.EmpId))
-            //{
-
-            //}
-            var filepath = "";
-            if (model.ProfileImg != null)
+            if (model == null)
             {
+                TempData["ToastType"] = "danger";
+                TempData["ToastMessage"] = "Invalid data submitted.";
+                return RedirectToAction("AddEmployee");
+            }
 
-                filepath = Upload(model);
+            if (_employee.CheckUserInDbByEmpId(model.EmpId))
+            {
+                // Update existing employee details
+                string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
+                var updateResult = await UpdatePersonalDetails((int)model.EmpId, updatedBy, model);
+
+                if (updateResult != null)
+                {
+                    var updateResponse = updateResult as dynamic; // Assuming anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["ToastType"] = "success";
+                        TempData["ToastMessage"] = "Record has been updated successfully!";
+                        return RedirectToAction("AddEmployee");
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = updateResponse?.message ?? "An error occurred while updating the record.";
+                        return View(model); // Return to the same view with validation errors
+                    }
+                }
+
+                TempData["ToastType"] = "danger";
+                TempData["ToastMessage"] = "An error occurred while updating the record.";
+                return RedirectToAction("AddEmployee");
             }
             else
             {
-                TempData["ToastType"] = "warning";  // Success, danger, warning, info
-                TempData["ToastMessage"] = "Profile Image is Mandatory!";
-                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                // Handle new employee creation
+                if (model.ProfileImg == null)
+                {
+                    TempData["ToastType"] = "warning";
+                    TempData["ToastMessage"] = "Profile image is mandatory!";
+                    return RedirectToAction("AddEmployee");
+                }
+
+                // Upload the profile image
+                string filepath = Upload(model);
+
+                if (string.IsNullOrEmpty(filepath))
+                {
+                    TempData["ToastType"] = "danger";
+                    TempData["ToastMessage"] = "An error occurred while uploading the profile image.";
+                    return RedirectToAction("AddEmployee");
+                }
+
+                // Save new employee details
+                int createdById = 101; // Replace with actual logic to fetch the current user ID
+                var result = await _employee.SavePersonalInfoAsync(model, createdById, filepath);
+
+                if (result?.Success == true)
+                {
+                    TempData["ToastType"] = "success";
+                    TempData["ToastMessage"] = "Personal Info Saved uccessfully!";
+
+                    if (int.TryParse(result?.Data?.ToString(), out int empId))
+                    {
+                        HttpContext.Session.SetInt32("EmpId", empId);
+                        TempData["EmpId"] = empId;
+                    }
+
+                    return RedirectToAction("AddEmployee");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result?.Message ?? "An error occurred while saving the record.";
+                    return View(model);
+                }
             }
-            int createdById = 101; // Replace with logic to fetch the actual user ID
-            var result = await _employee.SavePersonalInfoAsync(model, createdById, filepath);
-            // Handle the result of the create operation
-            if (result.Success)
+        }
+
+
+
+        //Update Employment Info
+
+        [NonAction]
+        private async Task<object> UpdateEmploymentInfoDetails(int id, string updatedBy, GetAllEmployeeViewModel model)
+        {
+            try
             {
+                // Call the service method to update the role
+                var result = await _employee.UpdateEmploymentInfoAsync(id, updatedBy, model);
+
 
                 TempData["ToastType"] = "success";  // Success, danger, warning, info
                 TempData["ToastMessage"] = "Recode  Saved successfully!";
@@ -119,40 +215,115 @@ namespace EHRM.Web.Controllers
                 }
 
                 return RedirectToAction("AddEmployee"); // Redirect to the list of roles
-            }
-            else
-            {
-                ViewBag.ErrorMessage = result.Message; // Display error message
-                return View(model); // Return to the same view with the provided model
-            }
 
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the role. Please try again later."
+                };
+            }
         }
 
 
-
-        //Update personal info
 
         //Save Employement Info
         [HttpPost]
         public async Task<IActionResult> SaveEmploymentInfo(GetAllEmployeeViewModel model)
         {
-            int createdById = 101; // Replace with logic to fetch the actual user ID
-            var result = await _employee.SaveEmploymentInfoAsync(model, createdById);
-            // Handle the result of the create operation
-            if (result.Success)
+            int empid = (int)model.EmploymentDetails.EmpId;
+
+            if (_employee.CheckUserInDbByEmpId(empid) == true)
             {
+
 
                 TempData["ToastType"] = "success";  // Success, danger, warning, info
                 TempData["ToastMessage"] = "Operation completed successfully!";
                 //TempData["EmpId"] = result.Data;
                 return RedirectToAction("AddEmployee"); // Redirect to the list of roles
-            }
-            else
-            {
-                ViewBag.ErrorMessage = result.Message; // Display error message
-                return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+                // Update the role details
+                string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
+                var updateResult = await UpdateEmploymentInfoDetails(empid, updatedBy, model);
+                if (updateResult != null)
+                {
+                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["ToastType"] = "success"; // Store success message
+                        TempData["ToastMessage"] = "Record Has been updated ";
+                        return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                        return View(model); // Return to the same view with the provided model
+                    }
+
+                }
+
+                return RedirectToAction("AddEmployee");r
             }
 
+            else
+            {
+                int createdById = 101; // Replace with logic to fetch the actual user ID
+                var result = await _employee.SaveEmploymentInfoAsync(model, createdById);
+                // Handle the result of the create operation
+                if (result.Success)
+                {
+
+                    TempData["ToastType"] = "success";  // Success, danger, warning, info
+                    TempData["ToastMessage"] = "Operation completed successfully!";
+                    TempData["EmpId"] = result.Data;
+                    return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.Message; // Display error message
+                    return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+                }
+
+            }
+            
+
+        }
+
+
+        // Update Qualification Info
+
+        [NonAction]
+        private async Task<object> UpdateQualificationInfoDetails(int id, string updatedBy, GetAllEmployeeViewModel model)
+        {
+            try
+            {
+                // Call the service method to update the role
+                var result = await _employee.UpdateQualificationInfoAsync(id, updatedBy, model);
+
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the role. Please try again later."
+                };
+            }
         }
 
 
@@ -160,48 +331,166 @@ namespace EHRM.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveQualificationInfo(GetAllEmployeeViewModel model)
         {
-            int createdById = 101; // Replace with logic to fetch the actual user ID
-            var result = await _employee.SaveQualificationInfoAsync(model, createdById);
-            // Handle the result of the create operation
-            if (result.Success)
+
+            int empid = (int)model.Qualifications.EmpId;
+
+            if (_employee.CheckUserInDbByEmpId(empid) == true)
             {
 
-                TempData["ToastType"] = "success";  // Success, danger, warning, info
-                TempData["ToastMessage"] = "Operation completed successfully!";
-                TempData["EmpId"] = result.Data;
-                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                // Update the role details
+                string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
+                var updateResult = await UpdateQualificationInfoDetails(empid, updatedBy, model);
+                if (updateResult != null)
+                {
+                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["ToastType"] = "success"; // Store success message
+                        TempData["ToastMessage"] = "Record Has been updated ";
+                        return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                        return View(model); // Return to the same view with the provided model
+                    }
+
+                }
+
+                return RedirectToAction("AddEmployee");
             }
+
             else
             {
-                ViewBag.ErrorMessage = result.Message; // Display error message
-                return RedirectToAction("AddEmployee");// Return to the same view with the provided model
-            }
+                int createdById = 101; // Replace with logic to fetch the actual user ID
+                var result = await _employee.SaveQualificationInfoAsync(model, createdById);
+                // Handle the result of the create operation
+                if (result.Success)
+                {
 
+                    TempData["ToastType"] = "success";  // Success, danger, warning, info
+                    TempData["ToastMessage"] = "Operation completed successfully!";
+                    TempData["EmpId"] = result.Data;
+                    return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.Message; // Display error message
+                    return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+                }
+            }      
         }
 
+        // Update Salary Info
+
+        [NonAction]
+        private async Task<object> UpdateSalaryInfoDetails(int id, string updatedBy, GetAllEmployeeViewModel model)
+        {
+            try
+            {
+                // Call the service method to update the role
+                var result = await _employee.UpdateSalaryInfoAsync(id, updatedBy, model);
+
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the role. Please try again later."
+                };
+            }
+        }
+
+
         //Save Salary Info
-        
 
         [HttpPost]
         public async Task<IActionResult> SaveSalaryInfo(GetAllEmployeeViewModel model)
         {
-            int createdById = 101; // Replace with logic to fetch the actual user ID
-            var result = await _employee.SaveSalaryInfoAsync(model, createdById);
-            // Handle the result of the create operation
-            if (result.Success)
+            int empid = (int)model.SalaryDetails.EmpId;
+
+            if (_employee.CheckUserInDbByEmpId(empid) == true)
             {
 
-                TempData["ToastType"] = "success";  // Success, danger, warning, info
-                TempData["ToastMessage"] = "Operation completed successfully!";
-                TempData["EmpId"] = result.Data;
-                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                // Update the role details
+                string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
+                var updateResult = await UpdateSalaryInfoDetails(empid, updatedBy, model);
+                if (updateResult != null)
+                {
+                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["ToastType"] = "success"; // Store success message
+                        TempData["ToastMessage"] = "Record Has been updated ";
+                        return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                        return View(model); // Return to the same view with the provided model
+                    }
+
+                }
+
+                return RedirectToAction("AddEmployee");
             }
+
             else
             {
-                ViewBag.ErrorMessage = result.Message; // Display error message
-                return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+                int createdById = 101; // Replace with logic to fetch the actual user ID
+                var result = await _employee.SaveSalaryInfoAsync(model, createdById);
+                // Handle the result of the create operation
+                if (result.Success)
+                {
+
+                    TempData["ToastType"] = "success";  // Success, danger, warning, info
+                    TempData["ToastMessage"] = "Operation completed successfully!";
+                    TempData["EmpId"] = result.Data;
+                    return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.Message; // Display error message
+                    return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+                }
             }
 
+        }
+
+        // Update Declaration Form
+
+        [NonAction]
+        private async Task<object> UpdateDeclarationInfoDetails(int id, string updatedBy, GetAllEmployeeViewModel model)
+        {
+            try
+            {
+                // Call the service method to update the role
+                var result = await _employee.UpdateDeclarationInfoAsync(id, updatedBy, model);
+
+                // Return a structured response based on the result of the update
+                return new
+                {
+                    success = result.Success,
+                    message = result.Message
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new
+                {
+                    success = false,
+                    message = "An error occurred while updating the role. Please try again later."
+                };
+            }
         }
 
 
@@ -210,23 +499,55 @@ namespace EHRM.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveDeclarationInfo(GetAllEmployeeViewModel model)
         {
-            int createdById = 101; // Replace with logic to fetch the actual user ID
-            var result = await _employee.SaveDecalarationInfoAsync(model, createdById);
-            // Handle the result of the create operation
-            if (result.Success)
+
+            int empid = (int)model.Declarations.EmpId;
+
+            if (_employee.CheckUserInDbByEmpId(empid) == true)
             {
 
-                TempData["ToastType"] = "success";  // Success, danger, warning, info
-                TempData["ToastMessage"] = "Operation completed successfully!";
-                TempData["EmpId"] = result.Data;
-                return RedirectToAction("employeeview"); // Redirect to the list of roles
+                // Update the role details
+                string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
+                var updateResult = await UpdateDeclarationInfoDetails(empid, updatedBy, model);
+                if (updateResult != null)
+                {
+                    var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
+                    if (updateResponse?.success == true)
+                    {
+                        TempData["ToastType"] = "success"; // Store success message
+                        TempData["ToastMessage"] = "Record Has been updated ";
+                        return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                        return View(model); // Return to the same view with the provided model
+                    }
+
+                }
+
+                return RedirectToAction("AddEmployee");
             }
+
             else
             {
-                ViewBag.ErrorMessage = result.Message; // Display error message
-                return RedirectToAction("AddEmployee");// Return to the same view with the provided model
-            }
+                int createdById = 101; // Replace with logic to fetch the actual user ID
+                var result = await _employee.SaveDecalarationInfoAsync(model, createdById);
+                // Handle the result of the create operation
+                if (result.Success)
+                {
 
+                    TempData["ToastType"] = "success";  // Success, danger, warning, info
+                    TempData["ToastMessage"] = "Operation completed successfully!";
+                    TempData["EmpId"] = result.Data;
+                    return RedirectToAction("employeeview"); // Redirect to the list of roles
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.Message; // Display error message
+                    return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+                }
+
+            }
         }
 
         [HttpGet]
@@ -251,7 +572,7 @@ namespace EHRM.Web.Controllers
                 }
                 else
                 {
-                    return Json(new { Success = false, Message = "Data is not in the expected format (IEnumerable<Team>)." });
+                    return Json(new { Success = false, Message = "Data is not in the expected format (IEnumerable<Role>)." });
                 }
             }
             else
@@ -345,7 +666,9 @@ namespace EHRM.Web.Controllers
                         Id = emp.EmpId,
                         Name = emp.FirstName + ' ' + emp.LastName,
                         Email = emp.EmailAddress,
-                        ProfileStatus = CheckProfileStatus(emp.IsProfileCompleted)
+                        ProfileStatus = emp.IsProfileCompleted,
+                        EmploymentStatus = emp.Active,
+                        
 
                     }).ToList(); // Convert to a List
 
@@ -369,96 +692,154 @@ namespace EHRM.Web.Controllers
         [HttpGet("Employee/GetEmployeeForCred/{EmpId?}")]
         public async Task<IActionResult> GetEmployeeForCred(int EmpId)
         {
-            // Use TransactionScope to manage a transaction across multiple operations
-            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            try
             {
-                try
+                // Check if the employee already exists in the credential database
+                if (_employee.CheckUserInEmpCredDbByEmpId(EmpId))
                 {
-                    // Fetch the result from the service layer
-                    var result = await _employee.GetEmployeeDataByEmpIdAsync(EmpId);
+                    // Update IsProfileCompleted to false in EmployeeDetails table
+                    var employeeDetailsRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
+                    var employeeDetails = await employeeDetailsRepository.GetEmployeeDetailsByIdAsync(EmpId);
+                        
+                    var employmentDetailsRepository = _UnitOfWork.GetRepository<EmployeesCred>();
+                    var employmentDetails = await employmentDetailsRepository.GetEmployeeCredByIdAsync(EmpId);
 
-                    // Check if the result is successful and contains valid data
-                    if (result.Success && result.Data != null)
+                    if (employeeDetails?.Any() == true && employmentDetails?.Any() == true)
                     {
-                        // Assuming result.Data is a single employee object and not a list
-                        var employeeData = result.Data as dynamic;
+                        employeeDetails[0].Active = false;
+                        await _UnitOfWork.SaveAsync();
 
-                        if (employeeData != null)
-                        {
-                            // Create a new EmployeeCredential entity
-                            var employeeCredential = new EmployeesCred
-                            {
-                                EmpId = employeeData[0].EmpId, // Assuming EmpId is part of the employee data
-                                Email = employeeData[0].EmailAddress,
-                                TempPassword = employeeData[0].Password,
-                                FirstName = employeeData[0].FirstName,
-                                LastName = employeeData[0].LastName,
-                                RoleId = employeeData[0].RoleId,
-                                LoginId = employeeData[0].LoginId,
-                            };
+                        employmentDetails[0].Active = false;
+                        await _UnitOfWork.SaveAsync();
 
-                            // Save to the EmployeesCred table
-                            var employementdetailRepository = _UnitOfWork.GetRepository<EmployeesCred>();
-                            await employementdetailRepository.AddAsync(employeeCredential);
-                            await _UnitOfWork.SaveAsync();
+                        // Add a success message to TempData
+                        TempData["Message"] = "Profile marked as incomplete.";
+                        TempData["MessageType"] = "success"; // You can set the type to 'error' for error messages
 
-                            // After saving employee data, update IsProfileCompleted in EmployeeDetails table
-                            var employeeDetailsRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
-
-                            // Find the EmployeeDetails record for the given EmpId
-                            var employeeDetails = await employeeDetailsRepository.GetEmployeeDetailsByIdAsync(EmpId);
-
-                            if (employeeDetails != null)
-                            {
-                                // Set IsProfileCompleted to true
-                                employeeDetails[0].IsProfileCompleted = true;
-
-                                // Save changes to the EmployeeDetails table
-                                await _UnitOfWork.SaveAsync();
-                            }
-                            else
-                            {
-                                // Handle the case where EmployeeDetails is not found
-                                throw new Exception("EmployeeDetails not found.");
-                            }
-
-                            // If everything is successful, commit the transaction
-                            transaction.Complete();
-
-                            // Return success response
-                            return View("employeeview");
-                        }
-                        else
-                        {
-                            return View("employeeview");
-                        }
+                        return RedirectToAction("Employeeview");
                     }
                     else
                     {
-                        // Handle the case where the service failed
-                        return View("employeeview");
+                        // Handle the case where EmployeeDetails is not found
+                        TempData["Message"] = "Employee details not found.";
+                        TempData["MessageType"] = "error"; // Show error toast
+
+                        return RedirectToAction("Employeeview");
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    // Handle the error (e.g., log the exception)
-                    return Json(new { Success = false, Message = ex.Message });
+                    // Use TransactionScope for transactional integrity
+                    using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                    {
+                        try
+                        {
+                            // Fetch the result from the service layer
+                            var result = await _employee.GetEmployeeDataByEmpIdAsync(EmpId);
+
+                            // Check if the result is successful and contains valid data
+                            if (result.Success && result.Data != null)
+                            {
+                                var employeeData = result.Data as dynamic;
+
+                                if (employeeData != null && employeeData.Count > 0)
+                                {
+                                    // Create a new EmployeeCredential entity
+                                    var employeeCredential = new EmployeesCred
+                                    {
+                                        EmpId = employeeData[0].EmpId,
+                                        Email = employeeData[0].EmailAddress,
+                                        TempPassword = employeeData[0].Password,
+                                        FirstName = employeeData[0].FirstName,
+                                        LastName = employeeData[0].LastName,
+                                        RoleId = employeeData[0].RoleId,
+                                        LoginId = employeeData[0].LoginId,
+                                        Active = true,
+                                    };
+
+                                    // Save to the EmployeesCred table
+                                    var employmentDetailRepository = _UnitOfWork.GetRepository<EmployeesCred>();
+                                    await employmentDetailRepository.AddAsync(employeeCredential);
+                                    await _UnitOfWork.SaveAsync();
+
+                                    // Update IsProfileCompleted in EmployeeDetails table
+                                    var employeeDetailsRepository = _UnitOfWork.GetRepository<EmployeeDetail>();
+                                    var employeeDetails = await employeeDetailsRepository.GetEmployeeDetailsByIdAsync(EmpId);
+
+                                    if (employeeDetails != null && employeeDetails.Any())
+                                    {
+                                        //employeeDetails[0].IsProfileCompleted = true;
+                                        employeeDetails[0].Active = true;
+                                        await _UnitOfWork.SaveAsync();
+                                    }
+                                    else
+                                    {
+                                        // Handle case where EmployeeDetails is not found
+                                        throw new Exception("Employee details not found.");
+                                    }
+
+                                    // Commit the transaction
+                                    transaction.Complete();
+
+                                    // Add success message to TempData
+                                    TempData["Message"] = "Employee data processed successfully.";
+                                    TempData["MessageType"] = "success";
+
+                                    return RedirectToAction("Employeeview");
+                                }
+                                else
+                                {
+                                    // Handle invalid or empty employee data
+                                    TempData["Message"] = "Invalid employee data.";
+                                    TempData["MessageType"] = "error"; // Show error toast
+
+                                    return RedirectToAction("Employeeview");
+                                }
+                            }
+                            else
+                            {
+                                // Handle service failure or no data found
+                                TempData["Message"] = "Employee data not found or service failed.";
+                                TempData["MessageType"] = "error";
+
+                                return RedirectToAction("Employeeview");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Handle the error and rollback the transaction
+                            TempData["Message"] = ex.Message;
+                            TempData["MessageType"] = "error";
+
+                            return RedirectToAction("Employeeview");
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                // Handle any outer exceptions
+                TempData["Message"] = ex.Message;
+                TempData["MessageType"] = "error";
+
+                return RedirectToAction("Employeeview");
+            }
         }
+
+
 
 
         // Non-action method to check profile completion status
-        [NonAction]
-        private string CheckProfileStatus(bool isProfileCompleted)
-        {
-            if (!isProfileCompleted)
-            {
-                return "Profile Incomplete";
-            }
+        //[NonAction]
+        //private string CheckProfileStatus(bool isProfileCompleted)
+        //{
+        //    if (!isProfileCompleted)
+        //    {
+        //        return "Profile Incomplete";
+        //    }
 
-            return "Profile Complete";
-        }
+        //    return "Profile Complete";
+        //}
         public async Task<JsonResult> GetTeamData()
         {
             // Fetch the result from the service layer
@@ -649,6 +1030,8 @@ namespace EHRM.Web.Controllers
         }
 
         #endregion
+
+       
     }
 
 }

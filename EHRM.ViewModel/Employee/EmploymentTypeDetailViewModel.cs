@@ -36,7 +36,11 @@ namespace EHRM.ViewModel.Employee
         public string? EmployeeName { get; set; } // Additional property for employee name if needed
 
         public int EmploymentStatuses { get; set; } // Dropdown for employment statuses
-        public int Managers { get; set; } // Dropdown for managers
+        
+        public string ManagerName {  get; set; }
+
+       
+
     }
 
 }
