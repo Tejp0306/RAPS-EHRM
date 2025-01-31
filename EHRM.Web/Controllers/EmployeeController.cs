@@ -270,7 +270,7 @@ namespace EHRM.Web.Controllers
 
                 }
 
-                return RedirectToAction("AddEmployee");r
+                return RedirectToAction("AddEmployee");
             }
 
             else
