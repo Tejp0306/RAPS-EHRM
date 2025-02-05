@@ -256,11 +256,11 @@
                     $('#phone').val(TeamScreenData.cellPhone || '');
                     $('#age').val(TeamScreenData.age || '');
                     $('#name').val((TeamScreenData.firstName || '') + ' ' + (TeamScreenData.lastName || ''));
-                    $('#startDate').val(TeamScreenData.employmentDetails[0].appointmentDate || '');
-                    $('#ctc').val(TeamScreenData.salaryDetails[0].ctc || '');
-                    $('#courseName').val(TeamScreenData.qualifications[0].courseName || '');
-                    $('#instituteName').val(TeamScreenData.qualifications[0].institutionName || '');
-                    $('#passedDate').val(TeamScreenData.qualifications[0].passedDate || '');
+                    $('#startDate').val(TeamScreenData.employmentDetails.appointmentDate || '');
+                    $('#ctc').val(TeamScreenData.salaryDetails.ctc || '');
+                    $('#courseName').val(TeamScreenData.qualifications.courseName || '');
+                    $('#instituteName').val(TeamScreenData.qualifications.institutionName || '');
+                    $('#passedDate').val(TeamScreenData.qualifications.passedDate || '');
 
                     // Success toast
                     toastr.success("Employee data retrieved successfully!");

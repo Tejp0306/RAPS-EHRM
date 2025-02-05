@@ -1,0 +1,21 @@
+﻿
+@keyframes birthdayAnimation {
+    0%
+
+{
+    transform: scale(1);
+    color: #FF5733;
+}
+
+50% {
+    transform: scale(1.1);
+    color: #F39C12;
+}
+
+100% {
+    transform: scale(1);
+    color: #FF5733;
+}
+
+}
+
