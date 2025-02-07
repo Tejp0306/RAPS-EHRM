@@ -140,6 +140,7 @@ namespace EHRM.Web.Controllers
                             // Define possible date formats
                             string[] formats = {
 
+
                                         "yyyy-MM-dd",
 
                                         "dd/MM/yyyy",
@@ -182,6 +183,28 @@ namespace EHRM.Web.Controllers
 
                                         "yyyy/MM/dd hh:mm tt"
 
+    "yyyy-MM-dd",
+    "dd/MM/yyyy",
+    "MM/dd/yyyy",
+    "yyyy/MM/dd",
+    "MM-dd-yyyy",
+    "dd-MMM-yyyy",          // Example: 31-Jan-2025
+    "dd MMM yyyy",          // Example: 31 Jan 2025
+    "MMMM dd, yyyy",        // Example: January 31, 2025
+    "dd-MMMM-yyyy",         // Example: 31-January-2025
+    "MMMM dd yyyy",         // Example: January 31 2025
+    "dd MMMM yyyy",         // Example: 31 January 2025
+    "yyyy-MM-dd HH:mm:ss",
+    "MM/dd/yyyy HH:mm:ss",
+    "yyyy/MM/dd HH:mm",
+    "yyyy.MM.dd",
+    "dd.MM.yyyy",
+    "yyyyMMdd",
+    "dd-MM-yy",
+    "HH:mm:ss",
+    "hh:mm tt",
+    "yyyy/MM/dd hh:mm tt"
+
 };
 
 
@@ -219,6 +242,7 @@ namespace EHRM.Web.Controllers
                     }
                 }
 
+
                 // Skip JWT Token Generation here, handle in OTP section
                 // Instead, store the employee data for OTP verification
                 HttpContext.Session.SetString("EmployeeEmail", employeeCred.Email);
@@ -249,7 +273,9 @@ namespace EHRM.Web.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                TempData["ToastType"] = "danger";
+                TempData["ToastMessage"] = "An error occurred during login.";
+                return RedirectToAction("Login");
             }
         }
         private bool IsLockoutExpired(EmployeesCred employeeCred)

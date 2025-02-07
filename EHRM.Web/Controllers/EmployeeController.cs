@@ -205,6 +205,17 @@ namespace EHRM.Web.Controllers
                 // Call the service method to update the role
                 var result = await _employee.UpdateEmploymentInfoAsync(id, updatedBy, model);
 
+
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Recode  Saved successfully!";
+                var sessionEmpId = result?.Data?.ToString();
+                if (!string.IsNullOrEmpty(sessionEmpId) && int.TryParse(sessionEmpId, out int empId))
+                {
+                    HttpContext.Session.SetInt32("EmpId", empId);
+                }
+
+                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+
                 // Return a structured response based on the result of the update
                 return new
                 {
@@ -234,6 +245,11 @@ namespace EHRM.Web.Controllers
             if (_employee.CheckUserInDbByEmpId(empid) == true)
             {
 
+
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Operation completed successfully!";
+                //TempData["EmpId"] = result.Data;
+                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
                 // Update the role details
                 string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
                 var updateResult = await UpdateEmploymentInfoDetails(empid, updatedBy, model);
@@ -907,6 +923,10 @@ namespace EHRM.Web.Controllers
         #region EmployeeDeclaration
         public IActionResult EmployeeDeclaration()
         {
+            if (ModelState.IsValid)
+            {
+
+            }
             return View();
         }
         public IActionResult EmployeeDeclarationone()
@@ -935,7 +955,7 @@ namespace EHRM.Web.Controllers
                     RecipentMail = "waseem@rapscorp.com",  // Replace with actual recipient email
                     CcMail = "saksham@rapscorp.com",  // Replace with actual CC email
                     Subject = "test-email",
-                    Body = "This message is for testing purpose only! Please ignore it, Thanks,"
+                    Body = "Employee-declaration for is submitted successfully !!, Thanks,"
                 };
 
                 // Sending the email
@@ -946,7 +966,7 @@ namespace EHRM.Web.Controllers
             {
                 // Error handling for the case where creation fails
                 TempData["ToastType"] = "danger"; // Store error message
-                TempData["ToastMessage"] = "An error occurred while creating the record.";
+                TempData["ToastMessage"] = "An error occurred while submitting the form.";
                 return RedirectToAction("EmployeeDeclaration"); // Redirect back to the EmployeeType view
             }
         }

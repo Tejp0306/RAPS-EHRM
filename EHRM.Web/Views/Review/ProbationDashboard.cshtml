@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Probation";
+    ViewData["Title"] = "ProbationDashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -63,18 +63,11 @@
         font-weight: bold;
     }
 
-    .feedback-section textarea {
-        width: 100%;
-        height: 150px;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        font-size: 14px;
-        background-color: #f9f9f9;
-        resize: none;
+    .status-label {
+        cursor: pointer;
     }
 
-    .btn-open-form {
+    .btn-primary {
         background-color: #009CFF;
         color: white;
         border: none;
@@ -86,13 +79,12 @@
         transition: background-color 0.3s ease;
     }
 
-    .btn-open-form:hover {
+        .btn-primary:hover {
         background-color: #0056b3;
     }
 
-    .next-steps p {
-        font-size: 18px;
-        color: #333;
+    .table th, .table td {
+        vertical-align: middle;
     }
 
     .card {
@@ -176,26 +168,7 @@
 
     <!-- Overview Section with Pie Charts -->
     <div class="row">
-        <div class="col-md-3">
-            <div class="metric-card">
-                <h4>Performance Rating</h4>
-                <!-- Canvas for Performance Rating chart -->
-                <div class="chart-container">
-                    <canvas id="performanceChart"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="metric-card">
-                <h4>Attendance</h4>
-                <!-- Canvas for Attendance chart with larger size -->
-                <div class="chart-container">
-                    <!-- Increased height for larger chart -->
-                    <canvas id="attendanceChart" width="400" height="300"></canvas> <!-- Set custom width and height -->
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
+        <div class="col-md-5">
             <div class="metric-card">
                 <h4>Task Completion</h4>
                 <!-- Canvas for Task Completion chart -->
@@ -204,41 +177,33 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <!-- This column adds the gap between the two charts -->
+        </div>
+        <div class="col-md-5">
             <div class="metric-card">
-                <h4>Goals Achieved</h4>
-                <!-- Canvas for Goals Achieved chart with larger size -->
+                <h4>Performance Rating</h4>
                 <div class="chart-container">
-                    <!-- Increased height for larger chart -->
-                    <canvas id="goalsAchievedChart" width="400" height="300"></canvas> <!-- Set custom width and height -->
+                    <canvas id="performanceChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Details Section with Table -->
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    Evaluation Details
-                </div>
-                <div class="card-body">
-                    <table class="table table-striped">
+    <h4>Evaluation List</h4>
+    <div class="table-responsive">
+        <table id="EvaluationTable" class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Employee Name</th>
-                                <th scope="col">Questions Asked</th>
-                                <th scope="col">Feedback</th>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Recommendation </th>
+                    <th>Remarks</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row">1</th>
-                                <td>John Doe</td>
-                                <td>5</td>
-                                <td>Great performance, but room for improvement in task completion.</td>
+                    <td></td>
                             </tr>
                             <tr>
                                 <th scope="row">2</th>
@@ -251,22 +216,18 @@
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
-
-</div>
-
-
-<!-- Script for Pie Charts -->
+<script src="~/customscripts/probationdashboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Performance Rating Pie Chart
     var performanceChart = new Chart(document.getElementById('performanceChart'), {
-        type: 'pie',  // Specify the chart type as 'pie'
+        type: 'pie',
         data: {
-            labels: ['Excellent (9-10)', 'Good (7-8)', 'Average (4-6)', 'Bad (1-3)'], // Labels for the chart
+            labels: ['Excellent (9-10)', 'Good (7-8)', 'Average (4-6)', 'Bad (1-3)'],
             datasets: [{
-                data: [35, 40, 15, 10], // Replace with dynamic data if needed
-                backgroundColor: ['#28a745', '#007bff', '#ffc107', '#dc3545'], // Green, Blue, Yellow, Red
+                data: [35, 40, 15, 10],
+                backgroundColor: ['#28a745', '#007bff', '#ffc107', '#dc3545'],
                 borderColor: '#ffffff',
                 borderWidth: 2
             }]
@@ -342,12 +303,12 @@
     });
     // Task Completion Pie Chart
     var taskCompletionChart = new Chart(document.getElementById('taskCompletionChart'), {
-        type: 'pie',  // Specify the chart type as 'pie'
+        type: 'pie',
         data: {
-            labels: ['Completed', 'Incomplete'], // Labels for the chart
+            labels: ['Completed', 'Incomplete','Pending'],
             datasets: [{
-                data: [80, 20], // Replace with dynamic data if needed
-                backgroundColor: ['#28a745', '#dc3545'], // Green for completed, Red for incomplete
+                data: [60, 20, 20],
+                backgroundColor: ['#28a745', '#dc3545','#007bff'],
                 borderColor: '#ffffff',
                 borderWidth: 2
             }]
@@ -368,42 +329,18 @@
             }
         }
     });
-
-    var goalsAchievedChart = new Chart(document.getElementById('goalsAchievedChart'), {
-        type: 'bar',  // Set the chart type to 'bar'
-        data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],  // Example labels for weeks
-            datasets: [{
-                label: 'Goals Achieved',  // Label for the Goals Achieved dataset
-                data: [50, 65, 80, 90],  // Example percentage of goals achieved for each week
-                backgroundColor: '#28a745',  // Green color for Present
-                borderColor: '#ffffff',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    beginAtZero: true
-                },
-                y: {
-                    beginAtZero: true,
-                    max: 100  // Set max value to 100% for better representation
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            return tooltipItem.label + ': ' + tooltipItem.raw + '%';  // Show percentage on tooltip
-                        }
-                    }
-                }
-            }
+    document.querySelectorAll('.status-label').forEach(function(label) {
+        label.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('bi-circle')) {
+                icon.classList.remove('bi-circle');
+                icon.classList.add('bi-check-circle');
+                this.innerHTML = '<i class="bi bi-check-circle"></i> Active';
+            } else {
+                icon.classList.remove('bi-check-circle');
+                icon.classList.add('bi-circle');
+                this.innerHTML = '<i class="bi bi-circle"></i> Inactive';
         }
+    });
     });
 </script>
