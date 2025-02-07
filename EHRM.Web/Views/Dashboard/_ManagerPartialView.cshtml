@@ -1,8 +1,12 @@
-﻿<head>
+﻿@using EHRM.ViewModel.Employee
+@model List<EmployeeViewModel>
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager View - Employee Overview</title>
     <!-- Bootstrap 5 CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .content-header {
@@ -45,16 +49,40 @@
             text-align: center;
             margin-top: 30px;
         }
+
+        h2 {
+            margin-bottom: 25px;
+        }
+
+        .Highlighted a {
+            background-color: Green !important;
+            background-image: none !important;
+            color: White !important;
+            font-weight: bold !important;
+            font-size: 12pt;
+        }
+
+        #calendar-container {
+            width: 800px; /* Adjust the width as needed */
+            margin-left: 5px;
+        }
+
+        #calendar {
+            font-size: 0.8rem; /* Adjust font size for a smaller appearance */
+        }
     </style>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <body>
 
     <div class="container mt-5">
         <!-- Main content -->
         <div class="content-header">
             <h3>Manager Dashboard</h3>
-            <button class="btn btn-primary">Add New Employee</button>
         </div>
+
+        
+
 
         <!-- Employee Stats Section -->
         <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -62,8 +90,8 @@
             <div class="col">
                 <div class="card text-white bg-info">
                     <div class="card-body">
-                        <h5 class="card-title">Total Employees</h5>
-                        <p class="card-text">150</p>
+                        <h5 class="card-title">Gaurav Shukla</h5>
+                        <p class="card-text">AVP-Project Services</p>
                     </div>
                 </div>
             </div>
@@ -72,8 +100,8 @@
             <div class="col">
                 <div class="card text-white bg-warning">
                     <div class="card-body">
-                        <h5 class="card-title">Employees on Leave</h5>
-                        <p class="card-text">12</p>
+                        <h5 class="card-title">Total Employee</h5>
+                        <p class="card-text">@Model.Count</p>
                     </div>
                 </div>
             </div>
@@ -82,84 +110,148 @@
             <div class="col">
                 <div class="card text-white bg-success">
                     <div class="card-body">
-                        <h5 class="card-title">Employees Available</h5>
-                        <p class="card-text">138</p>
+                        <h5 class="card-title">Employees on Leave</h5>
+                        <p class="card-text">12</p>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Employee Section -->
-        <h4 class="mt-4">Employees </h4>
-        <div style="max-height: 300px; overflow-y: auto;">
+        <h4 class="mt-4">Employees</h4>
+        <div style="max-height: 300px; overflow-y: auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+            @if (Model != null && Model.Count > 0)
+            {
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <thead style="background-color: #0D6EFD; color: white;">
+                        <tr>
+                            <th style="padding: 10px; text-align: left;">S.No</th>
+                            <th style="padding: 10px; text-align: left;">Employee ID</th>
+                            <th style="padding: 10px; text-align: left;">Employee Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int serialNo = 1; // Initialize serial number counter
+                        }
+                        @foreach (var emp in Model)
+                        {
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <td style="padding: 10px; text-align: left;">@serialNo</td> <!-- Serial number column -->
+                                <td style="padding: 10px; text-align: left;">@emp.EmpId</td>
+                                <td style="padding: 10px; text-align: left;">@emp.FirstName @emp.LastName</td>
+                            </tr>
+                            serialNo++; // Increment the counter for the next row
+                        }
+
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p style="text-align: center; color: #555;">No employees found under this manager.</p>
+            }
+        </div>
+
+        <div class="container mt-4" id="calendar-container">
+            <h2>Leave Calendar</h2>
+            <div id="calendar"></div>
+        </div>
+
+
+        <!-- Employee Leave Details Section -->
+        <h4 class="mt-4">Employee Leave Details</h4>
+        <div style="max-height: 250px; overflow-y: auto;">
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Employee Name</th>
-                        <th>Project Name</th>
-
+                        <th>Total Leave Days</th>
+                        <th>Leave Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Employee Row Example -->
                     <tr>
-                        <td>1</td>
-                        <td>John</td>
-                        <td>--</td>
+                        <td>John Doe</td>
+                        <td>12</td>
+                        <td><span class="leave-status approved">Approved</span></td>
                     </tr>
                     <tr>
-                        <td>2</td>
                         <td>Jane Smith</td>
-                        <td>--</td>
+                        <td>15</td>
+                        <td><span class="leave-status pending">Pending</span></td>
                     </tr>
                     <tr>
-                        <td>3</td>
-                        <td>David Lee</td>                
-                        <td>--</td>
+                        <td>David Lee</td>
+                        <td>8</td>
+                        <td><span class="leave-status rejected">Rejected</span></td>
+                    </tr>
+                    <tr>
+                        <td>Alice Brown</td>
+                        <td>10</td>
+                        <td><span class="leave-status approved">Approved</span></td>
                     </tr>
                 </tbody>
             </table>
+        </div>
 
-        <!-- Employee Table Section -->
-        <h4 class="mt-4">Employee Leave Details</h4>
-        <div style="max-height: 250px; overflow-y: auto;">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Employee Name</th>
-                    <th>Total Leave Days</th>
-                    <th>Leave Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Employee Row Example -->
-                <tr>
-                    <td>John Doe</td>
-                    <td>12</td>
-                    <td><span class="leave-status approved">Approved</span></td>
-                </tr>
-                <tr>
-                    <td>Jane Smith</td>
-                    <td>15</td>
-                    <td><span class="leave-status pending">Pending</span></td>
-                </tr>
-                <tr>
-                    <td>David Lee</td>
-                    <td>8</td>
-                    <td><span class="leave-status rejected">Rejected</span></td>
-                </tr>
-                <tr>
-                    <td>Alice Brown</td>
-                    <td>10</td>
-                    <td><span class="leave-status approved">Approved</span></td>
-                </tr>
-                <tr>
-                    <td>Alice Brown</td>
-                    <td>10</td>
-                    <td><span class="leave-status approved">Approved</span></td>
-                </tr>
-            </tbody>
-        </table>
+    </div>
+
+    <!-- Birthday Modal -->
+    <div class="modal fade" id="birthdayModal" tabindex="-1" aria-labelledby="birthdayModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title" id="birthdayModalLabel" style="font-size: 2.5rem; font-weight: bold; color: #FF5733; text-align: center; animation: birthdayAnimation 2s infinite;">
+                        🎉 **Happy Birthday!** 🎉
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body text-center">
+                    <!-- Display the employee's name stored in TempData -->
+                    @if (TempData["EmployeeBirthday"] != null)
+                    {
+                        <p style="font-size: 1.2rem; font-weight: bold; color: #FF5733;">
+                            Wishing <span style="color: #007bff; font-size: 1.5rem;"><b>@TempData["EmployeeBirthday"].ToString().ToUpper()</b></span>
+                            a fantastic day filled with joy and celebration!!!! <br> 🎉🎂🎉
+                        </p>
+                        <p style="font-size: 1.1rem; color: #6c757d;">
+                            May this special day bring you endless happiness, love, and success. Enjoy every moment! 🌟
+                        </p>
+                    }
+                    else
+                    {
+                        <p style="font-size: 1.2rem; color: #6c757d;">
+                            Oops! No birthdays today, but let's keep the spirit alive! 🎉
+                        </p>
+                    }
+                </div>
+
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="font-size: 1.1rem;">Thank You!</button>
+                </div>
+
+            </div>
+        </div>
     </div>
 
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    window.onload = function() {
+            // Check if TempData contains birthday info
+            if ('@TempData["EmployeeBirthday"]' !== '') {
+                var birthdayModal = new bootstrap.Modal(document.getElementById('birthdayModal'));
+                birthdayModal.show();
+            }
+        }
+</script>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="~/customscripts/userpartialview.js"></script>
+<script src="~/lib/fullcalendar/dist/index.global.min.js"></script>
+<script src="~/lib/fullcalendar/dist/index.global.js"></script>

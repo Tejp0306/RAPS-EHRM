@@ -22,6 +22,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using static Logger.LoggerService;
+using EHRM.ServiceLayer.Dashboard;
+using EHRM.ServiceLayer.Calendar;
 
 namespace EHRM.Infrastructure.Configurations
 {
@@ -41,6 +43,9 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ISelfService, SelfService>();
             services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IdashboardService, Dashboardservice>();
+            services.AddScoped<ICalendarService, CalendarService>();
+
 
             //services.AddScoped<ISubMenuService, SubMenuService>();
             services.AddScoped<IHrService, HrService>();

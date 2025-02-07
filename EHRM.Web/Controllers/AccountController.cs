@@ -139,6 +139,50 @@ namespace EHRM.Web.Controllers
                         {
                             // Define possible date formats
                             string[] formats = {
+
+
+                                        "yyyy-MM-dd",
+
+                                        "dd/MM/yyyy",
+
+                                        "MM/dd/yyyy",
+
+                                        "yyyy/MM/dd",
+
+                                        "MM-dd-yyyy",
+
+                                        "dd-MMM-yyyy",         // Example: 31-Jan-2025
+
+                                        "dd MMM yyyy",         // Example: 31 Jan 2025
+
+                                        "MMMM dd, yyyy",       // Example: January 31, 2025
+
+                                        "dd-MMMM-yyyy",        // Example: 31-January-2025
+
+                                        "MMMM dd yyyy",        // Example: January 31 2025
+
+                                        "dd MMMM yyyy",        // Example: 31 January 2025
+
+                                        "yyyy-MM-dd HH:mm:ss",
+
+                                        "MM/dd/yyyy HH:mm:ss",
+
+                                        "yyyy/MM/dd HH:mm",
+
+                                        "yyyy.MM.dd",
+
+                                        "dd.MM.yyyy",
+
+                                        "yyyyMMdd",
+
+                                        "dd-MM-yy",
+
+                                        "HH:mm:ss",
+
+                                        "hh:mm tt",
+
+                                        "yyyy/MM/dd hh:mm tt"
+
     "yyyy-MM-dd",
     "dd/MM/yyyy",
     "MM/dd/yyyy",
@@ -160,6 +204,7 @@ namespace EHRM.Web.Controllers
     "HH:mm:ss",
     "hh:mm tt",
     "yyyy/MM/dd hh:mm tt"
+
 };
 
 
@@ -397,6 +442,11 @@ namespace EHRM.Web.Controllers
                     var jsonFoUserDetails = JsonConvert.SerializeObject(employee);
                     HttpContext.Session.SetString("GroupByUserDetails", jsonFoUserDetails);
                     HttpContext.Session.SetString("GroupedSubMenus", jsonString);
+                    Response.Cookies.Append("EmpId", employee.EmpId.ToString(), new CookieOptions
+                    { 
+                        Secure = true,   // Ensures the cookie is sent only over HTTPS
+                        Expires = DateTimeOffset.UtcNow.AddDays(7) // Sets an expiration date (7 days here)
+                    });
 
                     return RedirectToAction("Dashboard", "Dashboard");
                 }
@@ -501,7 +551,8 @@ namespace EHRM.Web.Controllers
                 var jsonFoUserDetailsFromSession = JsonConvert.SerializeObject(employees);
                 HttpContext.Session.SetString("GroupByUserDetails", jsonFoUserDetailsFromSession);
                 HttpContext.Session.SetString("GroupedSubMenus", jsonStringFromSession);
-
+                HttpContext.Session.SetString("EmpId", employees.EmpId.ToString());
+                
                 return RedirectToAction("Dashboard", "Dashboard");
             }
             catch (Exception ex)
