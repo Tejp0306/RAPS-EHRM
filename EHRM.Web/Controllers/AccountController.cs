@@ -22,6 +22,7 @@ using EHRM.ViewModel.EmployeeDeclaration;
 using EHRM.ViewModel.Models;
 using System.Text.Json.Nodes;
 using System.Text.Json;
+using System.Globalization;
 
 
 
@@ -125,6 +126,98 @@ namespace EHRM.Web.Controllers
                 }
 
                 await HandleSuccessfulLogin(employeeCred);
+
+                // Fetch employee details using the EmpId from EmployeesCred
+                if (employeeCred.EmpId.HasValue)
+                {
+                    var employeeDetails = await _context.EmployeeDetails.FirstOrDefaultAsync(e => e.EmpId == employeeCred.EmpId.Value);
+
+                    if (employeeDetails != null)
+                    {
+                        // Ensure DateOfBirth is not null or empty
+                        if (!string.IsNullOrEmpty(employeeDetails.DateOfBirth))
+                        {
+                            // Define possible date formats
+                            string[] formats = {
+
+                                        "yyyy-MM-dd",
+
+                                        "dd/MM/yyyy",
+
+                                        "MM/dd/yyyy",
+
+                                        "yyyy/MM/dd",
+
+                                        "MM-dd-yyyy",
+
+                                        "dd-MMM-yyyy",         // Example: 31-Jan-2025
+
+                                        "dd MMM yyyy",         // Example: 31 Jan 2025
+
+                                        "MMMM dd, yyyy",       // Example: January 31, 2025
+
+                                        "dd-MMMM-yyyy",        // Example: 31-January-2025
+
+                                        "MMMM dd yyyy",        // Example: January 31 2025
+
+                                        "dd MMMM yyyy",        // Example: 31 January 2025
+
+                                        "yyyy-MM-dd HH:mm:ss",
+
+                                        "MM/dd/yyyy HH:mm:ss",
+
+                                        "yyyy/MM/dd HH:mm",
+
+                                        "yyyy.MM.dd",
+
+                                        "dd.MM.yyyy",
+
+                                        "yyyyMMdd",
+
+                                        "dd-MM-yy",
+
+                                        "HH:mm:ss",
+
+                                        "hh:mm tt",
+
+                                        "yyyy/MM/dd hh:mm tt"
+
+};
+
+
+
+                            // Attempt to parse DateOfBirth using the specified formats
+                            var dob = DateTime.TryParseExact(employeeDetails.DateOfBirth, formats,
+                                CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
+
+                            // If parsing was successful
+                            if (dob)
+                            {
+                                // Get today's date (ignoring the year)
+                                var today = DateTime.Today;
+
+                                // Check if the day and month match today's date
+                                if (dateOfBirth.Day == today.Day && dateOfBirth.Month == today.Month)
+                                {
+                                    // Store employee's name in TempData to display in the modal or elsewhere
+                                    TempData["EmployeeBirthday"] = $"{employeeDetails.FirstName} {employeeDetails.LastName}";
+                                }
+                            }
+                            else
+                            {
+                                // If the date format is invalid, display an error message
+                                TempData["ToastType"] = "warning";
+                                TempData["ToastMessage"] = "The date of birth format is invalid.";
+                            }
+                        }
+                        else
+                        {
+                            // If DateOfBirth is null or empty
+                            TempData["ToastType"] = "warning";
+                            TempData["ToastMessage"] = "Date of birth is empty.";
+                        }
+                    }
+                }
 
                 // Skip JWT Token Generation here, handle in OTP section
                 // Instead, store the employee data for OTP verification
@@ -323,6 +416,11 @@ namespace EHRM.Web.Controllers
                     var jsonFoUserDetails = JsonConvert.SerializeObject(employee);
                     HttpContext.Session.SetString("GroupByUserDetails", jsonFoUserDetails);
                     HttpContext.Session.SetString("GroupedSubMenus", jsonString);
+                    Response.Cookies.Append("EmpId", employee.EmpId.ToString(), new CookieOptions
+                    { 
+                        Secure = true,   // Ensures the cookie is sent only over HTTPS
+                        Expires = DateTimeOffset.UtcNow.AddDays(7) // Sets an expiration date (7 days here)
+                    });
 
                     return RedirectToAction("Dashboard", "Dashboard");
                 }
@@ -427,7 +525,8 @@ namespace EHRM.Web.Controllers
                 var jsonFoUserDetailsFromSession = JsonConvert.SerializeObject(employees);
                 HttpContext.Session.SetString("GroupByUserDetails", jsonFoUserDetailsFromSession);
                 HttpContext.Session.SetString("GroupedSubMenus", jsonStringFromSession);
-
+                HttpContext.Session.SetString("EmpId", employees.EmpId.ToString());
+                
                 return RedirectToAction("Dashboard", "Dashboard");
             }
             catch (Exception ex)

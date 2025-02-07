@@ -1,5 +1,22 @@
-﻿@{
+﻿@using EHRM.ViewModel.Employee
+@model List<EmployeeViewModel>
+
+@{
     ViewData["Title"] = "DashBoard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int roleId = Convert.ToInt32(ViewData["RoleId"] ?? 0); // Safely retrieve RoleId
 }
-<partial name="_AdminPartialView" />
+
+@if (roleId == 4)
+{
+    <partial name="_ManagerPartialView" model="Model" />
+}
+else if (roleId == 1)
+{
+    <partial name="_AdminPartialView" model="Model" />
+}
+else
+{
+    <partial name="_UserPartialView" model="Model" /> <!-- Ensure consistency -->
+}
+

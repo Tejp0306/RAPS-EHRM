@@ -254,7 +254,7 @@ namespace EHRM.Web.Controllers
                     // Project the team list to a simplified JSON-friendly format
                     var roleList = role.Select(role => new
                     {
-                        id = role.Id, // Ensure Team class has an Id property
+                        id = role.RoleId, // Ensure Team class has an Id property
                         name = role.RoleName
                     }).ToList();
 

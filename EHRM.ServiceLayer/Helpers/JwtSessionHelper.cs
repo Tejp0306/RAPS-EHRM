@@ -18,6 +18,7 @@ namespace EHRM.ServiceLayer.Helpers
         {
             try
             {
+
                 // Validate input parameters
                 if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(userName))
                 {
