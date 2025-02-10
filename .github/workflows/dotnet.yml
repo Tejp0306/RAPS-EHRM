@@ -25,7 +25,9 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Stop EHRM Service
-      run: sudo systemctl stop EHRM-Web.service
+      run: |
+        whoami
+        sudo systemctl stop EHRM-Web.service
     - name: Publish
       run: sudo dotnet publish -c Release -o /var/www/EHRM/
     - name: Start EHRM Web Service
