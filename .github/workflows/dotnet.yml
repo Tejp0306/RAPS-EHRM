@@ -23,6 +23,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: whoami
     - name: Publish
-      run: dotnet publish -c Release -o ./Publish
+      run: sudo dotnet publish -c Release -o /var/www/EHRM/
