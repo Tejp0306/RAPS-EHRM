@@ -191,7 +191,7 @@ namespace EHRM.ServiceLayer.Master
             {
                 var newTeam = new Team
                 {
-                    TeamId = await CreateTeamId(),
+                    
                     Name = model.Name,
                     Description = model.Description,
                     IsActive = true,
@@ -220,25 +220,25 @@ namespace EHRM.ServiceLayer.Master
             }
         }
 
-        public async Task<int> CreateTeamId()
-        {
-            var teamRepository = _unitOfWork.GetRepository<Team>();
+        //public async Task<int> CreateTeamId()
+        //{
+        //    var teamRepository = _unitOfWork.GetRepository<Team>();
 
-            // Fetch all teams
-            var existingTeams = await teamRepository.GetAllAsync();
+        //    // Fetch all teams
+        //    var existingTeams = await teamRepository.GetAllAsync();
 
-            if (existingTeams == null || !existingTeams.Any())
-            {
-                // If no teams exist, return 1 as the first team ID
-                return 1;
-            }
+        //    if (existingTeams == null || !existingTeams.Any())
+        //    {
+        //        // If no teams exist, return 1 as the first team ID
+        //        return 1;
+        //    }
 
-            // Get the last team's ID
-            var lastTeam = existingTeams.OrderByDescending(t => t.Id).FirstOrDefault();
-            int newTeamId = lastTeam.Id + 1; // Increment the last ID for the new team ID
+        //    // Get the last team's ID
+        //    var lastTeam = existingTeams.OrderByDescending(t => t.Id).FirstOrDefault();
+        //    int newTeamId = lastTeam.Id + 1; // Increment the last ID for the new team ID
 
-            return newTeamId;
-        }
+        //    return newTeamId;
+        //}
 
 
         public async Task<Result> UpdateTeamAsync(int id, int updatedBy, TeamScreenViewModel model)
