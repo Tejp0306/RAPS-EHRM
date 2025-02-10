@@ -1,216 +1,118 @@
-﻿
+﻿@using EHRM.ViewModel.Employee
+@model List<EmployeeViewModel>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee & HR Management Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <style>
-        .container-fluid {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
-
-            .container-fluid .row .col-sm-6.col-xl-3 {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-                .container-fluid .row .col-sm-6.col-xl-3 > div {
-                    width: 100%;
-                    max-width: 300px; /* Define a max-width for uniformity */
-                    height: 90px; /* Set a fixed height */
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    padding: 1rem;
-                    background-color: #f8f9fa;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                }
-
-                    .container-fluid .row .col-sm-6.col-xl-3 > div i {
-                        font-size: 3rem;
-                        color: #007bff;
-                    }
-
-                    .container-fluid .row .col-sm-6.col-xl-3 > div p {
-                        margin-bottom: 0.5rem;
-                        font-size: 1rem;
-                        color: #6c757d;
-                    }
-
-                    .container-fluid .row .col-sm-6.col-xl-3 > div h6 {
-                        margin: 0;
-                        font-size: 1.5rem;
-                        font-weight: bold;
-                        color: #343a40;
-                    }
-
-
-
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <link href="/customstyle/AdminPartial.css" rel="stylesheet" />
 </head>
-
 <body>
-
     <div class="d-flex">
-
-        <!-- Main Content -->
         <div class="container-fluid p-4">
-            <div class="container-fluid pt-4 px-1">
-                <div class="row g-4">
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-line fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Employee</p>
-                                <h6 class="mb-0">$1234</h6>
-                            </div>
+            <div class="row g-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <i class="fa fa-chart-line"></i>
+                        <div class="ms-3">
+                            <p>Total Employees</p>
+                            <h5>@Model[0].EmployeeCount</h5>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">New Hires</p>
-                                <h6 class="mb-0">34</h6>
-                            </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <i class="fa fa-chart-bar"></i>
+                        <div class="ms-3">
+                            <p>New Hires</p>
+                            <h5>34</h5>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-area fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Employees on Leave</p>
-                                <h6 class="mb-0">234</h6>
-                            </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <i class="fa fa-chart-area"></i>
+                        <div class="ms-3">
+                            <p>Employees on Leave</p>
+                            <h5>234</h5>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Upcoming Birthdays</p>
-                                <h6 class="mb-0">34</h6>
-                            </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <i class="fa fa-chart-pie"></i>
+                        <div class="ms-3">
+                            <p>Upcoming Birthdays</p>
+                            <h5>34</h5>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h4 class="card-title">Birthday List</h4>
+
+                    <div style="max-height: 300px; overflow-y: auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                                <thead style="background-color: #0D6EFD; color: white;">
+                                    <tr>
+                                        <th style="padding: 10px; text-align: left;">S.No</th>
+                                        <th style="padding: 10px; text-align: left;">Name</th>
+                                        <th style="padding: 10px; text-align: left;">Date&Month</th>
+                                        <th style="padding: 10px; text-align: left;">Year</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int serialNo = 1;
+                                    } <!-- Initialize serial number counter -->
+                                    @foreach (var emp in Model)
+                                    {
+                                        
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <td style="padding: 10px; text-align: left;">@serialNo</td> <!-- Serial number column -->
+                                            <td style="padding: 10px; text-align: left;">@emp.FirstName @emp.LastName</td>
+                                            <td style="padding: 10px; text-align: left;">@Convert.ToDateTime(emp.DateOfBirth).ToString("dd-MMMM")</td> <!-- Day & Month -->
+                                            <td style="padding: 10px; text-align: left;">@Convert.ToDateTime(emp.DateOfBirth).ToString("yyyy")</td> <!-- Year -->
+                                        </tr>
+                                        serialNo++; // Increment the counter for the next row
+                                    }
 
 
-          
-
-            <!-- Birthday List Table -->
-            <div class="card-section" style="max-height: 200px; overflow-y: auto;">
-                <h3>Birthday List</h3>
-                <table class="table table-striped mt-3">
-                    <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Date & Month</th>
-                            <th>Year</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>1 feb</td>
-                            <td>2024</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>1 January</td>
-                            <td>2024</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Sam Wilson</td>
-                            <td>1 March</td>
-                            <td>2024</td>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p style="text-align: center; color: #555;">No employees found under this manager.</p>
+                        }
+                    </div>
+                </div>
             </div>
 
-            <!-- Employee List Table -->
-            <div class="card-section" style="max-height: 200px; overflow-y: auto;">
-                <h3>Employee List</h3>
-                <table class="table table-striped mt-3">
-                    <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Department</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>IT</td>
-                            <td>Active</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>HR</td>
-                            <td>Active</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Sam Wilson</td>
-                            <td>Finance</td>
-                            <td>On Leave</td>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="container mt-4" id="calendar-container">
+                <h2>Leave Calendar</h2>
+                <div id="calendar"></div>
             </div>
 
-            <!-- Attendance & Leave Management Section -->
-            <div class="row card-section">
-                <div class="col-md-6">
-                    <div class="card p-4">
-                        <div class="card-body1">
+            <div class="performance-section mt-4">
+                <div class="col-md-5">
+                    <div class="card">
+                        <div class="card-body">
                             <h5>Employee Attendance</h5>
                             <p>View and update employee attendance records.</p>
                             <button class="btn btn-primary">Update Attendance</button>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card p-4">
-                        <div class="card-body1">
+                <div class="col-md-5">
+                    <div class="card">
+                        <div class="card-body">
                             <h5>Leave Requests</h5>
                             <p>Approve or reject leave requests.</p>
                             <button class="btn btn-warning">Manage Leaves</button>
@@ -218,67 +120,99 @@
                     </div>
                 </div>
             </div>
-            <!-- Leave Records Table -->
-            <div class="card-section" style="max-height: 200px; overflow-y: auto;">
-                <h3>Leave Records</h3>
-                <table class="table table-striped mt-3">
-                    <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Leave Start Date</th>
-                            <th>Leave End Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>10 Jan 2024</td>
-                            <td>15 Jan 2024</td>
-                            <td>Approved</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>20 Feb 2024</td>
-                            <td>22 Feb 2024</td>
-                            <td>Pending</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Sam Wilson</td>
-                            <td>5 Mar 2024</td>
-                            <td>10 Mar 2024</td>
-                            <td>Approved</td>
-                        </tr>
-                        <tr>
-                            <td>-</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                            <td>--</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Performance Section -->
-            <div class="card-section">
-                <h3>Performance</h3>
-                <div class="card p-4">
-                    <div class="card-body1">
-                        <h5>Performance Appraisal</h5>
-                        <p>Track and manage employee performance reviews.</p>
-                        <button class="btn btn-info">Manage Performance</button>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h4 class="card-title">Leave Records</h4>
+                    <div class="table-container">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Leave Start Date</th>
+                                    <th>Leave End Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1</td><td>John Doe</td><td>10 Jan 2024</td><td>15 Jan 2024</td><td>Approved</td></tr>
+                                <tr><td>2</td><td>Jane Smith</td><td>20 Feb 2024</td><td>22 Feb 2024</td><td>Pending</td></tr>
+                                <tr><td>3</td><td>Sam Wilson</td><td>5 Mar 2024</td><td>10 Mar 2024</td><td>Approved</td></tr>
+                            </tbody>
+                        </table>
                     </div>
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h4 class="card-title">Performance</h4>
+                    <p>Track and manage employee performance reviews.</p>
+                    <button class="btn btn-info">Manage Performance</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
 </body>
 
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+
+<script src="~/customscripts/userpartialview.js"></script>
+<script src="~/lib/fullcalendar/dist/index.global.min.js"></script>
+<script src="~/lib/fullcalendar/dist/index.global.js"></script>
+
+    <!-- Birthday Modal -->
+    <div class="modal fade" id="birthdayModal" tabindex="-1" aria-labelledby="birthdayModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center" style="display: flex; align-items: center; justify-content: center; padding: 0;">
+                    <h5 class="modal-title" id="birthdayModalLabel" style="font-size: 2.5rem; font-weight: bold; color: #FF5733; text-align: center; animation: birthdayAnimation 2s infinite;">
+                        **Happy Birthday!** <br> 🎉🎉
+                    </h5>
+                </div>
+
+                <div class="modal-body text-center">
+                    <!-- Display the employee's name stored in TempData -->
+                    @if (TempData["EmployeeBirthday"] != null)
+                    {
+                        <p style="font-size: 1.2rem; font-weight: bold; color: #FF5733;">
+                            Wishing <span style="color: #007bff; font-size: 1.5rem;"><b>@TempData["EmployeeBirthday"].ToString().ToUpper()</b></span>
+                            a fantastic day filled with joy and celebration!!!! <br> 🎉🎂🎉
+                        </p>
+                        <p style="font-size: 1.1rem; color: #6c757d;">
+                            May this special day bring you endless happiness, love, and success. Enjoy every moment! 🌟
+                        </p>
+                    }
+                    else
+                    {
+                        <p style="font-size: 1.2rem; color: #6c757d;">
+                            Oops! No birthdays today, but let's keep the spirit alive! 🎉
+                        </p>
+                    }
+                </div>
+
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="font-size: 1.1rem;">Thank You!</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+<link href="~/customstyle/admindashboard.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    window.onload = function() {
+            // Check if TempData contains birthday info
+            if ('@TempData["EmployeeBirthday"]' !== '') {
+                var birthdayModal = new bootstrap.Modal(document.getElementById('birthdayModal'));
+                birthdayModal.show();
+            }
+        }
+</script>
 

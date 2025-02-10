@@ -18,14 +18,14 @@ namespace EHRM.DAL.Repositories
         public GenericRepository(EhrmContext context)
         {
             _context = context;
-        }
+            }
 
     
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
           
-            }
+        }
 
         public async Task<T> GetByIdAsync(int id)
         {
@@ -60,6 +60,73 @@ namespace EHRM.DAL.Repositories
         {
             return await _context.Set<EmployeeDetail>().Where(x => x.TeamId == TeamId).ToListAsync();
         }
+
+
+
+        public async Task<List<EmployeesDeclaration>> GetByDeclarationEmpIdDOB(int EmpId, DateTime DOB)
+        {
+            return await _context.Set<EmployeesDeclaration>().Where(x => x.EmpId == EmpId && x.DateOfBirth == DOB).ToListAsync();
+        }
+
+        public async Task<List<EmployeeDetail>> GetByEmpIdDOB(int EmpId, String DOB)
+        {
+            return await _context.Set<EmployeeDetail>().Where(x => x.EmpId == EmpId && x.DateOfBirth==DOB).ToListAsync();
+        }
+
+        // saksham changes
+        public async Task<List<EmployeeDetail>> GetEmployeeDetailsByIdAsync(int? EmpId)
+        {
+            return await _context.Set<EmployeeDetail>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+
+
+        //Get Emplyees details from employee cred table using empid
+        public async Task<List<EmployeesCred>> GetEmployeeCredByIdAsync(int EmpId)
+        {
+            return await _context.Set<EmployeesCred>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+
+        //Get Employees password and email from employee cred based on email
+
+        public async Task<List<EmployeesCred>> GetEmployeeEmailPasswordByEmailAsync(string email)
+        {
+            return await _context.Set<EmployeesCred>()
+                .Where(e => e.Email.ToLower() == email.ToLower())
+                .Select(e => new EmployeesCred
+                {
+                    Email = e.Email,
+                    TempPassword = e.TempPassword,
+                    FirstName = e.FirstName
+                })
+                .ToListAsync();
+        }
+
+
+        public async Task<List<Qualification>> GetQualificationDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<Qualification>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+        public async Task<List<EmployementTypeDetail>> GetEmployementTypeDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<EmployementTypeDetail>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+        public async Task<List<Salary>> GetSalaryDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<Salary>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+
+        public async Task<List<EmployementTypeDetail>> FindByIdAsync(int ManagerId)
+        {
+            // Using asynchronous LINQ to filter based on ManagerId
+            return await _context.Set<EmployementTypeDetail>()
+                .Where(x => x.ManagerId == ManagerId)
+                .ToListAsync();
+        }
+        public async Task<List<Declaration>> GetDeclarationDetailsByIdAsync(int EmpId)
+        {
+            return await _context.Set<Declaration>().Where(x => x.EmpId == EmpId).ToListAsync();
+        }
+
     }
 
 

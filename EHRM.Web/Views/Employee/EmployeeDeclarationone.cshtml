@@ -1,0 +1,387 @@
+﻿@using EHRM.ViewModel.EmployeeDeclaration
+@model EmployeeDeclarationViewModel
+@{
+    ViewData["Title"] = "EmployeeDeclarationone";
+
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .page-heading {
+        color: #007bff;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 5px;
+        font-family: Arial, sans-serif;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<h3 class="page-heading">Employee Declaration Form</h3>
+<div class="container mt-4">
+    <div class="card shadow-lg p-5">
+        <form asp-controller="Employee" asp-action="SaveDeclaration" method="post">
+            <!-- Employee Information -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-user-circle"></i> Employee Information
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="employeeCode" class="form-label font-weight-bold">Employee Code :</label>
+                    <input asp-for="EmpId" class="form-control" name="EmpId" value="@Model.EmpId" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="employeeName" class="form-label font-weight-bold">Name :</label>
+                    <input asp-for="EmployeeName" class="form-control" id="employeeName" name="employeeName" value="@Model.EmployeeName" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="designation" class="form-label font-weight-bold">Designation :</label>
+                    <input asp-for="Designation" class="form-control" id="designation" name="designation" value="@Model.Designation">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="bandLevel" class="form-label font-weight-bold">Band Level/Level of Employment :</label>
+                    <input asp-for="BandLevel" class="form-control" id="bandLevel" name="bandLevel" value="@Model.BandLevel">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="DateOfJoining" class="form-label">Joining Date :</label>
+                    <input asp-for="DateOfJoining" type="text" class="form-control" id="DateOfJoining" name="DateOfJoining" data-start-day='1' data-picker-type='date' placeholder="Select Probation Date" value="@Model.DateOfJoining" readonly>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="probationStatus" class="form-label font-weight-bold">Probation / Confirmation Status :</label>
+                    <input asp-for="ProbationStatus" class="form-control" id="probationStatus" name="probationStatus" value="@Model.ProbationStatus">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="ProbationDate">Probation Date</label>
+                    <input asp-for="ProbationDate" type="text" class="form-control" name="ProbationDate" id="ProbationDate" data-start-day='1' data-picker-type='date' placeholder="Select Probation Date" value="@Model.ProbationDate" readonly />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="location" class="form-label font-weight-bold">Location :</label>
+                    <input asp-for="Location" class="form-control" id="location" name="location" value="@Model.Location">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="function" class="form-label font-weight-bold">Function / Project / Department :</label>
+                    <input asp-for="Project" class="form-control" id="function" name="function" value="@Model.Project">
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-user"></i> Personal Information
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="bloodGroup" class="form-label">Blood Group :</label>
+                    <input asp-for="BloodGroup" class="form-control" id="bloodGroup" name="bloodGroup" value="@Model.BloodGroup">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="DateOfBirth">D.O.B</label>
+                    <input asp-for="DateOfBirth" type="text" class="form-control" name="DateOfBirth" id="DateOfBirth" data-start-day='1' data-picker-type='date' placeholder="Select Date Of Birth" value="@Model.DateOfBirth" readonly />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="age" class="form-label font-weight-bold">Age (Years) :</label>
+                    <input asp-for="Age" class="form-control" id="age" name="age" value="@Model.Age">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="gender" class="form-label font-weight-bold">Gender :</label>
+                    <input asp-for="Gender" class="form-control" id="gender" name="gender" value="@Model.Gender">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="spouseName" class="form-label">Spouse/Father/Mother Name :</label>
+                    <input asp-for="SpouseFatherMotherName" class="form-control" id="spouseName" name="spouseName" value="@Model.SpouseFatherMotherName">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="relationWithSpouse" class="form-label">Relation with Employee :</label>
+                    <input asp-for="RelationWithSpouse" class="form-control" id="relationWithSpouse" name="relationWithSpouse" value="@Model.RelationWithSpouse">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="SpouseFatherDateOfBirth">Spouse / Father D.O.B</label>
+                    <input asp-for="SpouseFatherDateOfBirth" type="text" class="form-control" name="SpouseFatherDateOfBirth" id="SpouseFatherDateOfBirth" data-start-day='1' data-picker-type='date' placeholder="Select Date" value="@Model.SpouseFatherDateOfBirth" readonly />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="maritalStatus" class="form-label font-weight-bold">Marital Status :</label>
+                    <input asp-for="MaritalStatus" class="form-control" id="maritalStatus" name="maritalStatus" value="@Model.MaritalStatus">
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-phone-alt"></i> Contact Information
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="officialContact" class="form-label font-weight-bold">Official Contact No :</label>
+                    <input asp-for="OfficialContact" class="form-control" id="officialContact" name="officialContact" value="@Model.OfficialContact">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="personalContact" class="form-label font-weight-bold">Personal Contact No :</label>
+                    <input asp-for="PersonalContact" class="form-control" id="personalContact" name="personalContact" value="@Model.PersonalContact">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="officialEmail" class="form-label font-weight-bold">Official Email Id :</label>
+                    <input asp-for="OfficialEmail" class="form-control" id="officialEmail" name="officialEmail" value="@Model.OfficialEmail">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="personalEmail" class="form-label font-weight-bold">Personal Email Id :</label>
+                    <input asp-for="PersonalEmail" class="form-control" id="personalEmail" name="personalEmail" value="@Model.PersonalEmail">
+                </div>
+            </div>
+
+            <!-- Work Experience -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-briefcase"></i> Work Experience
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="tenureInRaps" class="form-label font-weight-bold">Tenure in RAPS (Years) :</label>
+                    <input asp-for="TenureInRAPS" class="form-control" id="tenureInRaps" name="tenureInRaps" value="@Model.TenureInRAPS">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="yearsInRaps" class="form-label font-weight-bold">Years in RAPS :</label>
+                    <input asp-for="YearsInRAPS" class="form-control" id="yearsInRaps" name="yearsInRaps" value="@Model.YearsInRAPS">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="priorWorkExperience" class="form-label font-weight-bold">Prior Work Experience (Years) :</label>
+                    <input asp-for="PriorWorkExperience" class="form-control" id="priorWorkExperience" name="priorWorkExperience" value="@Model.PriorWorkExperience">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="totalWorkExperience" class="form-label font-weight-bold">Total Work Experience In Years :</label>
+                    <input asp-for="TotalWorkExperience" class="form-control" id="totalWorkExperience" name="totalWorkExperience" value="@Model.TotalWorkExperience">
+                </div>
+            </div>
+
+            <!-- Previous Work Experience -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-briefcase"></i> Previous Work Experience
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="firstOrganisation" class="form-label">First Organisation Name :</label>
+                    <input asp-for="FirstOrganisation" class="form-control" id="firstOrganisation" name="firstOrganisation" value="@Model.FirstOrganisation">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="firstOrganisationExperience" class="form-label">Years of Experience in First Organisation :</label>
+                    <input asp-for="FirstOrganisationExperience" class="form-control" id="firstOrganisationExperience" name="firstOrganisationExperience" value="@Model.FirstOrganisationExperience">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="secondOrganisation" class="form-label">Second Organisation Name :</label>
+                    <input asp-for="SecondOrganisation" class="form-control" id="secondOrganisation" name="secondOrganisation" value="@Model.SecondOrganisation">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="secondOrganisationExperience" class="form-label">Years of Experience in Second Organisation :</label>
+                    <input asp-for="SecondOrganisationExperience" class="form-control" id="secondOrganisationExperience" name="secondOrganisationExperience" value="@Model.SecondOrganisationExperience">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="ThirdOrganisation" class="form-label">Third Organisation Name :</label>
+                    <input asp-for="ThirdOrganisation" class="form-control" id="secondOrganisation" name="secondOrganisation" value="@Model.ThirdOrganisation">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="secondOrganisationExperience" class="form-label">Years of Experience in Third Organisation :</label>
+                    <input asp-for="ThirdOrganisationExperience" class="form-control" id="ThirdOrganisationExperience" name="ThirdOrganisationExperience" value="@Model.ThirdOrganisationExperience">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="FourthOrganisation" class="form-label">Fourth Organisation Name :</label>
+                    <input asp-for="FourthOrganisation" class="form-control" id="FourthOrganisation" name="FourthOrganisation" value="@Model.FourthOrganisation">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="FourthOrganisationExperience" class="form-label">Years of Experience in Fourth Organisation :</label>
+                    <input asp-for="FourthOrganisationExperience" class="form-control" id="FourthOrganisationExperience" name="FourthOrganisationExperience" value="@Model.FourthOrganisationExperience">
+                </div>
+            </div>
+
+            <!-- Dependent Details -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-users"></i> Dependent Details
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="dependent1Name" class="form-label">Dependent-1 Name :</label>
+                    <input asp-for="Dependent1Name" class="form-control" id="dependent1Name" name="dependent1Name" value="@Model.Dependent1Name">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="dependent1Relationship" class="form-label">Relationship :</label>
+                    <input asp-for="Dependent1Relationship" class="form-control" id="dependent1Relationship" name="dependent1Relationship" value="@Model.Dependent1Relationship">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="Dependent1Dob">Dependent D.O.B</label>
+                    <input asp-for="Dependent1Dob" type="text" class="form-control" name="Dependent1Dob" id="Dependent1Dob" data-start-day='1' data-picker-type='date' placeholder="Select Dependent Date" value="@Model.Dependent1Dob" readonly />
+                </div>
+            </div>
+
+
+            <!-- Emergency Contact -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-phone-square-alt"></i> Emergency Contacts
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="emergencyName1" class="form-label">Emergency Name 1 :</label>
+                    <input asp-for="EmergencyName1" class="form-control" id="emergencyName1" name="emergencyName1" value="@Model.EmergencyName1">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="emergencyContact1" class="form-label">Emergency Contact Number 1 :</label>
+                    <input asp-for="EmergencyContact1" class="form-control" id="emergencyContact1" name="emergencyContact1" value="@Model.EmergencyContact1">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="emergencyRelationship1" class="form-label">Relationship 1 :</label>
+                    <input asp-for="EmergencyRelationship1" class="form-control" id="emergencyRelationship1" name="emergencyRelationship1" value="@Model.EmergencyRelationship1">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="emergencyName2" class="form-label">Emergency Name 2 :</label>
+                    <input asp-for="EmergencyName2" class="form-control" id="emergencyName2" name="emergencyName2" value="@Model.EmergencyName2">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="emergencyContact2" class="form-label">Emergency Contact Number 2 :</label>
+                    <input asp-for="EmergencyContact2" class="form-control" id="emergencyContact2" name="emergencyContact2" value="@Model.EmergencyContact2">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="emergencyRelationship2" class="form-label">Relationship 2 :</label>
+                    <input asp-for="EmergencyRelationship2" class="form-control" id="emergencyRelationship2" name="emergencyRelationship2" value="@Model.EmergencyRelationship2">
+                </div>
+            </div>
+
+            <!-- Educational Details -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-graduation-cap"></i> Educational Details
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="xthInstitution" class="form-label">Xth Institution :</label>
+                    <input asp-for="XthInstitution" class="form-control" id="xthInstitution" name="xthInstitution" value="@Model.XthInstitution">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="xthPassingYear" class="form-label">Xth Passing Year :</label>
+                    <input asp-for="XthPassingYear" class="form-control" id="xthPassingYear" name="xthPassingYear" value="@Model.XthPassingYear">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="xiithInstitution" class="form-label">XIIth Institution :</label>
+                    <input asp-for="XiithInstitution" class="form-control" id="xiithInstitution" name="xiithInstitution" value="@Model.XiithInstitution">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="xiithPassingYear" class="form-label">XIIth Passing Year :</label>
+                    <input asp-for="XiithPassingYear" class="form-control" id="xiithPassingYear" name="xiithPassingYear" value="@Model.XiithPassingYear">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="bachelorInstitution" class="form-label">Bachelor(s) Institution :</label>
+                    <input asp-for="BachelorInstitution" class="form-control" id="bachelorInstitution" name="bachelorInstitution" value="@Model.BachelorInstitution">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="bachelorCompleteYear" class="form-label">Bachelor(s) Complete Degrees Year :</label>
+                    <input asp-for="BachelorCompleteYear" class="form-control" id="bachelorCompleteYear" name="bachelorCompleteYear" value="@Model.BachelorCompleteYear">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="bachelorDegrees" class="form-label">Bachelor(s) Degrees :</label>
+                    <input asp-for="BachelorDegrees" class="form-control" id="bachelorDegrees" name="bachelorDegrees" value="@Model.BachelorDegrees">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="masterInstitution" class="form-label">Master(s) Institution :</label>
+                    <input asp-for="MasterInstitution" class="form-control" id="masterInstitution" name="masterInstitution" value="@Model.MasterInstitution">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="masterCompleteYear" class="form-label">Master(s) Complete Year :</label>
+                    <input asp-for="MasterCompleteYear" class="form-control" id="masterCompleteYear" name="masterCompleteYear" value="@Model.MasterCompleteYear">
+                </div>
+            </div>
+
+            <!-- Financial and Identification Details -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-id-card"></i> Financial and Identification Details
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="fatherHusbandName" class="form-label">Father/Husband Name :</label>
+                    <input asp-for="FatherHusbandName" class="form-control" id="fatherHusbandName" name="fatherHusbandName" value="@Model.FatherHusbandName">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="uanNo" class="form-label">UAN No :</label>
+                    <input asp-for="UanNo" class="form-control" id="uanNo" name="uanNo" value="@Model.UanNo">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="adharNo" class="form-label">Adhar No :</label>
+                    <input asp-for="AdharNo" class="form-control" id="adharNo" name="adharNo" value="@Model.AdharNo">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="panCardNo" class="form-label">Pan Card No :</label>
+                    <input asp-for="PanCardNo" class="form-control" id="panCardNo" name="panCardNo" value="@Model.PanCardNo">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="bankName" class="form-label">Bank Name :</label>
+                    <input asp-for="BankName" class="form-control" id="bankName" name="bankName" value="@Model.BankName">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="accountNumber" class="form-label">Account Number :</label>
+                    <input asp-for="AccountNumber" class="form-control" id="accountNumber" name="accountNumber" value="@Model.AccountNumber">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="ifscCode" class="form-label">IFSC Code :</label>
+                    <input asp-for="IfscCode" class="form-control" id="ifscCode" name="ifscCode" value="@Model.IfscCode">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="permanentAddress" class="form-label">Permanent Address :</label>
+                    <input asp-for="PermanentAddress" class="form-control" id="permanentAddress" name="permanentAddress" value="@Model.PermanentAddress">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="postalAddress" class="form-label">Postal Address :</label>
+                    <input asp-for="PostalAddress" class="form-control" id="postalAddress" name="postalAddress" value="@Model.PostalAddress">
+                </div>
+            </div>
+
+            <!-- CTC and Filing Information -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-money-check-alt"></i> CTC and Filing Information
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="ctc" class="form-label">CTC Per annum on DOJ :</label>
+                    <input asp-for="Ctc" class="form-control" id="ctc" name="ctc" value="@Model.Ctc">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="filingPerson" class="form-label">Filing Person/Updated by :</label>
+                    <input asp-for="FilingPerson" class="form-control" id="filingPerson" name="filingPerson" value="@Model.FilingPerson">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="filingRecheck" class="form-label">Filing Recheck :</label>
+                    <input asp-for="FilingRecheck" class="form-control" id="filingRecheck" name="filingRecheck" value="@Model.FilingRecheck">
+                </div>
+            </div>
+
+            <!-- Exit Information -->
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-sign-out-alt"></i> Exit Information
+            </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="ResignationDate" class="form-label">Resignation Date/Termination :</label>
+                    <input asp-for="ResignationDate" type="text" class="form-control" id="ResignationDate" name="ResignationDate" data-start-day='1' data-picker-type='date' placeholder="Select Resignation Date" value="@Model.ResignationDate">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="ExitDate" class="form-label">Date of Exit :</label>
+                    <input asp-for="ExitDate" type="text" class="form-control" id="ExitDate" name="ExitDate" data-start-day='1' data-picker-type='date' placeholder="Select Exit Date" value="@Model.ExitDate">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="reasonForLeaving" class="form-label">Reason for Leaving :</label>
+                    <input asp-for="ReasonForLeaving" class="form-control" id="reasonForLeaving" name="reasonForLeaving" value="@Model.ReasonForLeaving">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Add jQuery and Bootstrap Datepicker -->
+<script>
+
+    $(function() {
+        $('#DateOfBirth').val(moment($('#DateOfBirth').val()).format('DD-MM-YYYY'));
+        $('#DateOfJoining').val(moment($('#DateOfJoining').val()).format('DD-MM-YYYY'));
+        $('#ProbationDate').val(moment($('#ProbationDate').val()).format('DD-MM-YYYY'));
+        $('#SpouseFatherDateOfBirth').val(moment($('#SpouseFatherDateOfBirth').val()).format('DD-MM-YYYY'));
+        $('#Dependent1Dob').val(moment($('#Dependent1Dob').val()).format('DD-MM-YYYY'));
+    });
+
+</script>
+
+

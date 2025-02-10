@@ -29,5 +29,7 @@ public partial class EmployeesCred
 
     public int? LockoutDuration { get; set; }
 
+    public string? LoginId { get; set; }
+
     public virtual EmployeeDetail? Emp { get; set; }
 }

@@ -5,52 +5,55 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-
-<style>
-    .card {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-custom {
-        background-color: #007bff;
-        color: white;
-        border: none;
-    }
-
-        .btn-custom:hover {
-            background-color: #0056b3;
-        }
-</style>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <link href="~/customstyle/style.css" rel="stylesheet" />
 <script src="~/customscripts/teamscreen.js"></script>
 @* <link href="~/customstyle/teamscreen.css" rel="stylesheet" /> *@
 
-<div class="container mt-4">
-    <div class="form-container">
-        <h4>Team</h4>
-        <div class="card-p-4">
-            <form asp-controller="Master" asp-action="SaveTeam" method="post">
-                <input type="hidden" id="teamScreenID" name="id" />
-                <!-- Team Name -->
-                <div class="mb-3">
-                    <label for="TeamName" class="form-label">Team Name * :</label>
-                    <input asp-for="Name" name="Name" class="form-control" placeholder="Enter team name" required>
-                </div>
+<div class="container mt-1">
+    @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // Call the showToast function directly with TempData values
+                showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+            });
+        </script>
+    }
+    <h3 class="page-heading">Team</h3>
+    <div class="card p-4">
+        <form asp-controller="Master" asp-action="SaveTeam" method="post">
+            <input type="hidden" id="teamScreenID" name="id" />
 
-                <!-- Team Description -->
-                <div class="mb-3">
-                    <label for="Description" class="form-label">Team Description * :</label>
-                    <textarea asp-for="Description" name="Description" class="form-control" placeholder="Enter team description" required></textarea>
-                </div>
+            <!-- Exclamation icon button aligned to the top right corner -->
+            <button type="button" class="btn btn-link exclamation-btn" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
+                    title="Team Name: E.g., 'Managed Team'. <br> Team Description: E.g., 'Responsible for creating and maintaining the company's software products.'"
+                    style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                <i class="bi bi-exclamation-circle" style="font-size: 20px;"></i>
+            </button>
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-custom">ADD</button>
-            </form>
-        </div>
+            <!-- Team Name -->
+            <div class="mb-3">
+                <label for="TeamName" class="form-label">Team Name <span class="text-danger">*</span>:</label>
+                <div class="input-group">
+                <input asp-for="Name" id="TeamName" name="Name" class="form-control" placeholder="Enter team name" required />
+            </div>
+            </div>
+
+            <!-- Team Description -->
+            <div class="mb-3">
+                <label for="Description" class="form-label">Team Description <span class="text-danger">*</span>:</label>
+                <div class="input-group">
+                <textarea asp-for="Description" id="Description" name="Description" class="form-control" placeholder="Enter team description" required></textarea>
+            </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
     </div>
+
+
 
 
     <div class="container">
@@ -80,12 +83,29 @@
 
 
 </div>
+<!-- Initialize Bootstrap Tooltip -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
 
-
-    
-
-    <!-- Team Table -->
-
+        // Apply custom tooltip styles using JavaScript after page load
+        var style = document.createElement('style');
+        style.innerHTML = `
+            .tooltip-inner {
+                background-color: #007bff !important;
+                color: white !important;
+                border-radius: 5px !important;
+            }
+            .tooltip-arrow {
+                border-top-color: #007bff !important;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
 
 
 

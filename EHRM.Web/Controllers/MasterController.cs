@@ -174,13 +174,12 @@ namespace EHRM.Web.Controllers
                 try
                 {
                     // Get the current user ID (if using session or logged-in user info)
-                    int createdBy = 1; // Replace this with the actual logic for fetching current user's ID
+                    int createdBy = 1; // Replace with the actual logic to fetch the current user's ID
                     // For example: var createdBy = _userService.GetCurrentUserId();
                     var filepath = "";
-                    if (model.File!=null)
+                    if (model.File != null)
                     {
-
-                         filepath = Upload(model);
+                        filepath = Upload(model); // Assume Upload is a method that handles file uploads
                     }
                     // Call the service method to create the notice in the database
                     var result = await _master.CreateAddNoticeBoardAsync(model, createdBy, filepath);
@@ -188,20 +187,26 @@ namespace EHRM.Web.Controllers
                     // Check if the result indicates a successful creation
                     if (result.Success)
                     {
-                        TempData["SuccessMessage"] = result.Message; // Store success message to show after redirection
-                        return RedirectToAction("AddNoticeBoard"); // Redirect to a list page or a page displaying notices
+                        // Success: Store success message and toast
+                        TempData["ToastType"] = "success"; // Success toast type
+                        TempData["ToastMessage"] = "Record has been created"; // Success message
+                        return RedirectToAction("AddNoticeBoard"); // Redirect to the list of notices
                     }
                     else
                     {
-                        // If creation failed, add error message to TempData or ViewBag
-                        TempData["ErrorMessage"] = result.Message;
+                        // Error: Store error message and toast
+                        TempData["ToastType"] = "danger"; // Error toast type
+                        TempData["ToastMessage"] = "An error occurred while creating the record."; // Error message
+                        return RedirectToAction("AddNoticeBoard"); // Return to the same page
                     }
 
                 }
                 catch (Exception ex)
                 {
                     // Handle unexpected errors
-                    TempData["ErrorMessage"] = $"Error creating notice: {ex.Message}";
+                    TempData["ToastType"] = "danger"; // Error toast type
+                    TempData["ToastMessage"] = $"Error creating notice: {ex.Message}"; // Error message
+                    return RedirectToAction("AddNoticeBoard"); // Return to the same page
                 }
                 return View(model);
             }
@@ -215,18 +220,24 @@ namespace EHRM.Web.Controllers
                     var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
                     if (updateResponse?.success == true)
                     {
-                        TempData["SuccessMessage"] = updateResponse?.message; // Store success message
-                        return RedirectToAction("AddNoticeBoard"); // Redirect to the list of roles
+                        // Success: Store success message and toast
+                        TempData["ToastType"] = "success"; // Success toast type
+                        TempData["ToastMessage"] = "Record has been updated"; // Success message
+                        return RedirectToAction("AddNoticeBoard"); // Redirect to the list of notices
                     }
                     else
                     {
-                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
+                        // Error: Store error message and toast
+                        TempData["ToastType"] = "danger"; // Error toast type
+                        TempData["ToastMessage"] = "An error occurred while updating the record."; // Error message
                         return View(model); // Return to the same view with the provided model
                     }
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = "Unexpected error occurred during Notice update."; // Display generic error
+                    // Unexpected error: Display generic error message
+                    TempData["ToastType"] = "danger"; // Error toast type
+                    TempData["ToastMessage"] = "Unexpected error occurred during notice update."; // Error message
                     return View(model); // Return to the same view with the provided model
                 }
             }
@@ -481,7 +492,7 @@ namespace EHRM.Web.Controllers
                 {
                     TempData["ToastType"] = "success";
                     TempData["ToastMessage"] = "Holiday Deleted Successfully"; // Store success message
-                    return RedirectToAction("addholiday");
+                    return Json(new { Success = true, Message = "Holiday deleted !" });
                 }
                 else
                 {
@@ -564,7 +575,7 @@ namespace EHRM.Web.Controllers
                     // Project the team list to a simplified JSON-friendly format
                     var teamList = teams.Select(team => new
                     {
-                        id = team.Id, // Ensure Team class has an Id property
+                        id = team.TeamId, // Ensure Team class has an Id property
                         name = team.Name // Ensure Team class has a Name property
                     }).ToList();
 
@@ -684,33 +695,41 @@ namespace EHRM.Web.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> SaveTeam(TeamScreenViewModel  model)
-        {  // Check if the role exists based on the model ID
+        public async Task<IActionResult> SaveTeam(TeamScreenViewModel model)
+        {
+            // Check if the role exists based on the model ID
             if (model.Id > 0)
             {
                 
                 // Update the role details
                 int updatedBy = 1; // Replace with actual logic to fetch the current user ID
-                var Result = await UpdateTeamDetails(model.Id, updatedBy, model);
+                var result = await UpdateTeamDetails(model.Id, updatedBy, model);
 
-                if (Result != null)
+                if (result != null)
                 {
-                    var updateResponse = Result as dynamic; // Assuming it's returning an anonymous type
+                    var updateResponse = result as dynamic; // Assuming it's returning an anonymous type
                     if (updateResponse?.success == true)
                     {
-                        TempData["SuccessMessage"] = updateResponse?.message; // Store success message
-                        return RedirectToAction("TeamScreen"); // Redirect to the list of roles
+                        // Success: Update message and redirect
+
+                        TempData["ToastType"] = "success"; // Store success message
+                        TempData["ToastMessage"] = "Record has been updated ";
+                        return RedirectToAction("TeamScreen"); // Redirect to the list of role
                     }
                     else
                     {
-                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
-                        return View(model); // Return to the same view with the provided model
+                        // Error: Update error message and return to the view
+                        TempData["ToastType"] = "danger"; // Store error message
+                        TempData["ToastMessage"] = "An error occurred while updating the record."; ; // Store error message
+                        return RedirectToAction("TeamScreen"); // Return to the same view with the provided model
                     }
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = "Unexpected error occurred during role update."; // Display generic error
-                    return View(model); // Return to the same view with the provided model
+                    // Unexpected error: Display generic error message
+                    TempData["ToastType"] = "danger"; // Store error type
+                    TempData["ToastMessage"] = "Unexpected error occurred during role update."; // Display generic error
+                    return RedirectToAction("TeamScreen"); // Return to the same view
                 }
             }
             else
@@ -722,17 +741,23 @@ namespace EHRM.Web.Controllers
                 // Handle the result of the create operation
                 if (result.Success)
                 {
-                    TempData["SuccessMessage"] = result.Message; // Store success message
-                    return RedirectToAction("TeamScreen"); // Redirect to the list of roles
+                    // Success: Create success message and redirect
+
+                    TempData["ToastType"] = "success"; // Store success message
+                    TempData["ToastMessage"] = "Record has been created ";
+                    return RedirectToAction("TeamScreen"); // Redirect to the list of teams
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = result.Message; // Display error message
-                    return View(model); // Return to the same view with the provided model
+                    // Error: Create error message and return to the view
+                    TempData["ToastType"] = "danger"; // Store error message
+                    TempData["ToastMessage"] = "An error occurred while creating the record."; ; /// Store error message
+                    return RedirectToAction("TeamScreen"); // Return to the same view with the provided model
+                }
                 }
             }
 
-        }
+       
         [HttpGet]
         public async Task<JsonResult> GetAllTeamScreenData()
         {
@@ -779,7 +804,7 @@ namespace EHRM.Web.Controllers
 
                 return Json(new { success = true, data = ts });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new { success = false, message = "An error occurred while retrieving the Team details." });
             }
@@ -809,7 +834,7 @@ namespace EHRM.Web.Controllers
                     message = result.Message
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (for debugging or error tracking)
                 // _logger.LogError(ex, "Error occurred while updating role details for role ID: {RoleId}", id);
@@ -894,7 +919,7 @@ namespace EHRM.Web.Controllers
 
                 return Json(new { success = true, data = et });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new { success = false, message = "An error occurred while retrieving the employee Type details." });
             }

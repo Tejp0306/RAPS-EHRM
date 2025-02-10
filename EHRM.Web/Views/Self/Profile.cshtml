@@ -2,214 +2,143 @@
     ViewData["Title"] = "Profile";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Information</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-</head>
-<body>
-    <div class="container mt-5">
-        <!-- Main Row -->
-        <div class="container mt-5">
-            <div class="container-fluid"></div>
 
-            <!-- Heading with bottom margin -->
-            <div class="col-12 bg-secondary text-white text-center py-1 mb-4">
-                <h2 class="mb-0">Profile</h2>
-            </div>
+@using EHRM.ViewModel.Employee
+@model EmployeeViewModel
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-            <!-- Main Row -->
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <!-- Employee Information Form -->
-                    <div class="row">
-                        <!-- Employee ID Field (Column 1) -->
-                        <div class="col-md-6 mb-3">
-                            <label for="employeeId" class="form-label">Employee ID</label>
-                            <input type="text" class="form-control" id="employeeId" placeholder="Enter Employee ID">
-                        </div>
-
-                        <!-- Date of Birth Field (Column 2) -->
-                        <div class="col-md-6 mb-3">
-                            <label for="dob" class="form-label">Date of Birth</label>
-                            <input type="text" class="form-control" name="enddate" id="enddate" data-start-day='1' data-picker-type='date' placeholder="Select Date of Birth" readonly />
-                        </div>
-                    </div>
-
-                    <!-- Save Button (centered) -->
-                    <div class="text-center mt-4">
-                        <button class="btn btn-primary" id="saveButton">Save</button>
-                    </div>
-                </div>
-            </div>
+@if (Model.EmpId == 0)
+{
+    <!-- Card Wrapper -->
+    <div class="card mt-5 shadow">
+        <div class="card-header text-white text-center">
+            <h2>Employee Profile</h2>
         </div>
+        <div class="card-body">
+            <form id="ProfileData" asp-controller="Self" asp-action="GetSelfProfileDataByIDDOB" method="post">
+                <div class="row">
+                    <!-- Employee ID Field -->
+                    <div class="col-md-6 mb-3">
+                        <label for="employeeId" class="form-label">Employee ID</label>
+                        <input asp-for="EmpId" type="text" class="form-control" id="EmpId" placeholder="Enter Employee ID">
+                    </div>
 
-        <!-- Static Table with Employee ID and DOB -->
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-12">
-                <div class="col-12 bg-secondary text-white text-center py-1">
-                    <h4 class="mb-0">Employee List</h4>
+                    <!-- Date of Birth Field -->
+                    <div class="col-md-6 mb-3">
+                        <label for="dob" class="form-label">Date of Birth</label>
+                        <input asp-for="DateOfBirth" type="text" class="form-control" name="DateOfBirth" id="DateOfBirth" data-start-day='1' data-picker-type='date' placeholder="Select Date of Birth" readonly />
+                    </div>
                 </div>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Employee ID</th>
-                            <th scope="col">Date of Birth</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Static Row 1 -->
-                        <tr>
-                            <td>EMP001</td>
-                            <td>1985-02-15</td>
-                            <td><button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#employeeModal">View</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary" id="saveButton">Search</button>
+                </div>
+            </form>
         </div>
-
-        <!-- Modal for Profile View -->
-        <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="employeeModalLabel">Employee Profile</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+}
+else
+{
+    <!-- Card Wrapper -->
+    <div class="card mt-5 shadow">
+        <div class="card-header text-white text-center">
+            <h2>Profile</h2>
+        </div>
+        <div class="card-body">
+            <form id="ProfileData" asp-controller="Self" asp-action="GetSelfProfileDataByIDDOB" method="post">
+                <div class="row">
+                    <!-- Employee ID Field -->
+                    <div class="col-md-6 mb-3">
+                        <label for="EmpId" class="form-label">Employee ID</label>
+                        <input asp-for="EmpId"
+                               type="text"
+                               class="form-control"
+                               id="EmpId"
+                               placeholder="Enter Employee ID"
+                               required
+                               aria-required="true">
+                        <div class="invalid-feedback">Employee ID is required.</div>
                     </div>
-                    <div class="modal-body">
-                        <!-- Employee Profile Structure -->
-                        <div class="container mt-5">
-                            <div class="row justify-content-center">
-                                <!-- Profile Image Section -->
-                                <div class="col-md-4 text-center">
-                                    <div class="profile-header">
-                                        <img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" alt="Profile Image" class="img-fluid rounded-circle mx-auto d-block">
-                                        <h4 class="font-weight-bold">John Doe</h4>
-                                        <span class="text-black-50">JD@mail.com.my</span>
-                                    </div>
-                                </div>
 
-                                <!-- Profile Form Section -->
-                                <div class="col-md-8">
-                                    <div class="">
-                                        <h4 class="text-center mb-4">Profile</h4>
-                                        <div class="row mt-2">
-                                            <!-- Employee ID, First Name, Last Name -->
-                                            <div class="col-md-4">
-                                                <label class="labels">Employee ID *</label>
-                                                <input type="text" class="form-control" placeholder="Enter Employee ID" value="" id="modalEmployeeId">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="labels">First Name</label>
-                                                <input type="text" class="form-control" placeholder="First Name" value="" id="modalFirstName">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="labels">Last Name</label>
-                                                <input type="text" class="form-control" placeholder="Surname" value="" id="modalLastName">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <!-- Mobile Number, DOB Fields -->
-                                            <div class="col-md-6">
-                                                <label class="labels">Mobile Number</label>
-                                                <input type="text" class="form-control" placeholder="Enter phone number" value="" id="modalMobile">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="labels">Date of Birth *</label>
-                                                <input type="text" class="form-control" placeholder="Enter Your D.O.B" value="">
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <!--Address Fields-->
-                                            <div class="col-md-6">
-                                                <label class="labels">Address Line 1</label>
-                                                <input type="text" class="form-control" placeholder="Enter address line 1" value="" id="modalAddress1">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="labels">Address Line 2</label>
-                                                <input type="text" class="form-control" placeholder="Enter address line 2" value="" id="modalAddress2">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <!-- Postcode, State, Area Fields -->
-                                            <div class="col-md-4">
-                                                <label class="labels">Postcode</label>
-                                                <input type="text" class="form-control" placeholder="Enter postcode" value="" id="modalPostcode">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="labels">State</label>
-                                                <input type="text" class="form-control" placeholder="Enter state" value="" id="modalState">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="labels">Area</label>
-                                                <input type="text" class="form-control" placeholder="Enter area" value="" id="modalArea">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <!-- Email and Education Fields -->
-                                            <div class="col-md-6">
-                                                <label class="labels">Email ID</label>
-                                                <input type="email" class="form-control" placeholder="Enter email ID" value="" id="modalEmail">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="labels">Education</label>
-                                                <input type="text" class="form-control" placeholder="Education" value="" id="modalEducation">
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <!-- Country and State/Region -->
-                                            <div class="col-md-6">
-                                                <label class="labels">Country</label>
-                                                <input type="text" class="form-control" placeholder="Country" value="" id="modalCountry">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="labels">State/Region</label>
-                                                <input type="text" class="form-control" placeholder="State/Region" value="" id="modalStateRegion">
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <!-- Manager and Team Region -->
-                                            <div class="col-md-6">
-                                                <label class="labels">Manager Name</label>
-                                                <input type="text" class="form-control" placeholder="Enter Manager Name" value="" id="modalCountry">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="labels">Team Name</label>
-                                                <input type="text" class="form-control" placeholder="Enter Team Name" value="" id="modalStateRegion">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save Profile</button>
+                    <!-- Date of Birth Field -->
+                    <div class="col-md-6 mb-3">
+                        <label for="DateOfBirth" class="form-label">Date of Birth</label>
+                        <input asp-for="DateOfBirth"
+                               type="text"
+                               class="form-control"
+                               name="DateOfBirth"
+                               id="DateOfBirth"
+                               data-start-day="1"
+                               data-picker-type="date"
+                               placeholder="Select Date of Birth"
+                               required
+                               aria-required="true"
+                               readonly>
+                        <div class="invalid-feedback">Date of Birth is required.</div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary" id="saveButton">Search</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <script>
-              $('#enddate').datepicker({
+
+    <!-- Static Table -->
+    <div class="card mt-5 shadow">
+        <div class="card-header text-white text-center">
+            <h4>Employee List</h4>
+        </div>
+        <div class="card-body">
+            @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+            {
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+                    });
+                </script>
+            }
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Employee ID</th>
+                        <th scope="col">Date of Birth</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Model.EmpId</td>
+                        <td>@Model.DateOfBirth</td>
+                        <td>
+                            <a class="btn btn-warning btn-sm mx-1 view-btn" id="@Model.EmpId" onclick="FetchEmployee(@Model.EmpId)">
+                                <i class="bi bi-pencil"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<script>
+    $('#DateOfBirth').datepicker({
         changeMonth: true,
         changeYear: true,
         yearRange: '1950:2070',
         dateFormat: 'dd-MM-yy',
         defaultDate: new window.Date
-        });
-    </script>
-</body>
+    });
 
+    function FetchEmployee(id) {
+        const url = id ? `/Self/SelfPortal/${id}` : '/Self/SelfPortal';
+        // console.log('Navigating to:', url);
+        window.location.href = url;
+    }
+</script>

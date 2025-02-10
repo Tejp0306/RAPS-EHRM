@@ -39,10 +39,10 @@
         pageLength: 5, // Default rows per page
         lengthMenu: [5, 10, 15, 20], // Options for rows per page
         language: {
-            search: "Search Prescribers:",
+            search: "Search NoticeBoard:",
             lengthMenu: "Show _MENU_ entries",
-            info: "Showing _START_ to _END_ of _TOTAL_ prescribers",
-            infoEmpty: "No prescribers available",
+            info: "Showing _START_ to _END_ of _TOTAL_ Notice",
+            infoEmpty: "No Notice available",
             paginate: {
                 first: "First",
                 last: "Last",
@@ -103,7 +103,7 @@ function editTeamScreenDetails(TeamScreenID) {
                 const TeamScreenData = response.data.data;
 
                 $('#teamScreenID').val(TeamScreenData.id || '');
-                $('#Name').val(TeamScreenData.name || '');
+                $('#TeamName').val(TeamScreenData.name || '');
                 $('#Description').val(TeamScreenData.description || '');
             } else {
                 console.error('Error: Invalid or missing data in response.');

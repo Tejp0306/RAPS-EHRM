@@ -13,8 +13,10 @@ CREATE TABLE Roles (
     
     CreateDate DATETIME, -- Date and time when the role was created
     UpdateDate DATETIME -- Date and time when the role was last updated
-);
 
+);
+    alter table Roles
+Add RoleId INT
 
 //Team
 
@@ -30,6 +32,44 @@ CREATE TABLE Team (
     CreateDate DATETIME, -- Record creation date
     UpdateDate DATETIME -- Last update date
 );
+
+alter table Team
+Add TeamId INT
+//Stored Procedure GetSubMenuAllDetails
+
+USE [EHRM]
+GO
+/****** Object:  StoredProcedure [dbo].[GetSubMenuAllDetails]    Script Date: 1/7/2025 8:36:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[GetSubMenuAllDetails]
+	(@Id INT)
+AS
+BEGIN
+
+
+	SELECT 
+    sm.Id As Id,
+	sm.Action As Action,
+	sm.Controller As Controller,
+	mm.Id As MainMenuId,
+	r.Id As RoleId,
+	e.EmpId As EmployeeId,
+    sm.Name AS SubMenuName,        
+    mm.Name AS MainMenuName,        
+    r.RoleName AS RoleName,             
+    e.FirstName + ' ' + e.LastName AS EmployeeName 
+FROM   SubMenu sm
+Left   JOIN  MainMenu mm ON sm.MainMenuId = mm.Id  
+left JOIN  Roles r ON sm.RoleId = r.Id            
+left JOIN  EmployeeDetails e ON sm.EmpId = e.EmpId  
+WHERE sm.IsActive = 1 and sm.Id=@Id; 
+END
+
+
 
 //Holiday
 
@@ -48,6 +88,16 @@ CREATE TABLE Holiday (
     HolidayDate varchar(30)
     FOREIGN KEY (TeamId) REFERENCES Team(Id) ON DELETE CASCADE -- Enable cascading delete
 );
+
+//Add Probation Question
+
+CREATE TABLE ProbationEvaluationQuestions (
+    QuestionID INT IDENTITY(1,1) PRIMARY KEY, -- Unique identifier, auto-incremented
+    Question NVARCHAR(MAX) NOT NULL,          -- The text of the question (supports Unicode)
+    CreatedAt DATETIME,
+	IsActive BIT
+);
+
 
 //NoticeBoard 
 
@@ -125,7 +175,7 @@ CREATE TABLE EmployeeDetails (
     RoleId INT NOT NULL,               -- Role
     DateOfBirth VARCHAR(30) NOT NULL,                -- Date of Birth
     Gender NVARCHAR(10) NOT NULL,             -- Gender
-    MaritalStatus INT NOT NULL,      -- Marital Status
+    MaritalStatus varchar(20) NOT NULL,      -- Marital Status(updated)
     AadharNumber NVARCHAR(20) NOT NULL UNIQUE,         -- Social Security Number
     EmailAddress NVARCHAR(255) NOT NULL UNIQUE, -- Email Address
     HomePhone NVARCHAR(15) NULL,              -- Home Phone
@@ -135,7 +185,7 @@ CREATE TABLE EmployeeDetails (
     MarriageAnniversary DATE NULL,            -- Marriage Anniversary
  
     -- Address Details
-    Street NVARCHAR(255) NOT NULL,            -- Local Address: Street
+    Street NVARCHAR(Max) NOT NULL,            -- Local Address: Street
     City NVARCHAR(100) NOT NULL,              -- Local Address: City
     Country NVARCHAR(100) NOT NULL,           -- Local Address: Country
     ZipCode NVARCHAR(20) NULL,                -- Local Address: Zip Code
@@ -144,6 +194,10 @@ CREATE TABLE EmployeeDetails (
     -- Audit Information
     CreatedAt DATETIME DEFAULT GETDATE(),     -- Record Creation Date
     UpdatedAt DATETIME DEFAULT GETDATE()      -- Record Last Update Date
+    Age INT,
+    IsProfileCompleted BIT DEFAULT 0,
+    Active BIT DEFAULT 0
+    createdById INT,
 );
 
 //Asset
@@ -168,6 +222,7 @@ CREATE TABLE AssetsDb (
 CREATE TABLE [EHRM].[dbo].[EmployeesCred] (
     [Id] INT IDENTITY(1,1) PRIMARY KEY, -- Auto-increment primary key
     [EmpId] NVARCHAR(50) NOT NULL, -- Employee ID
+    [LoginId] INT , -- Login Id
     [Email] NVARCHAR(100) NOT NULL, -- Email address
     [TempPassword] NVARCHAR(255) NOT NULL, -- Temporary password
     [FirstName] NVARCHAR(50) NOT NULL, -- First name
@@ -179,6 +234,99 @@ CREATE TABLE [EHRM].[dbo].[EmployeesCred] (
     [LockoutEndTime] DATETIME NULL, -- Lockout end time, null if not locked
     [LockoutDuration] INT NOT NULL DEFAULT 0 -- Lockout duration in minutes
 );
+
+CREATE TABLE EmployeesDeclaration (
+   Id INT PRIMARY KEY identity(1,1),
+    EmployeeName VARCHAR(100),
+	EmpId int,
+    Designation VARCHAR(100),
+    BandLevel VARCHAR(50),
+    DateOfJoining DATETIME,
+    ProbationStatus VARCHAR(50),
+    ProbationDate DATETIME,
+    Location VARCHAR(100),
+    Project VARCHAR(100),
+    BloodGroup VARCHAR(10),
+    DateOfBirth DATETIME,
+    Age INT,
+    Gender VARCHAR(10),
+    SpouseFatherMotherName VARCHAR(100),
+    RelationWithSpouse VARCHAR(50),
+    SpouseFatherDateOfBirth DATETIME,
+    MaritalStatus VARCHAR(20),
+    OfficialContact VARCHAR(20),
+    PersonalContact VARCHAR(20),
+    OfficialEmail VARCHAR(100),
+    PersonalEmail VARCHAR(100),
+    TenureInRAPS INT,
+    YearsInRAPS INT,
+    PriorWorkExperience INT,
+    TotalWorkExperience INT,
+    FirstOrganisation VARCHAR(100),
+    FirstOrganisationExperience INT,
+    SecondOrganisation VARCHAR(100),
+    SecondOrganisationExperience INT,
+    ThirdOrganisation VARCHAR(100),
+    ThirdOrganisationExperience INT,
+    FourthOrganisation VARCHAR(100),
+    FourthOrganisationExperience INT,
+    Dependent1Name VARCHAR(100),
+    Dependent1Relationship VARCHAR(50),
+    Dependent1Dob DATETIME,
+    EmergencyName1 VARCHAR(100),
+    EmergencyContact1 VARCHAR(20),
+    EmergencyRelationship1 VARCHAR(50),
+    EmergencyName2 VARCHAR(100),
+    EmergencyContact2 VARCHAR(20),
+    EmergencyRelationship2 VARCHAR(50),
+    XthInstitution VARCHAR(100),
+    XthPassingYear VARCHAR(10),
+    XiithInstitution VARCHAR(100),
+    XiithPassingYear VARCHAR(10),
+    BachelorInstitution VARCHAR(100),
+    BachelorCompleteYear VARCHAR(4),
+    BachelorDegrees VARCHAR(100),
+    MasterInstitution VARCHAR(100),
+    MasterCompleteYear VARCHAR(4),
+    FatherHusbandName VARCHAR(100),
+    UanNo VARCHAR(20),
+    AdharNo VARCHAR(20),
+    PanCardNo VARCHAR(20),
+    BankName VARCHAR(100),
+    AccountNumber VARCHAR(20),
+    IfscCode VARCHAR(20),
+    PermanentAddress VARCHAR(255),
+    PostalAddress VARCHAR(255),
+    Ctc VARCHAR(20),
+    FilingPerson VARCHAR(100),
+    FilingRecheck VARCHAR(10),
+    ResignationDate VARCHAR(20),
+    ExitDate VARCHAR(20),
+    ReasonForLeaving VARCHAR(255)
+  FOREIGN KEY (EmpId) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE 
+);
+
+
+CREATE TABLE ProbationEvaluationForm (
+    Id INT IDENTITY(1,1) PRIMARY KEY,                -- Auto-increment primary key
+    EmpId INT NOT NULL,                               -- Employee ID (foreign key can be added if necessary)
+    ApplicationDate varchar(30),                             -- Application Date (e.g., probation start date)
+    ManagerId INT NOT NULL,                           -- Manager ID (foreign key can be added if necessary)
+    QuestionId INT,
+	Evaluation1stMonth INT,                           -- Evaluation marks for the 1st month
+    Evaluation2ndMonth INT,                           -- Evaluation marks for the 2nd month
+    Evaluation3rdMonth INT,                           -- Evaluation marks for the 3rd month
+    Recommendation VARCHAR(MAX),                      -- Manager's recommendation (text field)
+    RemarksConfirmation VARCHAR(255),                 -- Remarks and confirmation from the manager
+    ManagerSignature VARCHAR(255),                    -- Manager's signature (could be stored as text)
+    FinalDate varchar(30),                                   -- Final evaluation date (when the process is completed)
+    CreatedAt DATETIME,             -- Tracks when the record was created
+    UpdatedAt DATETIME ,              -- Tracks when the record was last updated
+	FOREIGN KEY (EmpId) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE 
+);
+
+
+
 
 ----------------------------------------------------------------------------------------------------------------
 

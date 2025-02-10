@@ -31,8 +31,8 @@ namespace EHRM.ServiceLayer.MainMenuRepo
                 var newMainMenu = new MainMenu
 
                 {
-                    Name = model.Name,
-                    Icon = model.Icon,
+                    Name = model.Name?.Trim().Replace(" ", ""),
+                    Icon = model.Icon?.Trim().Replace(" ", ""),
                     IsActive = true
 
                 };

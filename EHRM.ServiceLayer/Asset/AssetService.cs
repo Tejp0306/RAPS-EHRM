@@ -234,8 +234,8 @@ namespace EHRM.ServiceLayer.Asset
                     Category = asset.Category,
                     Value = (int)asset.Value,
                     Status = asset.Status,
-                    TeamId = asset.TeamId,
-                    EmpId = asset.EmpId,
+                    TeamId = (int)asset.TeamId,
+                    EmpId = (int)asset.EmpId,
                     IssueDate = (DateTime)asset.IssueDate,
                 };
 

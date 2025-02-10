@@ -198,7 +198,7 @@
                 @*  <form class="d-none d-md-flex ms-4">
                 <input class="form-control border-0" type="search" placeholder="Search">
                 </form> *@
-                <div style="overflow: hidden; width: 100%; background-color: #007bff; padding: 10px; color: white; font-weight: bold; border: 1px solid #0056b3; border-radius: 5px;">
+                <div style="overflow: hidden; width: 100%; padding: 10px; color: Black; font-weight: bold;">
                     <i class="fa fa-info-circle me-2"></i>
                     <span class="notification-text">This is a notification message that will scroll from right to left.</span>
                 </div>
@@ -211,9 +211,10 @@
                             @((userDetails?["FirstName"]?.ToString() ?? "Guest") + " " + (userDetails?["LastName"]?.ToString() ?? ""))
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">My Profile</a>
+                            <a href="@Url.Action("MyProfile", "Self")" class="dropdown-item">My Profile</a>
                             <a href="#" class="dropdown-item">Settings</a>
                             <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Log Out</a>
+                            <a asp-controller="Account" asp-action="ChangePassword" class="dropdown-item">Change Password</a>
                         </div>
                     </div>
                 </div>
@@ -230,11 +231,12 @@
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Your Site Name</a>, All Right Reserved.
+                            &copy; <a href="#">Raps Consulting Inc.</a>, All Rights Reserved.
                         </div>
+
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+                            Designed By <a href="#">Managed Team</a>
                         </div>
                     </div>
                 </div>
@@ -255,6 +257,7 @@
     <script src="~/lib/tempusdominus/js/moment.min.js"></script>
     <script src="~/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="~/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

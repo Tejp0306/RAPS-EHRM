@@ -12,6 +12,7 @@ using System.Text;
 using EHRM.Infrastructure.Middleware;
 using EHRM.Infrastructure.Extension;
 using Logger;
+using Microsoft.AspNetCore.Builder;
 
 
 
@@ -49,4 +50,16 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
+
+app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Calendar}/{action=GetEvents}/{id?}");
+
+//app.MapControllerRoute(
+//    name: "GetEvents",
+//    pattern: "Calendar/GetEvents",
+//    defaults: new { controller = "Calendar", action = "GetEvents" }
+//);
+
+
 app.Run();
