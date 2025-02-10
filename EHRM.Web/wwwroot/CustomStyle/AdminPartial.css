@@ -47,6 +47,10 @@
     border-radius: 8px;
 }
 
+.fc-col-header-cell-cushion{
+    color:white;
+}
+
 /* Events Styling */
 .fc-event {
     background: #17a2b8;
