@@ -23,6 +23,12 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: whoami
+      run: dotnet build --no-restore
+    - name: Stop EHRM Service
+      run: sudo systemctl stop EHRM-Web.service
     - name: Publish
       run: sudo dotnet publish -c Release -o /var/www/EHRM/
+    - name: Start EHRM Web Service
+      run: sudo systemctl start EHRM-Web.service
+    - name: Check Service Status
+      run: sudo systemctl status ehrm --no-pager  
