@@ -141,48 +141,6 @@ namespace EHRM.Web.Controllers
                             string[] formats = {
 
 
-                                        "yyyy-MM-dd",
-
-                                        "dd/MM/yyyy",
-
-                                        "MM/dd/yyyy",
-
-                                        "yyyy/MM/dd",
-
-                                        "MM-dd-yyyy",
-
-                                        "dd-MMM-yyyy",         // Example: 31-Jan-2025
-
-                                        "dd MMM yyyy",         // Example: 31 Jan 2025
-
-                                        "MMMM dd, yyyy",       // Example: January 31, 2025
-
-                                        "dd-MMMM-yyyy",        // Example: 31-January-2025
-
-                                        "MMMM dd yyyy",        // Example: January 31 2025
-
-                                        "dd MMMM yyyy",        // Example: 31 January 2025
-
-                                        "yyyy-MM-dd HH:mm:ss",
-
-                                        "MM/dd/yyyy HH:mm:ss",
-
-                                        "yyyy/MM/dd HH:mm",
-
-                                        "yyyy.MM.dd",
-
-                                        "dd.MM.yyyy",
-
-                                        "yyyyMMdd",
-
-                                        "dd-MM-yy",
-
-                                        "HH:mm:ss",
-
-                                        "hh:mm tt",
-
-                                        "yyyy/MM/dd hh:mm tt"
-
     "yyyy-MM-dd",
     "dd/MM/yyyy",
     "MM/dd/yyyy",
@@ -661,7 +619,7 @@ namespace EHRM.Web.Controllers
                 // Show a success message to the user
                 TempData["ToastType"] = "danger";
                 TempData["ToastMessage"] = "Please Enter Same New Password and Confirm Password";
-                return View("ForgotPassword");
+                return View("ChangePassword");
             }
 
             // If we get to this point, something failed; redisplay the form.

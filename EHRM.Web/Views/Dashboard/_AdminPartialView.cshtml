@@ -8,86 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .container-fluid {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
-
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-            .card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-            }
-
-        .stats-card {
-            padding: 15px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            text-align: center;
-            flex: 1;
-            min-height: 80px;
-        }
-
-            .stats-card:hover {
-                transform: scale(1.05);
-            }
-
-            .stats-card i {
-                font-size: 2.5rem;
-                color: #007bff;
-                margin-bottom: 8px;
-            }
-
-            .stats-card .ms-3 {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .stats-card p {
-                font-size: 1rem;
-                color: #6c757d;
-                margin-bottom: 5px;
-                font-weight: normal;
-            }
-
-            .stats-card h5 {
-                font-size: 1.25rem;
-                font-weight: bold;
-                color: #343a40;
-                margin: 0;
-            }
-
-        .row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: nowrap;
-        }
-
-        .col-sm-6.col-xl-3 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 22%;
-            min-width: 200px;
-        }
+    <link href="/customstyle/AdminPartial.css" rel="stylesheet" />
 
             .col-sm-6.col-xl-3 .stats-card {
                 flex-grow: 1;
@@ -282,32 +203,6 @@
             <div class="container mt-4" id="calendar-container">
                 <h2>Leave Calendar</h2>
                 <div id="calendar"></div>
-            </div>
-
-
-
-            <!-- Attendance & Leave Management Section -->
-
-                    <div class="table-container">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Date & Month</th>
-                                    <th>Year</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>1</td><td>John Doe</td><td>1 Feb</td><td>2024</td></tr>
-                                <tr><td>2</td><td>Jane Smith</td><td>1 Jan</td><td>2024</td></tr>
-                                <tr><td>3</td><td>Sam Wilson</td><td>1 Mar</td><td>2024</td></tr>
-                                <tr><td>4</td><td>Michael Johnson</td><td>1 Apr</td><td>2024</td></tr>
-                                <tr><td>5</td><td>Emily Davis</td><td>1 May</td><td>2024</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
 
             <div class="performance-section mt-4">
