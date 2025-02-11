@@ -52,13 +52,13 @@ else
                     <!-- Employee ID Field -->
                     <div class="col-md-6 mb-3">
                         <label for="employeeId" class="form-label">Employee ID</label>
-                        <input asp-for="EmpId" type="text" class="form-control" id="EmpId" placeholder="Enter Employee ID">
+                        <input asp-for="EmpId" type="text" class="form-control" id="EmpId" placeholder="Enter Employee ID" required>
                     </div>
 
                     <!-- Date of Birth Field -->
                     <div class="col-md-6 mb-3">
                         <label for="DateOfBirth" class="form-label">Date of Birth</label>
-                        <input asp-for="DateOfBirth" type="text" class="form-control" name="DateOfBirth" id="DateOfBirth" data-start-day='1' data-picker-type='date' placeholder="Select Date of Birth" readonly />
+                        <input asp-for="DateOfBirth" type="text" class="form-control" name="DateOfBirth" id="DateOfBirth" data-start-day='1' data-picker-type='date' placeholder="Select Date of Birth" required readonly />
                     </div>
                 </div>
                 <!-- Submit Button -->
