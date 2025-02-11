@@ -18,7 +18,7 @@
                         // Remove the row from the table
                         // $(`#row-${noticeBoardID}`).remove(); // Assuming the table rows have IDs like 'row-1', 'row-2', etc.
                         // Optionally show a success message
-                        alert(response.message);
+                        //alert(response.message);
                         location.reload();
                     } else {
                         // Handle error if the delete fails
@@ -69,7 +69,7 @@ function getMainMenuData() {
 
                 data: 'id',
                 render: function (data) {
-                    console.log(data);
+                    //console.log(data);
                     //debugger;
                     return `
                                 <div class="d-flex justify-content-center">
@@ -110,7 +110,7 @@ function EditMainMenu(mainmenuID) {
         method: 'GET',
         success: function (response) {
             // Log response for debugging
-            console.log('Full Response:', response);
+            //console.log('Full Response:', response);
             //console.log('Data:', response.data);
             //debugger;
             // Access the nested data object

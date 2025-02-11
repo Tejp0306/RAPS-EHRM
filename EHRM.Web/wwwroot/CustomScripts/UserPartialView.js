@@ -1,13 +1,11 @@
 ﻿// Ensure FullCalendar is loaded after the DOM is ready
 $(document).ready(function () {
-    debugger;
-
     // Find the calendar element by ID
     var calendarEl = document.getElementById('calendar');
 
     // Get EmpId from cookies
     let empId = getCookie("EmpId");
-    console.log("EmpId:", empId); // Debug: Check if empId is retrieved correctly
+    //console.log("EmpId:", empId); // Debug: Check if empId is retrieved correctly
 
     if (!empId) {
         console.error("EmpId not found in cookies. Ensure the cookie is set correctly.");
@@ -23,12 +21,11 @@ $(document).ready(function () {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            innerHeight: '70%',
-            innerWidth: '30%',
+            
 
             events: function (fetchInfo, successCallback, failureCallback) {
                 // Debug: Log the fetch request details
-                console.log("Fetching events for empId:", empId);
+                //console.log("Fetching events for empId:", empId);
 
                 const url = `/Calendar/GetEvents?empId=${empId}`;
                 const request = new Request(url, {
@@ -46,7 +43,7 @@ $(document).ready(function () {
                         return response.json();
                     })
                     .then(data => {
-                        console.log("Fetched events:", data); // Debug: Log fetched data
+                        //console.log("Fetched events:", data); // Debug: Log fetched data
                         successCallback(data); // Pass data to FullCalendar
                     })
                     .catch(error => {
