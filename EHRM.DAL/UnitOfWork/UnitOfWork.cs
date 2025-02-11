@@ -67,7 +67,7 @@ namespace EHRM.DAL.UnitOfWork
 
       
 
-                    using (var reader = await command.ExecuteReaderAsync())
+                    using (var reader =  command.ExecuteReaderAsync().Result)
                     {
                         while (await reader.ReadAsync())
                         {
@@ -83,9 +83,6 @@ namespace EHRM.DAL.UnitOfWork
                                 MainMenuName = reader.GetString(7),
                                 RoleName = reader.GetString(8),
                                 EmployeeName = reader.GetString(9)
-
-
-
                             });
                         }
                     }
