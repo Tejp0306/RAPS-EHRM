@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Set Git Safe Directory
-      run: git config --global --add safe.directory /home/rapscorp-root/actions-runner/_work/RAPS-EHRM/RAPS-EHRM
+      run: sudo chown -R rapscorp-root:rapscorp-root /home/rapscorp-root/actions-runner/_work/RAPS-EHRM/
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
