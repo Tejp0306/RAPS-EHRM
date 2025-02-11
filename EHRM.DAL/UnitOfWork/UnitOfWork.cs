@@ -67,7 +67,7 @@ namespace EHRM.DAL.UnitOfWork
 
       
 
-                    using (var reader =  command.ExecuteReaderAsync().Result)
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
