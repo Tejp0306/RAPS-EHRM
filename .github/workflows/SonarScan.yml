@@ -1,0 +1,26 @@
+name: SonarQube Scan
+
+on:
+  push:
+    branches: [SonarScan]
+  #pull_request:
+  #  branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x' # Or your .NET version
+
+      - name: Build and analyze
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL
+          SONAR_SCANNER_OPTS: "-Dsonar.cs.opencover.reportsPaths=**/*.coveragexml" # For code coverage (optional)
