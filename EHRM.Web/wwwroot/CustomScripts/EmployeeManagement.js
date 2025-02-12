@@ -206,6 +206,7 @@ function getEmployeeData() {
                 },
                 orderable: false
             }
+
         ],
         pageLength: 5,
         lengthMenu: [5, 10, 15, 20],
@@ -302,6 +303,31 @@ function CheckExistingEmpId() {
             }
             else {
                 $('#lblEmpIdError').text("");
+            }
+        },
+        error: function () {
+            alert("An error occurred while checking the EmpId. Please try again.");
+        }
+    });
+}
+
+
+function CheckExistingEmail() {
+    var EmailAddress = $('#EmailAddress').val(); // Get the EmpId from the input field
+    var url = '/Employee/CheckExistingEmail'; // Correct the URL to match your action method
+
+    $.ajax({
+        url: url,
+        type: 'POST', // POST method
+        data: { EmailAddress: EmailAddress }, // Send EmpId in the request body
+        success: function (response) {
+
+            if (response.flag > 0) { // Check if the flag is greater than 0
+                $('#lblErrorexistingmail').text("Email is already registered. Please use another Email Id");
+                $('#EmailAddress').val(""); // Clear the input field
+            }
+            else {
+                $('#lblErrorexistingmail').text("");
             }
         },
         error: function () {
