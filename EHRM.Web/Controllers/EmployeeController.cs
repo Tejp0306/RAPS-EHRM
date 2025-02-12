@@ -289,10 +289,6 @@ namespace EHRM.Web.Controllers
             }
             }
             
-
-        }
-
-
         // Update Qualification Info
 
         [NonAction]
