@@ -47,6 +47,7 @@ namespace EHRM.Web.Controllers
 
         public IActionResult GetProfileData(EmployeeViewModel model)
             {
+
             return View(model);
         }
 
@@ -57,13 +58,13 @@ namespace EHRM.Web.Controllers
             // Fetch the result from the service layer
 
             //string Parseddob = DateTime.ParseExact(model.DateOfBirth, "dd - MMMM - yyyy", System.Globalization.CultureInfo.InvariantCulture).ToString("dd/MM/yyyy");
-            var datedata = DateTime.Parse(model.DateOfBirth).ToString("dd/MM/yyyy");
+            //var datedata = DateTime.Parse(model.DateOfBirth).ToString("dd/MM/yyyy");
 
 
-            String updateddatedata =datedata.Substring(0, 10);
+            //String updateddatedata =datedata.Substring(0, 10);
             
 
-            var result = await _hr.GetDetailsByEmpIdDOB(model.EmpId, updateddatedata);
+            var result = await _hr.GetDetailsByEmpIdDOB(model.EmpId, model.DateOfBirth);
 
             if (result.Count > 0)
             {
