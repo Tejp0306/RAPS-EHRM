@@ -1,8 +1,10 @@
-name: SonarQube Scan
+name: SonarQube Scan Master
 
+#on:
+#  push:
+#    branches: [SonarScan]
 on:
-  push:
-    branches: [SonarScan]
+  workflow_dispatch:
   #pull_request:
   #  branches: [main]
 
