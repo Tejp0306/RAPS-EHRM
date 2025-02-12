@@ -22,5 +22,8 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL
-          SONAR_SCANNER_OPTS: "-Dsonar.cs.opencover.reportsPaths=**/*.coveragexml" # For code coverage (optional)
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_SCANNER_OPTS: |  # Use a multi-line string for options
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}  # Add project key
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} # Add organization (for SonarCloud)
+            -Dsonar.cs.opencover.reportsPaths=**/*.coveragexml # For code coverage (optional)
