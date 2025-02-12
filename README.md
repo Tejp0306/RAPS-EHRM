@@ -38,8 +38,8 @@ git clone https://github.com/your-repo/E-HRM.git
 cd RAPS-EHRM
 ```
 
-## Step 2: Configure the Database  
-### Update Connection String  
+### **Step 2: Configure the Database**
+#### Update Connection String  
 Open the `appsettings.json` file and update the database connection string with your SQL Server details:  
 
 ```
@@ -48,7 +48,7 @@ Open the `appsettings.json` file and update the database connection string with 
 }
 ```
 
-### Apply Database Migrations  
+#### Apply Database Migrations
 Open a terminal or command prompt in the project root folder and run:  
 
 ```
@@ -57,11 +57,11 @@ dotnet ef database update
 
 This will create the required tables in the database.  
 
-### Verify Database Setup  
+#### Verify Database Setup  
 - Open **SQL Server Management Studio (SSMS)** or another database tool.  
 - Connect to your SQL Server and ensure that the `EHRM_DB` database has been created with the necessary tables.  
 
-## Step 3: Run the Application  
+### **Step 3: Run the Application**
 ```
 dotnet run
 ```
@@ -74,4 +74,4 @@ For deployment, configure **IIS, Azure, or Docker** as per your hosting preferen
 Feel free to fork the repo and submit pull requests!  
 
 ## 📜 License  
-MIT License (or specify your license).
+MIT License.

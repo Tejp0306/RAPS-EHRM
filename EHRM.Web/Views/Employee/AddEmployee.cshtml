@@ -142,10 +142,11 @@
                                                 <div class="col-12 col-md-6">
                                                     <label for="EmailAddress" class="form-label">Email Address *</label>
 
-                                                    <input asp-for="EmailAddress" class="form-control" id="EmailAddress" name="EmailAddress" placeholder="Enter Email-id" onchange="ValidateEmail()"
+                                                    <input asp-for="EmailAddress" class="form-control" id="EmailAddress" name="EmailAddress" placeholder="Enter Email-id" onchange="ValidateEmail(); CheckExistingEmail();"
                                                     data-bs-toggle="tooltip" title="Please enter a valid email address. It is important to provide a correct email." />
                                                     <span id="EmailError" style="color: red; font-size:small; display: none;">Email must be filled out</span>
                                                     <label id="lblError" style="color:red"></label>
+                                                    <label id="lblErrorexistingmail" style="color:red"></label>
                                                 </div>
                                             </div>
                                             <div class="row-mb-3">

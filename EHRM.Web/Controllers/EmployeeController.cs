@@ -958,6 +958,15 @@ namespace EHRM.Web.Controllers
             return Json(new { flag = isExist ? 1 : 0 });
         }
 
+        public async Task<JsonResult> CheckExistingEmail(string EmailAddress)
+        {
+            // Check if the employee ID exists in the EmployeeDetails table
+            bool isExist = await _context.EmployeeDetails.AnyAsync(x => x.EmailAddress == EmailAddress);
+
+            // Return a flag: 1 if exists, 0 otherwise
+            return Json(new { flag = isExist ? 1 : 0 });
+        }
+
         private string GenerateRandomPassword(int length = 8)
         {
             var random = new Random();
