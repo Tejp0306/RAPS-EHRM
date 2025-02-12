@@ -214,14 +214,9 @@ namespace EHRM.Web.Controllers
                     HttpContext.Session.SetInt32("EmpId", empId);
                 }
 
-                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                return result;
 
-                // Return a structured response based on the result of the update
-                return new
-                {
-                    success = result.Success,
-                    message = result.Message
-                };
+                
             }
             catch (Exception ex)
             {
@@ -242,56 +237,56 @@ namespace EHRM.Web.Controllers
         {
             int empid = (int)model.EmploymentDetails.EmpId;
 
-            if (_employee.CheckUserInDbByEmpId(empid) == true)
+            // Check if the employee exists in the database by EmpId
+            if (_employee.CheckUserInDbByEmpId(empid))
             {
-
-
-                TempData["ToastType"] = "success";  // Success, danger, warning, info
-                TempData["ToastMessage"] = "Operation completed successfully!";
-                //TempData["EmpId"] = result.Data;
-                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
-                // Update the role details
+                // Update Employment Info
                 string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
                 var updateResult = await UpdateEmploymentInfoDetails(empid, updatedBy, model);
+
                 if (updateResult != null)
                 {
                     var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
-                    if (updateResponse?.success == true)
+                    if (updateResponse.Success == true)
                     {
                         TempData["ToastType"] = "success"; // Store success message
-                        TempData["ToastMessage"] = "Record Has been updated ";
-                        return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                        TempData["ToastMessage"] = "Record has been updated successfully!";
                     }
                     else
                     {
-                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
-                        return View(model); // Return to the same view with the provided model
+                        TempData["ToastType"] = "danger"; // Store error message
+                        TempData["ToastMessage"] = updateResponse?.message ?? "An error occurred while updating.";
                     }
 
                 }
-
-                return RedirectToAction("AddEmployee");
+                else
+                {
+                    TempData["ToastType"] = "danger"; // Store error message
+                    TempData["ToastMessage"] = "Failed to update the record.";
             }
 
+                return RedirectToAction("AddEmployee"); // Redirect after update operation
+            }
             else
             {
+                // Create Employment Info as the employee does not exist in the database
                 int createdById = 101; // Replace with logic to fetch the actual user ID
                 var result = await _employee.SaveEmploymentInfoAsync(model, createdById);
                 // Handle the result of the create operation
                 if (result.Success)
                 {
-
-                    TempData["ToastType"] = "success";  // Success, danger, warning, info
+                    TempData["ToastType"] = "success"; // Success message
                     TempData["ToastMessage"] = "Operation completed successfully!";
-                    TempData["EmpId"] = result.Data;
-                    return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                    TempData["EmpId"] = result.Data; // Store the created EmpId
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = result.Message; // Display error message
-                    return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+                    TempData["ToastType"] = "danger"; // Error message
+                    TempData["ToastMessage"] = result.Message ?? "An error occurred while saving.";
                 }
 
+                return RedirectToAction("AddEmployee"); // Redirect after create operation
+            }
             }
             
 
@@ -771,6 +766,10 @@ namespace EHRM.Web.Controllers
                                         //employeeDetails[0].IsProfileCompleted = true;
                                         employeeDetails[0].Active = true;
                                         await _UnitOfWork.SaveAsync();
+
+                                        
+
+
                                     }
                                     else
                                     {
