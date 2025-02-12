@@ -22,6 +22,8 @@
 
 });
 
+
+
 function getManager() {
 
     $.ajax({
@@ -410,6 +412,9 @@ function GetEmpForEmpCred(EmpId) {
 }
 
 
+
+
+
 function validatepersonalinfoForm() {
     const form = document.forms["personal-info"];
     const fieldsToValidate = [
@@ -420,7 +425,7 @@ function validatepersonalinfoForm() {
         { input: form["phone"], errorSpan: "cellError", errorMessage: "Mobile Number is required." },
         { input: form["EmailAddress"], errorSpan: "EmailError", errorMessage: "Email is required." },
         { input: form["RoleId"], errorSpan: "RoleError", errorMessage: "Role is required." },
-        { input: form["AadharNumber"], errorSpan: "AadharError", errorMessage: "Aadhar Number is required." },
+        //{ input: form["AadharNumber"], errorSpan: "AadharError", errorMessage: "Aadhar Number is required." },
         { input: form["TeamId"], errorSpan: "TeamError", errorMessage: "Team name is required." },
         { input: form["Street"], errorSpan: "streetError", errorMessage: "Street Name is required." },
         { input: form["Country"], errorSpan: "countryError", errorMessage: "Country name is required." },
@@ -611,6 +616,24 @@ function validatedeclarationForm() {
     function hideError(errorElement) {
         errorElement.textContent = ""; // Clear the error message
         errorElement.style.display = "none"; // Hide the error message
+    }
+
+
+}
+
+function validateAadhar() {
+    const aadharInput = document.getElementById('AadharNumber');
+    const errorSpan = document.getElementById('AadharError');
+
+    // Regular expression to match exactly 12 digits
+    const aadharRegex = /^\d{12}$/;
+
+    if (aadharRegex.test(aadharInput.value)) {
+        errorSpan.style.display = 'none';
+        aadharInput.classList.remove('is-invalid');
+    } else {
+        errorSpan.style.display = 'block';
+        aadharInput.classList.add('is-invalid');
     }
 }
 

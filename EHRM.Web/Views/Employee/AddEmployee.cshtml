@@ -208,8 +208,8 @@
                                             <div class="row mb-3">
                                                 <div class="col-12 col-md-6">
                                                     <label for="AadharNumber" class="form-label">Aadhar Card Number *</label>
-                                                    <input asp-for="AadharNumber" type="text" class="form-control" id="AadharNumber" placeholder="Enter Aadhar Card Number">
-                                                    <span id="AadharError" style="color: red; font-size:small; display: none;">Aadhar must be filled out</span>
+                                                    <input asp-for="AadharNumber" type="text" class="form-control" id="AadharNumber" placeholder="Enter Aadhar Card Number" oninput="validateAadhar()">
+                                                    <span id="AadharError" style="color: red; font-size:small; display: none;">Aadhar must be a 12-digit number</span>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="homePhone" class="form-label">Home Phone</label>
@@ -768,12 +768,33 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
+
     }
 
 
     // Initialize tooltips
     var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     var tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+
+     function validateAadhar() {
+
+ 
+        const aadharInput = document.getElementById('AadharNumber');
+        const errorSpan = document.getElementById('AadharError');
+
+        // Regular expression to match exactly 12 digits
+        const aadharRegex = /^\d{12}$/;
+
+        if (aadharRegex.test(aadharInput.value)) {
+            errorSpan.style.display = 'none';
+            aadharInput.classList.remove('is-invalid');
+        } else {
+            errorSpan.style.display = 'block';
+            aadharInput.classList.add('is-invalid');
+        }
+    }
+
 
    
 
