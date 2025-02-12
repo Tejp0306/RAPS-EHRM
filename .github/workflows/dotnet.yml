@@ -18,10 +18,19 @@ jobs:
     - name: Set Git Safe Directory
       run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S chown -R rapscorp-root:rapscorp-root /home/rapscorp-root/actions-runner/_work/RAPS-EHRM/
     - uses: actions/checkout@v4
-    - name: Setup .NET
+    #- name: Setup .NET
+     # uses: actions/setup-dotnet@v4
+     # with:
+     #   dotnet-version: 8.0.x
+      # Install the .NET Core workload
+    - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v2
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
