@@ -183,8 +183,10 @@ function getEmployeeData() {
             {
                 data: null,
                 render: function (rowData) {
-                    // Disable Activate/Deactivate buttons based on employmentStatus
+                    // Check if profileStatus is incomplete
+                    const isProfileIncomplete = rowData.profileStatus === false;
                     const isActive = rowData.employmentStatus === true;
+
                     return `
                         <div class="d-flex justify-content-center">
                             <button class="btn btn-warning btn-sm mx-1 edit-btn" data-id="${rowData.id}">
@@ -192,12 +194,12 @@ function getEmployeeData() {
                             </button>
                             <button class="btn btn-success btn-sm mx-1 activate-btn" 
                                 data-id="${rowData.id}" 
-                                ${isActive ? 'disabled' : ''}>
+                                ${isActive || isProfileIncomplete ? 'disabled' : ''}>
                                 <i class="bi bi-check-circle"></i> Activate
                             </button>
                             <button class="btn btn-danger btn-sm mx-1 danger-btn" 
                                 data-id="${rowData.id}" 
-                                ${!isActive ? 'disabled' : ''}>
+                                ${!isActive || isProfileIncomplete ? 'disabled' : ''}>
                                 <i class="bi bi-x-circle"></i> Deactivate
                             </button>
                         </div>`;

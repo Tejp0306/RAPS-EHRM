@@ -778,6 +778,54 @@ namespace EHRM.Web.Controllers
                                         throw new Exception("Employee details not found.");
                                     }
 
+                                    EmailServiceModel _email = new()
+
+                                    {
+
+                                        RecipentMail = employeeData[0].EmailAddress,  // Replace with actual recipient email
+
+                                        CcMail = "arjun@rapscorp.com",  // Replace with actual CC email
+
+                                        Subject = "Welcome to Raps Consulting Inc – Your Account Details",
+
+                                        Body = @"
+                                                    <html>
+                                                    <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                                                    <p>Dear <strong>" + employeeData[0].FirstName + @"</strong>,</p>
+ 
+                                                                <p>Welcome to <strong>Raps Consulting Inc</strong>! We are delighted to have you on board.</p>
+ 
+                                                                <p>Your EHRMS Portal account has been successfully created. Below are your login details:</p>
+ 
+                                                                <p><strong>Username:</strong> " + employeeData[0].EmailAddress + @"<br>
+                                                    <strong>Temporary Password:</strong> " + employeeData[0].Password + @"</p>
+ 
+                                                                <p>To ensure the security of your account, we recommend changing your password upon your first login.</p>
+ 
+                                                                <p>You can access your account by clicking the link below:</p>
+ 
+                                                                <p><a href='https://ehrm.rapsit.com/' style='color: #007BFF; font-weight: bold;'>Login to Your Account</a></p>
+ 
+                                                                <p>If you have any questions or need assistance, feel free to reach out to our support team at 
+                                                    <a href='mailto:support@rapscorp.com' style='color: #007BFF;'>support@rapscorp.com</a>.</p>
+ 
+                                                                <p>We look forward to working with you!</p>
+ 
+                                                                <p>Best regards,</p>
+                                                    <p><strong>HR Department</strong><br>
+                                                    <strong>Raps Consulting Inc</strong><br>
+                                                    <a href='https://www.rapscorp.com/' style='color: #007BFF;'>https://www.rapscorp.com/</a></p>
+                                                    </body>
+                                                    </html>"
+
+                                    };
+
+
+
+                                    // Sending the email
+                                    _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
+                                    //return RedirectToAction("EmployeeProfile"); // Redirect to the list of employee types
+
                                     // Commit the transaction
                                     transaction.Complete();
 
