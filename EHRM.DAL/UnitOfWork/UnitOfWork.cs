@@ -83,9 +83,6 @@ namespace EHRM.DAL.UnitOfWork
                                 MainMenuName = reader.GetString(7),
                                 RoleName = reader.GetString(8),
                                 EmployeeName = reader.GetString(9)
-
-
-
                             });
                         }
                     }

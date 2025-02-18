@@ -25,6 +25,7 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
 
+    public virtual DbSet<EmployeesDeclaration> EmployeesDeclarations { get; set; }
     public virtual DbSet<EmployementTypeDetail> EmployementTypeDetails { get; set; }
 
     public virtual DbSet<Holiday> Holidays { get; set; }
@@ -32,6 +33,8 @@ public partial class EhrmContext : DbContext
     public virtual DbSet<MainMenu> MainMenus { get; set; }
 
     public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
+
+    public virtual DbSet<ProbationEvaluationForm> ProbationEvaluationForms { get; set; }
 
     public virtual DbSet<ProbationEvaluationQuestion> ProbationEvaluationQuestions { get; set; }
 
@@ -45,9 +48,9 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<Team> Teams { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-HB9H8DM;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true");
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("Server=DESKTOP-HB9H8DM;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -190,6 +193,180 @@ public partial class EhrmContext : DbContext
                 .HasConstraintName("FK__Employees__EmpId__0A9D95DB");
         });
 
+        modelBuilder.Entity<EmployeesDeclaration>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC0720FE5208");
+
+            entity.ToTable("EmployeesDeclaration");
+
+            entity.Property(e => e.AccountNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.AdharNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.BachelorCompleteYear)
+                .HasMaxLength(4)
+                .IsUnicode(false);
+            entity.Property(e => e.BachelorDegrees)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.BachelorInstitution)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.BandLevel)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BankName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.BloodGroup)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.Ctc)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.DateOfBirth).HasColumnType("datetime");
+            entity.Property(e => e.DateOfJoining).HasColumnType("datetime");
+            entity.Property(e => e.Dependent1Dob).HasColumnType("datetime");
+            entity.Property(e => e.Dependent1Name)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Dependent1Relationship)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Designation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyContact1)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyContact2)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyName1)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyName2)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyRelationship1)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EmergencyRelationship2)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ExitDate)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.FatherHusbandName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FilingPerson)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FilingRecheck)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.FirstOrganisation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FourthOrganisation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Gender)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.IfscCode)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.Location)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.MaritalStatus)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.MasterCompleteYear)
+                .HasMaxLength(4)
+                .IsUnicode(false);
+            entity.Property(e => e.MasterInstitution)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.OfficialContact)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.OfficialEmail)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.PanCardNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.PermanentAddress)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.PersonalContact)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.PersonalEmail)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.PostalAddress)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ProbationDate).HasColumnType("datetime");
+            entity.Property(e => e.ProbationStatus)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Project)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ReasonForLeaving)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.RelationWithSpouse)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ResignationDate)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.SecondOrganisation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.SpouseFatherDateOfBirth).HasColumnType("datetime");
+            entity.Property(e => e.SpouseFatherMotherName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.TenureInRaps).HasColumnName("TenureInRAPS");
+            entity.Property(e => e.ThirdOrganisation)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.UanNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.XiithInstitution)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.XiithPassingYear)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.XthInstitution)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.XthPassingYear)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.YearsInRaps).HasColumnName("YearsInRAPS");
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.EmployeesDeclarations)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmpId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Employees__Reaso__0880433F");
+        });
+
         modelBuilder.Entity<EmployementTypeDetail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Employem__3214EC07B1DBF9A0");
@@ -266,6 +443,34 @@ public partial class EhrmContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Image).IsUnicode(false);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ProbationEvaluationForm>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Probatio__3214EC072C1618BC");
+
+            entity.ToTable("ProbationEvaluationForm");
+
+            entity.Property(e => e.ApplicationDate)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.FinalDate)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+            entity.Property(e => e.ManagerSignature)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Recommendation).IsUnicode(false);
+            entity.Property(e => e.RemarksConfirmation)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.ProbationEvaluationForms)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmpId)
+                .HasConstraintName("FK__Probation__EmpId__0B5CAFEA");
         });
 
         modelBuilder.Entity<ProbationEvaluationQuestion>(entity =>

@@ -214,14 +214,9 @@ namespace EHRM.Web.Controllers
                     HttpContext.Session.SetInt32("EmpId", empId);
                 }
 
-                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                return result;
 
-                // Return a structured response based on the result of the update
-                return new
-                {
-                    success = result.Success,
-                    message = result.Message
-                };
+                
             }
             catch (Exception ex)
             {
@@ -242,62 +237,58 @@ namespace EHRM.Web.Controllers
         {
             int empid = (int)model.EmploymentDetails.EmpId;
 
-            if (_employee.CheckUserInDbByEmpId(empid) == true)
+            // Check if the employee exists in the database by EmpId
+            if (_employee.CheckUserInDbByEmpId(empid))
             {
-
-
-                TempData["ToastType"] = "success";  // Success, danger, warning, info
-                TempData["ToastMessage"] = "Operation completed successfully!";
-                //TempData["EmpId"] = result.Data;
-                return RedirectToAction("AddEmployee"); // Redirect to the list of roles
-                // Update the role details
+                // Update Employment Info
                 string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
                 var updateResult = await UpdateEmploymentInfoDetails(empid, updatedBy, model);
+
                 if (updateResult != null)
                 {
                     var updateResponse = updateResult as dynamic; // Assuming it's returning an anonymous type
-                    if (updateResponse?.success == true)
+                    if (updateResponse.Success == true)
                     {
                         TempData["ToastType"] = "success"; // Store success message
-                        TempData["ToastMessage"] = "Record Has been updated ";
-                        return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                        TempData["ToastMessage"] = "Record has been updated successfully!";
                     }
                     else
                     {
-                        ViewBag.ErrorMessage = updateResponse?.message; // Display error message
-                        return View(model); // Return to the same view with the provided model
+                        TempData["ToastType"] = "danger"; // Store error message
+                        TempData["ToastMessage"] = updateResponse?.message ?? "An error occurred while updating.";
                     }
 
                 }
-
-                return RedirectToAction("AddEmployee");
+                else
+                {
+                    TempData["ToastType"] = "danger"; // Store error message
+                    TempData["ToastMessage"] = "Failed to update the record.";
             }
 
+                return RedirectToAction("AddEmployee"); // Redirect after update operation
+            }
             else
             {
+                // Create Employment Info as the employee does not exist in the database
                 int createdById = 101; // Replace with logic to fetch the actual user ID
                 var result = await _employee.SaveEmploymentInfoAsync(model, createdById);
                 // Handle the result of the create operation
                 if (result.Success)
                 {
-
-                    TempData["ToastType"] = "success";  // Success, danger, warning, info
+                    TempData["ToastType"] = "success"; // Success message
                     TempData["ToastMessage"] = "Operation completed successfully!";
-                    TempData["EmpId"] = result.Data;
-                    return RedirectToAction("AddEmployee"); // Redirect to the list of roles
+                    TempData["EmpId"] = result.Data; // Store the created EmpId
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = result.Message; // Display error message
-                    return RedirectToAction("AddEmployee");// Return to the same view with the provided model
+                    TempData["ToastType"] = "danger"; // Error message
+                    TempData["ToastMessage"] = result.Message ?? "An error occurred while saving.";
                 }
 
+                return RedirectToAction("AddEmployee"); // Redirect after create operation
+            }
             }
             
-
-        }
-
-
         // Update Qualification Info
 
         [NonAction]
@@ -771,12 +762,64 @@ namespace EHRM.Web.Controllers
                                         //employeeDetails[0].IsProfileCompleted = true;
                                         employeeDetails[0].Active = true;
                                         await _UnitOfWork.SaveAsync();
+
+                                        
+
+
                                     }
                                     else
                                     {
                                         // Handle case where EmployeeDetails is not found
                                         throw new Exception("Employee details not found.");
                                     }
+
+                                    EmailServiceModel _email = new()
+
+                                    {
+
+                                        RecipentMail = employeeData[0].EmailAddress,  // Replace with actual recipient email
+
+                                        CcMail = "arjun@rapscorp.com",  // Replace with actual CC email
+
+                                        Subject = "Welcome to Raps Consulting Inc – Your Account Details",
+
+                                        Body = @"
+                                                    <html>
+                                                    <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                                                    <p>Dear <strong>" + employeeData[0].FirstName + @"</strong>,</p>
+ 
+                                                                <p>Welcome to <strong>Raps Consulting Inc</strong>! We are delighted to have you on board.</p>
+ 
+                                                                <p>Your EHRMS Portal account has been successfully created. Below are your login details:</p>
+ 
+                                                                <p><strong>Username:</strong> " + employeeData[0].EmailAddress + @"<br>
+                                                    <strong>Temporary Password:</strong> " + employeeData[0].Password + @"</p>
+ 
+                                                                <p>To ensure the security of your account, we recommend changing your password upon your first login.</p>
+ 
+                                                                <p>You can access your account by clicking the link below:</p>
+ 
+                                                                <p><a href='https://ehrm.rapsit.com/' style='color: #007BFF; font-weight: bold;'>Login to Your Account</a></p>
+ 
+                                                                <p>If you have any questions or need assistance, feel free to reach out to our support team at 
+                                                    <a href='mailto:support@rapscorp.com' style='color: #007BFF;'>support@rapscorp.com</a>.</p>
+ 
+                                                                <p>We look forward to working with you!</p>
+ 
+                                                                <p>Best regards,</p>
+                                                    <p><strong>HR Department</strong><br>
+                                                    <strong>Raps Consulting Inc</strong><br>
+                                                    <a href='https://www.rapscorp.com/' style='color: #007BFF;'>https://www.rapscorp.com/</a></p>
+                                                    </body>
+                                                    </html>"
+
+                                    };
+
+
+
+                                    // Sending the email
+                                    _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
+                                    //return RedirectToAction("EmployeeProfile"); // Redirect to the list of employee types
 
                                     // Commit the transaction
                                     transaction.Complete();
@@ -905,6 +948,15 @@ namespace EHRM.Web.Controllers
         {
             // Check if the employee ID exists in the EmployeeDetails table
             bool isExist = await _context.EmployeeDetails.AnyAsync(x => x.EmpId == empId);
+
+            // Return a flag: 1 if exists, 0 otherwise
+            return Json(new { flag = isExist ? 1 : 0 });
+        }
+
+        public async Task<JsonResult> CheckExistingEmail(string EmailAddress)
+        {
+            // Check if the employee ID exists in the EmployeeDetails table
+            bool isExist = await _context.EmployeeDetails.AnyAsync(x => x.EmailAddress == EmailAddress);
 
             // Return a flag: 1 if exists, 0 otherwise
             return Json(new { flag = isExist ? 1 : 0 });

@@ -63,6 +63,24 @@ namespace EHRM.ViewModel.Employee
 
         public string? ZipCode { get; set; }
 
+        // Employee Count for Manager Dynamic Dashboard
+        public int Count { get; set; }
+
+        // Employee Count for Admin Dynamic Dashboard
+        public int EmployeeCount { get; set; }
+
+        //Adding these property in order to use same model for grabbing data for User Dashboard
+
+        public string Degree { get; set; }
+
+        public string institution { get; set; }
+
+        public string year { get; set; }
+
+        public string qual { get; set; }
+
+
+
         public string Nationality { get; set; } = null!;
 
         public DateTime? CreatedAt { get; set; }

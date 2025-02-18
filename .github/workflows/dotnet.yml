@@ -1,0 +1,38 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Deployment_Actions
+
+on:
+  push:
+    branches: [ "actions-runner" ]
+ # pull_request:
+ #   branches: [ "actions-runner" ]
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - name: Set Git Safe Directory
+      run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S chown -R rapscorp-root:rapscorp-root /home/rapscorp-root/actions-runner/_work/RAPS-EHRM/
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Stop EHRM Service
+      run: |
+        whoami
+        sudo systemctl stop EHRM-Web.service
+    - name: Publish
+      run: sudo dotnet publish -c Release -o /var/www/EHRM/
+    - name: Restart EHRM Web Service
+      run: sudo systemctl restart EHRM-Web.service
+    - name: Check Service Status
+      run: sudo systemctl status EHRM-Web.service --no-pager  

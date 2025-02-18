@@ -575,7 +575,7 @@ namespace EHRM.Web.Controllers
                     // Project the team list to a simplified JSON-friendly format
                     var teamList = teams.Select(team => new
                     {
-                        id = team.Id, // Ensure Team class has an Id property
+                        id = team.TeamId, // Ensure Team class has an Id property
                         name = team.Name // Ensure Team class has a Name property
                     }).ToList();
 

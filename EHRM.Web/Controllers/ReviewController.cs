@@ -102,13 +102,13 @@ namespace EHRM.Web.Controllers
             {
                 var Probation = result.Data as IEnumerable<ProbationEvaluationQuestion>;
                 if (Probation != null)
-                
+
                 {
                     // Return the list of Team as a JSON response
                     var ProbationQuestionList = Probation.Select(probation => new
                     {
                         id = probation.QuestionId,
-                        Question =probation.Question
+                        Question = probation.Question
 
                     }).ToList();
                     return Json(ProbationQuestionList);
@@ -130,7 +130,7 @@ namespace EHRM.Web.Controllers
             try
             {
                 // Call the service method to update the role
-                var result = await _review.UpdateQuestionDetailsAsync(id,model);
+                var result = await _review.UpdateQuestionDetailsAsync(id, model);
 
                 // Return a structured response based on the result of the update
                 return new
@@ -160,7 +160,7 @@ namespace EHRM.Web.Controllers
             if (model.Id > 0)
             {
                 //Update the role details
-                
+
                 var updateResult = await UpdateQuestionDetails(model.Id, model);
                 if (updateResult != null)
                 {
@@ -225,7 +225,7 @@ namespace EHRM.Web.Controllers
             }
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> DeleteReview(int id)
         {
@@ -277,7 +277,7 @@ namespace EHRM.Web.Controllers
 
                 //return Json(result);
                 return Json(new { success = true, data = result });
-    }
+            }
             catch (Exception ex)
             {
                 return Json(new { success = true, massage = "error" });
@@ -359,5 +359,6 @@ namespace EHRM.Web.Controllers
             }
         }
         #endregion
+    }
 }
 

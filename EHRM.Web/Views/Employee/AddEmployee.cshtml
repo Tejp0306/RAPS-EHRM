@@ -25,11 +25,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form</title> <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <link type="text/css" href="~/customstyle/style.css" rel="stylesheet" />
-    <script type="text/javascript" src="~/customscripts/EmployeeManagement.js?v=1"></script>
-
+    <link type="text/css" href="~/CustomStyle/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/CustomScripts/EmployeeManagement.js"></script>
 </head>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <body>
 
@@ -80,7 +79,6 @@
                                                         <span id="EmpIdError" style="color: red; font-size:small; display: none;">Employee ID must be filled out</span>
                                                         <label id="lblEmpIdError" style="color:red"></label>
                                                     </div>
-
                                                 </div>
                                                 <!-- Additional form fields go here -->
                                             </fieldset>
@@ -144,10 +142,11 @@
                                                 <div class="col-12 col-md-6">
                                                     <label for="EmailAddress" class="form-label">Email Address *</label>
 
-                                                    <input asp-for="EmailAddress" class="form-control" id="EmailAddress" name="EmailAddress" placeholder="Enter Email-id" onchange="ValidateEmail()"
+                                                    <input asp-for="EmailAddress" class="form-control" id="EmailAddress" name="EmailAddress" placeholder="Enter Email-id" onchange="ValidateEmail(); CheckExistingEmail();"
                                                     data-bs-toggle="tooltip" title="Please enter a valid email address. It is important to provide a correct email." />
                                                     <span id="EmailError" style="color: red; font-size:small; display: none;">Email must be filled out</span>
                                                     <label id="lblError" style="color:red"></label>
+                                                    <label id="lblErrorexistingmail" style="color:red"></label>
                                                 </div>
                                             </div>
                                             <div class="row-mb-3">
@@ -210,8 +209,8 @@
                                             <div class="row mb-3">
                                                 <div class="col-12 col-md-6">
                                                     <label for="AadharNumber" class="form-label">Aadhar Card Number *</label>
-                                                    <input asp-for="AadharNumber" type="text" class="form-control" id="AadharNumber" placeholder="Enter Aadhar Card Number">
-                                                    <span id="AadharError" style="color: red; font-size:small; display: none;">Aadhar must be filled out</span>
+                                                    <input asp-for="AadharNumber" type="text" class="form-control" id="AadharNumber" placeholder="Enter Aadhar Card Number" oninput="validateAadhar()">
+                                                    <span id="AadharError" style="color: red; font-size:small; display: none;">Aadhar must be a 12-digit number</span>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="homePhone" class="form-label">Home Phone</label>
@@ -329,10 +328,6 @@
                                                 <div class="col-4 col-md-4">
    
                                                     <label for="EmpId" class="form-label">EMP-ID *</label>
-
-                                                    <input asp-for="EmploymentDetails.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" />
-
-
 
                                                     <input asp-for="EmploymentDetails.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" readonly />
                                                 </div>
@@ -460,9 +455,6 @@
                                               
                                                     <label for="EmpId" class="form-label">EMP-ID  *</label>
 
-                                                 
-                                                    <input asp-for="Qualifications.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" />
-
                                                     <input asp-for="Qualifications.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" onchange="CheckExistingEmpId()" readonly />
                                                 </div>
                                                 <div class="row mb-3">
@@ -548,9 +540,6 @@
                                                 <div class="col-4 col-md-4">
                                                     <label for="EmpId" class="form-label">EMP-ID  *</label>
 
-                                               
-                                                    <input asp-for="SalaryDetails.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" readonly />
-
                                                     <input asp-for="SalaryDetails.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" onchange="CheckExistingEmpId()" readonly />
 
                                                 </div>
@@ -604,14 +593,8 @@
                                                 <legend><i class="fas fa-pen"></i> Declaration</legend>
                                                 <div class="row mb-3">
                                                     <div class="col-4 col-md-4">
-
-                                                        <label for="EmpId" class="form-label">EMP-ID  *</label>
-
-                                                    <input asp-for="Declarations.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" readonly />
-
                                                         <label for="EmpId" class="form-label">EMP-ID *</label>
-                                                        <input asp-for="Declarations.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" onchange="CheckExistingEmpId()" readonly />
-
+                                                        <input asp-for="Declarations.EmpId" class="form-control" id="EmpId" value="@empIdFromSession" readonly />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
@@ -627,19 +610,19 @@
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6">
                                                         <label for="HrRepresentativeName" class="form-label">HR Representative Name</label>
-                                                        <input asp-for="Declarations.HrRepresentativeName" type="text" class="form-control" id="HrRepresentativeName" placeholder="Enter Name" >
+                                                        <input asp-for="Declarations.HrRepresentativeName" type="text" class="form-control" id="HrRepresentativeName" placeholder="Enter Name">
                                                         <span id="hrnameerror" style="color: red; font-size:small; display: none;">HR Representative name is required</span>
                                                     </div>
                                                     <div class="col-12 col-md-6">
                                                         <label for="HrRepresentativeDesignation" class="form-label">HR Representative Designation</label>
-                                                        <input asp-for="Declarations.HrRepresentativeDesignation" type="text" class="form-control" id="HrRepresentativeDesignation" placeholder="Enter Designation" >
+                                                        <input asp-for="Declarations.HrRepresentativeDesignation" type="text" class="form-control" id="HrRepresentativeDesignation" placeholder="Enter Designation">
                                                         <span id="hrdesignationerror" style="color: red; font-size:small; display: none;">HR Representative Designation is required</span>
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col-12 col-md-6">
                                                         <label for="HrContactInfo" class="form-label">HR Contact Information</label>
-                                                        <input asp-for="Declarations.HrContactInfo" type="text" class="form-control" id="HrContactInfo" placeholder="Enter Contact Information" >
+                                                        <input asp-for="Declarations.HrContactInfo" type="text" class="form-control" id="HrContactInfo" placeholder="Enter Contact Information">
                                                         <span id="hrcontacterror" style="color: red; font-size:small; display: none;">HR Contact Info is required</span>
                                                     </div>
                                                     <div class="col-12 col-md-6">
@@ -647,62 +630,29 @@
                                                         <input asp-for="Declarations.Date" type="text" class="form-control" id="Date" data-start-day="1" data-picker-type="date" placeholder="Select Declaration Date" readonly>
                                                     </div>
                                                 </div>
-                                                <div class="row mb-3">
-                                                    <div class="col-12 col-md-6">
-                                                        <label for="Signature" class="form-label">Signature</label>
-                                                        <input asp-for="Declarations.Signature" type="text" class="form-control" id="Signature" placeholder="Enter Signature" >
-                                                        <span id="signatureerror" style="color: red; font-size:small; display: none;">Signature is required</span>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <div class="col-12">
-                                                        <label class="form-label">Verification Checklist</label>
-                                                    </div>
-
-                                                    <div class="row mb-3">
-                                                        <div class="col-12 col-md-6"> 
-                                                            <label for="Date" class="form-label">Date</label>
-
-                                                            <input asp-for="Declarations.Date" type="text" class="form-control" id="Date" data-start-day="1" data-picker-type="date" placeholder="Select Declaration Date" readonly />   
-                                                            
-                                                        </div>
-                                                        <div class="col-12 col-md-6"> 
-                                                            <label for="Signature" class="form-label">Signature</label>
-                                                            <input asp-for="Declarations.Signature" type="text" class="form-control" id="Signature" placeholder="Enter Signature" required>
-
-                                                            <input asp-for="Declarations.Date" type="date" class="form-control" required>
-                                                        </div>
-                                                        <div class="col-12 col-md-6"> 
-                                                            <label for="Signature" class="form-label">Signature</label>
-                                                            <input asp-for="Declarations.Signature" type="text" class="form-control"   placeholder="Enter Signature" required>
-
-                                                        </div>
-                                                    </div> <!-- Verification Checklist -->
-                                                    <div class="row mb-3">
-                                                        <div class="col-12"> 
-                                                            <label class="form-label">Verification Checklist</label>
-                                                            </div>
-                                                            </div>
-
-
-                                                    <div class="col-12 col-md-6">
-                                                        <div class="form-check">
-                                                            <input asp-for="Declarations.VerificationCrossCheck" class="form-check-input" type="checkbox" id="VerificationCrossCheck">  
-                                                            <label for="VerificationCrossCheck" class="form-check-label">
-                                                                Information cross-checked with submitted documents
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12 col-md-6">
-                                                        <div class="form-check">
-                                                            <input asp-for="Declarations.VerificationMandatory" class="form-check-input" type="checkbox" id="VerificationMandatory">
-                                                            <label for="VerificationMandatory" class="form-check-label">
-                                                                All mandatory fields completed
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </fieldset>
+                                            <!-- Verification Checklist -->
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <label class="form-label">Verification Checklist</label>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <div class="form-check">
+                                                        <input asp-for="Declarations.VerificationCrossCheck" class="form-check-input" type="checkbox" id="VerificationCrossCheck">
+                                                        <label for="VerificationCrossCheck" class="form-check-label">
+                                                            Information cross-checked with submitted documents
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <div class="form-check">
+                                                        <input asp-for="Declarations.VerificationMandatory" class="form-check-input" type="checkbox" id="VerificationMandatory">
+                                                        <label for="VerificationMandatory" class="form-check-label">
+                                                            All mandatory fields completed
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="row mb-3">
                                                 <div class="col-12">
                                                     <button type="submit" class="btn btn-primary">Save Declaration</button>
@@ -714,12 +664,12 @@
                             </div>
                         </form>
                     </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
 
-                </div>
-
-            </div>
-        </div>
-    </div>
+                                    
 </body>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -819,12 +769,33 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
+
     }
 
 
     // Initialize tooltips
     var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     var tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+
+     function validateAadhar() {
+
+ 
+        const aadharInput = document.getElementById('AadharNumber');
+        const errorSpan = document.getElementById('AadharError');
+
+        // Regular expression to match exactly 12 digits
+        const aadharRegex = /^\d{12}$/;
+
+        if (aadharRegex.test(aadharInput.value)) {
+            errorSpan.style.display = 'none';
+            aadharInput.classList.remove('is-invalid');
+        } else {
+            errorSpan.style.display = 'block';
+            aadharInput.classList.add('is-invalid');
+        }
+    }
+
 
    
 

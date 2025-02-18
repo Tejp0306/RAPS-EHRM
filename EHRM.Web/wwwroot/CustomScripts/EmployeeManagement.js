@@ -22,6 +22,8 @@
 
 });
 
+
+
 function getManager() {
 
     $.ajax({
@@ -181,8 +183,10 @@ function getEmployeeData() {
             {
                 data: null,
                 render: function (rowData) {
-                    // Disable Activate/Deactivate buttons based on employmentStatus
+                    // Check if profileStatus is incomplete
+                    const isProfileIncomplete = rowData.profileStatus === false;
                     const isActive = rowData.employmentStatus === true;
+
                     return `
                         <div class="d-flex justify-content-center">
                             <button class="btn btn-warning btn-sm mx-1 edit-btn" data-id="${rowData.id}">
@@ -190,18 +194,19 @@ function getEmployeeData() {
                             </button>
                             <button class="btn btn-success btn-sm mx-1 activate-btn" 
                                 data-id="${rowData.id}" 
-                                ${isActive ? 'disabled' : ''}>
+                                ${isActive || isProfileIncomplete ? 'disabled' : ''}>
                                 <i class="bi bi-check-circle"></i> Activate
                             </button>
                             <button class="btn btn-danger btn-sm mx-1 danger-btn" 
                                 data-id="${rowData.id}" 
-                                ${!isActive ? 'disabled' : ''}>
+                                ${!isActive || isProfileIncomplete ? 'disabled' : ''}>
                                 <i class="bi bi-x-circle"></i> Deactivate
                             </button>
                         </div>`;
                 },
                 orderable: false
             }
+
         ],
         pageLength: 5,
         lengthMenu: [5, 10, 15, 20],
@@ -298,6 +303,31 @@ function CheckExistingEmpId() {
             }
             else {
                 $('#lblEmpIdError').text("");
+            }
+        },
+        error: function () {
+            alert("An error occurred while checking the EmpId. Please try again.");
+        }
+    });
+}
+
+
+function CheckExistingEmail() {
+    var EmailAddress = $('#EmailAddress').val(); // Get the EmpId from the input field
+    var url = '/Employee/CheckExistingEmail'; // Correct the URL to match your action method
+
+    $.ajax({
+        url: url,
+        type: 'POST', // POST method
+        data: { EmailAddress: EmailAddress }, // Send EmpId in the request body
+        success: function (response) {
+
+            if (response.flag > 0) { // Check if the flag is greater than 0
+                $('#lblErrorexistingmail').text("Email is already registered. Please use another Email Id");
+                $('#EmailAddress').val(""); // Clear the input field
+            }
+            else {
+                $('#lblErrorexistingmail').text("");
             }
         },
         error: function () {
@@ -410,6 +440,9 @@ function GetEmpForEmpCred(EmpId) {
 }
 
 
+
+
+
 function validatepersonalinfoForm() {
     const form = document.forms["personal-info"];
     const fieldsToValidate = [
@@ -420,7 +453,7 @@ function validatepersonalinfoForm() {
         { input: form["phone"], errorSpan: "cellError", errorMessage: "Mobile Number is required." },
         { input: form["EmailAddress"], errorSpan: "EmailError", errorMessage: "Email is required." },
         { input: form["RoleId"], errorSpan: "RoleError", errorMessage: "Role is required." },
-        { input: form["AadharNumber"], errorSpan: "AadharError", errorMessage: "Aadhar Number is required." },
+        //{ input: form["AadharNumber"], errorSpan: "AadharError", errorMessage: "Aadhar Number is required." },
         { input: form["TeamId"], errorSpan: "TeamError", errorMessage: "Team name is required." },
         { input: form["Street"], errorSpan: "streetError", errorMessage: "Street Name is required." },
         { input: form["Country"], errorSpan: "countryError", errorMessage: "Country name is required." },
@@ -611,6 +644,24 @@ function validatedeclarationForm() {
     function hideError(errorElement) {
         errorElement.textContent = ""; // Clear the error message
         errorElement.style.display = "none"; // Hide the error message
+    }
+
+
+}
+
+function validateAadhar() {
+    const aadharInput = document.getElementById('AadharNumber');
+    const errorSpan = document.getElementById('AadharError');
+
+    // Regular expression to match exactly 12 digits
+    const aadharRegex = /^\d{12}$/;
+
+    if (aadharRegex.test(aadharInput.value)) {
+        errorSpan.style.display = 'none';
+        aadharInput.classList.remove('is-invalid');
+    } else {
+        errorSpan.style.display = 'block';
+        aadharInput.classList.add('is-invalid');
     }
 }
 

@@ -191,6 +191,7 @@ namespace EHRM.ServiceLayer.Master
             {
                 var newTeam = new Team
                 {
+                    
                     Name = model.Name,
                     Description = model.Description,
                     IsActive = true,
@@ -218,6 +219,27 @@ namespace EHRM.ServiceLayer.Master
                 };
             }
         }
+
+        //public async Task<int> CreateTeamId()
+        //{
+        //    var teamRepository = _unitOfWork.GetRepository<Team>();
+
+        //    // Fetch all teams
+        //    var existingTeams = await teamRepository.GetAllAsync();
+
+        //    if (existingTeams == null || !existingTeams.Any())
+        //    {
+        //        // If no teams exist, return 1 as the first team ID
+        //        return 1;
+        //    }
+
+        //    // Get the last team's ID
+        //    var lastTeam = existingTeams.OrderByDescending(t => t.Id).FirstOrDefault();
+        //    int newTeamId = lastTeam.Id + 1; // Increment the last ID for the new team ID
+
+        //    return newTeamId;
+        //}
+
 
         public async Task<Result> UpdateTeamAsync(int id, int updatedBy, TeamScreenViewModel model)
         {
@@ -341,6 +363,7 @@ namespace EHRM.ServiceLayer.Master
             var TeamScreenRepository = _unitOfWork.GetRepository<Team>();  // Using generic repository
             var team = await TeamScreenRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = team };
+            
         }
 
         #endregion
@@ -353,7 +376,7 @@ namespace EHRM.ServiceLayer.Master
 
                 var newHoliday = new Holiday
                 {
-                    TeamId = model.TeamId,
+                    TeamId= model.TeamId,
                     Name = model.Name,
                     Description = model.Description,
                     IsActive = true,
