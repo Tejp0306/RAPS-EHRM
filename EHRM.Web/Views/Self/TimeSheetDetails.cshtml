@@ -1,0 +1,394 @@
+﻿
+@{
+    ViewData["Title"] = "TimeSheetDetails";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .page-heading {
+        color: #007bff;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 5px;
+        font-family: Arial, sans-serif;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="~/jspdf/jspdf.js"></script>
+<script src="~/jspdf/printthis.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<script src="~/jspdf/jspdffunctions.js"></script>
+<script src="~/customscripts/timesheet.js"></script>
+<div class="container mt-1">
+    <h3 class="page-heading">Timesheet Details</h3>
+
+    <!-- Month Selector Dropdown -->
+    <div class="mb-4 mt-5 col-lg-4">
+        <label for="monthSelector" class="form-label">Select Month</label>
+        <select id="monthSelector" class="form-select">
+            <option value="Select Month">Select Month</option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+        </select>
+    </div>
+
+    <!-- Timesheet Table -->
+    <div class="table-responsive">
+        <table id="timesheetTable" class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Project</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data rows will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Scrollable message -->
+    <div class="scrolling-text mb-3" style="color: red; font-weight: bold; font-size: 1em;">
+        * To view Timesheets please select the month.
+    </div>
+
+</div>
+
+<!-- Modal Structure for Viewing Timesheet -->
+<div class="modal fade" id="viewTimesheetModal" tabindex="-1" aria-labelledby="viewTimesheetModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewTimesheetModalLabel">Timesheet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="viewTimesheetForm">
+                    <!-- Modal Content will be dynamically inserted here -->
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            <label for="viewEmployeeName" class="form-label">Name of Employee:</label>
+                            <input type="text" class="form-control" id="viewEmployeeName" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="viewClientName" class="form-label">Name of Client:</label>
+                            <input type="text" class="form-control" id="viewClientName" readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="viewEmployeePosition" class="form-label">Position of Employee:</label>
+                            <input type="text" class="form-control" id="viewPosition" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="viewProjectName" class="form-label">Name of Project:</label>
+                            <input type="text" class="form-control" id="viewProjectName" readonly>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th># of Hours Worked</th>
+                                <th>Description of Assignment Completed</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="viewTimesheetRows">
+                            <!-- Timesheet rows will be dynamically added -->
+                        </tbody>
+                    </table>
+
+                    <div class="col-md-12 mb-3">
+                        <label for="viewNote" class="form-label">NOTE (optional):</label>
+                        <input type="text" class="form-control" id="viewNote" readonly>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="viewTotalHours" class="form-label">TOTAL Hours Worked:</label>
+                            <input type="text" class="form-control" id="viewTotalHours" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Signature fields -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="viewEmployeeSignature" class="form-label">Signature of Employee:</label>
+                            <input type="text" class="form-control" id="viewEmployeeSignature" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="viewManagerSignature" class="form-label">Signature Client Manager:</label>
+                            <input class="form-control" id="viewManagerSignature" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label for="viewSubmissionDate" class="form-label">Date of Submission:</label>
+                            <input type="text" class="form-control" id="viewSubmissionDate" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="viewSignatureDate" class="form-label">Date of Signature:</label>
+                            <input type="text" class="form-control" id="viewSignatureDate" readonly>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/jspdf/jspdf.js"></script>
+<script>
+         $(document).ready(function () {
+        // Month name to number mapping
+        var monthMapping = {
+            "January": "0",
+            "February": "1",
+            "March": "2",
+            "April": "3",
+            "May": "4",
+            "June": "5",
+            "July": "6",
+            "August": "7",
+            "September": "8",
+            "October": "9",
+            "November": "10",
+            "December": "11"
+        };
+
+        // When the month selector value changes
+        $('#monthSelector').change(function () {
+            // Get the selected month
+            var selectedMonth = $(this).val();
+
+            // If a valid month is selected (avoid triggering on "Select Month")
+            if (selectedMonth !== "Select Month") {
+                // Map the full month name to its numeric representation
+                var monthNumber = monthMapping[selectedMonth];
+
+                // Make an AJAX request to fetch timesheets for the selected month
+                $.ajax({
+                    url: '/Self/GetTimeSheetByMonthData', // Adjust URL to your controller's action
+                    type: 'GET',
+                    data: { month: monthNumber },
+                    success: function (response) {
+                        // Check if the response is successful
+                        if (response.length) {
+                            // Clear the table before populating
+                            $('#timesheetTable tbody').empty();
+                            var data = response;
+                            // Loop through the data and append rows to the table
+                            $.each(data, function (index, ts) {
+                                   var row = '<tr>' +
+                '<td>' + ts.id + '</td>' +
+                '<td>' + ts.name + '</td>' +
+                '<td>' + ts.project + '</td>' +
+                '<td>' +
+                    '<button class="btn btn-success viewTimesheet" data-id="' + ts.id + '">View</button> ' +
+                    '<button class="btn btn-info printTimesheet" data-id="' + ts.id + '">Print</button>' +
+                '</td>' +
+              '</tr>';
+    $('#timesheetTable tbody').append(row);
+
+                            });
+                        } else {
+                            // If no data found or error, show a message
+                            $('#timesheetTable tbody').empty();
+                            var row = '<tr><td colspan="4" class="text-center">No timesheets found for this month.</td></tr>';
+                            $('#timesheetTable tbody').append(row);
+                        }
+                    },
+                    error: function () {
+                        // Handle AJAX error
+                        $('#timesheetTable tbody').empty();
+                        var row = '<tr><td colspan="4" class="text-center">Error fetching data. Please try again.</td></tr>';
+                        $('#timesheetTable tbody').append(row);
+                    }
+                });
+            }
+        });
+
+        // Handle View button
+    $(document).ready(function () {
+        // Bind to View button click to open modal and fill data
+        $('#timesheetTable').on('click', '.viewTimesheet', function () {
+            var timesheetId = $(this).data('id'); // Get the clicked timesheet ID
+            debugger;
+            // Make an AJAX call to fetch timesheet data by ID
+            $.ajax({
+                url: '/Self/GetTimeSheetById', // Your API endpoint
+                type: 'GET',
+                data: { id: timesheetId },
+                success: function (response) {
+                    // If data exists, populate the modal fields
+                    if (response.data) {
+                        // Populate static fields
+                        $('#viewEmployeeName').val(response.data.empName);
+                        $('#viewClientName').val(response.data.clientName);
+                        $('#viewPosition').val(response.data.position);
+                        $('#viewProjectName').val(response.data.projectName);
+                        $('#viewNote').val(response.data.note);
+                        $('#viewTotalHours').val(response.data.totalHours);
+                        $('#viewEmployeeSignature').val(response.data.employeeSignature);
+                        $('#viewManagerSignature').val(response.data.managerSignature);
+                        $('#viewSubmissionDate').val(response.data.submissionDate);
+                        $('#viewSignatureDate').val(response.data.signatureDate);
+
+                        // Populate the timesheet rows in the modal
+                        var rows = '';
+                        $.each(response.data.dailyEntries, function (index, row) {
+                            rows += '<tr>' +
+                                        '<td>' + row.dayDate + '</td>' +
+                                        '<td>' + row.dayOfWeek + '</td>' +
+                                        '<td>' + row.hoursWorked + '</td>' +
+                                        '<td>' + row.assignmentDesc + '</td>' +
+                                        '<td>' + row.remarks + '</td>' +
+                                    '</tr>';
+                        });
+                        $('#viewTimesheetRows').html(rows); // Populate timesheet rows dynamically
+
+                        // Show the modal after populating data
+                        $('#viewTimesheetModal').modal('show');
+                    } else {
+                        alert("No data available for the selected timesheet.");
+                    }
+                },
+                error: function () {
+                    alert("Error fetching timesheet details");
+                }
+            });
+        });
+    });
+
+
+        // Handle Print button click event for timesheets
+    $('#timesheetTable').on('click', '.printTimesheet', function () {
+        var timesheetId = $(this).data('id'); // Get the timesheet ID from the button's data-id attribute
+
+        // Make an AJAX request to fetch the timesheet details by ID
+        $.ajax({
+            url: '/Self/GetTimeSheetById',  // Controller action
+            type: 'GET',
+            data: { id: timesheetId },  // Send the timesheet ID
+            success: function (response) {
+                // Check if the response contains valid data
+                if (response.success) {
+                    var timesheet = response.data;  // Get the timesheet data
+
+                    var doc = new jsPDF();
+
+                    // Title Styling
+                    doc.setFontSize(20);
+                    doc.setTextColor(41, 128, 185); // Blue color for the title
+                    doc.setDrawColor(41, 128, 185); // Set draw color to green
+                    doc.line(10, 10, 200, 10); // Draw a line
+                    doc.text('Timesheet Details', 14, 20);
+                    doc.setFont("times", "bold"); // Set font to Times and bold style
+
+                    // Add the main details in a two-column layout
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0); // Black color for the details
+                    // Add the main details
+                    doc.text('Employee Name: ' + timesheet.empName, 14, 30);
+                    doc.text('Client Name: ' + timesheet.clientName, 14, 40);
+                    doc.text('Position: ' + timesheet.position, 14, 50);
+                    doc.text('Project Name: ' + timesheet.projectName, 14, 60);
+                    doc.text('Employee Signature: ' + timesheet.employeeSignature, 14, 70);
+                    doc.text('Manager Signature: ' + timesheet.managerSignature, 14, 80);
+                    doc.text('Signature Date: ' + timesheet.signatureDate, 14, 90);
+                    doc.text('Submission Date: ' + timesheet.submissionDate, 14, 100);
+                    doc.text('Note: ' + timesheet.note, 14, 110);
+                    doc.text('Total Hours: ' + timesheet.totalHours, 14, 120);
+
+                    // Add Daily Entries as a table using autoTable
+                    var tableData = timesheet.dailyEntries.map(function (entry) {
+                        return [
+                            entry.dayDate, // Date
+                            entry.dayOfWeek, // Day
+                            entry.hoursWorked, // Hours Worked
+                            entry.assignmentDesc, // Assignment
+                            entry.remarks // Remarks
+                        ];
+                    });
+
+                    // Table headers
+                    var headers = [
+                        { title: 'Date', dataKey: 'date' },
+                        { title: 'Day', dataKey: 'day' },
+                        { title: 'Hours Worked', dataKey: 'hoursWorked' },
+                        { title: 'Assignment', dataKey: 'assignment' },
+                        { title: 'Remarks', dataKey: 'remarks' }
+                    ];
+
+                    doc.autoTable({
+                        head: [headers],  // Table headers
+                        body: tableData,  // Table data
+                        startY: 130,  // Y position to start the table
+                        margin: { top: 10, left: 14, right: 14 }, // Optional margins
+                        theme: 'grid', // Grid theme for table
+                        headStyles: {
+                            fillColor: [41, 128, 185], // Blue header color
+                            textColor: [255, 255, 255], // White text color
+                            fontSize: 12, // Font size for header
+                        },
+                        bodyStyles: {
+                            fontSize: 10, // Font size for body
+                        },
+                        columnStyles: {
+                            0: { cellWidth: 'auto' }, // Auto width for the first column (Date)
+                            1: { cellWidth: 'auto' }, // Auto width for the second column (Day)
+                            2: { cellWidth: 'auto' }, // Auto width for the third column (Hours Worked)
+                            3: { cellWidth: 'auto' }, // Auto width for the fourth column (Assignment)
+                            4: { cellWidth: 'auto' }  // Auto width for the fifth column (Remarks)
+                        },
+                        styles: {
+                            cellPadding: 5, // Padding within cells
+                            halign: 'center', // Horizontal alignment for cells
+                        }
+                    });
+
+                    // Open the PDF in a new tab
+                    var pdfBlob = doc.output('blob');
+                    var url = URL.createObjectURL(pdfBlob);
+                    window.open(url, '_blank');
+                } else {
+                    alert(response.Message || "Error fetching timesheet data.");
+                }
+            },
+            error: function () {
+                alert("An error occurred while fetching the timesheet data. Please try again.");
+            }
+        });
+    });
+
+
+    });
+
+</script>
