@@ -1,6 +1,9 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.ServiceLayer.Models;
+using EHRM.ViewModel.Asset;
 using EHRM.ViewModel.Employee;
+using EHRM.ViewModel.Review;
+using EHRM.ViewModel.Self;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +20,15 @@ namespace EHRM.ServiceLayer.Self
         Task<List<GetAllEmployeeViewModel>> GetAllSelfEmployeeRecordDetails(int EmpId);
 
         Task<List<GetAllEmployeeViewModel>> GetAllEmployeeDataDetails(int EmpId);
+
+        #region TimeSheet
+        Task<Result> CreateTimeSheetAsync(TimeSheetViewModel model);
+        Task<TimeSheetViewModel> GetTimeSheetByIdAsync(int timesheetId);
+        Task<TimeSheetViewModel> GetTimeSheetsByIdAsync(int Id);
+        Task<Result> GetTimeSheetByMonthAsync(string month);
+
+
+        #endregion
 
     }
 }
