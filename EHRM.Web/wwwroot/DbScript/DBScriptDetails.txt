@@ -233,7 +233,7 @@ CREATE TABLE AssetsDb (
 
 CREATE TABLE [EHRM].[dbo].[EmployeesCred] (
     [Id] INT IDENTITY(1,1) PRIMARY KEY, -- Auto-increment primary key
-    [EmpId] NVARCHAR(50) NOT NULL, -- Employee ID
+    [EmpId] INT NOT NULL, -- Employee ID
     [LoginId] INT , -- Login Id
     [Email] NVARCHAR(100) NOT NULL, -- Email address
     [TempPassword] NVARCHAR(255) NOT NULL, -- Temporary password
