@@ -2,9 +2,13 @@
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
+using EHRM.ViewModel.Review;
+using EHRM.ViewModel.Self;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -161,5 +165,250 @@ namespace EHRM.ServiceLayer.Self
             return employeeWithDetails;
         }
 
+        #region TimeSheet
+        public async Task<Result> CreateTimeSheetAsync(TimeSheetViewModel model)
+        {
+            try
+            {
+                // Ensure DailyEntries are provided
+                if (model.DailyEntries == null || !model.DailyEntries.Any())
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Please fill in the daily timesheet entries."
+                    };
+                }
+
+                TimeSheet timesheet;
+
+                // Check if the timesheet exists by Id, otherwise create a new one
+                if (model.Id > 0)
+                {
+                    // Update existing timesheet
+                    timesheet = await _context.TimeSheets
+                        .Include(t => t.DailyEntries)
+                        .FirstOrDefaultAsync(t => t.Id == model.Id);
+
+                    if (timesheet == null)
+                    {
+                        return new Result
+                        {
+                            Success = false,
+                            Message = "Timesheet not found."
+                        };
+                    }
+
+                    // Update the existing timesheet fields
+                    timesheet.Id = model.Id;
+                    timesheet.PresentMonth = model.PresentMonth;
+                    timesheet.EmpName = model.EmpName;
+                    timesheet.ClientName = model.ClientName;
+                    timesheet.Position = model.Position;
+                    timesheet.ProjectName = model.ProjectName;
+                    timesheet.EmployeeSignature = model.EmployeeSignature;
+                    timesheet.ManagerSignature = model.ManagerSignature;
+                    timesheet.SignatureDate = model.SignatureDate;
+                    timesheet.SubmissionDate = model.SubmissionDate;
+                    timesheet.Note = model.Note;
+                    timesheet.TotalHours = model.TotalHours;
+                    timesheet.UpdatedAt = DateTime.Now;
+
+                    // Update daily entries
+                    foreach (var entry in model.DailyEntries)
+                    {
+                        var dailyEntry = timesheet.DailyEntries
+                            .FirstOrDefault(de => de.DayDate?.ToString("dd-MM-yyyy") == entry.DayDate);
+                        if (dailyEntry != null)
+                        {
+                            dailyEntry.HoursWorked = decimal.TryParse(entry.HoursWorked, out var hours) ? hours : 0;
+                            dailyEntry.AssignmentDesc = entry.AssignmentDesc;
+                            dailyEntry.Remarks = entry.Remarks;
+                            dailyEntry.UpdatedAt = DateTime.Now;
+                        }
+                    }
+                }
+                else
+                {
+                    // Create a new timesheet
+                    timesheet = new TimeSheet
+                    {
+                        Id = model.Id,
+                        PresentMonth = model.PresentMonth,
+                        EmpId = model.EmpId,
+                        EmpName = model.EmpName,
+                        ClientName = model.ClientName,
+                        Position = model.Position,
+                        ProjectName = model.ProjectName,
+                        EmployeeSignature = model.EmployeeSignature,
+                        ManagerSignature = model.ManagerSignature,
+                        SignatureDate = model.SignatureDate,
+                        SubmissionDate = model.SubmissionDate,
+                        Note = model.Note,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        TotalHours = model.TotalHours
+                    };
+
+                    // Loop through the daily entries and create records for them
+                    foreach (var dailyEntry in model.DailyEntries)
+                    {
+                        DateOnly? _daydate = DateOnly.FromDateTime(DateTime.ParseExact(dailyEntry.DayDate, "d-M-yyyy", CultureInfo.InvariantCulture));
+                        var newDailyEntry = new DailyEntry
+                        {
+                            DayDate = _daydate,  // This will be null if parsing failed
+                            DayOfWeek = dailyEntry.DayOfWeek,
+                            EmpId= model.EmpId,
+                            HoursWorked = string.IsNullOrEmpty(dailyEntry.HoursWorked) ? 0 : Convert.ToDecimal(dailyEntry.HoursWorked),
+                            AssignmentDesc = dailyEntry.AssignmentDesc,
+                            Remarks = dailyEntry.Remarks,
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now
+                        };
+
+                        // Add the daily entry to the Timesheet
+                        timesheet.DailyEntries.Add(newDailyEntry);
+                    }
+
+                    // Add the new timesheet and daily entries to the database
+                    await _UnitOfWork.GetRepository<TimeSheet>().AddAsync(timesheet);
+                }
+
+                // Save changes to the database
+                await _UnitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Timesheet saved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error saving record: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<TimeSheetViewModel> GetTimeSheetByIdAsync(int EmpId)
+        {
+            try
+            {
+                var timesheet = await _context.TimeSheets
+                    .Include(t => t.DailyEntries).OrderByDescending(t => t.Id)
+                    .FirstOrDefaultAsync(t => t.EmpId == EmpId);
+
+                if (timesheet == null)
+                {
+
+                    return null;
+                }
+
+                // Map the timesheet to the view model
+                var timesheetViewModel = new TimeSheetViewModel
+                {
+                    Id= timesheet.Id,
+                    PresentMonth = timesheet.PresentMonth,
+                    EmpName = timesheet.EmpName,
+                    ClientName = timesheet.ClientName,
+                    Position = timesheet.Position,
+                    ProjectName = timesheet.ProjectName,
+                    EmployeeSignature = timesheet.EmployeeSignature,
+                    ManagerSignature = timesheet.ManagerSignature,
+                    SignatureDate = timesheet.SignatureDate,
+                    SubmissionDate = timesheet.SubmissionDate,
+                    Note = timesheet.Note,
+                    TotalHours = timesheet.TotalHours,
+                    DailyEntries = timesheet.DailyEntries.Select(de => new DailyEntryModel
+                    {
+                        DayDate = de.DayDate?.ToString("dd-MM-yyyy"),
+                        DayOfWeek = de.DayOfWeek,
+                        HoursWorked = de.HoursWorked?.ToString() ?? "0",
+                        AssignmentDesc = de.AssignmentDesc,
+                        Remarks = de.Remarks
+                    }).ToList()
+                };
+
+                return timesheetViewModel;
     }
+            catch (Exception ex)
+            {
+
+                throw new Exception("An error occurred while fetching the timesheet.", ex);
+            }
+        }
+
+        public async Task<Result> GetTimeSheetByMonthAsync(string month)
+        {
+            var timeSheetRepository = _UnitOfWork.GetRepository<TimeSheet>();  // Using generic repository
+
+            // Fetch all timesheets and filter by month (assuming `Date` is a DateTime column)
+            var timesheets = await timeSheetRepository.GetAllAsync();
+
+            // Filter the timesheets by the month
+            var filteredTimesheets = timesheets.Where(t => t.PresentMonth == month).ToList();
+
+            return new Result { Success = true, Data = filteredTimesheets };
+        }
+
+        public async Task<TimeSheetViewModel> GetTimeSheetsByIdAsync(int id)
+        {
+            try
+            {
+                // Fetch the timesheet by ID and include DailyEntries in the result
+                var timesheet = await _context.TimeSheets
+                    .Include(t => t.DailyEntries)  // Include related DailyEntries
+                    .FirstOrDefaultAsync(t => t.Id == id);  // Filter by the timesheet ID
+
+                // If no timesheet is found, return null
+                if (timesheet == null)
+                {
+                    return null;
+                }
+
+                // Map the fetched timesheet to a ViewModel
+                var timesheetViewModel = new TimeSheetViewModel
+                {
+                    Id = timesheet.Id,
+                    PresentMonth = timesheet.PresentMonth,
+                    EmpName = timesheet.EmpName,
+                    ClientName = timesheet.ClientName,
+                    Position = timesheet.Position,
+                    ProjectName = timesheet.ProjectName,
+                    EmployeeSignature = timesheet.EmployeeSignature,
+                    ManagerSignature = timesheet.ManagerSignature,
+                    SignatureDate = timesheet.SignatureDate,
+                    SubmissionDate = timesheet.SubmissionDate,
+                    Note = timesheet.Note,
+                    TotalHours = timesheet.TotalHours,
+                    // Map the DailyEntries into DailyEntryModel objects
+                    DailyEntries = timesheet.DailyEntries.Select(de => new DailyEntryModel
+                    {
+                        DayDate = de.DayDate?.ToString("dd-MM-yyyy"),
+                        DayOfWeek = de.DayOfWeek,
+                        HoursWorked = de.HoursWorked?.ToString() ?? "0",  // Default to "0" if HoursWorked is null
+                        AssignmentDesc = de.AssignmentDesc,
+                        Remarks = de.Remarks
+                    }).ToList()
+                };
+
+                return timesheetViewModel;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (or handle it as needed)
+                throw new Exception("An error occurred while fetching the timesheet.", ex);
+            }
+        }
+
+
+
+
+
+        #endregion
+    }
+
 }

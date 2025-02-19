@@ -337,6 +337,7 @@ CREATE TABLE ProbationEvaluationForm (
 	FOREIGN KEY (EmpId) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE 
 );
 
+
 // Document Table
 
 CREATE TABLE Documents (
@@ -349,6 +350,43 @@ CREATE TABLE Documents (
     UploadedAt DATETIME DEFAULT GETDATE(), -- Auto-stores upload timestamp
 	FOREIGN KEY (EmployeeID) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE
 );
+
+
+//region TimeSheet Tables
+
+CREATE TABLE DailyEntries (
+    Id INT IDENTITY(1,1) PRIMARY KEY,  -- Auto-incremented primary key
+    TimeSheetId INT NULL,               -- Foreign Key reference to TimeSheet (optional)
+    DayDate DATE NULL,                  -- Nullable Date field
+    DayOfWeek VARCHAR(50) NULL,         -- Day of the week (nullable string)
+    HoursWorked DECIMAL(18, 2) NULL,    -- Nullable decimal to store hours worked
+    AssignmentDesc VARCHAR(255) NULL,   -- Nullable string for assignment description
+    Remarks VARCHAR(255) NULL,          -- Nullable string for remarks
+    CreatedAt DATETIME NULL,            -- Nullable DateTime for CreatedAt
+    UpdatedAt DATETIME NULL,            -- Nullable DateTime for UpdatedAt
+    CONSTRAINT FK_DailyEntry_TimeSheet FOREIGN KEY (TimeSheetId) REFERENCES TimeSheets(Id) -- Foreign key to TimeSheet table
+);
+
+CREATE TABLE TimeSheets (
+    Id INT IDENTITY(1,1) PRIMARY KEY,                 -- Auto-incremented primary key
+    PresentMonth VARCHAR(50) NULL,                     -- Nullable string for PresentMonth
+    EmpName VARCHAR(100) NULL,                         -- Nullable string for Employee Name
+    ClientName VARCHAR(100) NULL,                      -- Nullable string for Client Name
+    Position VARCHAR(100) NULL,                        -- Nullable string for Position
+    ProjectName VARCHAR(100) NULL,                     -- Nullable string for Project Name
+    EmployeeSignature VARCHAR(255) NULL,               -- Nullable string for Employee Signature
+    ManagerSignature VARCHAR(255) NULL,                -- Nullable string for Manager Signature
+    SignatureDate DATETIME NULL,                       -- Nullable DateTime for Signature Date
+    SubmissionDate DATETIME NULL,                      -- Nullable DateTime for Submission Date
+    Note VARCHAR(255) NULL,                            -- Nullable string for Notes
+    TotalHours DECIMAL(18, 2) NULL,                    -- Nullable decimal for Total Hours Worked
+    CreatedAt DATETIME NULL,                           -- Nullable DateTime for CreatedAt
+    UpdatedAt DATETIME NULL,                           -- Nullable DateTime for UpdatedAt
+    CONSTRAINT FK_TimeSheet_DailyEntries FOREIGN KEY (Id) REFERENCES DailyEntries(TimeSheetId) -- Foreign key relationship with DailyEntries
+);
+
+//endregion
+
 
 
 
