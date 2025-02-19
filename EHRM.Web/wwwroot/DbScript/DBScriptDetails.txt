@@ -98,6 +98,18 @@ CREATE TABLE ProbationEvaluationQuestions (
 	IsActive BIT
 );
 
+// User Document 
+
+CREATE TABLE UserDocument (
+    DocumentID INT IDENTITY(1,1) PRIMARY KEY,  -- Auto-incrementing primary key
+    EmployeeID INT NOT NULL,                   -- Foreign key reference to EmployeeDetails (assuming it exists)
+    DocumentType NVARCHAR(255) NOT NULL,       -- Type of document
+    Description NVARCHAR(500) NULL,            -- Optional description
+    FilePath NVARCHAR(MAX) NOT NULL,           -- Path of the uploaded file
+    UploadedAt DATETIME DEFAULT GETDATE()      -- Timestamp of upload with default value
+    REFERENCES EmployeeDetails (EmpId) ON DELETE CASCADE;
+);
+
 
 //NoticeBoard 
 
@@ -323,6 +335,19 @@ CREATE TABLE ProbationEvaluationForm (
     CreatedAt DATETIME,             -- Tracks when the record was created
     UpdatedAt DATETIME ,              -- Tracks when the record was last updated
 	FOREIGN KEY (EmpId) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE 
+);
+
+// Document Table
+
+CREATE TABLE Documents (
+    DocumentID INT IDENTITY(1,1) PRIMARY KEY, -- Auto-incrementing primary key
+    EmployeeID INT NOT NULL, -- Employee ID
+    DocumentType NVARCHAR(50) NOT NULL, -- Document type
+    FileName NVARCHAR(255) NOT NULL, -- File name
+    FilePath NVARCHAR(500) NOT NULL, -- File storage path
+    Description NVARCHAR(MAX), -- Optional description
+    UploadedAt DATETIME DEFAULT GETDATE(), -- Auto-stores upload timestamp
+	FOREIGN KEY (EmployeeID) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE
 );
 
 
