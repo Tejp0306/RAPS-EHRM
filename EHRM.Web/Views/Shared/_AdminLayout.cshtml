@@ -32,6 +32,9 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
+    <title>Favicon Demo</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/pic/rapslogo.png" />
+
 
     <!-- Favicon -->
     <link href="~/img/favicon.ico" rel="icon">
@@ -63,6 +66,12 @@
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <!-- DataTables Responsive CSS -->
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+
+    <script type="text/javascript">
+        function preventBack() { window.history.forward(); }
+        setTimeout("preventBack()", 0);
+        window.onunload = function () { null };
+    </script>
 
     <style>
         .sidebar {

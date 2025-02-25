@@ -25,6 +25,7 @@ using System.Text;
 using static Logger.LoggerService;
 using EHRM.ServiceLayer.Dashboard;
 using EHRM.ServiceLayer.Calendar;
+using EHRM.ServiceLayer.Document;
 
 namespace EHRM.Infrastructure.Configurations
 {
@@ -46,7 +47,11 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IdashboardService, Dashboardservice>();
             services.AddScoped<ICalendarService, CalendarService>();
+
             services.AddScoped<ILeaveTypes, LeaveTypes>();
+
+            services.AddScoped<IDocumentService, DocumentService>();
+
 
 
             //services.AddScoped<ISubMenuService, SubMenuService>();

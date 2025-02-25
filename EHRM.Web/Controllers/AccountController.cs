@@ -204,6 +204,7 @@ namespace EHRM.Web.Controllers
                 // Skip JWT Token Generation here, handle in OTP section
                 // Instead, store the employee data for OTP verification
                 HttpContext.Session.SetString("EmployeeEmail", employeeCred.Email);
+                HttpContext.Session.SetInt32("EmpId", (int)employeeCred.EmpId);
 
                 // Check the MagicOTP configuration
                 var magicOtpConfig = _configuration.GetSection("MagicOTP");
