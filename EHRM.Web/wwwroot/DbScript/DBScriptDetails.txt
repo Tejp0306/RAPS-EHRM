@@ -354,38 +354,123 @@ CREATE TABLE Documents (
 
 //region TimeSheet Tables
 
-CREATE TABLE DailyEntries (
-    Id INT IDENTITY(1,1) PRIMARY KEY,  -- Auto-incremented primary key
-    TimeSheetId INT NULL,               -- Foreign Key reference to TimeSheet (optional)
-    DayDate DATE NULL,                  -- Nullable Date field
-    DayOfWeek VARCHAR(50) NULL,         -- Day of the week (nullable string)
-    HoursWorked DECIMAL(18, 2) NULL,    -- Nullable decimal to store hours worked
-    AssignmentDesc VARCHAR(255) NULL,   -- Nullable string for assignment description
-    Remarks VARCHAR(255) NULL,          -- Nullable string for remarks
-    CreatedAt DATETIME NULL,            -- Nullable DateTime for CreatedAt
-    UpdatedAt DATETIME NULL,            -- Nullable DateTime for UpdatedAt
-    CONSTRAINT FK_DailyEntry_TimeSheet FOREIGN KEY (TimeSheetId) REFERENCES TimeSheets(Id) -- Foreign key to TimeSheet table
-);
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[DailyEntry] 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[DailyEntry](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmpId] [int] NULL,
+	[TimeSheetId] [int] NULL,
+	[DayDate] [date] NULL,
+	[DayOfWeek] [varchar](20) NULL,
+	[HoursWorked] [decimal](18, 2) NULL,
+	[AssignmentDesc] [text] NULL,
+	[Remarks] [text] NULL,
+	[CreatedAt] [datetime] NULL,
+	[UpdatedAt] [datetime] NULL,
+ CONSTRAINT [PK__DailyEnt__3214EC07BF70E883] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TimeSheet] 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TimeSheet](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmpId] [int] NULL,
+	[PresentMonth] [varchar](50) NULL,
+	[EmpName] [varchar](100) NULL,
+	[ClientName] [varchar](100) NULL,
+	[Position] [varchar](100) NULL,
+	[ProjectName] [varchar](100) NULL,
+	[EmployeeSignature] [varchar](100) NULL,
+	[ManagerSignature] [varchar](100) NULL,
+	[SignatureDate] [datetime] NULL,
+	[SubmissionDate] [datetime] NULL,
+	[Note] [text] NULL,
+	[TotalHours] [decimal](18, 2) NULL,
+	[CreatedAt] [datetime] NULL,
+	[UpdatedAt] [datetime] NULL,
+ CONSTRAINT [PK__TimeShee__3214EC07D5A7E666] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[DailyEntry] ADD  CONSTRAINT [DF__DailyEntr__Creat__10566F31]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[DailyEntry] ADD  CONSTRAINT [DF__DailyEntr__Updat__114A936A]  DEFAULT (getdate()) FOR [UpdatedAt]
+GO
+ALTER TABLE [dbo].[TimeSheet] ADD  CONSTRAINT [DF__TimeSheet__Creat__0C85DE4D]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[TimeSheet] ADD  CONSTRAINT [DF__TimeSheet__Updat__0D7A0286]  DEFAULT (getdate()) FOR [UpdatedAt]
+GO
+ALTER TABLE [dbo].[DailyEntry]  WITH CHECK ADD  CONSTRAINT [FK_DailyEntry_TimeSheet] FOREIGN KEY([TimeSheetId])
+REFERENCES [dbo].[TimeSheet] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[DailyEntry] CHECK CONSTRAINT [FK_DailyEntry_TimeSheet]
+GO
 
-CREATE TABLE TimeSheets (
-    Id INT IDENTITY(1,1) PRIMARY KEY,                 -- Auto-incremented primary key
-    PresentMonth VARCHAR(50) NULL,                     -- Nullable string for PresentMonth
-    EmpName VARCHAR(100) NULL,                         -- Nullable string for Employee Name
-    ClientName VARCHAR(100) NULL,                      -- Nullable string for Client Name
-    Position VARCHAR(100) NULL,                        -- Nullable string for Position
-    ProjectName VARCHAR(100) NULL,                     -- Nullable string for Project Name
-    EmployeeSignature VARCHAR(255) NULL,               -- Nullable string for Employee Signature
-    ManagerSignature VARCHAR(255) NULL,                -- Nullable string for Manager Signature
-    SignatureDate DATETIME NULL,                       -- Nullable DateTime for Signature Date
-    SubmissionDate DATETIME NULL,                      -- Nullable DateTime for Submission Date
-    Note VARCHAR(255) NULL,                            -- Nullable string for Notes
-    TotalHours DECIMAL(18, 2) NULL,                    -- Nullable decimal for Total Hours Worked
-    CreatedAt DATETIME NULL,                           -- Nullable DateTime for CreatedAt
-    UpdatedAt DATETIME NULL,                           -- Nullable DateTime for UpdatedAt
-    CONSTRAINT FK_TimeSheet_DailyEntries FOREIGN KEY (Id) REFERENCES DailyEntries(TimeSheetId) -- Foreign key relationship with DailyEntries
-);
 
 //endregion
+
+// Add Leave Type
+CREATE TABLE LeaveTypee (
+    id INT IDENTITY(1,1) PRIMARY KEY, 
+    LeaveType VARCHAR(255) NOT NULL, 
+    leaveDescription VARCHAR(MAX) NOT NULL, 
+    is_active BIT DEFAULT 1
+)
+
+// LeaveApply and LeaveStatuss
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[LeaveStatuss]    Script Date: 2/25/2025 2:12:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LeaveStatuss](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[EmpId] [int] NULL,
+	[LeaveStatus] [varchar](255) NULL,
+	[ManagerRemark] [varchar](255) NOT NULL,
+	[is_active] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Leavetypee]    Script Date: 2/25/2025 2:12:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Leavetypee](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[LeaveType] [varchar](255) NOT NULL,
+	[LeaveDescription] [varchar](max) NOT NULL,
+	[is_active] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[LeaveStatuss] ADD  DEFAULT ((1)) FOR [is_active]
+GO
+ALTER TABLE [dbo].[Leavetypee] ADD  DEFAULT ((1)) FOR [is_active]
+GO
 
 
 

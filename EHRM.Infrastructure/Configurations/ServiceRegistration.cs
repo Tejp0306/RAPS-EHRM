@@ -9,6 +9,7 @@ using EHRM.ServiceLayer.MainMenuRepo;
 using EHRM.ServiceLayer.Master;
 using EHRM.ServiceLayer.Review;
 using EHRM.ServiceLayer.Utility;
+using EHRM.ServiceLayer.LeaveTypes;
 using Logger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -46,6 +47,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IdashboardService, Dashboardservice>();
             services.AddScoped<ICalendarService, CalendarService>();
+            services.AddScoped<ILeaveTypes, LeaveTypes>();
             services.AddScoped<IDocumentService, DocumentService>();
 
 
