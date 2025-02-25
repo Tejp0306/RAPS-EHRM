@@ -208,7 +208,7 @@ namespace EHRM.Web.Controllers
                     TempData["ToastMessage"] = $"Error creating notice: {ex.Message}"; // Error message
                     return RedirectToAction("AddNoticeBoard"); // Return to the same page
                 }
-                return View(model);
+                
             }
             else
             {
