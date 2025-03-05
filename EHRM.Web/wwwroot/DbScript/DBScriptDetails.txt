@@ -100,15 +100,33 @@ CREATE TABLE ProbationEvaluationQuestions (
 
 // User Document 
 
-CREATE TABLE UserDocument (
-    DocumentID INT IDENTITY(1,1) PRIMARY KEY,  -- Auto-incrementing primary key
-    EmployeeID INT NOT NULL,                   -- Foreign key reference to EmployeeDetails (assuming it exists)
-    DocumentType NVARCHAR(255) NOT NULL,       -- Type of document
-    Description NVARCHAR(500) NULL,            -- Optional description
-    FilePath NVARCHAR(MAX) NOT NULL,           -- Path of the uploaded file
-    UploadedAt DATETIME DEFAULT GETDATE()      -- Timestamp of upload with default value
-    REFERENCES EmployeeDetails (EmpId) ON DELETE CASCADE;
-);
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[UserDocument]    Script Date: 3/5/2025 4:35:50 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserDocument](
+	[DocumentID] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeID] [int] NOT NULL,
+	[DocumentType] [nvarchar](255) NOT NULL,
+	[Description] [nvarchar](max) NULL,
+	[FilePath] [nvarchar](500) NOT NULL,
+	[UploadedAt] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[DocumentID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[UserDocument] ADD  DEFAULT (getdate()) FOR [UploadedAt]
+GO
+ALTER TABLE [dbo].[UserDocument]  WITH CHECK ADD FOREIGN KEY([EmployeeID])
+REFERENCES [dbo].[EmployeeDetails] ([EmpId])
+ON DELETE CASCADE
+GO
+
 
 
 //NoticeBoard 

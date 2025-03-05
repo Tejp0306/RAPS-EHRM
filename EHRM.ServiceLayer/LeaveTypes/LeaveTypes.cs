@@ -12,6 +12,7 @@ using EHRM.ViewModel.Leave;
 using EHRM.ViewModel.Asset;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.Review;
+using Microsoft.EntityFrameworkCore;
 
 namespace EHRM.ServiceLayer.LeaveTypes
 {
@@ -157,8 +158,8 @@ namespace EHRM.ServiceLayer.LeaveTypes
                 var leaveTypeViewModel = new LeaveTypeViewModel
                 {
                     Id = leave.Id,
-                    LeaveType=leave.LeaveType,
-                    LeaveDescription=leave.LeaveDescription,
+                    LeaveType = leave.LeaveType,
+                    LeaveDescription = leave.LeaveDescription,
 
                 };
 
@@ -207,6 +208,19 @@ namespace EHRM.ServiceLayer.LeaveTypes
 
                 var LeaveRepository = _unitOfWork.GetRepository<LeaveApply>();
                 await LeaveRepository.AddAsync(newLeaveApply);
+                await _unitOfWork.SaveAsync();
+
+                var leaveStatus = new LeaveStatuss
+                {
+                    EmpId = model.EmpId,
+                    LeaveStatus = "Pending",
+                    ManagerRemark = "Awaiting approval",
+                    IsActive = true,
+                    LeaveId = newLeaveApply.Id // Foreign key reference to LeaveApply
+                };
+
+                var LeavestatusRepository = _unitOfWork.GetRepository<LeaveStatuss>();
+                await LeavestatusRepository.AddAsync(leaveStatus);
                 await _unitOfWork.SaveAsync();
 
                 return new Result
@@ -273,35 +287,38 @@ namespace EHRM.ServiceLayer.LeaveTypes
 
         public async Task<List<LeaveApplyViewModel>> GetLeaveDataByEmpId(int empId)
         {
+            var leaveApplyRepository = _unitOfWork.GetRepository<LeaveApply>();
             var leaveStatusRepository = _unitOfWork.GetRepository<LeaveStatuss>();
             var LeaveApplyRepository = _unitOfWork.GetRepository<LeaveApply>();
 
             // Await the async operations to get actual collections
-            var ls = await leaveStatusRepository.GetAllAsync();
-            var la = await LeaveApplyRepository.GetAllAsync();
+            var leaveapply = await leaveApplyRepository.GetAllAsync();
+            var leavestatus = await leaveStatusRepository.GetAllAsync();
 
-            // LINQ query to join LeaveApply and LeaveStatuss using EmpId
-            var leaveDetails = (from a in la
-                                       join s in ls on a.EmpId equals s.EmpId
-                                       where a.EmpId.GetValueOrDefault() == empId 
+            // LINQ query to join LeaveApply and LeaveStatuss, filtering by EmpId
+            var leaveDetails = (from la in leaveapply
+                                join ls in leavestatus
+                                on la.Id equals ls.LeaveId
+                                where la.EmpId == empId // Filter leave applications by Employee ID
                                        select new LeaveApplyViewModel
                                        {
-                                           Id = a.Id,
-                                           EmployeeName = a.EmployeeName,
-                                           ApplyDate = a.ApplyDate,
-                                           LeaveType = a.LeaveType,
-                                           LeaveFrom = a.LeaveFrom,
-                                           LeaveTo = a.LeaveTo,
-                                           Description = a.Description,
+                                    Id = la.Id,
+                                    EmployeeName = la.EmployeeName,
+                                    ApplyDate = la.ApplyDate,
+                                    LeaveType = la.LeaveType,
+                                    LeaveFrom = la.LeaveFrom,
+                                    LeaveTo = la.LeaveTo,
+                                    Description = la.Description,
                                            Status = new LeaveStatusViewModel
                                            {
-                                               LeaveStatus = s.LeaveStatus,       
-                                               ManagerRemark = s.ManagerRemark    
+                                        LeaveStatus = ls.LeaveStatus,
+                                        ManagerRemark = ls.ManagerRemark
                                            }
                                        }).ToList();
 
             return leaveDetails;
         }
+
 
 
         #endregion
@@ -323,7 +340,7 @@ namespace EHRM.ServiceLayer.LeaveTypes
                 {
                     EmpId = model.EmpId,
                     LeaveStatus = model.LeaveStatus,
-                    ManagerRemark=model.ManagerRemark,
+                    ManagerRemark = model.ManagerRemark,
                 };
 
                 var AssetRepository = _unitOfWork.GetRepository<LeaveStatuss>();
@@ -345,6 +362,76 @@ namespace EHRM.ServiceLayer.LeaveTypes
                 };
             }
         }
+
+        public async Task<Result> UpdateLeaveStatusAsync(int id, LeaveStatusViewModel model)
+        {
+            try
+            {
+                var LeaveStatusRepository = _unitOfWork.GetRepository<LeaveStatuss>();  // Using generic repository
+                var existingLeaveStatus = await LeaveStatusRepository.GetStatusByLeaveIdAsync(id);  // Fetch existing role by ID
+
+                if (existingLeaveStatus == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Status not found."
+                    };
+                }
+
+                // Update role properties
+                existingLeaveStatus[0].LeaveStatus = model.LeaveStatus;
+                existingLeaveStatus[0].ManagerRemark = model.ManagerRemark;
+
+
+                await LeaveStatusRepository.UpdateAsync(existingLeaveStatus[0]);  // Call update method in the generic repository
+                await _unitOfWork.SaveAsync();
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Leave Status updated successfully.",
+                    Data = existingLeaveStatus[0].LeaveStatus
+                };
+        }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error updating Employee Type: {ex.Message}"
+                };
+            }
+        }
+
+
+        //Leave balance dashboard service
+
+        public async Task<LeaveBalanceViewModel> GetLeaveBalanceByEmpId(int empId)
+        {
+            var leaveBalanceRepository = _unitOfWork.GetRepository<LeaveBalance>();
+
+            // Fetch leave balance for the given employee ID
+            var leaveBalances = await leaveBalanceRepository.GetAllAsync();
+            var leaveBalance = leaveBalances.FirstOrDefault(lb => lb.EmpId == empId);
+
+            if (leaveBalance == null)
+            {
+                throw new Exception("Leave balance record not found.");
+            }
+
+            // Convert to ViewModel
+            return new LeaveBalanceViewModel
+            {
+                EmpId = leaveBalance.EmpId,
+                TenureYears = leaveBalance.TenureYears,
+                EarnedLeave = leaveBalance.EarnedLeave,
+                SickLeave = leaveBalance.SickLeave,
+                CasualLeave = leaveBalance.CasualLeave,
+                TotalLeave = (int)leaveBalance.TotalLeave
+            };
+        }
+
 
 
 
