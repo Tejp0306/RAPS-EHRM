@@ -438,7 +438,7 @@ namespace EHRM.Web.Controllers
                                      TotalDays = (int)leave.TotalDays,
 
                     }).ToList();
-                    return Json(leaveTypeList);
+                    //return Json(leaveRequests);
                 }
             else if (roleid == 4) // Managers see only pending requests of their employees
                 {
