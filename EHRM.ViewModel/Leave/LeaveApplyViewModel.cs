@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using EHRM.ViewModel.Self;
@@ -35,9 +36,21 @@ namespace EHRM.ViewModel.Leave
 
     public class LeaveStatusViewModel
     {
+        public LeaveStatusViewModel() {
+
+            Items = new List<LeaveStatusViewModel>();
+        }
         public int Id { get; set; }
+        public string EmployeeName { get; set; }
+        public string LeaveType { get; set; }
+        public string LeaveFrom { get; set; }
+        public string TillDate { get; set; }
+
+        public int TotalDays { get; set; }
         public int EmpId { get; set; }
-        public string? LeaveStatus { get; set; }      // Status of the leave (Pending, Approved, etc.) 
-        public string? ManagerRemark { get; set; }    // Remarks by the Manager (nullable)
+        public string LeaveStatus { get; set; }      // Status of the leave (Pending, Approved, etc.) 
+        public string ManagerRemark { get; set; }    // Remarks by the Manager (nullable)
+
+        public List<LeaveStatusViewModel> Items { get; set; }
     }
 }

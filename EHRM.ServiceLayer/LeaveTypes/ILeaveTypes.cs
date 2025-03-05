@@ -33,6 +33,10 @@ namespace EHRM.ServiceLayer.LeaveTypes
         Task<Result> GetLeaveAsync();
 
         Task<Result> LeaveStatusAsync(LeaveStatusViewModel model);
+
+        Task<Result> UpdateLeaveStatusAsync(int id, LeaveStatusViewModel model);
+
+        Task<LeaveBalanceViewModel> GetLeaveBalanceByEmpId(int empId);
         #endregion
     }
 }

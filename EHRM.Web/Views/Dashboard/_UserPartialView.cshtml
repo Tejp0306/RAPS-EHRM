@@ -19,8 +19,9 @@
     }
 
     #calendar-container {
-        width: 800px; /* Adjust the width as needed */
+        width: 1200px; /* Adjust the width as needed */
         margin-left: 5px;
+        margin:auto;
     }
 
     #calendar {
@@ -36,26 +37,52 @@
 
     <!-- Quick Stats -->
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="row">
+            <div class="col-lg-3">
             <div class="card text-white bg-primary mb-3 shadow-sm hover-shadow">
                 <div class="card-body text-center">
                     <h5 class="card-title">
-                        <i class="bi bi-calendar-check"></i> Total Leaves
+                            <i class="bi bi-calendar-check"></i> Earned Leave
+                        </h5>
+                        <p class="card-text fs-4"><strong id="earnedLeave">0</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card text-white bg-warning mb-3 shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                            <i class="bi bi-thermometer-half"></i> Sick Leave
+                        </h5>
+                        <p class="card-text fs-4"><strong id="sickLeave">0</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card text-white bg-info mb-3 shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                            <i class="bi bi-umbrella"></i> Casual Leave
                     </h5>
-                    <p class="card-text fs-4"><strong></strong></p>
+                        <p class="card-text fs-4"><strong id="casualLeave">0</strong></p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+
+            <div class="col-lg-3">
             <div class="card text-white bg-success mb-3 shadow-sm hover-shadow">
                 <div class="card-body text-center">
                     <h5 class="card-title">
-                        <i class="bi bi-list-task"></i> Pending Tasks
+                            <i class="bi bi-list-task"></i> Total Leave
                     </h5>
-                    <p class="card-text fs-4"><strong></strong></p>
+                        <p class="card-text fs-4"><strong id="totalLeave">0</strong></p>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 
     <!-- User Profile and Tabs -->

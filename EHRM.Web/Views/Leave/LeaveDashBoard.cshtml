@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "LeaveDashBoard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@model EHRM.ViewModel.Leave.LeaveSummaryViewModel;
+
+
+@* <p><strong>Name:</strong> @Model.Employee.FirstName @Model.Employee.LastName</p> *@
+@* <p><strong>Start Date:</strong> @Model.Employee.EmploymentDetails.StartDate</p> *@
+<link href="~/customstyle/style.css" rel="stylesheet" />
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<div class="container mt-4">
+    <h3 class="page-heading">Leave Summary</h3>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Leave Type</th>
+                        <th>Days</th>
+                        <th>Accrual Rate</th>
+                        <th>Carry Forward</th>
+                        <th>Carry Forward Limit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Casual Leave (CL)</td>
+                        <td>@Model.CasualLeave</td>
+                        <td>N/A</td>
+                        <td><span class="badge bg-danger">No</span></td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Sick Leave (SL)</td>
+                        <td>@Model.SickLeave</td>
+                        <td>N/A</td>
+                        <td><span class="badge bg-danger">No</span></td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Earned Leave (EL)</td>
+                        <td>@Model.EarnedLeave</td>
+                        <td>@Model.EarnedLeaveAccrualRate days/month</td>
+                        <td><span class="badge bg-success">Yes</span></td>
+                        <td>@Model.CarryForwardLimit</td>
+                    </tr>
+                    <tr class="table-primary">
+                        <td><strong>Total Leave</strong></td>
+                        <td colspan="4"><strong>@Model.TotalLeave</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
