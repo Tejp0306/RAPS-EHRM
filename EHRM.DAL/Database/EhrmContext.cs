@@ -17,6 +17,8 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<AssetsDb> AssetsDbs { get; set; }
 
+    public virtual DbSet<DailyEntry> DailyEntries { get; set; }
+
     public virtual DbSet<Declaration> Declarations { get; set; }
 
     public virtual DbSet<EmpType> EmpTypes { get; set; }
@@ -26,9 +28,20 @@ public partial class EhrmContext : DbContext
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
 
     public virtual DbSet<EmployeesDeclaration> EmployeesDeclarations { get; set; }
+
     public virtual DbSet<EmployementTypeDetail> EmployementTypeDetails { get; set; }
 
     public virtual DbSet<Holiday> Holidays { get; set; }
+
+    public virtual DbSet<LeaveApply> LeaveApplies { get; set; }
+
+    public virtual DbSet<LeaveBalance> LeaveBalances { get; set; }
+
+    public virtual DbSet<LeavePolicy> LeavePolicies { get; set; }
+
+    public virtual DbSet<LeaveStatuss> LeaveStatusses { get; set; }
+
+    public virtual DbSet<Leavetypee> Leavetypees { get; set; }
 
     public virtual DbSet<MainMenu> MainMenus { get; set; }
 
@@ -47,6 +60,10 @@ public partial class EhrmContext : DbContext
     public virtual DbSet<SubMenu> SubMenus { get; set; }
 
     public virtual DbSet<Team> Teams { get; set; }
+
+    public virtual DbSet<TimeSheet> TimeSheets { get; set; }
+
+    public virtual DbSet<UserDocument> UserDocuments { get; set; }
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -72,6 +89,31 @@ public partial class EhrmContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Summary).IsUnicode(false);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<DailyEntry>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__DailyEnt__3214EC07BF70E883");
+
+            entity.ToTable("DailyEntry");
+
+            entity.Property(e => e.AssignmentDesc).HasColumnType("text");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DayOfWeek)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.HoursWorked).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Remarks).HasColumnType("text");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.TimeSheet).WithMany(p => p.DailyEntries)
+                .HasForeignKey(d => d.TimeSheetId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_DailyEntry_TimeSheet");
         });
 
         modelBuilder.Entity<Declaration>(entity =>
@@ -390,40 +432,130 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<Holiday>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Holiday__3214EC07D9B268A3");
+            entity.HasKey(e => e.Id).HasName("PK__Holiday__3214EC07BA6B7620");
 
             entity.ToTable("Holiday");
 
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedBy)
-                .HasMaxLength(50)
+                .HasMaxLength(30)
                 .IsUnicode(false);
             entity.Property(e => e.Description).IsUnicode(false);
             entity.Property(e => e.HolidayDate)
-                .HasMaxLength(50)
+                .HasMaxLength(30)
                 .IsUnicode(false);
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(50)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<LeaveApply>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__LeaveApp__3214EC27BEEF2DA5");
+
+            entity.ToTable("LeaveApply");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ApplyDate)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Description)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.LeaveFrom)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.LeaveTo)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.LeaveType)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<LeaveBalance>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__LeaveBal__3214EC0752E8C4CD");
+
+            entity.ToTable("LeaveBalance");
+
+            entity.Property(e => e.TotalLeave).HasComputedColumnSql("(([EarnedLeave]+[SickLeave])+[CasualLeave])", true);
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.LeaveBalances)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmpId)
+                .HasConstraintName("FK__LeaveBala__EmpId__55BFB948");
+        });
+
+        modelBuilder.Entity<LeavePolicy>(entity =>
+        {
+            entity.HasKey(e => e.PolicyId).HasName("PK__LeavePol__2E1339A4BA892E4D");
+
+            entity.ToTable("LeavePolicy");
+
+            entity.Property(e => e.EarnedLeaveAccrualRate).HasColumnType("decimal(5, 2)");
+        });
+
+        modelBuilder.Entity<LeaveStatuss>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__LeaveSta__3213E83F753CF1E0");
+
+            entity.ToTable("LeaveStatuss");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.LeaveStatus)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ManagerRemark)
+                .HasMaxLength(255)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.Team).WithMany(p => p.Holidays)
-                .HasForeignKey(d => d.TeamId)
+            entity.HasOne(d => d.Leave).WithMany(p => p.LeaveStatusses)
+                .HasForeignKey(d => d.LeaveId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Holiday__TeamId__3B75D760");
+                .HasConstraintName("FK_LeaveStatuss_LeaveApply");
+        });
+
+        modelBuilder.Entity<Leavetypee>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Leavetyp__3213E83F70641134");
+
+            entity.ToTable("Leavetypee");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.LeaveDescription).IsUnicode(false);
+            entity.Property(e => e.LeaveType)
+                .HasMaxLength(255)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<MainMenu>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MainMenu__3214EC079D17E828");
+            entity.HasKey(e => e.Id).HasName("PK__MainMenu__3214EC07E1265919");
 
             entity.ToTable("MainMenu");
 
             entity.Property(e => e.Icon)
-                .HasMaxLength(30)
+                .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
@@ -557,7 +689,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<SubMenu>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__SubMenu__3214EC07ECE6B36F");
+            entity.HasKey(e => e.Id).HasName("PK__SubMenu__3214EC071A7C586C");
 
             entity.ToTable("SubMenu");
 
@@ -575,17 +707,12 @@ public partial class EhrmContext : DbContext
                 .HasPrincipalKey(p => p.EmpId)
                 .HasForeignKey(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__SubMenu__EmpId__7D439ABD");
+                .HasConstraintName("FK__SubMenu__EmpId__7E37BEF6");
 
             entity.HasOne(d => d.MainMenu).WithMany(p => p.SubMenus)
                 .HasForeignKey(d => d.MainMenuId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__SubMenu__MainMen__7B5B524B");
-
-            entity.HasOne(d => d.Role).WithMany(p => p.SubMenus)
-                .HasForeignKey(d => d.RoleId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__SubMenu__RoleId__7C4F7684");
+                .HasConstraintName("FK__SubMenu__MainMen__65370702");
         });
 
         modelBuilder.Entity<Team>(entity =>
@@ -600,6 +727,65 @@ public partial class EhrmContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<TimeSheet>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__TimeShee__3214EC07D5A7E666");
+
+            entity.ToTable("TimeSheet");
+
+            entity.Property(e => e.ClientName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EmpName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeSignature)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ManagerSignature)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Note).HasColumnType("text");
+            entity.Property(e => e.Position)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.PresentMonth)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ProjectName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.SignatureDate).HasColumnType("datetime");
+            entity.Property(e => e.SubmissionDate).HasColumnType("datetime");
+            entity.Property(e => e.TotalHours).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<UserDocument>(entity =>
+        {
+            entity.HasKey(e => e.DocumentId).HasName("PK__Document__1ABEEF6F1E8A4CC5");
+
+            entity.ToTable("UserDocument");
+
+            entity.Property(e => e.DocumentId).HasColumnName("DocumentID");
+            entity.Property(e => e.DocumentType).HasMaxLength(255);
+            entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");
+            entity.Property(e => e.FilePath).HasMaxLength(500);
+            entity.Property(e => e.UploadedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.UserDocuments)
+                .HasPrincipalKey(p => p.EmpId)
+                .HasForeignKey(d => d.EmployeeId)
+                .HasConstraintName("FK__Documents__Emplo__2057CCD0");
         });
 
         OnModelCreatingPartial(modelBuilder);
