@@ -1,7 +1,7 @@
-
+@model LeaveApplyViewModel
+@using EHRM.ViewModel.Leave
 @{
-    ViewData["Title"] = "ApplyLeave";
-
+    ViewData["Title"] = "LeaveApply";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 <style>
@@ -19,175 +19,187 @@
     h3 {
         font-size: 1.5rem;
     }
+    /* Table Styling */
+    .container {
+        margin-top: 30px;
+    }
+
+    .table-responsive {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    table.table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border-collapse: collapse;
+    }
+
+        table.table thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        table.table th,
+        table.table td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        table.table th {
+            border-bottom: 2px solid #ddd;
+        }
+
+        table.table td {
+            border-bottom: 1px solid #ddd;
+        }
+
+    /* Color Coding for Leave Status */
+    .approved-status {
+        background-color: #28a745;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+
+    .rejected-status {
+        background-color: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+
+    .pending-status {
+        background-color: #ffc107;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+
+    /* Style for Edit/Delete Buttons (If you need them later) */
+    .edit-btn,
+    .delete-btn {
+        cursor: pointer;
+    }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="~/customscripts/leaveapply.js"></script>
+
 <div class="container mt-4">
     <h3 class="page-heading">Apply Leave</h3>
-    <div class="form-container">
-        <div class="card p-4">
-            <form id="applyLeaveForm">
-                <div class="row">
-                    <!-- Employee Name (First Column) -->
-                    <div class="col-md-4 mb-3">
-                        <label for="EmployeeName" class="form-label">Employee Name * :</label>
-                        <select class="form-control" id="EmployeeName" name="EmployeeName" required>
-                            <option value="">Select Employee</option>
-                            <option value="John Doe">John Doe</option>
-                            <option value="Jane Smith">Jane Smith</option>
-                            <option value="Michael Brown">Michael Brown</option>
-                            <!-- Add more employees dynamically -->
-                        </select>
+
+    <!-- Card to hold the form and toggle visibility -->
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <!-- Button to toggle form fields -->
+                <button id="toggleButton" class="btn btn-link" type="button">
+                    <i id="toggleIcon" class="fas fa-chevron-down"></i> Apply Leave
+                </button>
+            </h5>
+        </div>
+
+        <!-- Collapsible form content (initially hidden) -->
+        <div id="collapseForm" class="collapse-content" style="display: none;">
+            <div class="card-body">
+                <form asp-controller="Leave" asp-action="SaveLeaveApply" method="post">
+                    <input type="hidden" name="EmpId" value="@ViewData["empId"]" />
+                    <div class="row">
+                        <!-- Employee Name (First Column) -->
+                        <div class="col-md-4 mb-3">
+                            <label for="EmployeeName" class="form-label">Employee Name * :</label>
+                            <input asp-for="EmployeeName" class="form-control" id="EmployeeName" value="@ViewData["Name"]" readonly>
+                        </div>
+
+                        <!-- Leave Type (Second Column) -->
+                        <div class="col-md-4 mb-3">
+                            <label for="LeaveType" class="form-label">Leave Type * :</label>
+                            <select asp-for="LeaveType" class="form-control" id="LeaveType" name="LeaveType" required>
+                                <option value=""></option>
+                            </select>
+                        </div>
+
+                        <!-- Date (Holiday Date) -->
+                        <div class="col-md-4 mb-3">
+                            <div class="form-group">
+                                <label for="ChooseDate"> Date </label>
+                                <input asp-for="ApplyDate" class="form-control datepicker" placeholder="Select a date" required>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- Leave Type (Second Column) -->
-                    <div class="col-md-4 mb-3">
-                        <label for="LeaveType" class="form-label">Leave Type * :</label>
-                        <select class="form-control" id="LeaveType" name="LeaveType" required>
-                            <option value="">Select leave type</option>
-                            <option value="Sick Leave">Sick Leave</option>
-                            <option value="Casual Leave">Casual Leave</option>
-                            <option value="Vacation Leave">Vacation Leave</option>
-                            <!-- Add more leave types as needed -->
-                        </select>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <!-- Holiday Date -->
-                        <div class="form-group">
-                            <label for="ChooseDate"> Date </label>
-                            <input type="text" class="form-control datepicker" id="ChooseDate" name="chooseDate" placeholder="Select a date" required>
+                    <div class="row">
+                        <!-- Leave From Date (First Column) -->
+                        <div class="col-md-4 mb-3">
+                            <label for="LeaveFrom" class="form-label">Leave From * :</label>
+                            <input type="date" asp-for="LeaveFrom" class="form-control" id="LeaveFrom" required>
+                        </div>
+
+                        <!-- Leave To Date (Second Column) -->
+                        <div class="col-md-4 mb-3">
+                            <label for="LeaveTo" class="form-label">Leave To * :</label>
+                            <input type="date" asp-for="LeaveTo" class="form-control" id="LeaveTo" required>
+                        </div>
+
+                        <!-- Total Days Field (New Column) -->
+                        <div class="col-md-4 mb-3">
+                            <label for="TotalDays" class="form-label">Total Days * :</label>
+                            <input asp-for="TotalDays" type="text" class="form-control" id="TotalDays" name="TotalDays" placeholder="Total Days" readonly required>
                         </div>
                     </div>
 
-                </div>
-
-                <div class="row">
-                    <!-- Employee Post (First Column) -->
-                    <div class="col-md-6 mb-3">
-                        <label for="EmployeePost" class="form-label">Employee Post * :</label>
-                        <select class="form-control" id="EmployeePost" name="EmployeePost" required>
-                            <option value="">Select Employee Post</option>
-                            <option value="Manager">Manager</option>
-                            <option value="Developer">Developer</option>
-                            <option value="HR">HR</option>
-                            <!-- Add more employee posts as needed -->
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Description" class="form-label">Description * :</label>
+                            <textarea asp-for="Description" class="form-control" id="Description" name="Description" rows="4" placeholder="Enter your reason for leave" required></textarea>
+                        </div>
                     </div>
 
-                    <!-- Department Name (Second Column) -->
-                    <div class="col-md-6 mb-3">
-                        <label for="DepartmentName" class="form-label">Department Name * :</label>
-                        <select class="form-control" id="DepartmentName" name="DepartmentName" required>
-                            <option value="">Select Department</option>
-                            <option value="HR">HR</option>
-                            <option value="IT">IT</option>
-                            <option value="Finance">Finance</option>
-                            <!-- Add more departments as needed -->
-                        </select>
+                    <!-- Submit Button -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <button type="submit" class="btn btn-success">Apply Leave</button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="row">
-                    <!-- Leave From Date (First Column) -->
-                    <div class="col-md-4 mb-3">
-                        <label for="LeaveFrom" class="form-label">Leave From * :</label>
-                        <input type="text" class="form-control datepicker" id="LeaveFrom" name="LeaveFrom" placeholder="Leave From" required>
-                    </div>
-
-                    <!-- Leave To Date (Second Column) -->
-                    <div class="col-md-4 mb-3">
-                        <label for="LeaveTo" class="form-label">Leave To * :</label>
-                        <input type="text" class="form-control datepicker" id="LeaveTo" name="LeaveTo" placeholder="Leave To" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="TotalDays" class="form-label">Total Days * :</label>
-                        <input type="number" class="form-control" id="TotalDays" name="TotalDays" readonly required>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <!-- File Upload (Second Column, Hidden by Default) -->
-                    <div class="col-md-6 mb-3" id="sickLeaveFileUpload" style="display:none;">
-                        <label for="SickLeaveFile" class="form-label">Upload Sick Leave Document (Optional) :</label>
-                        <input type="file" class="form-control" id="SickLeaveFile" name="SickLeaveFile" accept=".docx, .pdf" />
-                    </div>
-                </div>
-
-                <div class="row">
-                    <!-- Description (Full Width) -->
-                    <div class="col-md-6 mb-3">
-                        <label for="Description" class="form-label">Description * :</label>
-                        <textarea class="form-control" id="Description" name="Description" rows="4" placeholder="Enter your reason for leave" required></textarea>
-                    </div>
-                </div>
-
-                <!-- Submit and Reset Buttons -->
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <button type="submit" class="btn btn-success">Apply Leave</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-    <!-- Leave Applications List -->
+</div>
 
-    <div class="container mt-4">
-        <h4>Leave Application Details</h4>
-        <div class="table-responsive">
-            <table id="LeaveApplicationTable" class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Employee Name</th>
-                        <th>Leave Type</th>
-                        <th>Department</th>
-                        <th>Leave From</th>
-                        <th>Leave To</th>
-                        <th>File</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Sample Data (This can be dynamically generated from a backend) -->
-                    <tr>
-                        <td>1</td>
-                        <td>John Doe</td>
-                        <td>Sick Leave</td>
-                        <td>HR</td>
-                        <td>2025-01-10</td>
-                        <td>2025-01-12</td>
-                        <td><a href="#">View File</a></td>
-                        <td>
-                            <!-- Actions (e.g., Edit/Delete) -->
-                            <button class="btn btn-primary">Edit</button>
-                            <button class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jane Smith</td>
-                        <td>Casual Leave</td>
-                        <td>IT</td>
-                        <td>2025-01-15</td>
-                        <td>2025-01-16</td>
-                        <td>-</td>
-                        <td>
-                            <!-- Actions (e.g., Edit/Delete) -->
-                            <button class="btn btn-primary">Edit</button>
-                            <button class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="container mt-3">
+    <h3>Leave Details</h3>
+    <div class="table-responsive">
+        <table id="LeaveDataTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Employee Name</th>
+                    <th>Leave Type</th>
+                    <th>Apply Date</th>
+                    <th>Leave From</th>
+                    <th>Leave To</th>
+                    <th>Description</th>
+                    <th>Leave Status</th>
+                    <th>Manager Remark</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table body will be populated dynamically via JS -->
+            </tbody>
+        </table>
     </div>
 </div>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <script>
-    // Initialize datepickers
-    $('#ChooseDate, #LeaveFrom, #LeaveTo').datepicker({
+       // Initialize datepickers
+    $('#ApplyDate').datepicker({
         changeMonth: true,
         changeYear: true,
         yearRange: '1950:2070',
@@ -196,47 +208,46 @@
         defaultDate: new window.Date()
     });
 
-    // Show/Hide file upload based on leave type selection
-    document.getElementById('LeaveType').addEventListener('change', function() {
-        const leaveType = this.value;
-        const sickLeaveFileUpload = document.getElementById('sickLeaveFileUpload');
+    function calculateTotalDays() {
+        var leaveFrom = document.getElementById('LeaveFrom').value;
+        var leaveTo = document.getElementById('LeaveTo').value;
 
-        if (leaveType === 'Sick Leave') {
-            sickLeaveFileUpload.style.display = 'block';
-        } else {
-            sickLeaveFileUpload.style.display = 'none';
-        }
-    });
-
-        // Add event listeners to handle changes on both 'Leave From' and 'Leave To'
-    document.getElementById('LeaveFrom').addEventListener('change', handleLeaveDateChange);
-    document.getElementById('LeaveTo').addEventListener('change', handleLeaveDateChange);
-
-    function handleLeaveDateChange() {
-        const leaveFrom = document.getElementById('LeaveFrom').value;
-        const leaveTo = document.getElementById('LeaveTo').value;
-
-        // If both dates are filled
+        // Check if both dates are provided
         if (leaveFrom && leaveTo) {
-            const startDate = new Date(leaveFrom);
-            const endDate = new Date(leaveTo);
+            // Convert to Date objects (the date input should be in the format YYYY-MM-DD)
+            var startDate = new Date(leaveFrom);
+            var endDate = new Date(leaveTo);
 
-            // Validate that 'Leave From' date is before 'Leave To' date
-            if (startDate > endDate) {
-                alert('Leave From date must be before Leave To date.');
-                document.getElementById('LeaveFrom').value = '';  // Clear 'Leave From' date
-                document.getElementById('LeaveTo').value = '';    // Clear 'Leave To' date
-                document.getElementById('TotalDays').value = '';  // Clear 'Total Days'
-            } else {
-                // Calculate total days if dates are valid
-                const timeDifference = endDate - startDate;
-                const totalDays = timeDifference / (1000 * 3600 * 24) + 1; // Adding 1 to include the start date
-                document.getElementById('TotalDays').value = totalDays;  // Display total days
+            // Calculate the time difference in milliseconds
+            var timeDiff = endDate - startDate;
+
+            // If the time difference is valid, calculate the total days
+            if (timeDiff >= 0) {
+                var totalDays = timeDiff / (1000 * 3600 * 24) + 1; // Adding 1 to include the start day
+                document.getElementById('TotalDays').value = totalDays;
             }
-        } else {
-            document.getElementById('TotalDays').value = totalDays;  // Clear total days if either date is missing
         }
     }
+
+    // Attach event listeners to recalculate total days whenever the dates change
+    document.getElementById('LeaveFrom').addEventListener('change', calculateTotalDays);
+    document.getElementById('LeaveTo').addEventListener('change', calculateTotalDays);
+
+    // Get references to the necessary elements
+    const toggleButton = document.getElementById('toggleButton');
+    const collapseForm = document.getElementById('collapseForm');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    // Add click event to toggle the visibility of the form
+    toggleButton.addEventListener('click', function() {
+        if (collapseForm.style.display === 'none' || collapseForm.style.display === '') {
+            collapseForm.style.display = 'block';
+            toggleIcon.classList.remove('fa-chevron-down');
+            toggleIcon.classList.add('fa-chevron-up');
+        } else {
+            collapseForm.style.display = 'none';
+            toggleIcon.classList.remove('fa-chevron-up');
+            toggleIcon.classList.add('fa-chevron-down');
+        }
+    });
 </script>
-
-

@@ -32,6 +32,9 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
+    <title>Favicon Demo</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/pic/rapslogo.png" />
+
 
     <!-- Favicon -->
     <link href="~/img/favicon.ico" rel="icon">
@@ -64,6 +67,12 @@
     <!-- DataTables Responsive CSS -->
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
 
+    <script type="text/javascript">
+        function preventBack() { window.history.forward(); }
+        setTimeout("preventBack()", 0);
+        window.onunload = function () { null };
+    </script>
+
     <style>
         .sidebar {
             background-color: #f8f9fa;
@@ -84,9 +93,9 @@
             font-size: 14px;
         }
 
-            .dropdown-item:hover {
+           /*  .dropdown-item:hover {
                 background-color: #e9ecef;
-            }
+            } */
 
         .navbar-brand {
             font-size: 24px;
@@ -163,7 +172,7 @@
 
                             <a href="#" class="nav-link dropdown-toggle  @(isDropdownActive ? "active" : "")"
                                data-bs-toggle="dropdown">
-                                <i class="@menu.Icon me-2"></i>@menu.Name
+                                <i class="@menu.Icon me-1"></i>@menu.Name
                             </a>
                             <ul class="dropdown-menu bg-transparent border-0">
                                 @foreach (var submenu in menu.SubMenus)
@@ -171,7 +180,7 @@
                                     <li>
                                         <a href="@Url.Action(submenu.Action, submenu.Controller)"
                                            class="dropdown-item @(submenu.Controller?.ToLower() == currentController && submenu.Action?.ToLower() == currentAction ? "active" : "")">
-                                            <i class="fa fa-circle me-1"></i>@submenu.Name
+                                            <i class="bi bi-dot fs-5 text-dark"></i>@submenu.Name
                                         </a>
                                     </li>
                                 }

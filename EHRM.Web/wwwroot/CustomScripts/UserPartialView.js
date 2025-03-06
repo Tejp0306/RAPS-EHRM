@@ -78,4 +78,26 @@ $(document).ready(function () {
         }
         return null;
     }
+
+    getLeaveBalance();
+
 });
+function getLeaveBalance() {
+    $.ajax({
+        url: "/Leave/GetLeaveBalance",
+        method: "GET",
+        success: function (data) {
+            if (data) {
+                $("#earnedLeave").text(data.earnedLeave);
+                $("#sickLeave").text(data.sickLeave);
+                $("#casualLeave").text(data.casualLeave);
+                $("#totalLeave").text(data.totalLeave);
+            } else {
+                $("#leaveBalanceContainer").html("<p>No leave balance data found.</p>");
+            }
+        },
+        error: function () {
+            $("#leaveBalanceContainer").html("<p>Error fetching leave balance data.</p>");
+        }
+    });
+}

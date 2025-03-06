@@ -98,6 +98,36 @@ CREATE TABLE ProbationEvaluationQuestions (
 	IsActive BIT
 );
 
+// User Document 
+
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[UserDocument]    Script Date: 3/5/2025 4:35:50 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserDocument](
+	[DocumentID] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeID] [int] NOT NULL,
+	[DocumentType] [nvarchar](255) NOT NULL,
+	[Description] [nvarchar](max) NULL,
+	[FilePath] [nvarchar](500) NOT NULL,
+	[UploadedAt] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[DocumentID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[UserDocument] ADD  DEFAULT (getdate()) FOR [UploadedAt]
+GO
+ALTER TABLE [dbo].[UserDocument]  WITH CHECK ADD FOREIGN KEY([EmployeeID])
+REFERENCES [dbo].[EmployeeDetails] ([EmpId])
+ON DELETE CASCADE
+GO
+
+
 
 //NoticeBoard 
 
@@ -221,7 +251,7 @@ CREATE TABLE AssetsDb (
 
 CREATE TABLE [EHRM].[dbo].[EmployeesCred] (
     [Id] INT IDENTITY(1,1) PRIMARY KEY, -- Auto-increment primary key
-    [EmpId] NVARCHAR(50) NOT NULL, -- Employee ID
+    [EmpId] INT NOT NULL, -- Employee ID
     [LoginId] INT , -- Login Id
     [Email] NVARCHAR(100) NOT NULL, -- Email address
     [TempPassword] NVARCHAR(255) NOT NULL, -- Temporary password
@@ -324,6 +354,142 @@ CREATE TABLE ProbationEvaluationForm (
     UpdatedAt DATETIME ,              -- Tracks when the record was last updated
 	FOREIGN KEY (EmpId) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE 
 );
+
+
+// Document Table
+
+CREATE TABLE Documents (
+    DocumentID INT IDENTITY(1,1) PRIMARY KEY, -- Auto-incrementing primary key
+    EmployeeID INT NOT NULL, -- Employee ID
+    DocumentType NVARCHAR(50) NOT NULL, -- Document type
+    FileName NVARCHAR(255) NOT NULL, -- File name
+    FilePath NVARCHAR(500) NOT NULL, -- File storage path
+    Description NVARCHAR(MAX), -- Optional description
+    UploadedAt DATETIME DEFAULT GETDATE(), -- Auto-stores upload timestamp
+	FOREIGN KEY (EmployeeID) REFERENCES EmployeeDetails(EmpId) ON DELETE CASCADE
+);
+
+
+//region TimeSheet Tables
+
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[DailyEntry] 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[DailyEntry](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmpId] [int] NULL,
+	[TimeSheetId] [int] NULL,
+	[DayDate] [date] NULL,
+	[DayOfWeek] [varchar](20) NULL,
+	[HoursWorked] [decimal](18, 2) NULL,
+	[AssignmentDesc] [text] NULL,
+	[Remarks] [text] NULL,
+	[CreatedAt] [datetime] NULL,
+	[UpdatedAt] [datetime] NULL,
+ CONSTRAINT [PK__DailyEnt__3214EC07BF70E883] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TimeSheet] 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TimeSheet](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmpId] [int] NULL,
+	[PresentMonth] [varchar](50) NULL,
+	[EmpName] [varchar](100) NULL,
+	[ClientName] [varchar](100) NULL,
+	[Position] [varchar](100) NULL,
+	[ProjectName] [varchar](100) NULL,
+	[EmployeeSignature] [varchar](100) NULL,
+	[ManagerSignature] [varchar](100) NULL,
+	[SignatureDate] [datetime] NULL,
+	[SubmissionDate] [datetime] NULL,
+	[Note] [text] NULL,
+	[TotalHours] [decimal](18, 2) NULL,
+	[CreatedAt] [datetime] NULL,
+	[UpdatedAt] [datetime] NULL,
+ CONSTRAINT [PK__TimeShee__3214EC07D5A7E666] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[DailyEntry] ADD  CONSTRAINT [DF__DailyEntr__Creat__10566F31]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[DailyEntry] ADD  CONSTRAINT [DF__DailyEntr__Updat__114A936A]  DEFAULT (getdate()) FOR [UpdatedAt]
+GO
+ALTER TABLE [dbo].[TimeSheet] ADD  CONSTRAINT [DF__TimeSheet__Creat__0C85DE4D]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[TimeSheet] ADD  CONSTRAINT [DF__TimeSheet__Updat__0D7A0286]  DEFAULT (getdate()) FOR [UpdatedAt]
+GO
+ALTER TABLE [dbo].[DailyEntry]  WITH CHECK ADD  CONSTRAINT [FK_DailyEntry_TimeSheet] FOREIGN KEY([TimeSheetId])
+REFERENCES [dbo].[TimeSheet] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[DailyEntry] CHECK CONSTRAINT [FK_DailyEntry_TimeSheet]
+GO
+
+
+//endregion
+
+// Add Leave Type
+CREATE TABLE LeaveTypee (
+    id INT IDENTITY(1,1) PRIMARY KEY, 
+    LeaveType VARCHAR(255) NOT NULL, 
+    leaveDescription VARCHAR(MAX) NOT NULL, 
+    is_active BIT DEFAULT 1
+)
+
+// LeaveApply and LeaveStatuss
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[LeaveStatuss]    Script Date: 2/25/2025 2:12:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LeaveStatuss](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[EmpId] [int] NULL,
+	[LeaveStatus] [varchar](255) NULL,
+	[ManagerRemark] [varchar](255) NOT NULL,
+	[is_active] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Leavetypee]    Script Date: 2/25/2025 2:12:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Leavetypee](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[LeaveType] [varchar](255) NOT NULL,
+	[LeaveDescription] [varchar](max) NOT NULL,
+	[is_active] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[LeaveStatuss] ADD  DEFAULT ((1)) FOR [is_active]
+GO
+ALTER TABLE [dbo].[Leavetypee] ADD  DEFAULT ((1)) FOR [is_active]
+GO
+
 
 
 

@@ -1,0 +1,142 @@
+﻿@model LeaveStatusViewModel
+@using EHRM.ViewModel.Leave
+
+@{
+    ViewData["Title"] = "Leave Status";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .page-heading {
+        color: #007bff;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-family: Arial, sans-serif;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/CustomScripts/LeaveStatus.js"></script>
+
+<div class="container">
+    <h3 class="page-heading">Leave Status</h3>
+    <div class="table-responsive">
+        <table id="leaveTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Employee Name</th>
+                    <th>Leave Type</th>
+                    <th>Leave From</th>
+                    <th>Leave To</th>
+                    <th>Leave Count</th>
+                    <th>Manager Remark</th>
+                    <th>Leave Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var leave in Model.Items)
+                {
+                <tr>
+                        <td>@leave.Id</td>
+                        <td>@leave.EmployeeName</td>
+                        <td>@leave.LeaveType</td>
+                        <td>@leave.LeaveFrom</td> 
+                        <td>@leave.TillDate</td> 
+                        <td>@leave.TotalDays</td> 
+                        <td>@leave.ManagerRemark</td>
+
+                        <td>
+                            @if (leave.LeaveStatus == "Pending")
+                            {
+                                <button class="btn btn-primary btn-sm mx-1 view-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#leaveDetailsModal"
+                                        data-leave-id="@leave.Id"
+                                        data-employee-id="@leave.EmpId"
+                                        data-employee-name="@leave.EmployeeName"
+                                        data-leave-status="@leave.LeaveStatus"
+                                        data-remark="@leave.ManagerRemark">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                            
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@leave.LeaveStatus</span>
+                            }
+                        </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Leave Details Modal -->
+<!-- Modal to display and update Leave Application details -->
+<div class="modal fade" id="leaveDetailsModal" tabindex="-1" aria-labelledby="leaveDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="leaveDetailsModalLabel">Leave Application Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form asp-controller="Leave" asp-action="SubmitLeaveStatus" method="post">
+                    <!-- Hidden inputs -->
+                    <input type="hidden" name="EmpId" value="@ViewData["empId"]" />
+                    <input asp-for="Id" type="hidden"  id="LeaveApplyId" />
+
+                    <div class="row">
+                        <!-- Employee Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="EmployeeName" class="form-label">Employee Name * :</label>
+                            <input class="form-control" id="EmployeeName" readonly />
+                        </div>
+
+                        <!-- Leave Status -->
+                        <div class="col-md-6 mb-3">
+                            <label for="LeaveStatus" class="form-label">Leave Status * :</label>
+                            <select asp-for="LeaveStatus"  class="form-control" id="LeaveStatus" name="LeaveStatus" required>
+                                <option value="">Select Leave Status</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Remark -->
+                        <div class="col-md-12 mt-3 mb-3">
+                            <label for="Remark" class="form-label">Remark * :</label>
+                            <textarea asp-for="ManagerRemark" class="form-control" id="Remark" rows="4" required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <button type="submit" class="btn btn-success">Save Leave Status</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

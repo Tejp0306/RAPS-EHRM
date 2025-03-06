@@ -5,6 +5,7 @@ using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.EmployeeDeclaration;
 using EHRM.ViewModel.Master;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 
@@ -485,7 +486,7 @@ namespace EHRM.ServiceLayer.Employee
 
 
         //Save Employment details
-        public async Task<Result> SaveEmploymentInfoAsync(GetAllEmployeeViewModel model, int createdById)
+        public async Task<EmployementTypeDetail> SaveEmploymentInfoAsync(GetAllEmployeeViewModel model, int createdById)
         {
             try
             {
@@ -508,12 +509,15 @@ namespace EHRM.ServiceLayer.Employee
                 await employementdetailRepository.AddAsync(newEmploymentDetails);
                 await _unitOfWork.SaveAsync();
 
-                return new Result
-                {
-                    Success = true,
-                    Message = "Employement data saved successfully.",
+                //return new Result
+                //{
+                //    Success = true,
+                //    Message = "Employement data saved successfully.",
+                //    Data = newEmploymentDetails
 
-                };
+                //};
+
+                return newEmploymentDetails;
             }
             catch (Exception)
             {
@@ -996,6 +1000,12 @@ namespace EHRM.ServiceLayer.Employee
         {
             // Use Any() to check if a record exists with the specified EmpId
             return _context.EmployeeDetails.Any(c => c.EmpId == EmpId);
+        }
+        // for checking employment type detail filled for that empid
+        public bool CheckUserInEmploymentDbByEmpId(int? EmpId)
+        {
+            // Use Any() to check if a record exists with the specified EmpId
+            return _context.EmployementTypeDetails.Any(c => c.EmpId == EmpId);
         }
 
         public bool CheckUserInEmpCredDbByEmpId(int? EmpId)

@@ -99,8 +99,6 @@ namespace EHRM.Web.Controllers
                 return View("Error");
             }
 
-            return RedirectToAction("Login");
-
         }
 
     }
