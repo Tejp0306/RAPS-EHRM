@@ -26,5 +26,6 @@ public partial class LeaveApply
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+
     public virtual ICollection<LeaveStatuss> LeaveStatusses { get; set; } = new List<LeaveStatuss>();
 }

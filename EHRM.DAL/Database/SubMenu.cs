@@ -24,6 +24,4 @@ public partial class SubMenu
     public virtual EmployeeDetail? Emp { get; set; }
 
     public virtual MainMenu? MainMenu { get; set; }
-
-    public virtual Role? Role { get; set; }
 }

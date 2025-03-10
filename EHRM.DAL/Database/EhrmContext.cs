@@ -69,8 +69,6 @@ public partial class EhrmContext : DbContext
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
 //        => optionsBuilder.UseSqlServer("Server=DESKTOP-HB9H8DM;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true");
 
-    //This is only for sending purpose......
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AssetsDb>(entity =>
@@ -494,6 +492,7 @@ public partial class EhrmContext : DbContext
 
             entity.ToTable("LeaveBalance");
 
+            entity.Property(e => e.TenureYears).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.TotalLeave).HasComputedColumnSql("(([EarnedLeave]+[SickLeave])+[CasualLeave])", true);
 
             entity.HasOne(d => d.Emp).WithMany(p => p.LeaveBalances)
@@ -504,11 +503,13 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<LeavePolicy>(entity =>
         {
-            entity.HasKey(e => e.PolicyId).HasName("PK__LeavePol__2E1339A4BA892E4D");
+            entity.HasKey(e => e.PolicyId).HasName("PK__LeavePol__2E1339A44E6632E0");
 
             entity.ToTable("LeavePolicy");
 
             entity.Property(e => e.EarnedLeaveAccrualRate).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.YearsOfServiceMax).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.YearsOfServiceMin).HasColumnType("decimal(5, 2)");
         });
 
         modelBuilder.Entity<LeaveStatuss>(entity =>

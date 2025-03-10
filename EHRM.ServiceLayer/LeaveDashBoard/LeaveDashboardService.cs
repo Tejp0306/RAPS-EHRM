@@ -22,56 +22,53 @@ namespace EHRM.ServiceLayer.LeaveDashBoard
         
         public async Task<LeaveSummaryViewModel> CalculateLeavePolicy(DateTime startDate)
         {
-            // Fetch leave policies from repository (if needed)
+            // Fetch leave policies from repository
             var policyRepository = _unitOfWork.GetRepository<LeavePolicy>();
-
-
             List<LeavePolicy> policies = (await policyRepository.GetAllAsync()).ToList();
 
-            // Calculate years of service
+            // Calculate years of service in decimal
             double yearsOfService = (DateTime.Now - startDate).TotalDays / 365.25;
 
             // Initialize leave summary
             var leave = new LeaveSummaryViewModel();
 
-            if (yearsOfService < 2)
+            // Check if employee is in probation period
+            var probationPolicy = policies.FirstOrDefault(p => p.IsProbation == true
+                                                               && yearsOfService >= (double)p.YearsOfServiceMin
+                                                               && yearsOfService < (double)p.YearsOfServiceMax);
+            if (probationPolicy != null)
             {
-                // For 0 to less than 2 Years
-                leave.CasualLeave = policies[0].CasualLeave;
-                leave.SickLeave = policies[0].SickLeave;
-                leave.EarnedLeave = policies[0].EarnedLeave;
-                leave.EarnedLeaveAccrualRate = policies[0].EarnedLeaveAccrualRate; // 1.00 day per month
-                leave.CarryForwardEL = policies[0].IsEarnedLeaveCarriedForward;
-                leave.CarryForwardLimit = policies[0].CarryForwardLimit;
+                // Apply probation leave policy
+                leave.CasualLeave = probationPolicy.CasualLeave;
+                leave.SickLeave = probationPolicy.SickLeave;
+                leave.EarnedLeave = probationPolicy.EarnedLeave;
+                leave.EarnedLeaveAccrualRate = probationPolicy.EarnedLeaveAccrualRate;
+                leave.CarryForwardEL = probationPolicy.IsEarnedLeaveCarriedForward;
+                leave.CarryForwardLimit = probationPolicy.CarryForwardLimit;
+                leave.TotalLeave = leave.CasualLeave + leave.SickLeave + leave.EarnedLeave;
+                leave.Tenure = (decimal)yearsOfService;
+                return leave;
+            }
+
+            // Standard leave policies based on years of service
+            var applicablePolicy = policies.FirstOrDefault(p => yearsOfService >= (double)p.YearsOfServiceMin
+                                                                 && yearsOfService < (double)p.YearsOfServiceMax
+                                                                 && (p.IsProbation == false || p.IsProbation == null));
+            if (applicablePolicy != null)
+            {
+                leave.CasualLeave = applicablePolicy.CasualLeave;
+                leave.SickLeave = applicablePolicy.SickLeave;
+                leave.EarnedLeave = applicablePolicy.EarnedLeave;
+                leave.EarnedLeaveAccrualRate = applicablePolicy.EarnedLeaveAccrualRate;
+                leave.CarryForwardEL = applicablePolicy.IsEarnedLeaveCarriedForward;
+                leave.CarryForwardLimit = applicablePolicy.CarryForwardLimit;
                 leave.TotalLeave = leave.CasualLeave + leave.SickLeave + leave.EarnedLeave;
                 leave.Tenure = (int)yearsOfService;
-                
-            }
-            else if (yearsOfService >= 2 && yearsOfService < 5)
-            {
-                // For 2 to less than 5 Years
-                leave.CasualLeave = policies[1].CasualLeave;
-                leave.SickLeave = policies[1].SickLeave;
-                leave.EarnedLeave = policies[1].EarnedLeave;
-                leave.EarnedLeaveAccrualRate = policies[1].EarnedLeaveAccrualRate; // 1.00 day per month
-                leave.CarryForwardEL = policies[1].IsEarnedLeaveCarriedForward;
-                leave.CarryForwardLimit = policies[1].CarryForwardLimit;
-                leave.TotalLeave = leave.CasualLeave + leave.SickLeave + leave.EarnedLeave;
-            }
-            else
-            {
-                // For 5+ Years
-                leave.CasualLeave = policies[2].CasualLeave;
-                leave.SickLeave = policies[2].SickLeave;
-                leave.EarnedLeave = policies[2].EarnedLeave;
-                leave.EarnedLeaveAccrualRate = policies[2].EarnedLeaveAccrualRate; // 1.00 day per month
-                leave.CarryForwardEL = policies[2].IsEarnedLeaveCarriedForward;
-                leave.CarryForwardLimit = policies[2].CarryForwardLimit;
-                leave.TotalLeave = leave.CasualLeave + leave.SickLeave + leave.EarnedLeave;
             }
 
             return leave;
         }
+
 
 
     }
