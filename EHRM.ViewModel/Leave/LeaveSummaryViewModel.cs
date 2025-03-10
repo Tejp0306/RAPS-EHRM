@@ -15,7 +15,7 @@ public class LeaveSummaryViewModel
     public int EarnedLeave { get; set; }               // Number of earned leave days
     public decimal EarnedLeaveAccrualRate { get; set; }  // Earned leave accrual rate per month
     public int CarryForwardLimit { get; set; }         // Maximum days that can be carried forward
-    public int Tenure { get; set; }         // Maximum days that can be carried forward
+    public decimal Tenure { get; set; }         // Maximum days that can be carried forward
 
     public bool CarryForwardCL {  get; set; }
     public bool CarryForwardSL { get; set; }
