@@ -9,7 +9,7 @@ public partial class LeaveBalance
 
     public int EmpId { get; set; }
 
-    public int TenureYears { get; set; }
+    public decimal TenureYears { get; set; }
 
     public int EarnedLeave { get; set; }
 
@@ -17,7 +17,7 @@ public partial class LeaveBalance
 
     public int CasualLeave { get; set; }
 
-    public int? TotalLeave { get; set; }
+    public int TotalLeave { get; set; }
 
     public virtual EmployeeDetail Emp { get; set; } = null!;
 }
