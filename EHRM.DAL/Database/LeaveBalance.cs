@@ -16,7 +16,7 @@ public partial class LeaveBalance
 
     public int CasualLeave { get; set; }
 
-    public int? TotalLeave { get; set; }
+    public int TotalLeave { get; set; }
 
     public virtual EmployeeDetail Emp { get; set; } = null!;
 }
