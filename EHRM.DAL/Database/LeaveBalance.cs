@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 
 namespace EHRM.DAL.Database;
-//push to master
+
 public partial class LeaveBalance
 {
     public int Id { get; set; }
 
     public int EmpId { get; set; }
 
-    public int TenureYears { get; set; }
+    public decimal TenureYears { get; set; }
 
     public int EarnedLeave { get; set; }
 

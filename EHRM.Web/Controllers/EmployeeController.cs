@@ -311,7 +311,7 @@ namespace EHRM.Web.Controllers
                 {
                         EmpId = (int)result.EmpId,
                         TenureYears = leaveSummary.Tenure,
-                        EarnedLeave=leaveSummary.EarnedLeave,
+                        EarnedLeave =leaveSummary.EarnedLeave,
                         SickLeave = leaveSummary.SickLeave,
                         CasualLeave = leaveSummary.CasualLeave,
                         TotalLeave=leaveSummary.TotalLeave
