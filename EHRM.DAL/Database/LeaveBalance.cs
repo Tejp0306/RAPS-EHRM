@@ -8,7 +8,7 @@ public partial class LeaveBalance
 
     public int EmpId { get; set; }
 
-    public int TenureYears { get; set; }
+    public decimal TenureYears { get; set; }
 
     public int EarnedLeave { get; set; }
 

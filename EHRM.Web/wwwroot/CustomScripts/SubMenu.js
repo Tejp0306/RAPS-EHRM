@@ -169,9 +169,6 @@ function GetEmployeeDetail(RoleId) {
 }
 
 
-
-
-
 function getSubMenuListData() {
     const table = $('#subMenuTable').DataTable({
         ajax: {

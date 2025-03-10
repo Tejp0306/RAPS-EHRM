@@ -488,7 +488,7 @@ namespace EHRM.Web.Controllers
 
 
             // Handle the result of the create operation
-            if (result.Data == "Approved")
+            if (result.Data is "Approved")
             {
                 var leaveApplyRepository = _UnitOfWork.GetRepository<LeaveApply>();
 
@@ -513,40 +513,19 @@ namespace EHRM.Web.Controllers
                     throw new Exception("Leave balance record not found for the employee.");
                 }
 
-                // Deduct leave balance based on leave type
+                // Deduct leave balance based on leave type (Allowing negative balance)
                 switch (leaveType.ToLower())
                 {
                     case "casual leave":
-                        if (leaveBalance.CasualLeave >= leaveCount)
-                        {
-                            leaveBalance.CasualLeave -= leaveCount;
-                        }
-                        else
-                        {
-                            throw new Exception("Insufficient Casual Leave Balance.");
-                        }
+                        leaveBalance.CasualLeave -= leaveCount;  // Allow negative balance
                         break;
 
                     case "sick leave":
-                        if (leaveBalance.SickLeave >= leaveCount)
-                        {
-                            leaveBalance.SickLeave -= leaveCount;
-                        }
-                        else
-                        {
-                            throw new Exception("Insufficient Sick Leave Balance.");
-                        }
+                        leaveBalance.SickLeave -= leaveCount;  // Allow negative balance
                         break;
 
                     case "earned leave":
-                        if (leaveBalance.EarnedLeave >= leaveCount)
-                        {
-                            leaveBalance.EarnedLeave -= leaveCount;
-                        }
-                        else
-            {
-                            throw new Exception("Insufficient Earned Leave Balance.");
-                        }
+                        leaveBalance.EarnedLeave -= leaveCount;  // Allow negative balance
                         break;
 
                     default:
@@ -557,10 +536,6 @@ namespace EHRM.Web.Controllers
                 leaveBalanceRepository.UpdateAsync(leaveBalance);
                 await _UnitOfWork.SaveAsync();
 
-
-                // Return the EmpId if found, otherwise return null
-
-
                 // Success handling
                 TempData["ToastType"] = "success";  // Success, danger, warning, info
                 TempData["ToastMessage"] = "Form Submitted successfully!";
@@ -568,6 +543,7 @@ namespace EHRM.Web.Controllers
                 // Always return a redirect after a successful submission
                 return RedirectToAction("LeaveStatus");  // Redirect to the appropriate action/view after success
             }
+
             else
             {
                 return RedirectToAction("LeaveStatus"); // Redirect to the appropriate action/view in case of failure
