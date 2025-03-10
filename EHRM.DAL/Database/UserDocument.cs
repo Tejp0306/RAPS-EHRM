@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 namespace EHRM.DAL.Database;
-
 public partial class UserDocument
 {
     public int DocumentId { get; set; }

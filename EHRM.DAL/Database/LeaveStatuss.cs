@@ -14,4 +14,8 @@ public partial class LeaveStatuss
     public string ManagerRemark { get; set; } = null!;
 
     public bool? IsActive { get; set; }
+
+    public int? LeaveId { get; set; }
+
+    public virtual LeaveApply? Leave { get; set; }
 }
