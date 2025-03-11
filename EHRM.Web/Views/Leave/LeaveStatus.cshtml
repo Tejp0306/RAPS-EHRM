@@ -25,6 +25,7 @@
 <script src="~/CustomScripts/LeaveStatus.js"></script>
 
 <div class="container">
+
     <h3 class="page-heading">Leave Status</h3>
     <div class="table-responsive">
         <table id="leaveTable" class="table table-striped table-bordered">
@@ -83,6 +84,15 @@
 <!-- Modal to display and update Leave Application details -->
 <div class="modal fade" id="leaveDetailsModal" tabindex="-1" aria-labelledby="leaveDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
+        @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+        {
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    // Call the showToast function directly with TempData values
+                    showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+                });
+            </script>
+        }
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header bg-primary">

@@ -13,6 +13,15 @@
 {
     <!-- Card Wrapper -->
     <div class="card mt-5 shadow">
+        @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+        {
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    // Call the showToast function directly with TempData values
+                    showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+                });
+            </script>
+        }
         <div class="card-header text-white text-center">
             <h2>Declaration Profile</h2>
         </div>
