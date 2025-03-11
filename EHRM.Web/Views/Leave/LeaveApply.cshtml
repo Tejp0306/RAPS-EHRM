@@ -89,7 +89,15 @@
 
 <div class="container mt-4">
     <h3 class="page-heading">Apply Leave</h3>
-
+    @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // Call the showToast function directly with TempData values
+                showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+            });
+        </script>
+    }
     <!-- Card to hold the form and toggle visibility -->
     <div class="card">
         <div class="card-header" id="headingOne">

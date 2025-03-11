@@ -281,7 +281,7 @@ namespace EHRM.Web.Controllers
                     if (updateResponse?.success == true)
                     {
                         TempData["ToastType"] = "success"; // Success message
-                        TempData["ToastMessage"] = "Record has been updated ";
+                        TempData["ToastMessage"] = "Leave has been updated";
                         return RedirectToAction("LeaveApply");
                     }
                     else
@@ -306,7 +306,7 @@ namespace EHRM.Web.Controllers
                 if (result.Success)
                 {
                     TempData["ToastType"] = "success";  // Success message
-                    TempData["ToastMessage"] = "Record saved successfully!";
+                    TempData["ToastMessage"] = "Leave has been applied!";
                     return RedirectToAction("LeaveApply");
                 }
                 else
@@ -538,7 +538,7 @@ namespace EHRM.Web.Controllers
 
                 // Success handling
                 TempData["ToastType"] = "success";  // Success, danger, warning, info
-                TempData["ToastMessage"] = "Form Submitted successfully!";
+                TempData["ToastMessage"] = "Leave has been approved!";
 
                 // Always return a redirect after a successful submission
                 return RedirectToAction("LeaveStatus");  // Redirect to the appropriate action/view after success
@@ -546,6 +546,10 @@ namespace EHRM.Web.Controllers
 
             else
             {
+                // Success handling
+                TempData["ToastType"] = "danger";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Leave has been rejected!";
+
                 return RedirectToAction("LeaveStatus"); // Redirect to the appropriate action/view in case of failure
             }
         }
