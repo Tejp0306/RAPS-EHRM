@@ -42,12 +42,11 @@ namespace EHRM.Web.Controllers
             // Initialize a list of events
             var events = new List<object>();
 
-            // Add hardcoded events for testing (you can remove these later)
-            events.Add(new { title = "Meeting", start = "2025-02-08T10:00:00", end = "2025-02-08T12:00:00" });
-            events.Add(new { title = "Workshop", start = "2025-02-09", allDay = true });
-            events.Add(new { title = "Lunch Break", start = "2025-02-10T13:00:00", end = "2025-02-10T14:00:00" });
 
-            // Add holiday events
+
+
+            // Loop through holidays to create dynamic events
+
             foreach (var holiday in holidays)
             {
                 string formattedDate = holiday.HolidayDate.ToString("yyyy-MM-dd") + "T10:00:00"; // Format holiday date

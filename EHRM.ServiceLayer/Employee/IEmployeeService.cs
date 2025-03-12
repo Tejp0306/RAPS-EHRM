@@ -17,7 +17,7 @@ namespace EHRM.ServiceLayer.Employee
         Task<Result> SaveDecalarationInfoAsync(GetAllEmployeeViewModel model, int createdById);
 
         
-        Task<Result> SaveEmploymentInfoAsync(GetAllEmployeeViewModel model, int createdById);
+        Task<EmployementTypeDetail> SaveEmploymentInfoAsync(GetAllEmployeeViewModel model, int createdById);
         Task<Result> GetRoleAsync();
         Task<Result> GetManagerAsync();
         Task<Result> GetTeamAsync();
@@ -37,14 +37,9 @@ namespace EHRM.ServiceLayer.Employee
         Task<Result> UpdateDeclarationInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model);
 
         
-
-
-
-
-
-
-
         bool CheckUserInDbByEmpId(int? EmpId);
+
+        bool CheckUserInEmploymentDbByEmpId(int? EmpId);
 
         bool CheckUserInEmpCredDbByEmpId(int? EmpId);
 

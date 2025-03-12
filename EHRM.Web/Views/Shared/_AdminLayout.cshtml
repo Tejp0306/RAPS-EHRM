@@ -95,9 +95,9 @@
             font-size: 14px;
         }
 
-            .dropdown-item:hover {
+           /*  .dropdown-item:hover {
                 background-color: #e9ecef;
-            }
+            } */
 
         .navbar-brand {
             font-size: 24px;
@@ -174,7 +174,7 @@
 
                             <a href="#" class="nav-link dropdown-toggle  @(isDropdownActive ? "active" : "")"
                                data-bs-toggle="dropdown">
-                                <i class="@menu.Icon me-2"></i>@menu.Name
+                                <i class="@menu.Icon me-1"></i>@menu.Name
                             </a>
                             <ul class="dropdown-menu bg-transparent border-0">
                                 @foreach (var submenu in menu.SubMenus)
@@ -182,7 +182,7 @@
                                     <li>
                                         <a href="@Url.Action(submenu.Action, submenu.Controller)"
                                            class="dropdown-item @(submenu.Controller?.ToLower() == currentController && submenu.Action?.ToLower() == currentAction ? "active" : "")">
-                                            <i class="fa fa-circle me-1"></i>@submenu.Name
+                                            <i class="bi bi-dot fs-5 text-dark"></i>@submenu.Name
                                         </a>
                                     </li>
                                 }

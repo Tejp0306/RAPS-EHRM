@@ -10,6 +10,7 @@
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/CustomStyle/AdminPartial.css" rel="stylesheet" />
     <style>
         .content-header {
             display: flex;
@@ -65,8 +66,9 @@
         }
 
         #calendar-container {
-            width: 800px; /* Adjust the width as needed */
+            width: 1200px; /* Adjust the width as needed */
             margin-left: 5px;
+            margin:auto;
         }
 
         #calendar {
@@ -77,7 +79,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <body>
 
-    <div class="container mt-5">
+    <div class="container mt-2">
         <!-- Main content -->
         <div class="content-header">
             <h3>Manager Dashboard</h3>
@@ -118,7 +120,56 @@
                 </div>
             </div>
         </div>
+        <!-- Quick Stats -->
+        <div class="row mt-4 ">
 
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="card text-white bg-primary mb-3 shadow-sm hover-shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <i class="bi bi-calendar-check"></i> Earned Leave
+                            </h5>
+                            <p class="card-text fs-4"><strong id="earnedLeave">0</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="card text-white bg-warning mb-3 shadow-sm hover-shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <i class="bi bi-thermometer-half"></i> Sick Leave
+                            </h5>
+                            <p class="card-text fs-4"><strong id="sickLeave">0</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="card text-white bg-info mb-3 shadow-sm hover-shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <i class="bi bi-umbrella"></i> Casual Leave
+                            </h5>
+                            <p class="card-text fs-4"><strong id="casualLeave">0</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="card text-white bg-success mb-3 shadow-sm hover-shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <i class="bi bi-list-task"></i> Total Leave
+                            </h5>
+                            <p class="card-text fs-4"><strong id="totalLeave">0</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
         <!-- Employee Section -->
         <h4 class="mt-4">Employees</h4>
         <div style="max-height: 300px; overflow-y: auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
@@ -166,42 +217,7 @@
         </div>
 
 
-        <!-- Employee Leave Details Section -->
-        <h4 class="mt-4">Employee Leave Details</h4>
-        <div style="max-height: 250px; overflow-y: auto;">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Employee Name</th>
-                        <th>Total Leave Days</th>
-                        <th>Leave Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Employee Row Example -->
-                    <tr>
-                        <td>John Doe</td>
-                        <td>12</td>
-                        <td><span class="leave-status approved">Approved</span></td>
-                    </tr>
-                    <tr>
-                        <td>Jane Smith</td>
-                        <td>15</td>
-                        <td><span class="leave-status pending">Pending</span></td>
-                    </tr>
-                    <tr>
-                        <td>David Lee</td>
-                        <td>8</td>
-                        <td><span class="leave-status rejected">Rejected</span></td>
-                    </tr>
-                    <tr>
-                        <td>Alice Brown</td>
-                        <td>10</td>
-                        <td><span class="leave-status approved">Approved</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        
 
     </div>
 
@@ -243,6 +259,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="card m-4 ">
         <div class="card-body">
@@ -305,6 +322,29 @@
                 <!-- Modal Footer with Custom Close Button -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success btn-sm" id="closeModalBtn">Close</button>
+
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">Leave Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="eventForm">
+                        <div class="mb-3">
+                            <label for="eventDate" class="form-label">Date</label>
+                            <input type="text" class="form-control" id="eventDate" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventTitle" class="form-label">Event Title</label>
+                            <input type="text" class="form-control" id="eventTitle">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
                 </div>
             </div>
         </div>

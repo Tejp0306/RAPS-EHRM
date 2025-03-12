@@ -26,6 +26,4 @@ public partial class Team
     public DateTime? UpdateDate { get; set; }
 
     public int? TeamId { get; set; }
-
-    public virtual ICollection<Holiday> Holidays { get; set; } = new List<Holiday>();
 }

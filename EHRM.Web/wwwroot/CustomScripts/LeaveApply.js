@@ -6,11 +6,14 @@
 
 function getLeaveData() {
     debugger;
-    const table = $('#LeaveDataTable').DataTable({
+    $('#LeaveDataTable').DataTable({
+        destroy: true, // Ensures DataTable is reinitialized correctly
+        processing: true,
+        serverSide: false, // Change to true if implementing server-side pagination
         ajax: {
             url: '/Leave/GetLeaveDetails',
             method: 'GET',
-            dataSrc: '' // Data source key, empty string assumes the root of the JSON array
+            dataSrc: '' // Assumes JSON response is an array
         },
         columns: [
             { data: 'id' },
@@ -22,21 +25,20 @@ function getLeaveData() {
             { data: 'description' },
             {
                 data: 'status.leaveStatus',
-                render: function (data) {
-                    // Conditional styling based on leave status
-                    if (data === "Approved") {
-                        return `<span class="approved-status">${data}</span>`;
-                    } else if (data === "Rejected") {
-                        return `<span class="rejected-status">${data}</span>`;
-                    } else {
-                        return `<span class="pending-status">${data}</span>`;
-                    }
+                render: function (data, type, row) {
+                    debugger
+                    console.log(data);
+                    if (!data) return '<span class="pending-status">Pending</span>';
+                    let statusClass = data === "Approved" ? "approved-status"
+                        : data === "Rejected" ? "rejected-status"
+                            : "pending-status";
+                    return `<span class="${statusClass}">${data}</span>`;
                 }
             },
             {
                 data: 'status.managerRemark',
                 render: function (data) {
-                    return data ? data : "N/A"; // Display "N/A" for missing remarks
+                    return data ? `<span class="remark-text">${data}</span>` : "N/A";
                 }
             }
         ],

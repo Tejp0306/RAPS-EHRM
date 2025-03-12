@@ -2,9 +2,12 @@
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Employee;
 using EHRM.ServiceLayer.Enumerations;
+using EHRM.ServiceLayer.Helpers;
+using EHRM.ServiceLayer.LeaveDashBoard;
 using EHRM.ServiceLayer.Utility;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.EmployeeDeclaration;
+using EHRM.ViewModel.Leave;
 using EHRM.ViewModel.Master;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +21,19 @@ namespace EHRM.Web.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employee;
+        private readonly ILeaveDashboardService _leaveDashboardService;
         private readonly EhrmContext _context;
         private readonly IUnitOfWork _UnitOfWork;
 
         
         private readonly IEmailService _emailService;
-        public EmployeeController(IEmployeeService employee, EhrmContext context, IEmailService emailService, IUnitOfWork unitOfWork )
+        public EmployeeController(IEmployeeService employee, EhrmContext context, IEmailService emailService, IUnitOfWork unitOfWork, ILeaveDashboardService leaveDashboardService )
         {
             _employee = employee;
             _context = context; 
             _emailService = emailService;
             _UnitOfWork = unitOfWork;
+            _leaveDashboardService = leaveDashboardService;
         }
         public IActionResult Index()
         {
@@ -235,14 +240,14 @@ namespace EHRM.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveEmploymentInfo(GetAllEmployeeViewModel model)
         {
-            int empid = (int)model.EmploymentDetails.EmpId;
+            int sessionempid = (int)model.EmploymentDetails.EmpId;
 
             // Check if the employee exists in the database by EmpId
-            if (_employee.CheckUserInDbByEmpId(empid))
+            if (_employee.CheckUserInEmploymentDbByEmpId(sessionempid))
             {
                 // Update Employment Info
                 string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
-                var updateResult = await UpdateEmploymentInfoDetails(empid, updatedBy, model);
+                var updateResult = await UpdateEmploymentInfoDetails(sessionempid, updatedBy, model);
 
                 if (updateResult != null)
                 {
@@ -272,17 +277,58 @@ namespace EHRM.Web.Controllers
                 // Create Employment Info as the employee does not exist in the database
                 int createdById = 101; // Replace with logic to fetch the actual user ID
                 var result = await _employee.SaveEmploymentInfoAsync(model, createdById);
+
+              
+
                 // Handle the result of the create operation
-                if (result.Success)
+                if (result.EmpId>0)
                 {
+                    var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+                    var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+                    int empId = (int)result.EmpId;
+
+                    // Retrieve employee employment details
+                    var employementDetailsRepository = _UnitOfWork.GetRepository<EmployementTypeDetail>();
+                    var employeeDetails = await employementDetailsRepository.GetEmployementTypeDetailsByIdAsync(empId);
+
+                    // Check if employee details exist and are not empty
+                    if (employeeDetails == null || !employeeDetails.Any())
+                    {
+                        return NotFound("Employee details not found.");
+                    }
+
+                    // Ensure StartDate is valid before proceeding
+                    if (!DateTime.TryParse(employeeDetails[0].StartDate, out DateTime startDate))
+                    {
+                        return BadRequest("Invalid StartDate format.");
+                    }
+
+                    // Calculate leave summary based on the employee's StartDate
+                    var leaveSummary = await _leaveDashboardService.CalculateLeavePolicy(startDate);
+
+                    var newemployeeLeaveBalance = new LeaveBalance
+
+                {
+                        EmpId = (int)result.EmpId,
+                        TenureYears = leaveSummary.Tenure,
+                        EarnedLeave =leaveSummary.EarnedLeave,
+                        SickLeave = leaveSummary.SickLeave,
+                        CasualLeave = leaveSummary.CasualLeave,
+                        TotalLeave=leaveSummary.TotalLeave
+
+                    };
+                    var LeaveBalanceRepository = _UnitOfWork.GetRepository<LeaveBalance>();
+                    await LeaveBalanceRepository.AddAsync(newemployeeLeaveBalance);
+                    await _UnitOfWork.SaveAsync();
+
                     TempData["ToastType"] = "success"; // Success message
                     TempData["ToastMessage"] = "Operation completed successfully!";
-                    TempData["EmpId"] = result.Data; // Store the created EmpId
+                    //TempData["EmpId"] = result.Data; // Store the created EmpId
                 }
                 else
                 {
                     TempData["ToastType"] = "danger"; // Error message
-                    TempData["ToastMessage"] = result.Message ?? "An error occurred while saving.";
+                    //TempData["ToastMessage"] = result.Message ?? "An error occurred while saving.";
                 }
 
                 return RedirectToAction("AddEmployee"); // Redirect after create operation

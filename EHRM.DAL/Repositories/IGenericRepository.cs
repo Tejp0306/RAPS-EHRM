@@ -37,7 +37,9 @@ namespace EHRM.DAL.Repositories
 
         Task<List<Declaration>> GetDeclarationDetailsByIdAsync(int EmpId);
 
+        //Get Leave Status By Leave Id
 
+        Task<List<LeaveStatuss>> GetStatusByLeaveIdAsync(int leaveid);
 
     }
 }

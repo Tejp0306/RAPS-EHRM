@@ -109,6 +109,7 @@ namespace EHRM.Web.Controllers
                 return View("Error");
             }
 
+
         }
 
         [HttpGet("Dashboard/SavePunchInAsync")]
@@ -211,6 +212,7 @@ namespace EHRM.Web.Controllers
                 //return RedirectToAction("Dashboard");
                 return Json(new { success = false });
             }
+
         }
 
     }

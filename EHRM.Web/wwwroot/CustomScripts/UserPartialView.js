@@ -53,6 +53,7 @@ function initializeCalendar() {
             },
             editable: true, // Allow drag-and-drop
             selectable: true, // Allow selecting dates
+
             eventContent: function (arg) {
                 let eventObj = arg.event;
                 let punchInTime = eventObj.extendedProps.punchInTime || 'N/A';
@@ -90,6 +91,22 @@ function initializeCalendar() {
                         html: `<b>Holiday:</b> ${eventObj.title}<br>`
                     };
                 }
+
+            // When a date is clicked, show the modal
+            //dateClick: function (info) {
+            //    $('#eventModalLabel').text("Create New Event");
+            //    $('#eventDate').val(info.dateStr);
+            //    $('#eventTitle').val("");
+            //    $('#eventModal').modal('show');
+            //},
+
+            // When an event is clicked, show its details in the modal
+            eventClick: function (info) {
+                $('#eventModalLabel').text("Event Details");
+                $('#eventDate').val(info.event.startStr);
+                $('#eventTitle').val(info.event.title);
+                $('#eventModal').modal('show');
+
             }
         });
 
@@ -111,6 +128,60 @@ function initializeCalendar() {
         }
         return null;
     }
+
+}
+
+
+
+    getLeaveBalance();
+
+});
+function getLeaveBalance() {
+    $.ajax({
+        url: "/Leave/GetLeaveBalance",
+        method: "GET",
+        success: function (data) {
+            if (data) {
+                $("#earnedLeave").text(data.earnedLeave);
+                $("#sickLeave").text(data.sickLeave);
+                $("#casualLeave").text(data.casualLeave);
+                $("#totalLeave").text(data.totalLeave);
+            } else {
+                $("#leaveBalanceContainer").html("<p>No leave balance data found.</p>");
+            }
+        },
+        error: function () {
+            $("#leaveBalanceContainer").html("<p>Error fetching leave balance data.</p>");
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+
+            dateClick: function (info) {
+                // Show modal and update the content dynamically
+                document.getElementById('modalDate').innerText = info.dateStr;
+                document.getElementById('modalEventTitle').innerText = "No event"; // Since it's just a date click
+
+                var modal = new bootstrap.Modal(document.getElementById('eventModal'));
+                modal.show();
+            },
+
+            eventClick: function (info) {
+                // Show modal and update the content dynamically
+                document.getElementById('modalDate').innerText = info.event.start.toISOString().split('T')[0];
+                document.getElementById('modalEventTitle').innerText = info.event.title;
+
+                var modal = new bootstrap.Modal(document.getElementById('eventModal'));
+                modal.show();
+            }
+        });
+
+        calendar.render();
+    });
+
 }
 
 

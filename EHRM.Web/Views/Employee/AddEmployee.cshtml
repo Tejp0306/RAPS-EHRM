@@ -87,13 +87,7 @@
                                                 <div class="col-12 col-md-3">
                                                     <label for="nameTitle" class="form-label">Title *</label>
                                                     <span asp-validation-for="Title" class="text-danger"></span>
-                                                    <select asp-for="Title" class="form-select" id="nameTitle">
-                                                        <option selected>Select Prefix</option>
-                                                        <option value="mr">Mr.</option>
-                                                        <option value="mrs">Mrs.</option>
-                                                        <option value="ms">Master</option>
-                                                        <option value="dr">Ms.</option>
-                                                    </select>
+                                                    <input asp-for="Title" type="text" class="form-control" id="nameTitle" placeholder="Enter Prefix">
                                                 </div> <!-- First Name Field -->
                                                 <div class="col-12 col-md-3">
                                                     <label for="firstName" class="form-label">First Name *</label>

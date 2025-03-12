@@ -395,6 +395,7 @@ function validate_ConfirmEmail() {
 
 function calculateServiceDuration(AppointmentDate) {
 
+
     const appointmentDateObj = new Date(AppointmentDate);
     const currentDate = new Date();
 

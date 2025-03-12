@@ -63,7 +63,13 @@ namespace EHRM.DAL.Repositories
             return await _context.Set<EmployeeDetail>().Where(x => x.RoleId == RoleId).ToListAsync();
         }
 
-        
+
+        //Get Leave Status By Leave Id
+        public async Task<List<LeaveStatuss>> GetStatusByLeaveIdAsync(int leaveid)
+        {
+            return await _context.Set<LeaveStatuss>().Where(x => x.LeaveId == leaveid).ToListAsync();
+        }
+
 
         public async Task<List<EmployeeDetail>> GetByTeamIdAsync(int TeamId)
         {
