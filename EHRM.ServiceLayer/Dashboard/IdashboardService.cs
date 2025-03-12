@@ -1,4 +1,6 @@
-﻿using EHRM.ViewModel.Employee;
+﻿using EHRM.ServiceLayer.Models;
+using EHRM.ViewModel.Employee;
+using EHRM.ViewModel.PunchDeatils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,10 @@ namespace EHRM.ServiceLayer.Dashboard
 
         List<EmployeeViewModel> GetDataForUserDashboard(int userempId);
 
+        #region Punch Details
+        Task<Result> SavePunchInAsync(int EmpId, string userName);
+        Task<Result> UpdatePunchOutAsync(int EmpId);
+        #endregion
         
     }
 }

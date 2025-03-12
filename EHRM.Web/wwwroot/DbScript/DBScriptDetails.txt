@@ -487,6 +487,67 @@ ALTER TABLE [dbo].[LeaveApply] ADD  CONSTRAINT [DF__LeaveAppl__Updat__6FE99F9F] 
 GO
 
 
+//Punch Status
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[EmployeePunchDetails]    Script Date: 3/12/2025 3:08:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[EmployeePunchDetails](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Empid] [int] NULL,
+	[Month] [varchar](20) NULL,
+	[PunchDate] [varchar](20) NULL,
+	[Punchintime] [varchar](20) NULL,
+	[Punchouttime] [varchar](20) NULL,
+	[Totalhours] [decimal](5, 2) NULL,
+	[EmployeeName] [varchar](255) NULL,
+ CONSTRAINT [PK__Employee__3214EC07F7361D0F] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  StoredProcedure [dbo].[GetEmployeePunchDetails]    Script Date: 3/12/2025 3:08:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+Create PROCEDURE [dbo].[GetEmployeePunchDetails]
+    @EmpId INT
+AS
+BEGIN
+    BEGIN TRY
+        -- Fetch PunchDetails for the given EmpId and calculate TotalHours
+        SELECT 
+            PunchDate,
+            PunchInTime,
+            PunchOutTime,
+            -- Calculate TotalHours only if both PunchInTime and PunchOutTime are not NULL
+            CASE 
+                WHEN PunchInTime IS NOT NULL AND PunchOutTime IS NOT NULL
+                THEN DATEDIFF(MINUTE, PunchInTime, PunchOutTime) / 60.0 -- Total hours as a decimal
+                ELSE NULL
+            END AS TotalHours
+        FROM 
+            EmployeePunchDetails
+        WHERE 
+            EmpId = @EmpId
+        ORDER BY 
+            PunchDate; -- Optional, orders by PunchDate
+
+    END TRY
+    BEGIN CATCH
+        -- Handle errors and return the error message
+        SELECT 
+            ERROR_MESSAGE() AS ErrorMessage;
+    END CATCH
+END;
+GO
+
+
 
 
 

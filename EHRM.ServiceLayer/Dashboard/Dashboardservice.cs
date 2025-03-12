@@ -1,6 +1,9 @@
 ﻿using EHRM.DAL.Database;
+using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Employee;
+using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
+using EHRM.ViewModel.PunchDeatils;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -15,14 +18,16 @@ namespace EHRM.ServiceLayer.Dashboard
     public class Dashboardservice : IdashboardService
     {
         private readonly string _connectionString;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Dashboardservice(IConfiguration configuration)
+        public Dashboardservice(IConfiguration configuration,IUnitOfWork unitOfWork)
         {
             _connectionString = configuration.GetConnectionString("EHRMConnection");
             if (string.IsNullOrEmpty(_connectionString))
             {
                 throw new Exception("Database connection string is not configured properly.");
             }
+            _unitOfWork = unitOfWork;
         }
 
         //Get Employee Dynamic Data for the Manager Partial View
@@ -80,7 +85,13 @@ namespace EHRM.ServiceLayer.Dashboard
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
                                 DateOfBirth = reader["DateOfBirth"].ToString(),
-                                EmployeeCount = Convert.ToInt32(reader["EmployeeCount"])
+                                EmployeeCount = Convert.ToInt32(reader["EmployeeCount"]),
+                                PunchDetail= new PunchDetailsViewModel
+                                {
+                                    Empid = Convert.ToInt32(reader["EmpId"]),
+                                    //EmployeeName= reader["LastName"].ToString() + reader["LastName"].ToString()
+                                    
+                                }
                             });
                         }
                     }
@@ -131,6 +142,88 @@ namespace EHRM.ServiceLayer.Dashboard
             return useremployees;
         }
 
+
+        #region Punch Details
+        public async Task<Result> UpdatePunchOutAsync(int EmpId)
+        {
+            try
+            {
+                var PunchRepository = _unitOfWork.GetRepository<EmployeePunchDetail>();  // Using generic repository
+                var existingPunch = PunchRepository.GetAllAsync().Result;  // Fetch existing role by ID
+
+                existingPunch = existingPunch.Where(x => x.Empid == EmpId).OrderByDescending(a => a.Id).ToList();
+                var EntityUpdate = existingPunch.FirstOrDefault();
+
+                if (EntityUpdate == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Punch Detail not found."
+                    };
+                }
+                else
+                {
+                    // Format the current time as HH:mm:ss (24-hour format)
+                    EntityUpdate.Punchouttime = DateTime.Now.ToString("HH:mm:ss");
+
+                    await PunchRepository.UpdateAsync(EntityUpdate);
+                    await _unitOfWork.SaveAsync();
+
+                    return new Result
+                    {
+                        Success = true,
+                        Message = "Punch Detail updated successfully."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error updating Punch Detail: {ex.Message}"
+                };
+            }
+        }
+
+
+        public async Task<Result> SavePunchInAsync(int EmpId , string userName)
+        {
+            try
+            {
+                var punchIn = new EmployeePunchDetail
+                {
+                    Empid = EmpId,
+                    EmployeeName = userName,
+                    Month = DateTime.Now.ToString("MMMM"),// model.Month,
+                    PunchDate = DateTime.Now.ToString("yyyy-MM-dd"), // model.PunchDate,  // Convert DateTime to DateOnly
+                    Punchintime = DateTime.Now.ToString("HH:mm:ss"), //model.PunchInTime,
+
+                };
+
+                var punchRepository = _unitOfWork.GetRepository<EmployeePunchDetail>();
+                await punchRepository.AddAsync(punchIn);
+                await _unitOfWork.SaveAsync();
+
+
+                return new Result
+                {
+                    Success = true,
+                    Message = "Punch In data saved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error saving Punch In data: {ex.Message}"
+                };
+            }
+        }
+
+        #endregion
 
     }
 }
