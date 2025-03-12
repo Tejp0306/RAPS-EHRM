@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using EHRM.ViewModel.PunchDeatils;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -87,6 +88,9 @@ namespace EHRM.ViewModel.Employee
 
         public DateTime? UpdatedAt { get; set; }
 
+        //punch details
+
+        public PunchDetailsViewModel PunchDetail { get; set; }
     }
     public class EmployeeName
     {
@@ -99,7 +103,6 @@ namespace EHRM.ViewModel.Employee
         public string? DOB { get; set; }
 
 
-
+    }
 
     }
-}

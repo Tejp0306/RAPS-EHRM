@@ -150,6 +150,73 @@
         <div id="calendar"></div>
     </div>
 
+    <div class="card m-4 ">
+        <div class="card-body">
+            <h4 class="card-title">Punch Status</h4>
+            <div class="table-container">
+                <table id="punchTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Punch Date</th>
+                            <th>Punch-In Time</th>
+                            <th>Punch-Out Time</th>
+                            <th>Total Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Sample Data (You can dynamically generate this using a backend) -->
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</div>
+
+</div>
+<!-- Birthday Modal -->
+<div class="modal fade" id="birthdayModal" tabindex="-1" aria-labelledby="birthdayModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title" id="birthdayModalLabel" style="font-size: 2.5rem; font-weight: bold; color: #FF5733; text-align: center; animation: birthdayAnimation 2s infinite;">
+                    🎉 **Happy Birthday!** 🎉
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <!-- Display the employee's name stored in TempData -->
+                @if (TempData["EmployeeBirthday"] != null)
+                {
+                    <p style="font-size: 1.2rem; font-weight: bold; color: #FF5733;">
+                        Wishing <span style="color: #007bff; font-size: 1.5rem;"><b>@TempData["EmployeeBirthday"].ToString().ToUpper()</b></span>
+                        a fantastic day filled with joy and celebration!!!! <br> 🎉🎂🎉
+                    </p>
+                    <p style="font-size: 1.1rem; color: #6c757d;">
+                        May this special day bring you endless happiness, love, and success. Enjoy every moment! 🌟
+                    </p>
+                }
+                else
+                {
+                    <p style="font-size: 1.2rem; color: #6c757d;">
+                        Oops! No birthdays today, but let's keep the spirit alive! 🎉
+                    </p>
+                }
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="font-size: 1.1rem;">Thank You!</button>
+            </div>
+
+
+
     <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -174,6 +241,7 @@
 
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -182,10 +250,19 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="~/CustomScripts/UserPartialView.js"></script>
+<script src="~/CustomScripts/PunchStatus.js"></script>
 <script src="~/lib/fullcalendar/dist/index.global.min.js"></script>
 <script src="~/lib/fullcalendar/dist/index.global.js"></script>
 
-
+<script>
+    window.onload = function() {
+            // Check if TempData contains birthday info
+            if ('@TempData["EmployeeBirthday"]' !== '') {
+                var birthdayModal = new bootstrap.Modal(document.getElementById('birthdayModal'));
+                birthdayModal.show();
+            }
+        }
+</script>
 
 
     
