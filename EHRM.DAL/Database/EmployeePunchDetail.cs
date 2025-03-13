@@ -11,13 +11,13 @@ public partial class EmployeePunchDetail
 
     public string? Month { get; set; }
 
-    public string? PunchDate { get; set; }
+    public DateOnly? PunchDate { get; set; }
 
-    public string? Punchintime { get; set; }
+    public TimeOnly? Punchintime { get; set; }
 
-    public string? Punchouttime { get; set; }
+    public TimeOnly? Punchouttime { get; set; }
 
-    public decimal? Totalhours { get; set; }
+    public decimal? TotalHours { get; set; }
 
     public string? EmployeeName { get; set; }
 }

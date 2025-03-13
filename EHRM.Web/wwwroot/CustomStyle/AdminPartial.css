@@ -47,8 +47,8 @@
     border-radius: 8px;
 }
 
-.fc-col-header-cell-cushion{
-    color:white;
+.fc-col-header-cell-cushion {
+    color: white;
 }
 
 /* Events Styling */
@@ -99,7 +99,6 @@
         background-color: #6c757d;
         border-radius: 10px;
     }
-
 
 
 body {
@@ -196,6 +195,9 @@ table {
 thead {
     background-color: #007bff;
     color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 th, td {

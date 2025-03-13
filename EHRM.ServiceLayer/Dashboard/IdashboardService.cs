@@ -1,6 +1,6 @@
 ﻿using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
-using EHRM.ViewModel.PunchDeatils;
+using EHRM.ViewModel.PunchDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;

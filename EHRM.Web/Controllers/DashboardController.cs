@@ -5,7 +5,7 @@ using EHRM.ServiceLayer.Helpers;
 using EHRM.ServiceLayer.Utility;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.EmployeeDeclaration;
-using EHRM.ViewModel.PunchDeatils;
+using EHRM.ViewModel.PunchDetails;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -168,7 +168,7 @@ namespace EHRM.Web.Controllers
             var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
             int EmpId = Convert.ToInt32(userDetails.userId);
             var userName = userDetails.userName;
-            var currentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            var currentTime = TimeOnly.FromDateTime(DateTime.Now);
 
             try
             {

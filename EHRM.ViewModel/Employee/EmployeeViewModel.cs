@@ -1,4 +1,5 @@
-﻿using EHRM.ViewModel.PunchDeatils;
+﻿
+using EHRM.ViewModel.PunchDetails;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -90,7 +91,7 @@ namespace EHRM.ViewModel.Employee
 
         //punch details
 
-        public PunchDetailsViewModel PunchDetail { get; set; }
+        public PunchDetailsViewModel PunchDetails { get; set; }
     }
     public class EmployeeName
     {
