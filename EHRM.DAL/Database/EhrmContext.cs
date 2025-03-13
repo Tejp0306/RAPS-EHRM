@@ -25,6 +25,8 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<EmployeeDetail> EmployeeDetails { get; set; }
 
+    public virtual DbSet<EmployeePunchDetail> EmployeePunchDetails { get; set; }
+
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
 
     public virtual DbSet<EmployeesDeclaration> EmployeesDeclarations { get; set; }
@@ -208,6 +210,19 @@ public partial class EhrmContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.ZipCode).HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<EmployeePunchDetail>(entity =>
+        {
+            entity.ToTable(tb => tb.HasTrigger("CalculateTotalHours"));
+
+            entity.Property(e => e.EmployeeName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Month)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.TotalHours).HasColumnType("decimal(10, 2)");
         });
 
         modelBuilder.Entity<EmployeesCred>(entity =>
