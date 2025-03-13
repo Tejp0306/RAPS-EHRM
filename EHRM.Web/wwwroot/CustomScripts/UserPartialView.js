@@ -27,7 +27,10 @@ function initializeCalendar() {
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
             events: function (fetchInfo, successCallback, failureCallback) {
+
+  
                 const url = `/Calendar/GetCombinedEvents?empId=${empId}`;
+
                 const request = new Request(url, {
                     method: 'GET',
                     headers: {
@@ -128,6 +131,40 @@ function initializeCalendar() {
         return null;
     }
 }
+
+
+    getLeaveBalance();
+
+    $.ajax({
+        url: "/Leave/GetLeaveRecord", // Update with your actual controller name
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            let tbody = $("#leaveRecords");
+            tbody.empty(); // Clear existing rows
+
+            if (data.length === 0) {
+                tbody.append("<tr><td colspan='5' class='text-center'>No leave records found</td></tr>");
+            } else {
+                data.forEach((leave,index) => {
+                    let row = `<tr>
+                            <td>${index+1}</td>
+                            <td>${leave.employeeName}</td>
+                            <td>${leave.leaveType}</td>
+                            <td>${leave.leaveFrom}</td>
+                            <td>${leave.tillDate}</td>
+                            <td>${leave.leaveStatus}</td>
+                        </tr>`;
+                    tbody.append(row);
+                });
+            }
+        },
+        error: function () {
+            alert("Failed to load leave records.");
+        }
+    });
+
+});
 
 function getLeaveBalance() {
     $.ajax({
