@@ -1,4 +1,16 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿$(document).ready(function () {
+    $('#leaveTable').DataTable({
+        "paging": true,          // Enables pagination
+        "searching": true,       // Enables search box
+        "ordering": true,        // Enables sorting
+        "info": true             // Shows "Showing X of Y entries"
+    });
+});
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".view-btn").forEach(button => {
         button.addEventListener("click", function () {
             const leaveId = this.getAttribute("data-leave-id");
@@ -13,6 +25,8 @@
         });
     });
 });
+
+
 
 
 //$(document).ready(function () {

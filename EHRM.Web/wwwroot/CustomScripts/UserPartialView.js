@@ -25,7 +25,7 @@ $(document).ready(function () {
 
             events: function (fetchInfo, successCallback, failureCallback) {
                 // Debug: Log the fetch request details
-                //console.log("Fetching events for empId:", empId);
+                console.log("Fetching events for empId:", empId);
 
                 const url = `/Calendar/GetEvents?empId=${empId}`;
                 const request = new Request(url, {
@@ -89,6 +89,35 @@ $(document).ready(function () {
     }
 
     getLeaveBalance();
+
+    $.ajax({
+        url: "/Leave/GetLeaveRecord", // Update with your actual controller name
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            let tbody = $("#leaveRecords");
+            tbody.empty(); // Clear existing rows
+
+            if (data.length === 0) {
+                tbody.append("<tr><td colspan='5' class='text-center'>No leave records found</td></tr>");
+            } else {
+                data.forEach((leave,index) => {
+                    let row = `<tr>
+                            <td>${index+1}</td>
+                            <td>${leave.employeeName}</td>
+                            <td>${leave.leaveType}</td>
+                            <td>${leave.leaveFrom}</td>
+                            <td>${leave.tillDate}</td>
+                            <td>${leave.leaveStatus}</td>
+                        </tr>`;
+                    tbody.append(row);
+                });
+            }
+        },
+        error: function () {
+            alert("Failed to load leave records.");
+        }
+    });
 
 });
 function getLeaveBalance() {
