@@ -84,7 +84,9 @@ namespace EHRM.ServiceLayer.Dashboard
                                 EmpId = Convert.ToInt32(reader["EmpId"]),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
-                                DateOfBirth = reader["DateOfBirth"].ToString(),
+                                Title = reader["Title"].ToString(),
+                                EmailAddress = reader["EmailAddress"].ToString(),
+                                //DateOfBirth = reader["DateOfBirth"].ToString(),
                                 EmployeeCount = Convert.ToInt32(reader["EmployeeCount"]),
                                 PunchDetails = new PunchDetailsViewModel
                                 {
