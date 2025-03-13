@@ -93,6 +93,15 @@ function initializeCalendar() {
                 }
             },
 
+            // When a date is clicked, show the modal
+            //dateClick: function (info) {
+            //    $('#eventModalLabel').text("Create New Event");
+            //    $('#eventDate').val(info.dateStr);
+            //    $('#eventTitle').val("");
+            //    $('#eventModal').modal('show');
+            //},
+
+            // When an event is clicked, show its details in the modal
             eventClick: function (info) {
                 $('#eventModalLabel').text("Event Details");
                 $('#eventDate').val(info.event.startStr);
@@ -138,4 +147,31 @@ function getLeaveBalance() {
             $("#leaveBalanceContainer").html("<p>Error fetching leave balance data.</p>");
         }
     });
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+
+            dateClick: function (info) {
+                // Show modal and update the content dynamically
+                document.getElementById('modalDate').innerText = info.dateStr;
+                document.getElementById('modalEventTitle').innerText = "No event"; // Since it's just a date click
+
+                var modal = new bootstrap.Modal(document.getElementById('eventModal'));
+                modal.show();
+            },
+
+            eventClick: function (info) {
+                // Show modal and update the content dynamically
+                document.getElementById('modalDate').innerText = info.event.start.toISOString().split('T')[0];
+                document.getElementById('modalEventTitle').innerText = info.event.title;
+
+                var modal = new bootstrap.Modal(document.getElementById('eventModal'));
+                modal.show();
+            }
+        });
+
+        calendar.render();
+    });
+
 }
