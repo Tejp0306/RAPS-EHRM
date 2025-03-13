@@ -143,7 +143,10 @@
         <form class="login-form" asp-controller="Account" asp-action="Otp" method="post">
             <div class="form-group">
                 <label asp-for="Otp">Enter OTP</label>
-                <input asp-for="Otp" type="text" class="form-control" required />
+                <input asp-for="Otp" type="text" class="form-control"
+                       pattern="[0-9]{5}"
+                       title="Please enter a 5-digit integer"
+                       required />
                 <span asp-validation-for="Otp" class="text-danger"></span>
             </div>
             <button type="submit">Verify OTP</button>
