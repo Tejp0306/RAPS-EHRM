@@ -11,5 +11,9 @@ namespace EHRM.ViewModel.Models
         public string HolidayName { get; set; }
 
         public DateTime HolidayDate { get; set; }
+        public DateTime PunchDate { get; set; }
+        public string PunchInTime { get; set; }
+        public string PunchOutTime { get; set; }
+        public string TotalHours { get; set; }
     }
 }

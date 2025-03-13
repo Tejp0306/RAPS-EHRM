@@ -557,17 +557,31 @@ namespace EHRM.Web.Controllers
                 await _UnitOfWork.SaveAsync();
 
                 // Success handling
+
                 TempData["ToastType"] = "success";
                 TempData["ToastMessage"] = "Leave has been approved!";
+
+
+                // Always return a redirect after a successful submission
+                return RedirectToAction("LeaveStatus");  // Redirect to the appropriate action/view after success
+
             }
             else
             {
+
                 // If leave is rejected
                 TempData["ToastType"] = "danger";
                 TempData["ToastMessage"] = "Leave has been rejected!";
             }
 
             return RedirectToAction("LeaveStatus");
+
+                // Success handling
+                TempData["ToastType"] = "danger";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Leave has been rejected!";
+
+                return RedirectToAction("LeaveStatus"); // Redirect to the appropriate action/view in case of failure
+
             }
         }
 
