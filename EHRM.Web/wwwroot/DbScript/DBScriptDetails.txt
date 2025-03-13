@@ -474,20 +474,95 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[Leavetypee](
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[LeaveType] [varchar](255) NOT NULL,
-	[LeaveDescription] [varchar](max) NOT NULL,
-	[is_active] [bit] NULL,
-PRIMARY KEY CLUSTERED 
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[LeaveApply]    Script Date: 2/25/2025 6:39:24 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LeaveApply](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[EmpId] [int] NULL,
+	[EmployeeName] [varchar](255) NOT NULL,
+	[LeaveType] [varchar](100) NOT NULL,
+	[ApplyDate] [varchar](100) NOT NULL,
+	[LeaveFrom] [varchar](100) NOT NULL,
+	[LeaveTo] [varchar](100) NOT NULL,
+	[TotalDays] [int] NULL,
+	[Description] [varchar](255) NULL,
+	[CreatedAt] [datetime] NULL,
+	[UpdatedAt] [datetime] NULL,
+ CONSTRAINT [PK__LeaveApp__3214EC27BEEF2DA5] PRIMARY KEY CLUSTERED 
 (
-	[id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+) ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[LeaveStatuss] ADD  DEFAULT ((1)) FOR [is_active]
+ALTER TABLE [dbo].[LeaveApply] ADD  CONSTRAINT [DF__LeaveAppl__Creat__6EF57B66]  DEFAULT (getdate()) FOR [CreatedAt]
 GO
-ALTER TABLE [dbo].[Leavetypee] ADD  DEFAULT ((1)) FOR [is_active]
+ALTER TABLE [dbo].[LeaveApply] ADD  CONSTRAINT [DF__LeaveAppl__Updat__6FE99F9F]  DEFAULT (getdate()) FOR [UpdatedAt]
+GO
+
+
+//Punch Status
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[EmployeePunchDetails]    Script Date: 3/12/2025 3:08:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[EmployeePunchDetails](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Empid] [int] NULL,
+	[Month] [varchar](20) NULL,
+	[PunchDate] [varchar](20) NULL,
+	[Punchintime] [varchar](20) NULL,
+	[Punchouttime] [varchar](20) NULL,
+	[Totalhours] [decimal](5, 2) NULL,
+	[EmployeeName] [varchar](255) NULL,
+ CONSTRAINT [PK__Employee__3214EC07F7361D0F] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  StoredProcedure [dbo].[GetEmployeePunchDetails]    Script Date: 3/12/2025 3:08:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+Create PROCEDURE [dbo].[GetEmployeePunchDetails]
+    @EmpId INT
+AS
+BEGIN
+    BEGIN TRY
+        -- Fetch PunchDetails for the given EmpId and calculate TotalHours
+        SELECT 
+            PunchDate,
+            PunchInTime,
+            PunchOutTime,
+            -- Calculate TotalHours only if both PunchInTime and PunchOutTime are not NULL
+            CASE 
+                WHEN PunchInTime IS NOT NULL AND PunchOutTime IS NOT NULL
+                THEN DATEDIFF(MINUTE, PunchInTime, PunchOutTime) / 60.0 -- Total hours as a decimal
+                ELSE NULL
+            END AS TotalHours
+        FROM 
+            EmployeePunchDetails
+        WHERE 
+            EmpId = @EmpId
+        ORDER BY 
+            PunchDate; -- Optional, orders by PunchDate
+
+    END TRY
+    BEGIN CATCH
+        -- Handle errors and return the error message
+        SELECT 
+            ERROR_MESSAGE() AS ErrorMessage;
+    END CATCH
+END;
 GO
 
 

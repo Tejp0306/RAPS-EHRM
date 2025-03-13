@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager View - Employee Overview</title>
+
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/CustomStyle/AdminPartial.css" rel="stylesheet" />
+
+    <link href="/CustomStyle/AdminPartial.css" rel="stylesheet">
     <style>
         .content-header {
             display: flex;
@@ -66,7 +68,7 @@
         #calendar-container {
             width: 1200px; /* Adjust the width as needed */
             margin-left: 5px;
-            margin:auto;
+            margin: auto;
         }
 
         #calendar {
@@ -74,17 +76,15 @@
         }
     </style>
 </head>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-<body>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<body>
     <div class="container mt-2">
         <!-- Main content -->
         <div class="content-header">
             <h3>Manager Dashboard</h3>
         </div>
-
-        
-
 
         <!-- Employee Stats Section -->
         <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -118,9 +118,10 @@
                 </div>
             </div>
         </div>
-        <!-- Quick Stats -->
-        <div class="row mt-4 ">
 
+        <!-- Quick Stats -->
+
+        <div class="row mt-4">
             <div class="row">
                 <div class="col-lg-3">
                     <div class="card text-white bg-primary mb-3 shadow-sm hover-shadow">
@@ -166,8 +167,8 @@
                     </div>
                 </div>
             </div>
-
         </div>
+
         <!-- Employee Section -->
         <h4 class="mt-4">Employees</h4>
         <div style="max-height: 300px; overflow-y: auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
@@ -179,6 +180,7 @@
                             <th style="padding: 10px; text-align: left;">S.No</th>
                             <th style="padding: 10px; text-align: left;">Employee ID</th>
                             <th style="padding: 10px; text-align: left;">Employee Name</th>
+                            <th style="padding: 10px; text-align: left;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -191,10 +193,12 @@
                                 <td style="padding: 10px; text-align: left;">@serialNo</td> <!-- Serial number column -->
                                 <td style="padding: 10px; text-align: left;">@emp.EmpId</td>
                                 <td style="padding: 10px; text-align: left;">@emp.FirstName @emp.LastName</td>
+                                <td style="padding: 10px; text-align: left;">
+                                    <button class="btn btn-info viewBtn" data-emp-id="@emp.EmpId" data-toggle="modal" data-target="#punchModal">View</button>
+                                </td>
                             </tr>
                             serialNo++; // Increment the counter for the next row
                         }
-
                     </tbody>
                 </table>
             }
@@ -208,11 +212,69 @@
             <h2>Leave Calendar</h2>
             <div id="calendar"></div>
         </div>
-
-
-        
-
     </div>
+
+    <div class="container mt-2">
+        <h4 class="page-heading">Punch Status</h4> <!-- Apply the page-heading class -->
+        <div class="table-container">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="punchTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <!-- @* <th>Id</th> *@ -->
+                                    <th>Employee Name</th>
+                                    <th>PunchDate</th>
+                                    <th>PunchIn-Time</th>
+                                    <th>PunchOut-Time</th>
+                                    <th>Total Hours</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample Data (You can dynamically generate this using a backend) -->
+                                <tr>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Punch Modal -->
+    <div class="modal fade" id="punchModal" tabindex="-1" role="dialog" aria-labelledby="punchModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="punchModalLabel">PUNCH STATUS</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="table-responsive">
+                            <table id="punchTable" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Punch Date</th>
+                                        <th>Punch-In Time</th>
+                                        <th>Punch-Out Time</th>
+                                        <th>Total Hours</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" id="closeModalBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Birthday Modal -->
     <div class="modal fade" id="birthdayModal" tabindex="-1" aria-labelledby="birthdayModalLabel" aria-hidden="true">
@@ -226,7 +288,6 @@
                 </div>
 
                 <div class="modal-body text-center">
-                    <!-- Display the employee's name stored in TempData -->
                     @if (TempData["EmployeeBirthday"] != null)
                     {
                         <p style="font-size: 1.2rem; font-weight: bold; color: #FF5733;">
@@ -248,7 +309,35 @@
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="font-size: 1.1rem;">Thank You!</button>
                 </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Event Modal -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">Leave Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="eventForm">
+                        <div class="mb-3">
+                            <label for="eventDate" class="form-label">Date</label>
+                            <input type="text" class="form-control" id="eventDate" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventTitle" class="form-label">Event Title</label>
+                            <input type="text" class="form-control" id="eventTitle">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -281,20 +370,75 @@
     </div>
 
 </body>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     window.onload = function() {
-            // Check if TempData contains birthday info
-            if ('@TempData["EmployeeBirthday"]' !== '') {
-                var birthdayModal = new bootstrap.Modal(document.getElementById('birthdayModal'));
-                birthdayModal.show();
-            }
+        // Check if TempData contains birthday info
+        if ('@TempData["EmployeeBirthday"]' !== '') {
+            var birthdayModal = new bootstrap.Modal(document.getElementById('birthdayModal'));
+            birthdayModal.show();
         }
+    }
 </script>
-
+<script src="~/CustomScripts/PunchStatus.js"></script>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="~/CustomScripts/UserPartialView.js"></script>
 <script src="~/lib/fullcalendar/dist/index.global.min.js"></script>
 <script src="~/lib/fullcalendar/dist/index.global.js"></script>
+
+
+
+<!-- jQuery and Bootstrap JS (required for the modal) -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        // Event listener for the "View" button
+        $('.viewBtn').on('click', function () {
+            var empId = $(this).data('emp-id');
+            if (!empId) {
+                alert("Employee ID is missing!");
+                return;
+            }
+
+            $('#punchModal').modal('show');
+
+            $.ajax({
+                url: '@Url.Action("GetPunch", "Calendar")',
+                type: 'GET',
+                data: { empId: empId },
+                dataType: 'json',
+                success: function (data) {
+                    if (data && Array.isArray(data)) {
+                        var tableBody = $('#punchTable tbody');
+                        tableBody.empty();
+
+                        data.forEach(function (item) {
+                            var row = '<tr>' +
+                                '<td>' + item.id + '</td>' +
+                                '<td>' + item.punchDate + '</td>' +
+                                '<td>' + item.punchintime + '</td>' +
+                                '<td>' + item.punchouttime + '</td>' +
+                                '<td>' + item.totalhours + '</td>' +
+                                '</tr>';
+                            tableBody.append(row);
+                        });
+                    } else {
+                        alert('Failed to load punch data.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('An error occurred while fetching punch data.');
+                }
+            });
+        });
+
+        // Custom close button functionality
+        $('#closeModalBtn').on('click', function () {
+            $('#punchModal').modal('hide');
+        });
+    });
+</script>

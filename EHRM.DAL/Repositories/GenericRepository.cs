@@ -40,6 +40,7 @@ namespace EHRM.DAL.Repositories
         public async Task UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
+
         }
 
         public async Task DeleteAsync(int id)
@@ -50,17 +51,25 @@ namespace EHRM.DAL.Repositories
                 _context.Set<T>().Remove(entity);
             }
         }
+        public async Task<List<EmployeePunchDetail>> GetByEmpIdAsync(int EmpId)
+        {
+            var data=  await _context.Set<EmployeePunchDetail>().ToListAsync();
+            return await _context.Set<EmployeePunchDetail>().Where(x => x.Empid == EmpId).ToListAsync();
+
+        }
 
         public async Task<List<EmployeeDetail>> GetByRoleIdAsync(int RoleId)
         {
             return await _context.Set<EmployeeDetail>().Where(x => x.RoleId == RoleId).ToListAsync();
         }
 
+
         //Get Leave Status By Leave Id
         public async Task<List<LeaveStatuss>> GetStatusByLeaveIdAsync(int leaveid)
         {
             return await _context.Set<LeaveStatuss>().Where(x => x.LeaveId == leaveid).ToListAsync();
         }
+
 
         public async Task<List<EmployeeDetail>> GetByTeamIdAsync(int TeamId)
         {
