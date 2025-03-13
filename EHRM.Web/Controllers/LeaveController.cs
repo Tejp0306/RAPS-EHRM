@@ -281,7 +281,7 @@ namespace EHRM.Web.Controllers
                     if (updateResponse?.success == true)
                     {
                         TempData["ToastType"] = "success"; // Success message
-                        TempData["ToastMessage"] = "Record has been updated ";
+                        TempData["ToastMessage"] = "Leave has been updated";
                         return RedirectToAction("LeaveApply");
                     }
                     else
@@ -306,7 +306,7 @@ namespace EHRM.Web.Controllers
                 if (result.Success)
                 {
                     TempData["ToastType"] = "success";  // Success message
-                    TempData["ToastMessage"] = "Record saved successfully!";
+                    TempData["ToastMessage"] = "Leave has been applied!";
                     return RedirectToAction("LeaveApply");
                 }
                 else
@@ -470,6 +470,9 @@ namespace EHRM.Web.Controllers
         }
 
 
+
+
+
         [HttpPost]
         public async Task<IActionResult> SubmitLeaveStatus(LeaveStatusViewModel model)
         {
@@ -483,12 +486,11 @@ namespace EHRM.Web.Controllers
             // Set EmpId for the model
             model.EmpId = Convert.ToInt32(empId);
 
-            // Call the service method to create a new leave status
+            // Call the service method to update leave status
             var result = await _leave.UpdateLeaveStatusAsync(model.Id, model);
 
-
-            // Handle the result of the create operation
-            if (result.Data == "Approved")
+            // Handle the result of the leave status update
+            if (result.Data is "Approved")
             {
                 var leaveApplyRepository = _UnitOfWork.GetRepository<LeaveApply>();
 
@@ -513,40 +515,37 @@ namespace EHRM.Web.Controllers
                     throw new Exception("Leave balance record not found for the employee.");
                 }
 
-                // Deduct leave balance based on leave type
+                // Check and deduct leave balance based on leave type
                 switch (leaveType.ToLower())
                 {
                     case "casual leave":
-                        if (leaveBalance.CasualLeave >= leaveCount)
+                        if (leaveBalance.CasualLeave < leaveCount)
                         {
-                            leaveBalance.CasualLeave -= leaveCount;
+                            TempData["ToastType"] = "danger";
+                            TempData["ToastMessage"] = "Insufficient Casual Leave balance!";
+                            return RedirectToAction("LeaveStatus");
                         }
-                        else
-                        {
-                            throw new Exception("Insufficient Casual Leave Balance.");
-                        }
+                        leaveBalance.CasualLeave -= leaveCount;
                         break;
 
                     case "sick leave":
-                        if (leaveBalance.SickLeave >= leaveCount)
+                        if (leaveBalance.SickLeave < leaveCount)
                         {
-                            leaveBalance.SickLeave -= leaveCount;
+                            TempData["ToastType"] = "danger";
+                            TempData["ToastMessage"] = "Insufficient Sick Leave balance!";
+                            return RedirectToAction("LeaveStatus");
                         }
-                        else
-                        {
-                            throw new Exception("Insufficient Sick Leave Balance.");
-                        }
+                        leaveBalance.SickLeave -= leaveCount;
                         break;
 
                     case "earned leave":
-                        if (leaveBalance.EarnedLeave >= leaveCount)
+                        if (leaveBalance.EarnedLeave < leaveCount)
                         {
-                            leaveBalance.EarnedLeave -= leaveCount;
+                            TempData["ToastType"] = "danger";
+                            TempData["ToastMessage"] = "Insufficient Earned Leave balance!";
+                            return RedirectToAction("LeaveStatus");
                         }
-                        else
-            {
-                            throw new Exception("Insufficient Earned Leave Balance.");
-                        }
+                        leaveBalance.EarnedLeave -= leaveCount;
                         break;
 
                     default:
@@ -557,22 +556,35 @@ namespace EHRM.Web.Controllers
                 leaveBalanceRepository.UpdateAsync(leaveBalance);
                 await _UnitOfWork.SaveAsync();
 
-
-                // Return the EmpId if found, otherwise return null
-
-
                 // Success handling
-                TempData["ToastType"] = "success";  // Success, danger, warning, info
-                TempData["ToastMessage"] = "Form Submitted successfully!";
+
+                TempData["ToastType"] = "success";
+                TempData["ToastMessage"] = "Leave has been approved!";
+
 
                 // Always return a redirect after a successful submission
                 return RedirectToAction("LeaveStatus");  // Redirect to the appropriate action/view after success
+
             }
             else
             {
+
+                // If leave is rejected
+                TempData["ToastType"] = "danger";
+                TempData["ToastMessage"] = "Leave has been rejected!";
+            }
+
+            return RedirectToAction("LeaveStatus");
+
+                // Success handling
+                TempData["ToastType"] = "danger";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Leave has been rejected!";
+
                 return RedirectToAction("LeaveStatus"); // Redirect to the appropriate action/view in case of failure
+
             }
         }
+
 
 
         #endregion
@@ -620,6 +632,41 @@ namespace EHRM.Web.Controllers
 
             return View(viewModel);
             }
+
+
+        //Get Leave record data on dashboard
+
+        [HttpGet]
+        public async Task<JsonResult> GetLeaveRecord()
+        {
+
+            List<LeaveStatusViewModel> leaverecord = new List<LeaveStatusViewModel>();
+            var applyleaveRepository = _UnitOfWork.GetRepository<LeaveApply>();
+            var leavestatusRepository = _UnitOfWork.GetRepository<LeaveStatuss>();
+
+            var apply = await applyleaveRepository.GetAllAsync();
+            var status = await leavestatusRepository.GetAllAsync();
+
+            leaverecord = (from leave in apply
+                             join stat in status
+                             on leave.Id equals stat.LeaveId
+                             select new LeaveStatusViewModel
+                             {
+                                 Id = (int)leave.Id,
+                                 EmployeeName = leave.EmployeeName,
+                                 LeaveType = leave.LeaveType,
+                                 LeaveFrom = leave.LeaveFrom,
+                                 TillDate = leave.LeaveTo,
+                                 LeaveStatus = stat.LeaveStatus,
+                                 
+
+                             }).ToList();
+
+            return Json(leaverecord);
+        }
+
+
+
 
 
         //Leave Dashboard user leave balance specific

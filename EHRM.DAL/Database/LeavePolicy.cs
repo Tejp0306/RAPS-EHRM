@@ -7,9 +7,9 @@ public partial class LeavePolicy
 {
     public int PolicyId { get; set; }
 
-    public int YearsOfServiceMin { get; set; }
+    public decimal YearsOfServiceMin { get; set; }
 
-    public int YearsOfServiceMax { get; set; }
+    public decimal YearsOfServiceMax { get; set; }
 
     public int CasualLeave { get; set; }
 
@@ -22,4 +22,6 @@ public partial class LeavePolicy
     public int CarryForwardLimit { get; set; }
 
     public bool IsEarnedLeaveCarriedForward { get; set; }
+
+    public bool? IsProbation { get; set; }
 }

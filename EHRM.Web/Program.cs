@@ -46,7 +46,6 @@ app.UseSession(); // Enable session before UseAutho
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
@@ -54,7 +53,12 @@ app.MapControllerRoute(
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Calendar}/{action=GetEvents}/{id?}");
-
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Dashboard}/{action=SavePunchInAsync}");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Dashboard}/{action=UpdatePunchOutAsync}");
 //app.MapControllerRoute(
 //    name: "GetEvents",
 //    pattern: "Calendar/GetEvents",

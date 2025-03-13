@@ -77,6 +77,8 @@ public partial class EmployeeDetail
 
     public virtual ICollection<EmployementTypeDetail> EmployementTypeDetails { get; set; } = new List<EmployementTypeDetail>();
 
+    public virtual ICollection<LeaveBalance> LeaveBalances { get; set; } = new List<LeaveBalance>();
+
     public virtual ICollection<ProbationEvaluationForm> ProbationEvaluationForms { get; set; } = new List<ProbationEvaluationForm>();
 
     public virtual ICollection<Qualification> Qualifications { get; set; } = new List<Qualification>();
@@ -84,4 +86,6 @@ public partial class EmployeeDetail
     public virtual ICollection<Salary> Salaries { get; set; } = new List<Salary>();
 
     public virtual ICollection<SubMenu> SubMenus { get; set; } = new List<SubMenu>();
+
+    public virtual ICollection<UserDocument> UserDocuments { get; set; } = new List<UserDocument>();
 }
