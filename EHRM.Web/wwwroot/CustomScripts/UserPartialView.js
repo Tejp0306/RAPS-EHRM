@@ -80,8 +80,8 @@ function initializeCalendar() {
                 if (eventObj.title === "Punch Details") {
                     return {
                         html: `
-                            <div>${punchInHtml}</div><br>
-                            <div>${punchOutHtml}</div><br>
+                            <div>${punchInHtml}</div>
+                            <div>${punchOutHtml}</div>
                             <div style="${totalHoursStyle}">${totalHoursHtml}</div>
                         `
                     };
