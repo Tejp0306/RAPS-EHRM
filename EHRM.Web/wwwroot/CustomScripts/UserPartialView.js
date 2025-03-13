@@ -164,7 +164,7 @@ function initializeCalendar() {
         }
     });
 
-});
+
 
 function getLeaveBalance() {
     $.ajax({

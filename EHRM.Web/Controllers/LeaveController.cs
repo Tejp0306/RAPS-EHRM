@@ -583,7 +583,7 @@ namespace EHRM.Web.Controllers
                 return RedirectToAction("LeaveStatus"); // Redirect to the appropriate action/view in case of failure
 
             }
-        }
+        
 
 
 
