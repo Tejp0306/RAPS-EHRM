@@ -3,7 +3,7 @@ using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Employee;
 using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
-using EHRM.ViewModel.PunchDeatils;
+using EHRM.ViewModel.PunchDetails;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -86,7 +86,7 @@ namespace EHRM.ServiceLayer.Dashboard
                                 LastName = reader["LastName"].ToString(),
                                 DateOfBirth = reader["DateOfBirth"].ToString(),
                                 EmployeeCount = Convert.ToInt32(reader["EmployeeCount"]),
-                                PunchDetail= new PunchDetailsViewModel
+                                PunchDetails = new PunchDetailsViewModel
                                 {
                                     Empid = Convert.ToInt32(reader["EmpId"]),
                                     //EmployeeName= reader["LastName"].ToString() + reader["LastName"].ToString()
@@ -164,8 +164,12 @@ namespace EHRM.ServiceLayer.Dashboard
                 }
                 else
                 {
-                    // Format the current time as HH:mm:ss (24-hour format)
-                    EntityUpdate.Punchouttime = DateTime.Now.ToString("HH:mm:ss");
+                    // Get the current time and round to the nearest second
+                    var currentTime = DateTime.Now;
+                    var roundedTime = new TimeOnly(currentTime.Hour, currentTime.Minute, currentTime.Second);
+
+                    // Update the PunchOutTime
+                    EntityUpdate.Punchouttime = roundedTime;
 
                     await PunchRepository.UpdateAsync(EntityUpdate);
                     await _unitOfWork.SaveAsync();
@@ -188,25 +192,35 @@ namespace EHRM.ServiceLayer.Dashboard
         }
 
 
-        public async Task<Result> SavePunchInAsync(int EmpId , string userName)
+
+        public async Task<Result> SavePunchInAsync(int EmpId, string userName)
         {
             try
             {
+                // Get the current time and round to the nearest second
+                var currentTime = DateTime.Now;
+                var roundedTime = new TimeOnly(currentTime.Hour, currentTime.Minute, currentTime.Second);
+
+                // Create a new EmployeePunchDetail instance
                 var punchIn = new EmployeePunchDetail
                 {
                     Empid = EmpId,
                     EmployeeName = userName,
-                    Month = DateTime.Now.ToString("MMMM"),// model.Month,
-                    PunchDate = DateTime.Now.ToString("yyyy-MM-dd"), // model.PunchDate,  // Convert DateTime to DateOnly
-                    Punchintime = DateTime.Now.ToString("HH:mm:ss"), //model.PunchInTime,
+                    Month = DateTime.Now.ToString("MMMM"),  // Month from DateTime
 
+                    // Convert DateTime to DateOnly for PunchDate
+                    PunchDate = DateOnly.FromDateTime(DateTime.Now),
+
+                    // Use the rounded time (excluding fractional seconds)
+                    Punchintime = roundedTime
                 };
 
+                // Get the repository for EmployeePunchDetail and add the new punchIn record
                 var punchRepository = _unitOfWork.GetRepository<EmployeePunchDetail>();
                 await punchRepository.AddAsync(punchIn);
                 await _unitOfWork.SaveAsync();
 
-
+                // Return a success result
                 return new Result
                 {
                     Success = true,
@@ -215,6 +229,7 @@ namespace EHRM.ServiceLayer.Dashboard
             }
             catch (Exception ex)
             {
+                // Handle and return error result in case of failure
                 return new Result
                 {
                     Success = false,
@@ -222,6 +237,8 @@ namespace EHRM.ServiceLayer.Dashboard
                 };
             }
         }
+
+
 
         #endregion
 

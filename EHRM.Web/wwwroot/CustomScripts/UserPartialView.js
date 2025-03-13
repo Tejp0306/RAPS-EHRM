@@ -1,12 +1,12 @@
 ﻿$(document).ready(function () {
     // Initialize the calendar
     initializeCalendar();
+    getLeaveBalance();
 });
 
 function initializeCalendar() {
     // Find the calendar element by ID
     var calendarEl = document.getElementById('calendar');
-    
 
     // Get EmpId from cookies
     let empId = getCookie("EmpId");
@@ -19,7 +19,7 @@ function initializeCalendar() {
     if (calendarEl) { // Check if the calendar element exists
         var calendar = new FullCalendar.Calendar(calendarEl, {
             contentHeight: 600,
-            
+
             initialView: 'dayGridMonth', // Default view
             headerToolbar: {
                 left: 'prev,next today',
@@ -91,28 +91,18 @@ function initializeCalendar() {
                         html: `<b>Holiday:</b> ${eventObj.title}<br>`
                     };
                 }
+            },
 
-            // When a date is clicked, show the modal
-            //dateClick: function (info) {
-            //    $('#eventModalLabel').text("Create New Event");
-            //    $('#eventDate').val(info.dateStr);
-            //    $('#eventTitle').val("");
-            //    $('#eventModal').modal('show');
-            //},
-
-            // When an event is clicked, show its details in the modal
             eventClick: function (info) {
                 $('#eventModalLabel').text("Event Details");
                 $('#eventDate').val(info.event.startStr);
                 $('#eventTitle').val(info.event.title);
                 $('#eventModal').modal('show');
-
             }
         });
 
         // Render the calendar
         calendar.render();
-
     } else {
         console.error("Calendar element not found. Ensure an element with ID 'calendar' exists.");
     }
@@ -128,14 +118,8 @@ function initializeCalendar() {
         }
         return null;
     }
-
 }
 
-
-
-    getLeaveBalance();
-
-});
 function getLeaveBalance() {
     $.ajax({
         url: "/Leave/GetLeaveBalance",
@@ -154,34 +138,4 @@ function getLeaveBalance() {
             $("#leaveBalanceContainer").html("<p>Error fetching leave balance data.</p>");
         }
     });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-
-            dateClick: function (info) {
-                // Show modal and update the content dynamically
-                document.getElementById('modalDate').innerText = info.dateStr;
-                document.getElementById('modalEventTitle').innerText = "No event"; // Since it's just a date click
-
-                var modal = new bootstrap.Modal(document.getElementById('eventModal'));
-                modal.show();
-            },
-
-            eventClick: function (info) {
-                // Show modal and update the content dynamically
-                document.getElementById('modalDate').innerText = info.event.start.toISOString().split('T')[0];
-                document.getElementById('modalEventTitle').innerText = info.event.title;
-
-                var modal = new bootstrap.Modal(document.getElementById('eventModal'));
-                modal.show();
-            }
-        });
-
-        calendar.render();
-    });
-
 }
-
-

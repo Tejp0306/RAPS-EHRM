@@ -121,47 +121,52 @@ namespace EHRM.Web.Controllers
 
                 if (punchData != null)
                 {
-                    // If a punchDate filter is provided, filter the data based on the date
+                    // Filter data by today's date by default
+                    var today = DateOnly.FromDateTime(DateTime.Now);
+                    punchData = punchData.Where(p => p.PunchDate == today);
+
+                    // If a punchDate filter is provided, filter the data based on that date
                     if (!string.IsNullOrEmpty(punchDate))
                     {
-                        punchData = punchData.Where(p => p.PunchDate == punchDate);
+                        // Convert the punchDate string to DateOnly for comparison
+                        if (DateOnly.TryParse(punchDate, out var parsedDate))
+                        {
+                            punchData = punchData.Where(p => p.PunchDate == parsedDate);
                     }
                     else
                     {
-                        // If no date is provided, filter by today's date
-                        punchData = punchData.Where(p => p.PunchDate == DateTime.Now.ToString("yyyy-MM-dd"));
+                            return Json(new { Success = false, Message = "Invalid date format." });
+                    }
                     }
 
                     // Return the filtered list as a JSON response
                     var punchList = punchData.Select(punch => new
                     {
-                        Id = punch.Id,
                         EmployeeName = punch.EmployeeName,
-                        PunchDate = punch.PunchDate,
-                        Punchintime = punch.Punchintime,
-                        Punchouttime = punch.Punchouttime,
-                        Totalhours = punch.Totalhours,
+                        PunchDate = punch.PunchDate?.ToString("yyyy-MM-dd"),  // Format the DateOnly to string
+                        Punchintime = punch.Punchintime?.ToString("HH:mm:ss"), // Format the TimeOnly to string
+                        Punchouttime = punch.Punchouttime?.ToString("HH:mm:ss"), // Format the TimeOnly to string
+                        Totalhours = punch.TotalHours,
                     }).ToList();
 
-                    return Json(punchList);
+                    return Json(new { Success = true, Data = punchList });
                 }
                 else
                 {
                     return Json(new { Success = false, Message = "Data is not in the expected format." });
                 }
             }
-            else
-            {
-                // Handle the case where the service failed
-                return Json(new { Success = false, Message = result.Message ?? "No data found." });
-            }
+
+            // In case of failure to fetch data
+            return Json(new { Success = false, Message = "Failed to fetch punch data." });
         }
+
 
         [HttpGet]
         public async Task<JsonResult> GetPunch(int empId) // Add empId as parameter
         {
             // Fetch the result from the service layer
-            var result = await _calendar.GetPunchAsync();
+            var result = await _calendar.GetPunchDetailsAsync();
 
             // Check if the result is successful and contains data
             if (result.Success && result.Data != null)
@@ -180,7 +185,7 @@ namespace EHRM.Web.Controllers
                         PunchDate = punch.PunchDate,
                         Punchintime = punch.Punchintime,
                         Punchouttime = punch.Punchouttime,
-                        Totalhours = punch.Totalhours,
+                        Totalhours = punch.TotalHours,
                     }).ToList();
 
                     // Return the filtered list as a JSON response
