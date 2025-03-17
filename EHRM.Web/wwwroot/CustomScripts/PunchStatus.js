@@ -3,6 +3,7 @@
 });
 
 function getPunchData() {
+    debugger;
     const table = $('#punchTable').DataTable({
         ajax: {
             url: '/Calendar/GetPunchData', // Controller action that fetches punch data
