@@ -294,10 +294,26 @@
     <script src="~/js/main.js"></script>
     <script>
 
-        // Spinner removal on page load
         document.addEventListener('DOMContentLoaded', () => {
+    // Check if the page has already been reloaded
+    if (!sessionStorage.getItem('reloaded')) {
+        // Mark the page as reloaded in the sessionStorage
+        sessionStorage.setItem('reloaded', 'true');
+        
+        // Remove the spinner after the page is fully loaded
             document.getElementById('spinner').classList.remove('show');
+        
+        // Reload the page
+        window.location.reload();
+    } else {
+        // Reset the sessionStorage when the page is reloaded
+        sessionStorage.removeItem('reloaded');
+    }
         });
+
+        
+        
+
     </script>
 </body>
 
