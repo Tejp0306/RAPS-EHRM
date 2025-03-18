@@ -19,7 +19,7 @@ function initializeCalendar() {
     if (calendarEl) { // Check if the calendar element exists
         var calendar = new FullCalendar.Calendar(calendarEl, {
             contentHeight: 600,
-            windowResize: function (arg) {
+            windowResize: function (arg) { },
             initialView: 'dayGridMonth', // Default view
             headerToolbar: {
                 left: 'prev,next today',
