@@ -1,4 +1,5 @@
-﻿using EHRM.Infrastructure.Middleware;
+﻿using System.Security.Principal;
+using EHRM.Infrastructure.Middleware;
 using EHRM.ServiceLayer.Dashboard;
 using EHRM.ServiceLayer.Employee;
 using EHRM.ServiceLayer.Helpers;
@@ -29,10 +30,11 @@ namespace EHRM.Web.Controllers
         }
 
 
-
         public IActionResult Dashboard()
         {
             var userSession = HttpContext.Session.GetString("JwtToken");
+
+            // If there is no JWT token, redirect to login
             if (string.IsNullOrEmpty(userSession))
             {
                 return RedirectToAction("Login");
@@ -42,19 +44,27 @@ namespace EHRM.Web.Controllers
             {
                 var userDetails = JwtSessionHelper.ExtractSessionData(userSession);
 
+                // If there is still no JWT token in the session, redirect to login
                 if (string.IsNullOrEmpty(userSession))
                 {
                     return RedirectToAction("Login");
                 }
 
                 var roleId = userDetails.roleId;
-                var empId = userDetails.userId; // This is the ManagerId
+                var empId = userDetails.userId; 
+                var punchResCookie = HttpContext.Request.Cookies["PunchRes"];
+                if (punchResCookie != null && punchResCookie != empId.ToString())
+                {
+                    // If the EmpId in the session does not match the one in the PunchRes cookie, delete the cookie
+                    Response.Cookies.Delete("PunchRes");
 
+                }
+
+                // Logic for Manager (Role 4)
                 if (roleId == 4)
                 {
                     if (!int.TryParse(empId, out int managerId))
                     {
-                        // Log error if parsing fails
                         throw new Exception("Invalid Manager ID.");
                     }
 
@@ -66,51 +76,40 @@ namespace EHRM.Web.Controllers
                     return View(employees);
                 }
 
+                // Logic for Admin (Role 1)
                 if (roleId == 1)
                 {
                     ViewData["roleId"] = roleId;
                     List<EmployeeViewModel> adminPageEmployees = _dashboard.GetAllEmployeeDataForAdmin();
-                    EmployeeViewModel employeeViewModel = new EmployeeViewModel();
 
                     return View(adminPageEmployees);
-                    //return View("_PunchDetailPartialView", adminPageEmployees[0].PunchDetail);
                 }
 
-
+                // Logic for other roles (e.g., Regular Employee)
                 else
                 {
-
-                    var userId = userDetails.userId;
-                    if (!int.TryParse(userId, out int userdashboardid))
+                    if (!int.TryParse(empId, out int userdashboardid))
                     {
-                        // Log error if parsing fails
-                        throw new Exception("Invalid Manager ID.");
+                        throw new Exception("Invalid User ID.");
                     }
 
-                    
                     ViewData["empId"] = userdashboardid;
 
                     List<EmployeeViewModel> userEmployee = _dashboard.GetDataForUserDashboard(userdashboardid);
 
-                    //EmployeeViewModel userEmployee = _dashboard.GetDataForUserDashboard(userdashboardid).FirstOrDefault();
-
                     return View(userEmployee);
-
                 }
-
-
             }
             catch (Exception ex)
             {
-                // Log the error (use a logging framework like Serilog or NLog)
+                // Log the error (you can use a logging framework like Serilog, NLog, etc.)
                 Console.WriteLine($"Error: {ex.Message}");
 
                 // Redirect to an error page or return an error view
                 return View("Error");
             }
-
-
         }
+
 
         [HttpGet("Dashboard/SavePunchInAsync")]
         public async Task<IActionResult> SavePunchInAsync()
@@ -139,7 +138,7 @@ namespace EHRM.Web.Controllers
                      };
 
                       _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
-                     Response.Cookies.Append("PunchRes", "True");
+                     Response.Cookies.Append("PunchRes", EmpId.ToString());
                      return RedirectToAction("Dashboard"); // Redirect to the dashboard or another page
                  }
                  else
