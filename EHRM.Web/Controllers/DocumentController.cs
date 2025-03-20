@@ -233,7 +233,7 @@ namespace EHRM.Web.Controllers
             }
 
             // Define the directory path to store files
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "\\wwwroot\\Files");
 
 
             // Create the folder if it doesn't exist
@@ -245,7 +245,7 @@ namespace EHRM.Web.Controllers
             // Generate a unique file name to avoid name conflicts (optional, can use the original name)
             FileInfo fileInfo = new FileInfo(model.File.FileName);
             string fileName = Guid.NewGuid().ToString() + fileInfo.Extension;  // Unique file name generation
-                                                                               // You can also use model.FileName here if you want to allow users to specify the name
+                                                                               
 
             // Combine path with the file name to get the full file path
             string fileNameWithPath = Path.Combine(path, fileName);
