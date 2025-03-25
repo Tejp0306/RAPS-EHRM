@@ -155,17 +155,16 @@ namespace EHRM.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // Ensure the DailyEntries are populated
                     if (model.DailyEntries == null || !model.DailyEntries.Any())
                     {
-                        return Json(new { success = false, message = "No daily entries found. Please fill in the daily timesheet entries." });
+                        return Json(new { success = false, message = "No daily entries found." });
                     }
 
                     // Set the EmpId from the session data
                     model.EmpId = Convert.ToInt32(empId);
 
-                    // Call the service method to either create or update the timesheet
-                    var result = await _self.CreateTimeSheetAsync(model);
+                    // Call the service method to save the timesheet
+                    var result = await _self.CreateTimeSheetAsync(model, model.FilePath);
 
                     if (result.Success)
                     {
@@ -178,7 +177,7 @@ namespace EHRM.Web.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Failed to submit timesheet. Please check the data." });
+                    return Json(new { success = false, message = "Invalid timesheet data." });
                 }
             }
             catch (Exception ex)
@@ -186,6 +185,7 @@ namespace EHRM.Web.Controllers
                 return Json(new { success = false, message = $"Error saving timesheet: {ex.Message}" });
             }
         }
+
 
 
         [HttpGet("Self/GetTimesheetForEdit")]
@@ -251,6 +251,112 @@ namespace EHRM.Web.Controllers
 
             return Json(new { success = true, data = timeSheet });
         }
+
+        //private string Upload(TimeSheetViewModel model)
+        //{
+        //    // Check if a file is provided, if not, simply return null (indicating no file upload)
+        //    if (model.Files == null || model.Files.Length == 0)
+        //    {
+        //        return null; // No file uploaded, return null or an empty string
+        //    }
+
+        //    // Define the directory path to store files
+        //    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
+
+
+        //    // Create the folder if it doesn't exist
+        //    if (!Directory.Exists(path))
+        //    {
+        //        Directory.CreateDirectory(path);
+        //    }
+
+        //    // Generate a unique file name to avoid name conflicts (optional, can use the original name)
+        //    //FileInfo fileInfo = new FileInfo(model.File.FileName);
+        //    //string fileName = Guid.NewGuid().ToString() + fileInfo.Extension;  // Unique file name generation
+        //                                                                       // You can also use model.FileName here if you want to allow users to specify the name
+
+        //    // Combine path with the file name to get the full file path
+        //    //string fileNameWithPath = Path.Combine(path, fileName);
+
+        //    // Save the file to the specified directory
+        //    //using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+        //    //{
+        //    //    model.File.CopyTo(stream);
+        //    //}
+
+        //    // Return the full file path or file name
+        //    return Path.Combine("\\Files", "fileName");
+        //}
+
+
+        [HttpPost]
+        public JsonResult UploadFiles(List<IFormFile> Files)
+        {
+            try
+            {
+                if (Files == null || Files.Count == 0)
+                {
+                    return Json(new { success = false, message = "No files uploaded." });
+                }
+
+                List<string> filePaths = new List<string>();
+
+                // Corrected path (No extra backslashes)
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
+
+                // Ensure the directory exists
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                foreach (var file in Files)
+                {
+                    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    string filePath = Path.Combine(path, fileName); // Corrected file save path
+
+                    // Save the file
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    // Store the file path in the correct format: \Files\filename.ext
+                    string storedPath = Path.Combine("Files", fileName);  // Removed leading backslash
+                    filePaths.Add("//" + storedPath); // Ensure correct format for output
+                }
+
+                return Json(new { success = true, filePaths });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "File upload failed: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowFile(int id)
+        {
+            try
+            {
+                var nb = await _self.GetFilesAsync(id);
+
+                if (nb == null)
+                {
+                    return Json(new { success = false, message = "Attachments not found." });
+                }
+
+
+                return Json(new { success = true, data = nb });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the Attachments." });
+            }
+        }
+
+
+
 
 
         #endregion

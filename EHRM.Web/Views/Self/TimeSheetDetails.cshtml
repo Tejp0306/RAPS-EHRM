@@ -58,6 +58,7 @@
                     <th>Name</th>
                     <th>Project</th>
                     <th>Action</th>
+                    <th>Attachments</th>
                 </tr>
             </thead>
             <tbody>
@@ -164,92 +165,167 @@
     </div>
 </div>
 
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="attachmentsModal" tabindex="-1" role="dialog" aria-labelledby="attachmentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="attachmentsModalLabel">Attachments</h5>
+            </div>
+            <div class="modal-body">
+                <ul id="attachmentLinks" class="list-group"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        $(document).on('click', '[data-dismiss="modal"]', function () {
+        $('#attachmentsModal').modal('hide');
+    });
+
+</script>
+@* <script src="~/CustomScripts/TimeSheetDetails.js"></script> *@
 <script src="~/jspdf/jspdf.js"></script>
 <script>
          $(document).ready(function () {
+
         // Month name to number mapping
         var monthMapping = {
-            "January": "0",
-            "February": "1",
-            "March": "2",
-            "April": "3",
-            "May": "4",
-            "June": "5",
-            "July": "6",
-            "August": "7",
-            "September": "8",
-            "October": "9",
-            "November": "10",
-            "December": "11"
+            "January": "0", "February": "1", "March": "2", "April": "3", "May": "4", "June": "5",
+            "July": "6", "August": "7", "September": "8", "October": "9", "November": "10", "December": "11"
         };
 
-        // When the month selector value changes
+            // Handle month selection change
         $('#monthSelector').change(function () {
-            // Get the selected month
             var selectedMonth = $(this).val();
-
-            // If a valid month is selected (avoid triggering on "Select Month")
             if (selectedMonth !== "Select Month") {
-                // Map the full month name to its numeric representation
                 var monthNumber = monthMapping[selectedMonth];
 
-                // Make an AJAX request to fetch timesheets for the selected month
                 $.ajax({
-                    url: '/Self/GetTimeSheetByMonthData', // Adjust URL to your controller's action
+                url: '/Self/GetTimeSheetByMonthData',
                     type: 'GET',
                     data: { month: monthNumber },
                     success: function (response) {
-                        // Check if the response is successful
-                        if (response.length) {
-                            // Clear the table before populating
                             $('#timesheetTable tbody').empty();
-                            var data = response;
-                            // Loop through the data and append rows to the table
-                            $.each(data, function (index, ts) {
-                                   var row = '<tr>' +
-                '<td>' + ts.id + '</td>' +
-                '<td>' + ts.name + '</td>' +
-                '<td>' + ts.project + '</td>' +
-                '<td>' +
-                    '<button class="btn btn-success viewTimesheet" data-id="' + ts.id + '">View</button> ' +
-                    '<button class="btn btn-info printTimesheet" data-id="' + ts.id + '">Print</button>' +
-                '</td>' +
-              '</tr>';
-    $('#timesheetTable tbody').append(row);
 
+                    if (response.length) {
+                        $.each(response, function (index, ts) {
+                            var row = `
+                                <tr>
+                                    <td>${ts.id}</td>
+                                    <td>${ts.name}</td>
+                                    <td>${ts.project}</td>
+                                    <td>
+                                        <button class="btn btn-success viewTimesheet" data-id="${ts.id}">View</button>
+                                        <button class="btn btn-info printTimesheet" data-id="${ts.id}">Print</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary view-attachments" data-id="${ts.id}">View Attachments</button>
+                                    </td>
+                                </tr>`;
+                            $('#timesheetTable tbody').append(row);
                             });
                         } else {
-                            // If no data found or error, show a message
-                            $('#timesheetTable tbody').empty();
-                            var row = '<tr><td colspan="4" class="text-center">No timesheets found for this month.</td></tr>';
+                        var row = `<tr><td colspan="5" class="text-center">No timesheets found for this month.</td></tr>`;
                             $('#timesheetTable tbody').append(row);
                         }
                     },
                     error: function () {
-                        // Handle AJAX error
-                        $('#timesheetTable tbody').empty();
-                        var row = '<tr><td colspan="4" class="text-center">Error fetching data. Please try again.</td></tr>';
+                    var row = `<tr><td colspan="5" class="text-center">Error fetching data. Please try again.</td></tr>`;
                         $('#timesheetTable tbody').append(row);
                     }
                 });
             }
         });
 
-        // Handle View button
-    $(document).ready(function () {
-        // Bind to View button click to open modal and fill data
+        // Handle View Attachments button click
+    $(document).on('click', '.view-attachments', function () {
+        const id = $(this).data('id');
+
+        $.ajax({
+            url: "/Self/ShowFile",
+            method: 'GET',
+            data: { id: id },
+            success: function (response) {
+                if (response.success) {
+                    let filePaths = response.data.data.filePath;
+
+                    console.log("Response data:", filePaths); // Debugging log
+
+                    // Ensure filePaths is an array
+                    if (!filePaths) {
+                        alert("No attachments found.");
+                        return;
+                    }
+                    if (typeof filePaths === 'string') {
+                        filePaths = [filePaths]; // Convert to array
+                    } else if (!Array.isArray(filePaths)) {
+                        console.error("Unexpected file format:", filePaths);
+                        alert("Invalid file format received.");
+                        return;
+                    }
+
+                    // Clear previous links
+                    $('#attachmentLinks').empty();
+
+                    // Supported file formats
+                    const supportedFormats = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'pdf', 'doc', 'docx'];
+
+                    // Generate numbered links for each file
+                    filePaths.forEach((filePath, index) => {
+                        if (!filePath || !filePath.includes('.')) return; // Skip empty/invalid values
+
+                        let fileExtension = filePath.split('.').pop().trim().toLowerCase();
+
+                        console.log("Checking file:", filePath, "Extension:", fileExtension); // Debugging log
+
+                        if (supportedFormats.includes(fileExtension)) {
+                            // Ensure the file path is absolute
+                            let fullUrl = filePath.startsWith('http') ? filePath : window.location.origin + filePath;
+
+                            // Create a list item with a generic "Attachment X" text as a link
+                            let listItem = `
+                                <li class="list-group-item">
+                                    <a href="${fullUrl}" target="_blank">Attachment ${index + 1}</a>
+                                </li>`;
+                            $('#attachmentLinks').append(listItem);
+                        } else {
+                            console.warn('Unsupported file format:', filePath);
+                        }
+                    });
+
+                    // Show modal if files exist, otherwise show alert
+                    if ($('#attachmentLinks').children().length > 0) {
+                        $('#attachmentsModal').modal('show');
+                    } else {
+                        alert("No valid attachments found.");
+                    }
+                } else {
+                    alert("File not found.");
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching file:', error);
+                alert("An error occurred while fetching the file.");
+            }
+        });
+    });
+
+
+        // Handle View Timesheet button click
         $('#timesheetTable').on('click', '.viewTimesheet', function () {
-            var timesheetId = $(this).data('id'); // Get the clicked timesheet ID
-            debugger;
-            // Make an AJAX call to fetch timesheet data by ID
+            var timesheetId = $(this).data('id');
+
             $.ajax({
-                url: '/Self/GetTimeSheetById', // Your API endpoint
+                url: '/Self/GetTimeSheetById',
                 type: 'GET',
                 data: { id: timesheetId },
                 success: function (response) {
-                    // If data exists, populate the modal fields
                     if (response.data) {
-                        // Populate static fields
                         $('#viewEmployeeName').val(response.data.empName);
                         $('#viewClientName').val(response.data.clientName);
                         $('#viewPosition').val(response.data.position);
@@ -261,61 +337,52 @@
                         $('#viewSubmissionDate').val(response.data.submissionDate);
                         $('#viewSignatureDate').val(response.data.signatureDate);
 
-                        // Populate the timesheet rows in the modal
                         var rows = '';
                         $.each(response.data.dailyEntries, function (index, row) {
-                            rows += '<tr>' +
-                                        '<td>' + row.dayDate + '</td>' +
-                                        '<td>' + row.dayOfWeek + '</td>' +
-                                        '<td>' + row.hoursWorked + '</td>' +
-                                        '<td>' + row.assignmentDesc + '</td>' +
-                                        '<td>' + row.remarks + '</td>' +
-                                    '</tr>';
+                            rows += `<tr>
+                                        <td>${row.dayDate}</td>
+                                        <td>${row.dayOfWeek}</td>
+                                        <td>${row.hoursWorked}</td>
+                                        <td>${row.assignmentDesc}</td>
+                                        <td>${row.remarks}</td>
+                                    </tr>`;
                         });
-                        $('#viewTimesheetRows').html(rows); // Populate timesheet rows dynamically
+                        $('#viewTimesheetRows').html(rows);
 
-                        // Show the modal after populating data
                         $('#viewTimesheetModal').modal('show');
                     } else {
                         alert("No data available for the selected timesheet.");
                     }
                 },
                 error: function () {
-                    alert("Error fetching timesheet details");
+                    alert("Error fetching timesheet details.");
                 }
             });
         });
-    });
 
-
-        // Handle Print button click event for timesheets
+        // Handle Print Timesheet button click
     $('#timesheetTable').on('click', '.printTimesheet', function () {
-        var timesheetId = $(this).data('id'); // Get the timesheet ID from the button's data-id attribute
+            var timesheetId = $(this).data('id');
 
-        // Make an AJAX request to fetch the timesheet details by ID
         $.ajax({
-            url: '/Self/GetTimeSheetById',  // Controller action
+                url: '/Self/GetTimeSheetById',
             type: 'GET',
-            data: { id: timesheetId },  // Send the timesheet ID
+                data: { id: timesheetId },
             success: function (response) {
-                // Check if the response contains valid data
                 if (response.success) {
-                    var timesheet = response.data;  // Get the timesheet data
-
+                        var timesheet = response.data;
                     var doc = new jsPDF();
 
                     // Title Styling
                     doc.setFontSize(20);
-                    doc.setTextColor(41, 128, 185); // Blue color for the title
-                    doc.setDrawColor(41, 128, 185); // Set draw color to green
-                    doc.line(10, 10, 200, 10); // Draw a line
+                        doc.setTextColor(41, 128, 185);
+                        doc.line(10, 10, 200, 10);
                     doc.text('Timesheet Details', 14, 20);
-                    doc.setFont("times", "bold"); // Set font to Times and bold style
+                        doc.setFont("times", "bold");
 
-                    // Add the main details in a two-column layout
+                        // Add details
                     doc.setFontSize(12);
-                    doc.setTextColor(0, 0, 0); // Black color for the details
-                    // Add the main details
+                        doc.setTextColor(0, 0, 0);
                     doc.text('Employee Name: ' + timesheet.empName, 14, 30);
                     doc.text('Client Name: ' + timesheet.clientName, 14, 40);
                     doc.text('Position: ' + timesheet.position, 14, 50);
@@ -327,18 +394,11 @@
                     doc.text('Note: ' + timesheet.note, 14, 110);
                     doc.text('Total Hours: ' + timesheet.totalHours, 14, 120);
 
-                    // Add Daily Entries as a table using autoTable
-                    var tableData = timesheet.dailyEntries.map(function (entry) {
-                        return [
-                            entry.dayDate, // Date
-                            entry.dayOfWeek, // Day
-                            entry.hoursWorked, // Hours Worked
-                            entry.assignmentDesc, // Assignment
-                            entry.remarks // Remarks
-                        ];
-                    });
+                        // Table Data
+                        var tableData = timesheet.dailyEntries.map(entry => [
+                            entry.dayDate, entry.dayOfWeek, entry.hoursWorked, entry.assignmentDesc, entry.remarks
+                        ]);
 
-                    // Table headers
                     var headers = [
                         { title: 'Date', dataKey: 'date' },
                         { title: 'Day', dataKey: 'day' },
@@ -348,33 +408,17 @@
                     ];
 
                     doc.autoTable({
-                        head: [headers],  // Table headers
-                        body: tableData,  // Table data
-                        startY: 130,  // Y position to start the table
-                        margin: { top: 10, left: 14, right: 14 }, // Optional margins
-                        theme: 'grid', // Grid theme for table
-                        headStyles: {
-                            fillColor: [41, 128, 185], // Blue header color
-                            textColor: [255, 255, 255], // White text color
-                            fontSize: 12, // Font size for header
-                        },
-                        bodyStyles: {
-                            fontSize: 10, // Font size for body
-                        },
-                        columnStyles: {
-                            0: { cellWidth: 'auto' }, // Auto width for the first column (Date)
-                            1: { cellWidth: 'auto' }, // Auto width for the second column (Day)
-                            2: { cellWidth: 'auto' }, // Auto width for the third column (Hours Worked)
-                            3: { cellWidth: 'auto' }, // Auto width for the fourth column (Assignment)
-                            4: { cellWidth: 'auto' }  // Auto width for the fifth column (Remarks)
-                        },
-                        styles: {
-                            cellPadding: 5, // Padding within cells
-                            halign: 'center', // Horizontal alignment for cells
-                        }
+                            head: [headers],
+                            body: tableData,
+                            startY: 130,
+                            margin: { top: 10, left: 14, right: 14 },
+                            theme: 'grid',
+                            headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255], fontSize: 12 },
+                            bodyStyles: { fontSize: 10 },
+                            columnStyles: { 0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 'auto' }, 3: { cellWidth: 'auto' }, 4: { cellWidth: 'auto' } },
+                            styles: { cellPadding: 5, halign: 'center' }
                     });
 
-                    // Open the PDF in a new tab
                     var pdfBlob = doc.output('blob');
                     var url = URL.createObjectURL(pdfBlob);
                     window.open(url, '_blank');
@@ -383,12 +427,12 @@
                 }
             },
             error: function () {
-                alert("An error occurred while fetching the timesheet data. Please try again.");
+                    alert("An error occurred while fetching the timesheet data.");
             }
         });
     });
 
-
     });
+
 
 </script>

@@ -193,9 +193,10 @@
         <table id="EvaluationTable" class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                    <th>ID</th>
+@*                     <th>ID</th> *@
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>Total Average Marks</th>
                     <th>Recommendation </th>
                     <th>Remarks</th>
                             </tr>
@@ -203,14 +204,7 @@
                         <tbody>
                             <tr>
                     <td></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jane Smith</td>
-                                <td>15</td>
-                                <td>Consistent performance, but needs improvement in attendance.</td>
-                            </tr>
-                            <!-- Add more rows as necessary -->
+                           
                         </tbody>
                     </table>
                 </div>
@@ -223,7 +217,7 @@
     var performanceChart = new Chart(document.getElementById('performanceChart'), {
         type: 'pie',
         data: {
-            labels: ['Excellent (9-10)', 'Good (7-8)', 'Average (4-6)', 'Bad (1-3)'],
+            labels: ['Excellent (4-5)', 'Good (2-4)', 'Average (1-2)', 'Bad (0-1)'],
             datasets: [{
                 data: [35, 40, 15, 10],
                 backgroundColor: ['#28a745', '#007bff', '#ffc107', '#dc3545'],

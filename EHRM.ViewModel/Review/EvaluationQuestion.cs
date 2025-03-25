@@ -15,7 +15,9 @@ namespace EHRM.ViewModel.Review
 
         public int EmpId { get; set; }                    // Employee ID (Foreign Key)
 
-        public string ApplicationDate { get; set; }       // Application Date (e.g., probation start date)
+        public string ApplicationDate { get; set; }
+
+        public string TotalAverage { get; set; }
 
         public int ManagerId { get; set; }                 // Manager ID (Foreign Key)
 
