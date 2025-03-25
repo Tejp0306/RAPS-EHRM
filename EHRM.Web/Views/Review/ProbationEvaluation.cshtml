@@ -43,7 +43,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <div class="container mt-4">
     <h3 class="page-heading">Probation Evaluation</h3>
-
+    <div class="small bg-light p-2 border rounded text-muted ms-auto" style="max-width: 250px;">
+        <strong>Instructions:</strong> <br>
+        - Average marks <B>1-2:</B> Bad ❌ <br>
+        - Average marks <B>2-4:</B> Good 👍 <br>
+        - Average marks <B>4-5:</B> Excellent 🌟
+    </div>
     <!-- Probation Evaluation Form -->
     <div class="form-container mb-5">
         @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
@@ -79,7 +84,7 @@
                     <table class="table table-bordered evaluation-table">
                         <thead>
                             <tr>
-                                <th class="text-center">Criteria</th>
+                                <th class="text-center">Ques-No.</th>
                                 <th class="text-center">Question</th>
                                 <th class="text-center">1st Month</th>
                                 <th class="text-center">2nd Month</th>
@@ -89,33 +94,32 @@
                         <tbody>
                             @foreach (var item in Model.Items)
                             {
-                                
                                 <tr>
                                     <td class="text-center">@($"Ques {item.QuestionId}")</td>
                                     <td>@item.Question</td>
                                     <input type="hidden" asp-for="Items[count].QuestionId" value="@item.QuestionId" />
                                     <td>
-                                        <select asp-for="Items[count].Evaluation1stMonth" class="form-control">
-                                            <option value="">Remarks</option>
-                                            @for (int i = 1; i <= 10; i++)
+                                        <select asp-for="Items[count].Evaluation1stMonth" class="form-control eval-score eval-1st">
+                                            <option value="">Grade</option>
+                                            @for (int i = 1; i <= 5; i++)
                                             {
                                                 <option value="@i">@i</option>
                                             }
                                         </select>
                                     </td>
                                     <td>
-                                        <select asp-for="Items[count].Evaluation2ndMonth" class="form-control">
-                                            <option value="">Remarks</option>
-                                            @for (int i = 1; i <= 10; i++)
+                                        <select asp-for="Items[count].Evaluation2ndMonth" class="form-control eval-score eval-2nd">
+                                            <option value="">Grade</option>
+                                            @for (int i = 1; i <= 5; i++)
                                             {
                                                 <option value="@i">@i</option>
                                             }
                                         </select>
                                     </td>
                                     <td>
-                                        <select asp-for="Items[count].Evaluation3rdMonth" class="form-control">
-                                            <option value="">Remarks</option>
-                                            @for (int i = 1; i <= 10; i++)
+                                        <select asp-for="Items[count].Evaluation3rdMonth" class="form-control eval-score eval-3rd">
+                                            <option value="">Grade</option>
+                                            @for (int i = 1; i <= 5; i++)
                                             {
                                                 <option value="@i">@i</option>
                                             }
@@ -125,10 +129,29 @@
                                 count++;
                             }
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-center"><strong>Month-Wise Average</strong></td>
+                                <td id="avg-1st" class="text-center">0</td>
+                                <td id="avg-2nd" class="text-center">0</td>
+                                <td id="avg-3rd" class="text-center">0</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-center"><strong>Total Average</strong></td>
+                                <td colspan="3" class="text-center">
+                                    <!-- Displayed input field for total average -->
+                                    <input type="text" id="total-avg" class="form-control text-center" readonly />
+
+                                    <!-- Hidden input field to store value for submission -->
+                                    <input type="hidden" asp-for="TotalAverage" id="TotalAverageHidden" />
+                                </td>
+                            </tr>
+
+                        </tfoot>
                     </table>
 
                     <!-- Remarks Section -->
-                    <div class="section-title">Recommendation and remarks from reporting manager</div>
+                    <div class="section-title">Recommendation from reporting manager</div>
                     <div class="mb-3">
                         <textarea asp-for="Recommendation" class="form-control" rows="4"></textarea>
 
@@ -140,6 +163,7 @@
                         <select asp-for="RemarksConfirmation" class="form-select">
 
                             <option selected>Choose...</option>
+                            <option value="Permanent">Permanent</option>
                             <option value="extend">Extend Probation period</option>
                             <option value="terminate">Termination</option>
                         </select>
@@ -177,6 +201,71 @@
         dateFormat: 'dd-MM-yy',
         minDate: '0',
         defaultDate: new window.Date
+    });
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+      $(document).ready(function () {
+        function calculateOverallAverage() {
+            let total1st = 0, count1st = 0;
+            let total2nd = 0, count2nd = 0;
+            let total3rd = 0, count3rd = 0;
+
+            // Loop through 1st-month scores
+            $(".eval-1st").each(function () {
+                let val = parseFloat($(this).val()) || 0;
+                if (val > 0) {
+                    total1st += val;
+                    count1st++;
+                }
+            });
+
+            // Loop through 2nd-month scores
+            $(".eval-2nd").each(function () {
+                let val = parseFloat($(this).val()) || 0;
+                if (val > 0) {
+                    total2nd += val;
+                    count2nd++;
+                }
+            });
+
+            // Loop through 3rd-month scores
+            $(".eval-3rd").each(function () {
+                let val = parseFloat($(this).val()) || 0;
+                if (val > 0) {
+                    total3rd += val;
+                    count3rd++;
+                }
+            });
+
+            // Calculate averages (avoid division by zero)
+            let avg1st = count1st > 0 ? (total1st / count1st).toFixed(2) : "0";
+            let avg2nd = count2nd > 0 ? (total2nd / count2nd).toFixed(2) : "0";
+            let avg3rd = count3rd > 0 ? (total3rd / count3rd).toFixed(2) : "0";
+
+            // Update the footer row with calculated averages
+            $("#avg-1st").text(avg1st);
+            $("#avg-2nd").text(avg2nd);
+            $("#avg-3rd").text(avg3rd);
+
+            // Calculate total average of the three months' averages
+            let totalAvg = ((parseFloat(avg1st) + parseFloat(avg2nd) + parseFloat(avg3rd)) / 3).toFixed(2);
+
+            // Update the displayed total average
+            $("#total-avg").val(totalAvg);  // Update input field value
+
+            // Also update the hidden input field to send value to the server
+            $("#TotalAverageHidden").val(totalAvg);
+        }
+
+        // Calculate averages whenever a score is changed
+        $(".eval-score").on("change", function () {
+            calculateOverallAverage();
+        });
+
+        // Initial calculation in case there are pre-filled values
+        calculateOverallAverage();
     });
 
 </script>

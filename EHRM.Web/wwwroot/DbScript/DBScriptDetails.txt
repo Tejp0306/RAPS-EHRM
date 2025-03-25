@@ -345,7 +345,8 @@ CREATE TABLE ProbationEvaluationForm (
     QuestionId INT,
 	Evaluation1stMonth INT,                           -- Evaluation marks for the 1st month
     Evaluation2ndMonth INT,                           -- Evaluation marks for the 2nd month
-    Evaluation3rdMonth INT,                           -- Evaluation marks for the 3rd month
+    Evaluation3rdMonth INT, 
+    TotalAverage varchar(20)-- Evaluation marks for the 3rd month
     Recommendation VARCHAR(MAX),                      -- Manager's recommendation (text field)
     RemarksConfirmation VARCHAR(255),                 -- Remarks and confirmation from the manager
     ManagerSignature VARCHAR(255),                    -- Manager's signature (could be stored as text)
@@ -405,7 +406,8 @@ CREATE TABLE [dbo].[TimeSheet](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[EmpId] [int] NULL,
 	[PresentMonth] [varchar](50) NULL,
-	[EmpName] [varchar](100) NULL,
+	[FilePath] [nvarchar](50) NULL,
+	[EmpName] [varchar](500) NULL,
 	[ClientName] [varchar](100) NULL,
 	[Position] [varchar](100) NULL,
 	[ProjectName] [varchar](100) NULL,

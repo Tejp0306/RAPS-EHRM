@@ -22,11 +22,12 @@ namespace EHRM.ServiceLayer.Self
         Task<List<GetAllEmployeeViewModel>> GetAllEmployeeDataDetails(int EmpId);
 
         #region TimeSheet
-        Task<Result> CreateTimeSheetAsync(TimeSheetViewModel model);
+        Task<Result> CreateTimeSheetAsync(TimeSheetViewModel model, List<string> FilePath);
         Task<TimeSheetViewModel> GetTimeSheetByIdAsync(int timesheetId);
         Task<TimeSheetViewModel> GetTimeSheetsByIdAsync(int Id);
         Task<Result> GetTimeSheetByMonthAsync(string month);
 
+        Task<Result> GetFilesAsync(int id);
 
         #endregion
 

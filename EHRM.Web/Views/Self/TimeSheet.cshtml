@@ -75,7 +75,15 @@
                             * All timesheets for the previous month should be submitted by 10th of the current month.
                         </div>
                     </div>
+
                 </div>
+                <div class="col-md-6 mb-3">
+                    <label for="file" class="form-label">Upload Attachments ( If Any ):</label>
+                    @* <input class="file form-control" type="file" id="file" multiple img src="~/Files/"> *@
+                    <input class="file" type="file" id="file" placeholder="Select a file (Optional)" img src="~/Files/" multiple>
+                </div>
+
+
                 <hr />
                 <div class="row mb-2">
                     <div class="col-md-6">
@@ -169,68 +177,97 @@
 <script>
     $("#submitTimesheetButton").click(function (event) {
         event.preventDefault();
-        debugger;
-        let signatureDate = new Date($("#signatureDate").val());
-        let formattedDate = signatureDate.toISOString().split('T')[0]; // Formats to 'YYYY-MM-DD'
 
-        let submissionDate = new Date($("#submissionDate").val());
-        let formattedSubmission = submissionDate.toISOString().split('T')[0]; // Formats to 'YYYY-MM-DD'
-
-        // Prepare the timesheet data to be sent to the server
         let timesheetData = {
-            Id: $("#timesheetId").val() || 0,  // If there is a timesheet ID, use it for updates, otherwise 0 for new timesheet
+            Id: $("#timesheetId").val() || 0,
             EmpName: $("#employeeName").val(),
             ClientName: $("#clientName").val(),
             Position: $("#position").val(),
             ProjectName: $("#projectName").val(),
             EmployeeSignature: $("#employeeSignature").val(),
             ManagerSignature: $("#managerSignature").val(),
-            SignatureDate: formattedDate,
-            SubmissionDate: formattedSubmission,
+            SignatureDate: new Date($("#signatureDate").val()).toISOString().split('T')[0],
+            SubmissionDate: new Date($("#submissionDate").val()).toISOString().split('T')[0],
             Note: $("#note").val(),
             TotalHours: $("#totalHours").val(),
             PresentMonth: $("#monthSelector").val(),
-            DailyEntries: []  // This will store all the daily entries
+            DailyEntries: []
         };
 
-        // Loop through each timesheet row and collect daily entries
+        // Collect daily entries
         $("#timesheet-rows tr").each(function () {
-            var dayDate = $(this).find(".day-date").text();  // Assuming day-date is stored in each row
-            let dayOfWeek = $(this).find(".day-of-week").text();  // Assuming day-of-week is stored in each row
-            let hoursWorked = $(this).find(".hours-input").val();
-            let assignmentDesc = $(this).find(".assignment-desc").val();
-            let remarks = $(this).find(".remarks").val();
-
-            // Add the daily entry to the DailyEntries array
             timesheetData.DailyEntries.push({
-                DayDate: dayDate,  // Ensure this is in the correct format (e.g., 'dd-MM-yyyy')
-                DayOfWeek: dayOfWeek,
-                HoursWorked: hoursWorked,
-                AssignmentDesc: assignmentDesc,
-                Remarks: remarks
+                DayDate: $(this).find(".day-date").text(),
+                DayOfWeek: $(this).find(".day-of-week").text(),
+                HoursWorked: $(this).find(".hours-input").val(),
+                AssignmentDesc: $(this).find(".assignment-desc").val(),
+                Remarks: $(this).find(".remarks").val()
             });
         });
 
-        // Make the AJAX request to submit the timesheet data
+        let formData = new FormData();
+
+        // Append timesheet data as JSON
+        formData.append("timesheetData", JSON.stringify(timesheetData));
+
+        // Append multiple files
+        let fileInput = $("#file")[0];
+        let files = fileInput.files;
+
+        if (files.length > 0) {
+            for (let i = 0; i < files.length; i++) {
+                formData.append("Files", files[i]); // Append each file
+            }
+        }
+
+        // Upload files first, then submit timesheet
         $.ajax({
-            url: "/Self/SubmitTimeSheet",  // Controller endpoint
+            url: "/Self/UploadFiles",
             type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(timesheetData),  // Send the timesheet data as JSON
-            success: function (result) {
-                if (result.success) {
-                    alert(result.message || "Timesheet submitted successfully.");
-                    window.location.href = "/Self/TimeSheet";  // Redirect to timesheet view after success
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    timesheetData.FilePath = response.filePaths; // Store uploaded file paths
+                    submitTimesheet(timesheetData); // Submit timesheet after files are uploaded
                 } else {
-                    alert(result.message || "Error saving the timesheet.");
+                    alert("File upload failed.");
                 }
             },
-            error: function (xhr, status, error) {
-                alert("An error occurred while submitting the timesheet. Please try again.");
+            error: function (xhr) {
+                alert("Error uploading files.");
+                console.log(xhr.responseText);
+            }
+            });
+        });
+
+    // Function to submit timesheet
+    function submitTimesheet(data) {
+        $.ajax({
+            url: "/Self/SubmitTimeSheet",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                if (response.success) {
+                    alert("Timesheet submitted successfully!");
+                    location.reload(); // Refresh the page or redirect
+                } else {
+                    alert("Timesheet submission failed.");
+                }
+            },
+            error: function (xhr) {
+                alert("Error submitting timesheet.");
                 console.log(xhr.responseText);
             }
         });
-    });
+    }
+
+
+
+
+
 
 
     function loadTimesheetData() {

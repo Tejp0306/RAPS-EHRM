@@ -236,6 +236,7 @@ namespace EHRM.ServiceLayer.Review
                             EmpId = model.EmpId,
                             ApplicationDate = model.ApplicationDate,
                             ManagerId = model.ManagerId,
+                            TotalAverage =model.TotalAverage,
                             QuestionId = item.QuestionId,
                             Evaluation1stMonth = item.Evaluation1stMonth,
                             Evaluation2ndMonth = item.Evaluation2ndMonth,
@@ -280,27 +281,29 @@ namespace EHRM.ServiceLayer.Review
             var employeeRepository = _unitOfWork.GetRepository<ProbationEvaluationForm>();
             var employmentTypeRepository = _unitOfWork.GetRepository<EmployeeDetail>();
 
-            // Await the async operations to get actual collections
+            // Fetch all employees and probation evaluation forms
             var employees = await employeeRepository.GetAllAsync();
             var employmentTypes = await employmentTypeRepository.GetAllAsync();
 
-            // LINQ query to join EmployeeDetails and ProbationEvaluationForm using EmpId
-            var employeeWithDetails = (from e in employmentTypes
-                                       join p in employees on e.EmpId equals p.EmpId
-                                       select new EvaluationQuestion
+            // Group by EmpId to ensure only one evaluation entry per employee
+            var employeeWithDetails = employees
+                .GroupBy(p => p.EmpId)
+                .Select(group => new EvaluationQuestion
                                        {
-                                           Id = e.Id,
-                                           Recommendation = p.Recommendation,
-                                           RemarksConfirmation = p.RemarksConfirmation,
+                    Recommendation = group.First().Recommendation, // Take first occurrence
+                    RemarksConfirmation = group.First().RemarksConfirmation,
+                    TotalAverage = group.First().TotalAverage ?? "",
                                            Details = new EmployeeViewModel
                                            {
-                                               FirstName = e.FirstName,
-                                               LastName = e.LastName
+                        FirstName = employmentTypes.FirstOrDefault(e => e.EmpId == group.Key)?.FirstName ?? "" ,
+                        LastName = employmentTypes.FirstOrDefault(e => e.EmpId == group.Key)?.LastName ?? ""
                                            }
-                                       }).ToList();
+                })
+                .ToList();
 
             return employeeWithDetails;
         }
+
         #endregion
     }
 }
