@@ -345,7 +345,8 @@ CREATE TABLE ProbationEvaluationForm (
     QuestionId INT,
 	Evaluation1stMonth INT,                           -- Evaluation marks for the 1st month
     Evaluation2ndMonth INT,                           -- Evaluation marks for the 2nd month
-    Evaluation3rdMonth INT,                           -- Evaluation marks for the 3rd month
+    Evaluation3rdMonth INT, 
+    TotalAverage varchar(20)-- Evaluation marks for the 3rd month
     Recommendation VARCHAR(MAX),                      -- Manager's recommendation (text field)
     RemarksConfirmation VARCHAR(255),                 -- Remarks and confirmation from the manager
     ManagerSignature VARCHAR(255),                    -- Manager's signature (could be stored as text)
@@ -405,7 +406,8 @@ CREATE TABLE [dbo].[TimeSheet](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[EmpId] [int] NULL,
 	[PresentMonth] [varchar](50) NULL,
-	[EmpName] [varchar](100) NULL,
+	[FilePath] [nvarchar](50) NULL,
+	[EmpName] [varchar](500) NULL,
 	[ClientName] [varchar](100) NULL,
 	[Position] [varchar](100) NULL,
 	[ProjectName] [varchar](100) NULL,
@@ -563,6 +565,276 @@ BEGIN
             ERROR_MESSAGE() AS ErrorMessage;
     END CATCH
 END;
+GO
+
+// tables for Post joing and exit formalities form
+
+
+USE [EHRM]
+GO
+/****** Object:  Table [dbo].[AcknowledgementForm]    Script Date: 4/1/2025 12:40:46 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AcknowledgementForm](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeName] [nvarchar](255) NOT NULL,
+	[EmployeeSignature] [nvarchar](max) NULL,
+	[SignatureDate] [varchar](255) NOT NULL,
+	[CreatedAt] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ClientPropertyDeclaration]    Script Date: 4/1/2025 12:40:46 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ClientPropertyDeclaration](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeName] [nvarchar](255) NOT NULL,
+	[ClientName] [nvarchar](255) NOT NULL,
+	[ReceivedDate] [nvarchar](255) NOT NULL,
+	[ItemsReceived] [nvarchar](max) NOT NULL,
+	[EmployeeNameConfirm] [nvarchar](255) NOT NULL,
+	[Signature] [nvarchar](255) NOT NULL,
+	[ConfirmationDate] [nvarchar](255) NOT NULL,
+	[CreatedAt] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[EmployeeExitChecklist]    Script Date: 4/1/2025 12:40:46 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[EmployeeExitChecklist](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NOT NULL,
+	[Emp_id] [int] NOT NULL,
+	[Resignation_date] [nvarchar](50) NULL,
+	[Relieving_date] [nvarchar](50) NULL,
+	[Start_date] [nvarchar](50) NULL,
+	[Reporting_manager] [nvarchar](255) NULL,
+	[completed_tasks] [nvarchar](10) NULL,
+	[completed_tasks_remarks] [nvarchar](500) NULL,
+	[knowledge_transfer] [nvarchar](10) NULL,
+	[knowledge_transfer_remarks] [nvarchar](500) NULL,
+	[assets_returned] [nvarchar](10) NULL,
+	[assets_returned_remarks] [nvarchar](500) NULL,
+	[documents_returned] [nvarchar](10) NULL,
+	[documents_returned_remarks] [nvarchar](500) NULL,
+	[mail_forwarding] [nvarchar](10) NULL,
+	[mail_forwarding_remarks] [nvarchar](500) NULL,
+	[mail_sent_to_hr] [nvarchar](10) NULL,
+	[mail_sent_to_hr_remarks] [nvarchar](500) NULL,
+	[reporting_manager_signature] [nvarchar](255) NULL,
+	[login_withdrawn] [nvarchar](10) NULL,
+	[login_withdrawn_remarks] [nvarchar](500) NULL,
+	[jobdiva_reset] [nvarchar](10) NULL,
+	[jobdiva_reset_remarks] [nvarchar](500) NULL,
+	[wifi_suspended] [nvarchar](10) NULL,
+	[wifi_suspended_remarks] [nvarchar](500) NULL,
+	[door_access] [nvarchar](10) NULL,
+	[door_access_remarks] [nvarchar](500) NULL,
+	[ringcentral_suspended] [nvarchar](10) NULL,
+	[ringcentral_suspended_remarks] [nvarchar](500) NULL,
+	[voip_phone_deactivated] [nvarchar](10) NULL,
+	[voip_phone_deactivated_remarks] [nvarchar](500) NULL,
+	[client_passwords_changed] [nvarchar](10) NULL,
+	[client_passwords_changed_remarks] [nvarchar](500) NULL,
+	[helpdesk_signature] [nvarchar](255) NULL,
+	[id_card_returned] [nvarchar](10) NULL,
+	[id_card_returned_remarks] [nvarchar](500) NULL,
+	[access_control_updated] [nvarchar](10) NULL,
+	[access_control_updated_remarks] [nvarchar](500) NULL,
+	[visa_fee_recovery] [nvarchar](10) NULL,
+	[visa_fee_recovery_remarks] [nvarchar](500) NULL,
+	[transport_discontinued] [nvarchar](10) NULL,
+	[transport_discontinued_remarks] [nvarchar](500) NULL,
+	[admin_signature] [nvarchar](255) NULL,
+	[exit_interview] [nvarchar](10) NULL,
+	[exit_interview_remarks] [nvarchar](500) NULL,
+	[f_and_f_processed] [nvarchar](10) NULL,
+	[f_and_f_processed_remarks] [nvarchar](500) NULL,
+	[training_cost] [nvarchar](10) NULL,
+	[training_cost_remarks] [nvarchar](500) NULL,
+	[resignation_updated] [nvarchar](10) NULL,
+	[resignation_updated_remarks] [nvarchar](500) NULL,
+	[name_removed] [nvarchar](10) NULL,
+	[name_removed_remarks] [nvarchar](500) NULL,
+	[insurance_discontinued] [nvarchar](10) NULL,
+	[insurance_discontinued_remarks] [nvarchar](500) NULL,
+	[hr_signature] [nvarchar](255) NULL,
+	[loans_returned] [nvarchar](10) NULL,
+	[loans_returned_remarks] [nvarchar](500) NULL,
+	[incentive_due] [nvarchar](10) NULL,
+	[incentive_due_remarks] [nvarchar](500) NULL,
+	[deductions_due] [nvarchar](10) NULL,
+	[deductions_due_remarks] [nvarchar](500) NULL,
+	[travel_fee_due] [nvarchar](10) NULL,
+	[travel_fee_due_remarks] [nvarchar](500) NULL,
+	[training_cost_due] [nvarchar](10) NULL,
+	[training_cost_due_remarks] [nvarchar](500) NULL,
+	[visa_fee_due] [nvarchar](10) NULL,
+	[visa_fee_due_remarks] [nvarchar](500) NULL,
+	[additional_deductions] [nvarchar](10) NULL,
+	[additional_deductions_remarks] [nvarchar](500) NULL,
+	[accounts_manager_signature] [nvarchar](255) NULL,
+	[submission_date] [datetime] NULL,
+ CONSTRAINT [PK__Employee__3213E83FEC5262D2] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ__Employee__263E2DD274FBDA1A] UNIQUE NONCLUSTERED 
+(
+	[Emp_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[EmployeeUndertakingForm]    Script Date: 4/1/2025 12:40:46 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[EmployeeUndertakingForm](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeName] [nvarchar](255) NOT NULL,
+	[Relation] [nvarchar](10) NOT NULL,
+	[FatherName] [nvarchar](255) NOT NULL,
+	[PermanentAddress] [nvarchar](500) NOT NULL,
+	[OfficeAddress] [nvarchar](500) NOT NULL,
+	[LastWorkingDate] [nvarchar](500) NOT NULL,
+	[ResignationDate] [nvarchar](500) NOT NULL,
+	[EmployeeSignature] [nvarchar](255) NULL,
+	[CreatedAt] [datetime] NULL,
+ CONSTRAINT [PK__Employee__3214EC27958EEEA1] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ExitInterviewForm]    Script Date: 4/1/2025 12:40:46 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ExitInterviewForm](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[employee_name] [nvarchar](255) NOT NULL,
+	[interview_date] [nvarchar](255) NOT NULL,
+	[interviewer] [nvarchar](255) NOT NULL,
+	[strengths] [nvarchar](max) NULL,
+	[areas_of_improvement] [nvarchar](max) NULL,
+	[treatment_after_resignation] [nvarchar](max) NULL,
+	[rejoin] [nvarchar](10) NULL,
+	[reason_for_leaving] [nvarchar](max) NULL,
+	[comparison_with_new_job] [nvarchar](max) NULL,
+	[recommend] [nvarchar](max) NULL,
+	[greatest_challenge] [nvarchar](max) NULL,
+	[enjoyed_functions] [nvarchar](max) NULL,
+	[least_enjoyed_functions] [nvarchar](max) NULL,
+	[job_security] [nvarchar](10) NULL,
+	[job_security_details] [nvarchar](max) NULL,
+	[department_morale] [nvarchar](max) NULL,
+	[improve_morale] [nvarchar](max) NULL,
+	[supervisor_feedback] [nvarchar](max) NULL,
+	[working_conditions] [nvarchar](max) NULL,
+	[benefits_satisfactory] [nvarchar](10) NULL,
+	[informed_policies] [nvarchar](10) NULL,
+	[policies_feedback] [nvarchar](max) NULL,
+	[change_decision] [nvarchar](max) NULL,
+	[additional_comments] [nvarchar](max) NULL,
+	[created_at] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NonDisclosureAgreement]    Script Date: 4/1/2025 12:40:46 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NonDisclosureAgreement](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeName] [nvarchar](255) NOT NULL,
+	[AgreementDate] [nvarchar](255) NOT NULL,
+	[Signature] [nvarchar](255) NOT NULL,
+	[CreatedAt] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[PersonalInfo]    Script Date: 4/1/2025 12:40:46 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PersonalInfo](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeName] [nvarchar](255) NOT NULL,
+	[PersonalEmail] [nvarchar](255) NOT NULL,
+	[PermanentAddress] [nvarchar](200) NOT NULL,
+	[CurrentAddress] [nvarchar](200) NOT NULL,
+	[HomePhone] [nvarchar](20) NULL,
+	[MobilePhone] [nvarchar](20) NOT NULL,
+	[EmergencyContact1Name] [nvarchar](255) NOT NULL,
+	[EmergencyContact1Relationship] [nvarchar](100) NOT NULL,
+	[EmergencyContact1Phone] [nvarchar](20) NOT NULL,
+	[EmergencyContact2Name] [nvarchar](255) NULL,
+	[EmergencyContact2Relationship] [nvarchar](100) NULL,
+	[EmergencyContact2Phone] [nvarchar](20) NULL,
+	[Signature] [nvarchar](255) NOT NULL,
+	[FormDate] [nvarchar](255) NOT NULL,
+ CONSTRAINT [PK__Personal__3214EC271F90F044] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ResignationForm]    Script Date: 4/1/2025 12:40:46 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ResignationForm](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeSignature] [nvarchar](255) NOT NULL,
+	[Position] [nvarchar](255) NOT NULL,
+	[FinalDay] [nvarchar](255) NOT NULL,
+	[ResignationDate] [nvarchar](255) NOT NULL,
+	[EmployeeName] [nvarchar](255) NOT NULL,
+	[TotalMonths] [nvarchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[AcknowledgementForm] ADD  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[ClientPropertyDeclaration] ADD  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[EmployeeExitChecklist] ADD  CONSTRAINT [DF__EmployeeE__submi__6FB49575]  DEFAULT (getdate()) FOR [submission_date]
+GO
+ALTER TABLE [dbo].[EmployeeUndertakingForm] ADD  CONSTRAINT [DF__EmployeeU__Creat__690797E6]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[ExitInterviewForm] ADD  DEFAULT (getdate()) FOR [created_at]
+GO
+ALTER TABLE [dbo].[NonDisclosureAgreement] ADD  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[ResignationForm] ADD  DEFAULT (getdate()) FOR [ResignationDate]
 GO
 
 

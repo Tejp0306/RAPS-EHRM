@@ -1,0 +1,127 @@
+﻿@model EmployeeUndertakingViewModel
+@using EHRM.ViewModel.ExitFormalities
+
+
+@{
+    ViewData["Title"] = "EmployeeUndertaking";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<style>
+    .page-heading {
+        color: #007bff;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+    .form-container {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<div class="container mt-1">
+    <div class="col-12 text-center py-1 mb-2">
+        <h3 class="page-heading">Employee Undertaking</h3>
+    </div>
+</div>
+
+<div class="container mt-4">
+    @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+            });
+        </script>
+    }
+    <div class="asset-form mb-5">
+        <div class="card p-4 form-container">
+            <div class="card-body">
+                <form id="EmployeeUndertakingForm" asp-controller="ExitFormalities" asp-action="SaveEmployeeUndertakingForm" method="post">
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <p>
+                            <p>
+                                I, <input asp-for="EmployeeName" class="form-control d-inline w-auto" placeholder="Your Name" required /> , 
+                                <select asp-for="Relation" class="form-control d-inline w-auto" required>
+                                    <option value="">Select</option>
+                                    <option value="Son">Son</option>
+                                    <option value="Daughter">Daughter</option>
+                                </select>
+                                of <input asp-for="FatherName" class="form-control d-inline w-auto" placeholder="Father's Name" required /> ,
+                                Resident of <input asp-for="PermanentAddress" class="form-control d-inline w-auto" placeholder="Permanent Address" required />
+                                do hereby solemnly affirm and state as hereunder:
+                            </p>
+
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Undertaking Points -->
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <p>
+                                1. I was employed with Raps Professional Services Pvt. Ltd. at 
+                                <input asp-for="OfficeAddress" class="form-control d-inline w-auto" placeholder="Office Address" required />
+                                 until  <input asp-for="LastWorkingDate" type="date" class="form-control d-inline w-auto" required />.
+                            </p>
+                            <p>
+                                2. I have duly resigned from Raps Professional Services Pvt. Ltd. via e-mail dated
+                                <input asp-for="ResignationDate" type="date" class="form-control d-inline w-auto" required />.
+                            </p>
+                            <p>
+                                3. I am not entitled to claim, challenge, or file any claim before any judicial or quasi-judicial body against Raps Professional Services Pvt. Ltd., except for discussions related to my Full & Final settlement (F&F).
+                            </p>
+                            <p>
+                                4. I undertake not to poach any employee, employer, or client during my tenure and for one year thereafter.
+                            </p>
+                            <p>
+                                5. I will not engage in any act that may lead to defamation against Raps Professional Services Pvt. Ltd. on social media or any platform. I acknowledge that any such act would be a violation of this undertaking.
+                            </p>
+                            <p>
+                                6. I confirm that there is no financial obligation of Raps Professional Services Pvt. Ltd. towards me except for the F&F payment as per the employment contract.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Signature Section -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Employee Signature</label>
+                            <input asp-for="EmployeeSignature" class="form-control" id="EmployeeSignature" value="@ViewData["Name"]" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-custom">Submit Undertaking</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
