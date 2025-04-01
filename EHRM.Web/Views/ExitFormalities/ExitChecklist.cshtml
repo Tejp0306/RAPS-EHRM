@@ -1,0 +1,529 @@
+﻿@model ExitChecklistViewModel
+@using EHRM.ViewModel.ExitFormalities
+@{
+    ViewData["Title"] = "ExitChecklist";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .page-heading {
+        color: #007bff;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+    .form-container {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table th, table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<div class="container mt-3">
+    <div class="col-12 text-center py-1 mb-3">
+        <h3 class="page-heading">Hand Over Checklist / No Due Certificate</h3>
+    </div>
+
+    <div class="form-container">
+        @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+        {
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+                });
+            </script>
+        }
+        <form method="post" asp-controller="ExitFormalities" asp-action="SaveCkecklistForm">
+            <div class="row">
+                <div class="mb-3 col-lg-6">
+                    <label class="form-label">Name:</label>
+                    <input asp-for="Name" type="text" class="form-control" value="@ViewData["Name"]" readonly/>
+                </div>
+
+                <div class="mb-3  col-lg-6">
+                    <label class="form-label">Emp. Id:</label>
+                    <input asp-for="EmpId" type="text"  class="form-control" value="@ViewData["EmpId"]" readonly/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-lg-6">
+                    <label class="form-label">Date of Resignation/Termination:</label>
+                    <input asp-for="ResignationDate" type="date" class="form-control" />
+                </div>
+                <div class="mb-3  col-lg-6">
+                    <label class="form-label">Date of Relieving:</label>
+                    <input asp-for="RelievingDate" type="date"  class="form-control" />
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="mb-3 col-lg-6">
+                    <label class="form-label">Start Date:</label>
+                    <input asp-for="StartDate" type="date"  class="form-control" />
+                </div>
+
+                <div class="mb-3  col-lg-6">
+                    <label class="form-label">Reporting Manager:</label>
+                    <input asp-for="ReportingManager" type="text"  class="form-control" />
+                </div>
+            </div>
+
+            <h4 class="text-primary">Reporting Manager</h4>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Task</th>
+                        <th>Yes/No</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Has completed the tasks at hand</td>
+                        <td>
+                            <select asp-for="CompletedTasks" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="CompletedTasksRemarks" type="text"  class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Has transferred the knowledge to the nominated colleague</td>
+                        <td>
+                            <select asp-for="KnowledgeTransfer" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="KnowledgeTransferRemarks" type="text"  class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Has returned all the assets assigned at the time of joining</td>
+                        <td>
+                            <select asp-for="AssetsReturned" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="AssetsReturnedRemarks" type="text"  class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Has returned all the documents assigned at the time of joining</td>
+                        <td>
+                            <select asp-for="DocumentsReturned" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="DocumentsReturnedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Mail Forwarding required/to be assigned to</td>
+                        <td>
+                            <select asp-for="MailForwarding" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="MailForwardingRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Mail sent to HR on Emplyee's Last Working Day</td>
+                        <td>
+                            <select asp-for="MailSentToHR" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="MailSentToHRRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="mb-3">
+                <label class="form-label">Signature of Reporting Manager:</label>
+                <input asp-for="ReportingManager" type="text" name="ReportingManagerSignature" class="form-control" />
+            </div>
+
+            <h4 class="text-primary">IT Department</h4>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Task</th>
+                        <th>Yes/No</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Login ID and Outlook ID withdrawn</td>
+                        <td>
+                            <select asp-for="LoginWithdrawn" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="LoginWithdrawnRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>JobDiva Password Reset</td>
+                        <td>
+                            <select asp-for="JobdivaReset" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="JobdivaResetRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Spectra Wi-Fi suspended</td>
+                        <td>
+                            <select asp-for="WifiSuspended" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="WifiSuspendedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Door Access Suspended</td>
+                        <td>
+                            <select asp-for="DoorAccess" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="DoorAccessRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>RingCentral Suspended</td>
+                        <td>
+                            <select asp-for="RingcentralSuspended" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="RingcentralSuspendedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>VOIP Phone Deactivated</td>
+                        <td>
+                            <select asp-for="VoipPhoneDeactivated" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="VoipPhoneDeactivatedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Client / Job Portal Passwords changed</td>
+                        <td>
+                            <select asp-for="ClientPasswordsChanged" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="ClientPasswordsChangedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="mb-3">
+                <label class="form-label">Signature of HelpDesk Rep:</label>
+                <input asp-for="HelpdeskSignature" type="text" name="HelpDeskSignature" class="form-control" />
+            </div>
+
+            <h4 class="text-primary">Administration</h4>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Task</th>
+                        <th>Yes/No</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Handed over the Photo Identity card and access card</td>
+                        <td>
+                            <select asp-for="IdCardReturned" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="IdCardReturnedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Name deleted from access control sent to HR</td>
+                        <td>
+                            <select asp-for="AccessControlUpdated" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="AccessControlUpdatedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Visa processing fee to be recovered</td>
+                        <td>
+                            <select asp-for="VisaFeeRecovery" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="VisaFeeRecoveryRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Company Transport discontinued</td>
+                        <td>
+                            <select asp-for="TransportDiscontinued" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="TransportDiscontinuedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <div class="mb-3">
+                <label class="form-label">Signature of Administrator:</label>
+                <input type="text" asp-for="AdminSignature" class="form-control" />
+            </div>
+
+            <h4 class="text-primary">Human Resources</h4>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Task</th>
+                        <th>Yes/No</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Exit Interview conducted by HR and feedback received</td>
+                        <td>
+                            <select asp-for="ExitInterview" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="ExitInterviewRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Furnished F&F details to Payroll, including Gratuity if any</td>
+                        <td>
+                            <select asp-for="FAndFProcessed" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="FAndFProcessedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Any Training cost to be recovered</td>
+                        <td>
+                            <select asp-for="TrainingCost" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="TrainingCostRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Resignation details updated on HRIS/ attendance system</td>
+                        <td>
+                            <select asp-for="ResignationUpdated" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="ResignationUpdatedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Name, if to be removed from website</td>
+                        <td>
+                            <select asp-for="NameRemoved" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="NameRemovedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Discontinue Insurance benefit</td>
+                        <td>
+                            <select asp-for="InsuranceDiscontinued" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="InsuranceDiscontinuedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="mb-3">
+                <label class="form-label">Signature of HR Manager:</label>
+                <input asp-for="HrSignature" type="text" name="HRSignature" class="form-control" />
+            </div>
+
+            <h4 class="text-primary">Accounts</h4>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Task</th>
+                        <th>Yes/No</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Has returned the loans/ advance taken, if any.</td>
+                        <td>
+                            <select asp-for="LoansReturned" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="LoansReturnedRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Incentive / Bonus due to employee</td>
+                        <td>
+                            <select asp-for="IncentiveDue" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="IncentiveDueRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Deductions due from employee</td>
+                        <td>
+                            <select asp-for="DeductionsDue" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="DeductionsDueRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Amount due from overseas travel/visa processing fee</td>
+                        <td>
+                            <select asp-for="TravelFeeDue" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="TravelFeeDueRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Any Training cost to be recovered</td>
+                        <td>
+                            <select asp-for="TrainingCostDue" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="TrainingCostDueRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Visa processing fee to be recovered</td>
+                        <td>
+                            <select asp-for="VisaFeeDue" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="VisaFeeDueRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <td>Any additional deductions / payments due to Employee</td>
+                        <td>
+                            <select asp-for="AdditionalDeductions" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input asp-for="AdditionalDeductionsRemarks" type="text" class="form-control" /></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="mb-3">
+                <label class="form-label">Signature of Accounts Manager::</label>
+                <input asp-for="AccountsManagerSignature" type="text" class="form-control" />
+            </div>
+
+            <br />
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-custom">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

@@ -49,6 +49,14 @@
     </div>
 
     <div class="card p-4">
+        @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+        {
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+                });
+            </script>
+        }
         <div class="card-body">
             <p>
                 In performing your duties, you may have access to company data, including but not limited to personal
@@ -126,10 +134,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="text-center py-2 mb-3">
-                    <h3 class="page-heading">Non-Disclosure Agreement</h3>
-                </div>
-
                 <p>
                     In performing your duties, you may have access to company data, including but not limited to personal
                     information about RAPS Consulting Inc. (RAPS) employees, other private/proprietary/confidential data
