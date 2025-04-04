@@ -33,5 +33,7 @@ public partial class ProbationEvaluationForm
 
     public DateTime? UpdatedAt { get; set; }
 
+    public string? TotalAverage { get; set; }
+
     public virtual EmployeeDetail Emp { get; set; } = null!;
 }

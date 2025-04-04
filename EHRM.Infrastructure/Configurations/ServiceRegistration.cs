@@ -28,6 +28,8 @@ using EHRM.ServiceLayer.Calendar;
 using EHRM.ServiceLayer.Document;
 using EHRM.ServiceLayer.Hierarchy;
 using EHRM.ServiceLayer.LeaveDashBoard;
+using EHRM.ServiceLayer.PostJoining;
+using EHRM.ServiceLayer.ExitFormalities;
 
 namespace EHRM.Infrastructure.Configurations
 {
@@ -53,6 +55,8 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IDocumentService, DocumentService>();
             services.AddScoped<IHierarchyService, HierarchyService>();
             services.AddScoped<ILeaveDashboardService, LeaveDashboardService>();
+            services.AddScoped<IPostJoiningService, PostJoiningService>();
+            services.AddScoped<IExitFormalitiesService, ExitFormalitiesService>();
 
 
             //services.AddScoped<ISubMenuService, SubMenuService>();

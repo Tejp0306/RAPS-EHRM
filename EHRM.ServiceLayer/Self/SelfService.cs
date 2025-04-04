@@ -1,6 +1,7 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Models;
+using EHRM.ViewModel.Document;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.Review;
 using EHRM.ViewModel.Self;
@@ -166,7 +167,7 @@ namespace EHRM.ServiceLayer.Self
         }
 
         #region TimeSheet
-        public async Task<Result> CreateTimeSheetAsync(TimeSheetViewModel model)
+        public async Task<Result> CreateTimeSheetAsync(TimeSheetViewModel model, List<string> FilePath)
         {
             try
             {
@@ -230,11 +231,21 @@ namespace EHRM.ServiceLayer.Self
                 }
                 else
                 {
+                    string paths = string.Empty;
+                    foreach (var entry in model.FilePath)
+                    {
+                        paths +=entry+",";
+
+
+                    }
+                    Console.WriteLine(paths);
+
                     // Create a new timesheet
                     timesheet = new TimeSheet
                     {
                         Id = model.Id,
                         PresentMonth = model.PresentMonth,
+                        FilePaths = paths,
                         EmpId = model.EmpId,
                         EmpName = model.EmpName,
                         ClientName = model.ClientName,
@@ -258,7 +269,7 @@ namespace EHRM.ServiceLayer.Self
                         {
                             DayDate = _daydate,  // This will be null if parsing failed
                             DayOfWeek = dailyEntry.DayOfWeek,
-                            EmpId= model.EmpId,
+                            EmpId = model.EmpId,
                             HoursWorked = string.IsNullOrEmpty(dailyEntry.HoursWorked) ? 0 : Convert.ToDecimal(dailyEntry.HoursWorked),
                             AssignmentDesc = dailyEntry.AssignmentDesc,
                             Remarks = dailyEntry.Remarks,
@@ -310,7 +321,7 @@ namespace EHRM.ServiceLayer.Self
                 // Map the timesheet to the view model
                 var timesheetViewModel = new TimeSheetViewModel
                 {
-                    Id= timesheet.Id,
+                    Id = timesheet.Id,
                     PresentMonth = timesheet.PresentMonth,
                     EmpName = timesheet.EmpName,
                     ClientName = timesheet.ClientName,
@@ -404,6 +415,47 @@ namespace EHRM.ServiceLayer.Self
             }
         }
 
+        public async Task<Result> GetFilesAsync(int id)
+        {
+            try
+            {
+                var DocumentRepository = _UnitOfWork.GetRepository<TimeSheet>();  // Using generic repository
+                var doc = await DocumentRepository.GetByIdAsync(id);  // Fetch role by ID
+
+                if (doc == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Attachments not found."
+                    };
+                }
+
+                var showdoc = new TimeSheetViewModel
+                {
+                    Id = doc.Id,
+                    FilePath = doc.FilePaths.Split(',').ToList()
+
+
+                };
+
+                return new Result
+                {
+                    Success = true,
+                    Data = showdoc
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error fetching TimeSheet Attachments: {ex.Message}"
+                };
+            }
+        }
+    }
+
 
 
 
@@ -411,4 +463,4 @@ namespace EHRM.ServiceLayer.Self
         #endregion
     }
 
-}
+

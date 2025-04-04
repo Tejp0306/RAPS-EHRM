@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http
+
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
@@ -9,16 +10,11 @@
 
     var empIdFromSession = HttpContextAccessor.HttpContext?.Session?.GetInt32("EmpId");
 }
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
 <script src="~/CustomScripts/PostOnboardingForms.js"></script>
-<script src="~/jspdf/jspdf.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
-<h2 class="text-center my-4">Post Onboarding Forms</h2>
+
 
 <div class="container">
     <!-- ✅ BGV Form Section -->
@@ -38,14 +34,69 @@
         </div>
     </div>
 
+
+
+
+<style>
+    .page-heading {
+        color: #007bff;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+    .form-container {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="~/CustomScripts/PersonalInfo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="~/CustomScripts/NDA.js"></script>
+<script src="~/CustomScripts/ClientPropertyDeclaration.js"></script>
+<script src="~/CustomScripts/AcknowledgementForm.js"></script>
+<script src="~/jspdf/jspdf.js"></script>
+
+
+<div class="container">
+    <h2 class="page-heading">Post Onboarding Forms</h2>
+
+
     <!-- ✅ NDA Form Section -->
     <div class="card mb-4 shadow-lg">
         <div class="card-body">
             <h5 class="card-title">Non-Disclosure Agreement (NDA)</h5>
             <p class="card-text">Agreement ensuring confidentiality of sensitive information.</p>
             <div class="d-flex justify-content-between">
+
                 <button class="btn btn-info" onclick="loadEmployeeForm(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
                 <a href="@Url.Action("DownloadForm", "Forms", new { formName = "NDAForm" })" class="btn btn-success">Download PDF</a>
+
+                <button class="btn btn-info preview-btn" onclick="ndaModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#ndaModal">Preview</button>
+                <button type="button" id="downloadBtn" onclick="ndaDownload(@empIdFromSession)" class="btn btn-success">
+                    <i class="bi bi-download"></i> Download
+                </button>
+
             </div>
         </div>
     </div>
@@ -56,8 +107,15 @@
             <h5 class="card-title">Client Property Declaration Form</h5>
             <p class="card-text">Declaration about handling of client’s property.</p>
             <div class="d-flex justify-content-between">
+
                 <button class="btn btn-info" onclick="loadFormPreview('ClientPropertyForm')" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
                 <a href="@Url.Action("DownloadForm", "Forms", new { formName = "ClientPropertyForm" })" class="btn btn-success">Download PDF</a>
+
+                <button class="btn btn-info preview-btn" onclick="openClientDeclarationModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#clientDeclarationModal">Preview</button>
+                <button type="button" id="downloadBtn" onclick="downloadClientDecla(@empIdFromSession)" class="btn btn-success">
+                    <i class="bi bi-download"></i> Download
+                </button>
+
             </div>
         </div>
     </div>
@@ -68,11 +126,19 @@
             <h5 class="card-title">Personal Information Form</h5>
             <p class="card-text">Form containing personal details of the employee.</p>
             <div class="d-flex justify-content-between">
+
                 <button class="btn btn-info" onclick="loadFormPreview('PersonalInfoForm')" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
                 <a href="@Url.Action("DownloadForm", "Forms", new { formName = "PersonalInfoForm" })" class="btn btn-success">Download PDF</a>
+
+                <button class="btn btn-info preview-btn" onclick="openPersonalInfoModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Preview</button>
+                <button type="button" id="downloadBtn" onclick="downloadPersonalInformation(@empIdFromSession)" class="btn btn-success">
+                    <i class="bi bi-download"></i> Download
+                </button>
+
             </div>
         </div>
     </div>
+
 
     <!-- ✅ Master Sheet Section -->
     <div class="card mb-4 shadow-lg">
@@ -85,11 +151,6 @@
                 </button>
 
                 <button type="button" id="downloadBtn" onclick="GetDownloadMasterForm(@empIdFromSession)" class="btn btn-success">
-                    <i class="bi bi-download"></i> Download
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- ✅ Acknowledgment Form Section -->
     <div class="card mb-4 shadow-lg">
@@ -97,12 +158,77 @@
             <h5 class="card-title">Acknowledgment Form</h5>
             <p class="card-text">Employee acknowledgment of policies and procedures.</p>
             <div class="d-flex justify-content-between">
-                <button class="btn btn-info" onclick="loadFormPreview('AcknowledgmentForm')" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
-                <a href="@Url.Action("DownloadForm", "Forms", new { formName = "AcknowledgmentForm" })" class="btn btn-success">Download PDF</a>
+                <button class="btn btn-info preview-btn" onclick="openAcknowledgementModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#acknowledgementModal">Preview</button>
+                <button type="button" id="downloadBtn" onclick="downloadAcknowledgementForm(@empIdFromSession)" class="btn btn-success">
+
+                    <i class="bi bi-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+<!-- NDA Modal -->
+<div class="modal fade" id="ndaModal" tabindex="-1" aria-labelledby="ndaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ndaModalLabel">Non-Disclosure Agreement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    In performing your duties, you may have access to company data, including but not limited to personal
+                    information about RAPS Consulting Inc. (RAPS) employees, other private/proprietary/confidential data
+                    or technical information, as well as financial, contractor, or organizational data. You are charged with the
+                    responsibility of accessing only the files/information you need to perform your job, and of safeguarding
+                    and maintaining the confidentiality of that information.
+                </p>
+
+                <h5>Safeguarding includes:</h5>
+                <ul>
+                    <li>
+                        Protecting user IDs, passwords, storage media, online screens, printouts, magnetic tapes,
+                        personal computer hard disks, laptops, and technical information from unauthorized access.
+                    </li>
+                    <li>Not removing information from RAPS property other than for temporary periods as necessary.</li>
+                    <li>Maintaining confidentiality by not disclosing information to anyone except authorized personnel.</li>
+                </ul>
+
+                <p>
+                    A copy of this agreement will be maintained in your employment file. Violation of these requirements may
+                    result in disciplinary action, up to and including termination of employment.
+                </p>
+
+                <form id="ndaForm" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Full Name of Employee:</label>
+                            <input type="text" id="EmployeeNameone" name="EmployeeName" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date:</label>
+                            <input type="text" id="AgreementDateone" name="AgreementDate" class="form-control" readonly>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Signature:</label>
+                        <input type="text" id="Signatureone" name="Signature" class="form-control" readonly>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- ✅ Modal to Show Dynamic Form Preview -->
 <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
@@ -114,9 +240,208 @@
             </div>
             <div class="modal-body" id="formPreviewContent">
                 <p class="text-center">Loading form details...</p>
+
+<!-- Personal Info Modal -->
+<div class="modal fade" id="personalInfoModal" tabindex="-1" aria-labelledby="personalInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title page-heading" id="personalInfoModalLabel">Personal Information Form</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="PersonalInfoForm" asp-controller="PostJoining" asp-action="SavePersonalInfoForm" method="post">
+
+                    <!-- Employee Info -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Employee Name</label>
+                            <input type="text" id="EmpName" name="EmployeeName" class="form-control" readonly required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Personal Email ID</label>
+                            <input type="email" id="PersEmail" name="PersonalEmail" class="form-control" readonly required>
+                        </div>
+                    </div>
+
+                    <!-- Address Section -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Permanent Address</label>
+                            <input type="text" id="PermanentAdd" name="PermanentAddress" class="form-control" readonly required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Current Address</label>
+                            <input type="text" id="CurrentAdd" name="CurrentAddress" class="form-control" readonly required>
+                        </div>
+                    </div>
+
+                    <!-- Contact Numbers -->
+                    <div class="row">
+                        @*  <div class="col-md-6 mb-3">
+                            <label class="form-label">Home Phone #</label>
+                            <input type="text" id="HomePhoneone" name="HomePhone" class="form-control" readonly>
+                        </div> *@
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mobile #</label>
+                            <input type="text" id="MobilePhn" name="MobilePhone" class="form-control" readonly required>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Emergency Contact Information -->
+                    <h5 class="mt-4">Emergency Contact Information</h5>
+
+                    <!-- Emergency Contact 1 -->
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Contact 1 Name</label>
+                            <input type="text" id="EmergencyCont1Name" name="EmergencyContact1Name" class="form-control" readonly required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Relationship</label>
+                            <input type="text" id="EmergencyCont1Relationship" name="EmergencyContact1Relationship" class="form-control" readonly required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" id="EmergencyCont1Phone" name="EmergencyContact1Phone" class="form-control" readonly required>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact 2 -->
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Contact 2 Name</label>
+                            <input type="text" id="EmergencyCont2Name" name="EmergencyContact2Name" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Relationship</label>
+                            <input type="text" id="EmergencyCont2Relationship" name="EmergencyContact2Relationship" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" id="EmergencyCont2Phone" name="EmergencyContact2Phone" class="form-control" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Signature and Date -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Signature</label>
+                            <input type="text" id="Sign" name="Signature" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="text" id="FormDateO" name="FormDateO" class="form-control" required readonly>
+                        </div>
+                    </div>
+
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
 
-<script src="~/CustomScripts/PostOnboardingForms.js"></script>
+
+
+<!-- Client Declaration Modal -->
+<div class="modal fade" id="clientDeclarationModal" tabindex="-1" aria-labelledby="clientDeclarationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Client Property Declaration Form</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="clientDeclarationForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Full Name of Employee</label>
+                            <input id="EmployeeName" name="EmployeeName" class="form-control" readonly required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Client Name</label>
+                            <input id="ClientName" name="ClientName" class="form-control" readonly required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Date of Receipt</label>
+                        <input id="ReceivedDate" type="date" name="ReceivedDate" class="form-control" readonly required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Items Received</label>
+                        <textarea id="ItemsReceived" class="form-control" rows="4" readonly required></textarea>
+                    </div>
+
+                    <p>
+                        I confirm that I will take good care of the above property and ensure it is always kept in good working condition...
+                    </p>
+
+                    <p>
+                        Also, if I am unable to return the property, I
+                        <span id="EmployeeNameConfirm" class="fw-bold" readonly></span>
+                        confirm that and authorize that a suitable amount of the value of the property can be deducted from my final settlement amount.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Signature of Employee</label>
+                        <input id="SignatureEmployee" class="form-control" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Confirmation Date</label>
+                        <input id="ConfirmationDate" type="text" class="form-control" required readonly>
+                    </div>
+
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Acknowledgement Form -->
+<div class="modal fade" id="acknowledgementModal" tabindex="-1" aria-labelledby="acknowledgementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="acknowledgementModalLabel">Acknowledgement Form</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="AcknowledgementForm">
+                    <!-- Acknowledgment Statement -->
+                    <div class="mb-3">
+                        <p id="acknowledgementText">
+                            I , hereby acknowledge that I have read and fully understood all the policies mentioned in the Employee Handbook provided to me. I agree to abide by these policies and will not violate any of them.
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="SignatureDate" class="form-label">Signature Date :</label>
+                        <input type="text" class="form-control border-0 bg-light" id="SignDate" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="EmployeeSignature" class="form-label">Employee Signature :</label>
+                        <input type="text" class="form-control border-0 bg-light" id="EmpSignature" readonly>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+

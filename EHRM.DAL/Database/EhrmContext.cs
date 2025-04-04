@@ -15,6 +15,7 @@ public partial class EhrmContext : DbContext
     {
     }
 
+
     public virtual DbSet<AddressDetail> AddressDetails { get; set; }
 
     public virtual DbSet<AssetsDb> AssetsDbs { get; set; }
@@ -24,6 +25,13 @@ public partial class EhrmContext : DbContext
     public virtual DbSet<Bgvform> Bgvforms { get; set; }
 
     public virtual DbSet<ContactDetail> ContactDetails { get; set; }
+
+    public virtual DbSet<AcknowledgementForm> AcknowledgementForms { get; set; }
+
+    public virtual DbSet<AssetsDb> AssetsDbs { get; set; }
+
+    public virtual DbSet<ClientPropertyDeclaration> ClientPropertyDeclarations { get; set; }
+
 
     public virtual DbSet<DailyEntry> DailyEntries { get; set; }
 
@@ -39,7 +47,11 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<EmployeeMaster> EmployeeMasters { get; set; }
 
+    public virtual DbSet<EmployeeExitChecklist> EmployeeExitChecklists { get; set; }
+
     public virtual DbSet<EmployeePunchDetail> EmployeePunchDetails { get; set; }
+
+    public virtual DbSet<EmployeeUndertakingForm> EmployeeUndertakingForms { get; set; }
 
     public virtual DbSet<EmployeesCred> EmployeesCreds { get; set; }
 
@@ -47,9 +59,12 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<EmployementTypeDetail> EmployementTypeDetails { get; set; }
 
+
     public virtual DbSet<ExitDetail> ExitDetails { get; set; }
 
     public virtual DbSet<FamilyDetail> FamilyDetails { get; set; }
+
+    public virtual DbSet<ExitInterviewForm> ExitInterviewForms { get; set; }
 
     public virtual DbSet<Holiday> Holidays { get; set; }
 
@@ -73,13 +88,22 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<PreviousEmployment> PreviousEmployments { get; set; }
 
+    public virtual DbSet<NonDisclosureAgreement> NonDisclosureAgreements { get; set; }
+
+    public virtual DbSet<NoticeBoard> NoticeBoards { get; set; }
+
+    public virtual DbSet<PersonalInfo> PersonalInfos { get; set; }
+
     public virtual DbSet<ProbationEvaluationForm> ProbationEvaluationForms { get; set; }
 
     public virtual DbSet<ProbationEvaluationQuestion> ProbationEvaluationQuestions { get; set; }
 
     public virtual DbSet<Qualification> Qualifications { get; set; }
-
+    
     public virtual DbSet<ReportingDetail> ReportingDetails { get; set; }
+
+    public virtual DbSet<ResignationForm> ResignationForms { get; set; }
+
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -92,6 +116,7 @@ public partial class EhrmContext : DbContext
     public virtual DbSet<TimeSheet> TimeSheets { get; set; }
 
     public virtual DbSet<UserDocument> UserDocuments { get; set; }
+
 
     public virtual DbSet<WorkExperience> WorkExperiences { get; set; }
 
@@ -112,11 +137,33 @@ public partial class EhrmContext : DbContext
                 .HasForeignKey(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__AddressDe__EmpId__54968AE5");
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=localhost;Database=EHRM;User Id=EHRMAdmin;Password=9YeCsU3QGQp2Mnxebcmj===;TrustServerCertificate=true;");
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<AcknowledgementForm>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Acknowle__3214EC07BDDF1FA6");
+
+            entity.ToTable("AcknowledgementForm");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EmpId).HasColumnName("empId");
+            entity.Property(e => e.EmployeeName).HasMaxLength(255);
+            entity.Property(e => e.SignatureDate)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+
         });
 
         modelBuilder.Entity<AssetsDb>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AssetsDb__3214EC07E0EC7456");
+            entity.HasKey(e => e.Id).HasName("PK__AssetsDb__3214EC07B5283861");
 
             entity.ToTable("AssetsDb");
 
@@ -133,6 +180,7 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.Summary).IsUnicode(false);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
+
 
         modelBuilder.Entity<BankDetail>(entity =>
         {
@@ -208,6 +256,24 @@ public partial class EhrmContext : DbContext
                 .HasForeignKey(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__ContactDe__EmpId__51BA1E3A");
+
+        modelBuilder.Entity<ClientPropertyDeclaration>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ClientPr__3214EC07973488EB");
+
+            entity.ToTable("ClientPropertyDeclaration");
+
+            entity.Property(e => e.ClientName).HasMaxLength(255);
+            entity.Property(e => e.ConfirmationDate).HasMaxLength(255);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EmpId).HasColumnName("empId");
+            entity.Property(e => e.EmployeeName).HasMaxLength(255);
+            entity.Property(e => e.EmployeeNameConfirm).HasMaxLength(255);
+            entity.Property(e => e.ReceivedDate).HasMaxLength(255);
+            entity.Property(e => e.Signature).HasMaxLength(255);
+
         });
 
         modelBuilder.Entity<DailyEntry>(entity =>
@@ -237,7 +303,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<Declaration>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Declarat__3214EC07FE2AB64F");
+            entity.HasKey(e => e.Id).HasName("PK__Declarat__3214EC07730ED5CB");
 
             entity.ToTable("Declaration");
 
@@ -261,7 +327,7 @@ public partial class EhrmContext : DbContext
                 .HasPrincipalKey(p => p.EmpId)
                 .HasForeignKey(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Declarati__EmpId__30C33EC3");
+                .HasConstraintName("FK__Declarati__EmpId__693CA210");
         });
 
         modelBuilder.Entity<DependentDetail>(entity =>
@@ -303,7 +369,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<EmpType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__EmpType__3214EC076E1B806F");
+            entity.HasKey(e => e.Id).HasName("PK__EmpType__3214EC07688DC6EC");
 
             entity.ToTable("EmpType");
 
@@ -315,15 +381,15 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<EmployeeDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC274F1CDAE1");
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC27D2E0C58F");
 
-            entity.HasIndex(e => e.EmailAddress, "UQ__Employee__49A14740CEA8BCE2").IsUnique();
+            entity.HasIndex(e => e.EmailAddress, "UQ__Employee__49A147409E8B4859").IsUnique();
 
-            entity.HasIndex(e => e.LoginId, "UQ__Employee__4DDA2839A97C8315").IsUnique();
+            entity.HasIndex(e => e.LoginId, "UQ__Employee__4DDA2839617BBF18").IsUnique();
 
-            entity.HasIndex(e => e.AadharNumber, "UQ__Employee__5003EE65F93986E2").IsUnique();
+            entity.HasIndex(e => e.AadharNumber, "UQ__Employee__5003EE65C4D9A885").IsUnique();
 
-            entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB98960A2D7E").IsUnique();
+            entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB98B9D6DE67").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.AadharNumber).HasMaxLength(20);
@@ -366,6 +432,7 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.ZipCode).HasMaxLength(20);
         });
 
+
         modelBuilder.Entity<EmployeeMaster>(entity =>
         {
             entity.HasKey(e => e.EmpId).HasName("PK__Employee__AF2DBB99DDBC9234");
@@ -405,6 +472,230 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.YearsInRaps)
                 .HasColumnType("decimal(5, 2)")
                 .HasColumnName("YearsInRAPS");
+
+        modelBuilder.Entity<EmployeeExitChecklist>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3213E83FEC5262D2");
+
+            entity.ToTable("EmployeeExitChecklist");
+
+            entity.HasIndex(e => e.EmpId, "UQ__Employee__263E2DD274FBDA1A").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccessControlUpdated)
+                .HasMaxLength(10)
+                .HasColumnName("access_control_updated");
+            entity.Property(e => e.AccessControlUpdatedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("access_control_updated_remarks");
+            entity.Property(e => e.AccountsManagerSignature)
+                .HasMaxLength(255)
+                .HasColumnName("accounts_manager_signature");
+            entity.Property(e => e.AdditionalDeductions)
+                .HasMaxLength(10)
+                .HasColumnName("additional_deductions");
+            entity.Property(e => e.AdditionalDeductionsRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("additional_deductions_remarks");
+            entity.Property(e => e.AdminSignature)
+                .HasMaxLength(255)
+                .HasColumnName("admin_signature");
+            entity.Property(e => e.AssetsReturned)
+                .HasMaxLength(10)
+                .HasColumnName("assets_returned");
+            entity.Property(e => e.AssetsReturnedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("assets_returned_remarks");
+            entity.Property(e => e.ClientPasswordsChanged)
+                .HasMaxLength(10)
+                .HasColumnName("client_passwords_changed");
+            entity.Property(e => e.ClientPasswordsChangedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("client_passwords_changed_remarks");
+            entity.Property(e => e.CompletedTasks)
+                .HasMaxLength(10)
+                .HasColumnName("completed_tasks");
+            entity.Property(e => e.CompletedTasksRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("completed_tasks_remarks");
+            entity.Property(e => e.DeductionsDue)
+                .HasMaxLength(10)
+                .HasColumnName("deductions_due");
+            entity.Property(e => e.DeductionsDueRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("deductions_due_remarks");
+            entity.Property(e => e.DocumentsReturned)
+                .HasMaxLength(10)
+                .HasColumnName("documents_returned");
+            entity.Property(e => e.DocumentsReturnedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("documents_returned_remarks");
+            entity.Property(e => e.DoorAccess)
+                .HasMaxLength(10)
+                .HasColumnName("door_access");
+            entity.Property(e => e.DoorAccessRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("door_access_remarks");
+            entity.Property(e => e.EmpId).HasColumnName("Emp_id");
+            entity.Property(e => e.ExitInterview)
+                .HasMaxLength(10)
+                .HasColumnName("exit_interview");
+            entity.Property(e => e.ExitInterviewRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("exit_interview_remarks");
+            entity.Property(e => e.FAndFProcessed)
+                .HasMaxLength(10)
+                .HasColumnName("f_and_f_processed");
+            entity.Property(e => e.FAndFProcessedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("f_and_f_processed_remarks");
+            entity.Property(e => e.HelpdeskSignature)
+                .HasMaxLength(255)
+                .HasColumnName("helpdesk_signature");
+            entity.Property(e => e.HrSignature)
+                .HasMaxLength(255)
+                .HasColumnName("hr_signature");
+            entity.Property(e => e.IdCardReturned)
+                .HasMaxLength(10)
+                .HasColumnName("id_card_returned");
+            entity.Property(e => e.IdCardReturnedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("id_card_returned_remarks");
+            entity.Property(e => e.IncentiveDue)
+                .HasMaxLength(10)
+                .HasColumnName("incentive_due");
+            entity.Property(e => e.IncentiveDueRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("incentive_due_remarks");
+            entity.Property(e => e.InsuranceDiscontinued)
+                .HasMaxLength(10)
+                .HasColumnName("insurance_discontinued");
+            entity.Property(e => e.InsuranceDiscontinuedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("insurance_discontinued_remarks");
+            entity.Property(e => e.JobdivaReset)
+                .HasMaxLength(10)
+                .HasColumnName("jobdiva_reset");
+            entity.Property(e => e.JobdivaResetRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("jobdiva_reset_remarks");
+            entity.Property(e => e.KnowledgeTransfer)
+                .HasMaxLength(10)
+                .HasColumnName("knowledge_transfer");
+            entity.Property(e => e.KnowledgeTransferRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("knowledge_transfer_remarks");
+            entity.Property(e => e.LoansReturned)
+                .HasMaxLength(10)
+                .HasColumnName("loans_returned");
+            entity.Property(e => e.LoansReturnedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("loans_returned_remarks");
+            entity.Property(e => e.LoginWithdrawn)
+                .HasMaxLength(10)
+                .HasColumnName("login_withdrawn");
+            entity.Property(e => e.LoginWithdrawnRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("login_withdrawn_remarks");
+            entity.Property(e => e.MailForwarding)
+                .HasMaxLength(10)
+                .HasColumnName("mail_forwarding");
+            entity.Property(e => e.MailForwardingRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("mail_forwarding_remarks");
+            entity.Property(e => e.MailSentToHr)
+                .HasMaxLength(10)
+                .HasColumnName("mail_sent_to_hr");
+            entity.Property(e => e.MailSentToHrRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("mail_sent_to_hr_remarks");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.NameRemoved)
+                .HasMaxLength(10)
+                .HasColumnName("name_removed");
+            entity.Property(e => e.NameRemovedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("name_removed_remarks");
+            entity.Property(e => e.RelievingDate)
+                .HasMaxLength(50)
+                .HasColumnName("Relieving_date");
+            entity.Property(e => e.ReportingManager)
+                .HasMaxLength(255)
+                .HasColumnName("Reporting_manager");
+            entity.Property(e => e.ReportingManagerSignature)
+                .HasMaxLength(255)
+                .HasColumnName("reporting_manager_signature");
+            entity.Property(e => e.ResignationDate)
+                .HasMaxLength(50)
+                .HasColumnName("Resignation_date");
+            entity.Property(e => e.ResignationUpdated)
+                .HasMaxLength(10)
+                .HasColumnName("resignation_updated");
+            entity.Property(e => e.ResignationUpdatedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("resignation_updated_remarks");
+            entity.Property(e => e.RingcentralSuspended)
+                .HasMaxLength(10)
+                .HasColumnName("ringcentral_suspended");
+            entity.Property(e => e.RingcentralSuspendedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("ringcentral_suspended_remarks");
+            entity.Property(e => e.StartDate)
+                .HasMaxLength(50)
+                .HasColumnName("Start_date");
+            entity.Property(e => e.SubmissionDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("submission_date");
+            entity.Property(e => e.TrainingCost)
+                .HasMaxLength(10)
+                .HasColumnName("training_cost");
+            entity.Property(e => e.TrainingCostDue)
+                .HasMaxLength(10)
+                .HasColumnName("training_cost_due");
+            entity.Property(e => e.TrainingCostDueRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("training_cost_due_remarks");
+            entity.Property(e => e.TrainingCostRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("training_cost_remarks");
+            entity.Property(e => e.TransportDiscontinued)
+                .HasMaxLength(10)
+                .HasColumnName("transport_discontinued");
+            entity.Property(e => e.TransportDiscontinuedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("transport_discontinued_remarks");
+            entity.Property(e => e.TravelFeeDue)
+                .HasMaxLength(10)
+                .HasColumnName("travel_fee_due");
+            entity.Property(e => e.TravelFeeDueRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("travel_fee_due_remarks");
+            entity.Property(e => e.VisaFeeDue)
+                .HasMaxLength(10)
+                .HasColumnName("visa_fee_due");
+            entity.Property(e => e.VisaFeeDueRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("visa_fee_due_remarks");
+            entity.Property(e => e.VisaFeeRecovery)
+                .HasMaxLength(10)
+                .HasColumnName("visa_fee_recovery");
+            entity.Property(e => e.VisaFeeRecoveryRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("visa_fee_recovery_remarks");
+            entity.Property(e => e.VoipPhoneDeactivated)
+                .HasMaxLength(10)
+                .HasColumnName("voip_phone_deactivated");
+            entity.Property(e => e.VoipPhoneDeactivatedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("voip_phone_deactivated_remarks");
+            entity.Property(e => e.WifiSuspended)
+                .HasMaxLength(10)
+                .HasColumnName("wifi_suspended");
+            entity.Property(e => e.WifiSuspendedRemarks)
+                .HasMaxLength(500)
+                .HasColumnName("wifi_suspended_remarks");
+
         });
 
         modelBuilder.Entity<EmployeePunchDetail>(entity =>
@@ -420,13 +711,33 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.TotalHours).HasColumnType("decimal(10, 2)");
         });
 
+        modelBuilder.Entity<EmployeeUndertakingForm>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC27958EEEA1");
+
+            entity.ToTable("EmployeeUndertakingForm");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EmployeeName).HasMaxLength(255);
+            entity.Property(e => e.EmployeeSignature).HasMaxLength(255);
+            entity.Property(e => e.FatherName).HasMaxLength(255);
+            entity.Property(e => e.LastWorkingDate).HasMaxLength(500);
+            entity.Property(e => e.OfficeAddress).HasMaxLength(500);
+            entity.Property(e => e.PermanentAddress).HasMaxLength(500);
+            entity.Property(e => e.Relation).HasMaxLength(10);
+            entity.Property(e => e.ResignationDate).HasMaxLength(500);
+        });
+
         modelBuilder.Entity<EmployeesCred>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC0723B148BB");
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC07CF68BC4A");
 
             entity.ToTable("EmployeesCred");
 
-            entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB9883A1949D").IsUnique();
+            entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB983948E035").IsUnique();
 
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FirstName).HasMaxLength(100);
@@ -447,7 +758,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<EmployeesDeclaration>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC0720FE5208");
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC079644136C");
 
             entity.ToTable("EmployeesDeclaration");
 
@@ -616,12 +927,12 @@ public partial class EhrmContext : DbContext
                 .HasPrincipalKey(p => p.EmpId)
                 .HasForeignKey(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Employees__Reaso__0880433F");
+                .HasConstraintName("FK__Employees__EmpId__6B24EA82");
         });
 
         modelBuilder.Entity<EmployementTypeDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Employem__3214EC07B1DBF9A0");
+            entity.HasKey(e => e.Id).HasName("PK__Employem__3214EC0754ACC10C");
 
             entity.Property(e => e.AppointmentDate)
                 .HasMaxLength(25)
@@ -637,7 +948,58 @@ public partial class EhrmContext : DbContext
                 .HasPrincipalKey(p => p.EmpId)
                 .HasForeignKey(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Employeme__EmpId__2B0A656D");
+                .HasConstraintName("FK__Employeme__EmpId__6C190EBB");
+        });
+
+        modelBuilder.Entity<ExitInterviewForm>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ExitInte__3213E83F628700CC");
+
+            entity.ToTable("ExitInterviewForm");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AdditionalComments).HasColumnName("additional_comments");
+            entity.Property(e => e.AreasOfImprovement).HasColumnName("areas_of_improvement");
+            entity.Property(e => e.BenefitsSatisfactory)
+                .HasMaxLength(10)
+                .HasColumnName("benefits_satisfactory");
+            entity.Property(e => e.ChangeDecision).HasColumnName("change_decision");
+            entity.Property(e => e.ComparisonWithNewJob).HasColumnName("comparison_with_new_job");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.DepartmentMorale).HasColumnName("department_morale");
+            entity.Property(e => e.EmployeeName)
+                .HasMaxLength(255)
+                .HasColumnName("employee_name");
+            entity.Property(e => e.EnjoyedFunctions).HasColumnName("enjoyed_functions");
+            entity.Property(e => e.GreatestChallenge).HasColumnName("greatest_challenge");
+            entity.Property(e => e.ImproveMorale).HasColumnName("improve_morale");
+            entity.Property(e => e.InformedPolicies)
+                .HasMaxLength(10)
+                .HasColumnName("informed_policies");
+            entity.Property(e => e.InterviewDate)
+                .HasMaxLength(255)
+                .HasColumnName("interview_date");
+            entity.Property(e => e.Interviewer)
+                .HasMaxLength(255)
+                .HasColumnName("interviewer");
+            entity.Property(e => e.JobSecurity)
+                .HasMaxLength(10)
+                .HasColumnName("job_security");
+            entity.Property(e => e.JobSecurityDetails).HasColumnName("job_security_details");
+            entity.Property(e => e.LeastEnjoyedFunctions).HasColumnName("least_enjoyed_functions");
+            entity.Property(e => e.PoliciesFeedback).HasColumnName("policies_feedback");
+            entity.Property(e => e.ReasonForLeaving).HasColumnName("reason_for_leaving");
+            entity.Property(e => e.Recommend).HasColumnName("recommend");
+            entity.Property(e => e.Rejoin)
+                .HasMaxLength(10)
+                .HasColumnName("rejoin");
+            entity.Property(e => e.Strengths).HasColumnName("strengths");
+            entity.Property(e => e.SupervisorFeedback).HasColumnName("supervisor_feedback");
+            entity.Property(e => e.TreatmentAfterResignation).HasColumnName("treatment_after_resignation");
+            entity.Property(e => e.WorkingConditions).HasColumnName("working_conditions");
         });
 
         modelBuilder.Entity<ExitDetail>(entity =>
@@ -667,7 +1029,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<Holiday>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Holiday__3214EC07BA6B7620");
+            entity.HasKey(e => e.Id).HasName("PK__Holiday__3214EC07E2363C33");
 
             entity.ToTable("Holiday");
 
@@ -749,7 +1111,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<LeaveStatuss>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__LeaveSta__3213E83F753CF1E0");
+            entity.HasKey(e => e.Id).HasName("PK__LeaveSta__3213E83F333E9A43");
 
             entity.ToTable("LeaveStatuss");
 
@@ -772,7 +1134,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<Leavetypee>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Leavetyp__3213E83F70641134");
+            entity.HasKey(e => e.Id).HasName("PK__Leavetyp__3213E83F7684E279");
 
             entity.ToTable("Leavetypee");
 
@@ -799,6 +1161,7 @@ public partial class EhrmContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false);
         });
+
 
         modelBuilder.Entity<MasterEmergencyContact>(entity =>
         {
@@ -828,11 +1191,26 @@ public partial class EhrmContext : DbContext
                 .HasForeignKey(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__MasterPre__EmpId__62E4AA3C");
+
+        modelBuilder.Entity<NonDisclosureAgreement>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__NonDiscl__3214EC075AD0FC0A");
+
+            entity.ToTable("NonDisclosureAgreement");
+
+            entity.Property(e => e.AgreementDate).HasMaxLength(255);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EmpId).HasColumnName("empId");
+            entity.Property(e => e.EmployeeName).HasMaxLength(255);
+            entity.Property(e => e.Signature).HasMaxLength(255);
+
         });
 
         modelBuilder.Entity<NoticeBoard>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__NoticeBo__3214EC07B87DDB12");
+            entity.HasKey(e => e.Id).HasName("PK__NoticeBo__3214EC073BB7E79E");
 
             entity.ToTable("NoticeBoard");
 
@@ -876,11 +1254,35 @@ public partial class EhrmContext : DbContext
                 .HasPrincipalKey(p => p.EmpId)
                 .HasForeignKey(d => d.EmpId)
                 .HasConstraintName("FK_PreviousEmployments_BGVForm");
+
+        modelBuilder.Entity<PersonalInfo>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Personal__3214EC271F90F044");
+
+            entity.ToTable("PersonalInfo");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CurrentAddress).HasMaxLength(200);
+            entity.Property(e => e.EmergencyContact1Name).HasMaxLength(255);
+            entity.Property(e => e.EmergencyContact1Phone).HasMaxLength(20);
+            entity.Property(e => e.EmergencyContact1Relationship).HasMaxLength(100);
+            entity.Property(e => e.EmergencyContact2Name).HasMaxLength(255);
+            entity.Property(e => e.EmergencyContact2Phone).HasMaxLength(20);
+            entity.Property(e => e.EmergencyContact2Relationship).HasMaxLength(100);
+            entity.Property(e => e.EmpId).HasColumnName("empId");
+            entity.Property(e => e.EmployeeName).HasMaxLength(255);
+            entity.Property(e => e.FormDate).HasMaxLength(255);
+            entity.Property(e => e.HomePhone).HasMaxLength(20);
+            entity.Property(e => e.MobilePhone).HasMaxLength(20);
+            entity.Property(e => e.PermanentAddress).HasMaxLength(200);
+            entity.Property(e => e.PersonalEmail).HasMaxLength(255);
+            entity.Property(e => e.Signature).HasMaxLength(255);
+
         });
 
         modelBuilder.Entity<ProbationEvaluationForm>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Probatio__3214EC072C1618BC");
+            entity.HasKey(e => e.Id).HasName("PK__Probatio__3214EC072D53B917");
 
             entity.ToTable("ProbationEvaluationForm");
 
@@ -898,17 +1300,20 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.RemarksConfirmation)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.TotalAverage)
+                .HasMaxLength(30)
+                .IsUnicode(false);
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Emp).WithMany(p => p.ProbationEvaluationForms)
                 .HasPrincipalKey(p => p.EmpId)
                 .HasForeignKey(d => d.EmpId)
-                .HasConstraintName("FK__Probation__EmpId__0B5CAFEA");
+                .HasConstraintName("FK__Probation__EmpId__6EF57B66");
         });
 
         modelBuilder.Entity<ProbationEvaluationQuestion>(entity =>
         {
-            entity.HasKey(e => e.QuestionId).HasName("PK__Probatio__0DC06F8CCBD076A1");
+            entity.HasKey(e => e.QuestionId).HasName("PK__Probatio__0DC06F8CFD70327C");
 
             entity.Property(e => e.QuestionId).HasColumnName("QuestionID");
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
@@ -916,7 +1321,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<Qualification>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Qualific__3214EC07CA4D8403");
+            entity.HasKey(e => e.Id).HasName("PK__Qualific__3214EC07263EF4DC");
 
             entity.ToTable("Qualification");
 
@@ -949,7 +1354,23 @@ public partial class EhrmContext : DbContext
                 .HasPrincipalKey(p => p.EmpId)
                 .HasForeignKey(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Qualifica__EmpId__339FAB6E");
+                .HasConstraintName("FK__Qualifica__EmpId__6FE99F9F");
+        });
+
+        modelBuilder.Entity<ResignationForm>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Resignat__3214EC0751BB866F");
+
+            entity.ToTable("ResignationForm");
+
+            entity.Property(e => e.EmployeeName).HasMaxLength(255);
+            entity.Property(e => e.EmployeeSignature).HasMaxLength(255);
+            entity.Property(e => e.FinalDay).HasMaxLength(255);
+            entity.Property(e => e.Position).HasMaxLength(255);
+            entity.Property(e => e.ResignationDate)
+                .HasMaxLength(255)
+                .HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.TotalMonths).HasMaxLength(255);
         });
 
         modelBuilder.Entity<ReportingDetail>(entity =>
@@ -968,7 +1389,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC07BE865682");
+            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC07F4D4EEED");
 
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(50);
@@ -981,7 +1402,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<Salary>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Salary__3214EC0782834577");
+            entity.HasKey(e => e.Id).HasName("PK__Salary__3214EC07348E4CBA");
 
             entity.ToTable("Salary");
 
@@ -999,12 +1420,12 @@ public partial class EhrmContext : DbContext
                 .HasPrincipalKey(p => p.EmpId)
                 .HasForeignKey(d => d.EmpId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Salary__EmpId__2DE6D218");
+                .HasConstraintName("FK__Salary__EmpId__70DDC3D8");
         });
 
         modelBuilder.Entity<SubMenu>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__SubMenu__3214EC071A7C586C");
+            entity.HasKey(e => e.Id).HasName("PK__SubMenu__3214EC07F5BE460A");
 
             entity.ToTable("SubMenu");
 
@@ -1027,12 +1448,12 @@ public partial class EhrmContext : DbContext
             entity.HasOne(d => d.MainMenu).WithMany(p => p.SubMenus)
                 .HasForeignKey(d => d.MainMenuId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__SubMenu__MainMen__65370702");
+                .HasConstraintName("FK__SubMenu__MainMen__72C60C4A");
         });
 
         modelBuilder.Entity<Team>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Team__3214EC076E917D42");
+            entity.HasKey(e => e.Id).HasName("PK__Team__3214EC071EB46849");
 
             entity.ToTable("Team");
 
@@ -1085,7 +1506,7 @@ public partial class EhrmContext : DbContext
 
         modelBuilder.Entity<UserDocument>(entity =>
         {
-            entity.HasKey(e => e.DocumentId).HasName("PK__Document__1ABEEF6F1E8A4CC5");
+            entity.HasKey(e => e.DocumentId).HasName("PK__UserDocu__1ABEEF6FAAE5DB63");
 
             entity.ToTable("UserDocument");
 
@@ -1100,7 +1521,7 @@ public partial class EhrmContext : DbContext
             entity.HasOne(d => d.Employee).WithMany(p => p.UserDocuments)
                 .HasPrincipalKey(p => p.EmpId)
                 .HasForeignKey(d => d.EmployeeId)
-                .HasConstraintName("FK__Documents__Emplo__2057CCD0");
+                .HasConstraintName("FK__UserDocum__Emplo__73BA3083");
         });
 
         modelBuilder.Entity<WorkExperience>(entity =>

@@ -1,0 +1,202 @@
+﻿@model ExitInterviewViewModel
+@using EHRM.ViewModel.ExitFormalities
+
+
+@{
+    ViewData["Title"] = "ExitInterview";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .page-heading {
+        color: #007bff;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+    .form-container {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<div class="container mt-5">
+    @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+            });
+        </script>
+    }
+    <h2 class="page-heading">Exit Interview Form</h2>
+    <div class="form-container">
+
+        <form method="post" asp-controller="ExitFormalities" asp-action="SaveExitInterviewForm">
+            <div class="row">
+                <div class="mb-3 col-lg-6">
+                    <label class="form-label">Employee Name:</label>
+                    <input asp-for="EmployeeName" type="text" name="EmployeeName" class="form-control" value="@ViewData["Name"]" readonly required>
+                </div>
+
+                <div class="mb-3 col-lg-6">
+                    <label class="form-label">Date:</label>
+                    <input asp-for="InterviewDate" class="form-control" readonly required>
+                </div>
+            
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Interviewer:</label>
+                <input asp-for="Interviewer" name="Interviewer" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Strengths of Raps Professional Services Pvt. Ltd, as an organization:</label>
+                <textarea asp-for="Strengths" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Areas of Improvement:</label>
+                <textarea asp-for="AreasOfImprovement" name="AreasOfImprovement" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Did the organization treat you well after you decided to quit?</label>
+                <textarea asp-for="TreatmentAfterResignation" name="TreatmentAfterResignation" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Given the opportunity, will you rejoin?</label>
+                <select asp-for="Rejoin" name="Rejoin" class="form-select">
+                    <option value="" disabled selected>Choose an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                    <option value="Maybe">Maybe</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Main Reason for Leaving:</label>
+                <textarea asp-for="ReasonForLeaving" name="ReasonForLeaving" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Comparison with New Assignment (Designation, Compensation, Job Responsibilities):</label>
+                <textarea asp-for="ComparisonWithNewJob" name="ComparisonWithNewJob" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Will you recommend the company? Why?</label>
+                <textarea asp-for="Recommend" name="Recommend" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">What was your greatest challenge?</label>
+                <textarea asp-for="GreatestChallenge" name="GreatestChallenge" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Which functions did you enjoy the most? Why?</label>
+                <textarea asp-for="EnjoyedFunctions" name="EnjoyedFunctions" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Which functions did you enjoy the least? Why?</label>
+                <textarea asp-for="LeastEnjoyedFunctions" name="LeastEnjoyedFunctions" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Did you feel a sense of security in your position?</label>
+                <select asp-for="JobSecurity" name="JobSecurity" class="form-select">
+                    <option value="" disabled selected>Choose an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <textarea asp-for="JobSecurityDetails" name="JobSecurityDetails" class="form-control mt-2" placeholder="If no, please explain"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">How was the morale within your department?</label>
+                <textarea asp-for="DepartmentMorale" name="DepartmentMorale" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Could the company have improved morale?</label>
+                <textarea asp-for="ImproveMorale" name="ImproveMorale" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">How was your supervisor?</label>
+                <textarea asp-for="SupervisorFeedback" name="SupervisorFeedback" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Were the working conditions suitable?</label>
+                <textarea asp-for="WorkingConditions" name="WorkingConditions" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Was the benefits package satisfactory?</label>
+                <select asp-for="BenefitsSatisfactory" name="BenefitsSatisfactory" class="form-select">
+                    <option value="" disabled selected>Choose an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Did you feel informed about company policies?</label>
+                <select asp-for="InformedPolicies" name="InformedPolicies" class="form-select">
+                    <option value="" disabled selected>Choose an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <textarea asp-for="PoliciesFeedback" name="PoliciesFeedback" class="form-control mt-2" placeholder="If no, please explain"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Could anything have changed your decision to leave?</label>
+                <textarea asp-for="ChangeDecision" name="ChangeDecision" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Additional Comments:</label>
+                <textarea asp-for="AdditionalComments" name="AdditionalComments" class="form-control"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-custom">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var today = new Date();
+        var formattedDate = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        $("#InterviewDate").val(formattedDate);
+
+
+    });
+</script>
+

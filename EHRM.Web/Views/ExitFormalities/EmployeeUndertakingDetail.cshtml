@@ -1,0 +1,298 @@
+﻿
+@{
+    ViewData["Title"] = "EmployeeUndertakingDetail";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .page-heading {
+        color: #007bff;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+    .form-container {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<div class="container mt-4">
+    <h3 class="page-heading">Employee Undertaking Form Details</h3>
+    <div class="table-responsive">
+        <table id="employeeUndertakingFormTable1" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Last working Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Sample Data (Dynamically generated in backend) -->
+                <tr>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Employee Undertaking Modal -->
+<div class="modal fade" id="employeeUndertakingModal" tabindex="-1" aria-labelledby="employeeUndertakingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Employee Undertaking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="EmployeeUndertakingForm">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <p>
+                                I, <input id="EmployeeName" class="form-control d-inline w-auto" placeholder="Your Name" required />,
+                                <select id="Relation" class="form-control d-inline w-auto" required>
+                                    <option value="">Select</option>
+                                    <option value="Son">Son</option>
+                                    <option value="Daughter">Daughter</option>
+                                </select>
+                                of <input id="FatherName" class="form-control d-inline w-auto" placeholder="Father's Name" required />,
+                                Resident of <input id="PermanentAddress" class="form-control d-inline w-auto" placeholder="Permanent Address" required />
+                                do hereby solemnly affirm and state as hereunder:
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Undertaking Points -->
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <p>
+                                1. I was employed with Raps Professional Services Pvt. Ltd. at <input id="OfficeAddress" class="form-control d-inline w-auto" placeholder="Office Address" required />
+                                until <input id="LastWorkingDate" type="date" class="form-control d-inline w-auto" required />.
+                            </p>
+                            <p>2. I have duly resigned via e-mail dated <input id="ResignationDate" type="date" class="form-control d-inline w-auto" required />.</p>
+                            <p>3. I am not entitled to claim, challenge, or file any claim before any judicial or quasi-judicial body against Raps Professional Services Pvt. Ltd., except for discussions related to my Full & Final settlement (F&F).</p>
+                            <p>4. I undertake not to poach any employee, employer, or client during my tenure and for one year thereafter.</p>
+                            <p>5. I will not engage in any act that may lead to defamation against Raps Professional Services Pvt. Ltd. on social media or any platform.</p>
+                            <p>6. I confirm that there is no financial obligation of Raps Professional Services Pvt. Ltd. towards me except for the F&F payment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Signature Section -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Employee Signature</label>
+                            <input id="EmployeeSignature" class="form-control" readonly>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="downloadUndertakingBtn" class="btn btn-success">Download PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/JsPDF/jspdf.js"></script>
+
+<script>
+            $(document).ready(function () {
+        getEmpUndertakingDataDetail();
+    });
+
+    // Function to fetch Employee Undertaking data and populate the DataTable
+    function getEmpUndertakingDataDetail() {
+        $('#employeeUndertakingFormTable1').DataTable({
+            destroy: true,
+            ajax: {
+                url: '/ExitFormalities/GetEmployeeUndertaking',
+                method: 'GET',
+                dataSrc: ''
+            },
+            columns: [
+                { data: 'employeeName' },
+                { data: 'lastWorkingDate' },
+                {
+                    data: 'id',
+                    render: function (data) {
+                        return `
+                            <div class="d-flex justify-content-center">
+                                <button class="btn btn-info btn-sm mx-1 view-btn" data-id="${data}">
+                                    <i class="bi bi-eye"></i> View & Download
+                                </button>
+                            </div>
+                        `;
+                    },
+                    orderable: false
+                }
+            ],
+            pageLength: 5,
+            lengthMenu: [5, 10, 15, 20]
+        });
+
+        // Bind click event for dynamically added buttons
+        $('#employeeUndertakingFormTable1 tbody').on('click', '.view-btn', function () {
+            const id = $(this).data('id');
+            openEmployeeUndertakingModal(id);
+        });
+    }
+
+    // Function to open modal and fetch details
+    function openEmployeeUndertakingModal(id) {
+        $.ajax({
+            url: `/ExitFormalities/GetEmployeeUndertakingById/${id}`,
+            method: 'GET',
+            success: function (response) {
+                if (response.success) {
+                    console.log("API Response:", response);
+
+                    const data = response.data.data || response.data;
+
+                    // Populate modal fields
+                    $('#EmployeeName').val(data.employeeName);
+                    $('#Relation').val(data.relation);
+                    $('#FatherName').val(data.fatherName);
+                    $('#PermanentAddress').val(data.permanentAddress);
+                    $('#OfficeAddress').val(data.officeAddress);
+                    $('#LastWorkingDate').val(data.lastWorkingDate);
+                    $('#ResignationDate').val(data.resignationDate);
+                    $('#EmployeeSignature').val(data.employeeSignature);
+
+                    // Set download button action
+                    $('#downloadUndertakingBtn').off('click').on('click', function () {
+                        downloadEmployeeUndertaking(data);
+                    });
+
+                    // Show the modal
+                    $('#employeeUndertakingModal').modal('show');
+                } else {
+                    alert("Error: " + response.message);
+                }
+            },
+            error: function () {
+                alert("An error occurred while fetching the data.");
+            }
+        });
+    }
+
+    // Function to download Employee Undertaking as PDF
+    function downloadEmployeeUndertaking() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Set PDF Title
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("Employee Undertaking Form", 20, 20);
+
+        // Set standard font
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(12);
+        let y = 40; // Initial Y position
+
+        // Function to add fields with label & value
+        const addField = (label, value) => {
+            doc.setFont("helvetica", "bold");
+            doc.text(label, 20, y);
+            doc.setFont("helvetica", "normal");
+            let textLines = doc.splitTextToSize(value || "N/A", 170);
+            doc.text(textLines, 80, y);
+            y += textLines.length * 7; // Adjust line spacing dynamically
+        };
+
+        // Extract values from modal input fields
+        const employeeName = document.getElementById("EmployeeName").value.trim() || "N/A";
+        const relation = document.getElementById("Relation").value || "N/A";
+        const fatherName = document.getElementById("FatherName").value.trim() || "N/A";
+        const permanentAddress = document.getElementById("PermanentAddress").value.trim() || "N/A";
+        const officeAddress = document.getElementById("OfficeAddress").value.trim() || "N/A";
+        const lastWorkingDate = document.getElementById("LastWorkingDate").value || "N/A";
+        const resignationDate = document.getElementById("ResignationDate").value || "N/A";
+        const employeeSignature = document.getElementById("EmployeeSignature").value.trim() || "N/A";
+
+        // Add extracted values to PDF
+        addField("Employee Name:", employeeName);
+        addField("Relation:", relation);
+        addField("Father's Name:", fatherName);
+        addField("Permanent Address:", permanentAddress);
+        addField("Office Address:", officeAddress);
+        addField("Last Working Date:", lastWorkingDate);
+        addField("Resignation Date:", resignationDate);
+
+        y += 10; // Extra spacing before the statement
+
+        // Undertaking Statement
+        doc.setFont("helvetica", "bold");
+        doc.text("Undertaking Statement:", 20, y);
+        doc.setFont("helvetica", "normal");
+        y += 10;
+
+        let undertakingText = `I, ${employeeName}, ${relation} of ${fatherName}, resident of ${permanentAddress},
+        do hereby solemnly affirm and state as hereunder:`;
+        let statementLines = doc.splitTextToSize(undertakingText, 170);
+        doc.text(statementLines, 20, y);
+        y += statementLines.length * 7; // Adjust line spacing dynamically
+
+        y += 10; // Extra spacing before the undertaking points
+
+        // Manually extracting text from the form fields instead of modal paragraphs
+        let undertakingPoints = [
+            `1. I was employed with Raps Professional Services Pvt. Ltd. at ${officeAddress} until ${lastWorkingDate}.`,
+            `2. I have duly resigned via e-mail dated ${resignationDate}.`,
+            `3. I am not entitled to claim, challenge, or file any claim before any judicial or quasi-judicial body against Raps Professional Services Pvt. Ltd., except for discussions related to my Full & Final settlement (F&F).`,
+            `4. I undertake not to poach any employee, employer, or client during my tenure and for one year thereafter.`,
+            `5. I will not engage in any act that may lead to defamation against Raps Professional Services Pvt. Ltd. on social media or any platform.`,
+            `6. I confirm that there is no financial obligation of Raps Professional Services Pvt. Ltd. towards me except for the F&F payment.`
+        ];
+
+        undertakingPoints.forEach((point) => {
+            let lines = doc.splitTextToSize(point, 170);
+            doc.text(lines, 20, y);
+            y += lines.length * 7; // Adjust line spacing dynamically
+        });
+
+        y += 10; // Space before signature
+
+        // Employee Signature
+        addField("Employee Signature:", employeeSignature);
+
+        // Save as PDF
+        doc.save(`Employee_Undertaking_${employeeName.replace(/\s+/g, "_")}.pdf`);
+    }
+
+    // Attach event listener to download button
+    document.getElementById("downloadUndertakingBtn").addEventListener("click", downloadEmployeeUndertaking);
+
+
+
+
+
+</script>
+

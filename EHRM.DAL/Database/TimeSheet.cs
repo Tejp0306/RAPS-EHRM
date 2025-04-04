@@ -35,5 +35,7 @@ public partial class TimeSheet
 
     public DateTime? UpdatedAt { get; set; }
 
+    public string? FilePaths { get; set; }
+
     public virtual ICollection<DailyEntry> DailyEntries { get; set; } = new List<DailyEntry>();
 }

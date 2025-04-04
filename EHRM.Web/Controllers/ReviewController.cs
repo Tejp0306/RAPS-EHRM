@@ -329,35 +329,36 @@ namespace EHRM.Web.Controllers
         {
             try
             {
-                // Call the service method to get evaluation details
+                // Fetch evaluation details
                 var evaluationDetails = await _review.GetAllEvaluationDetails();
 
-                // Check if the result is null or empty
-                if (evaluationDetails == null || evaluationDetails.Count == 0)
+                if (evaluationDetails == null || !evaluationDetails.Any())
                 {
-                    // Return JSON indicating failure and no data found
                     return Json(new { Success = false, Message = "No evaluation details found." });
                 }
 
-                // Project the evaluation details to a simplified JSON-friendly format
-                var resList = evaluationDetails.Select(e => new
+                // Return only one entry per employee
+                var resList = evaluationDetails
+                    .Select(e => new
                 {
-                    id = e.Id,
+                        firstName = e.Details.FirstName,
+                        totalAverage = e.TotalAverage,
+                        lastName = e.Details.LastName,
                     recommendation = e.Recommendation,
-                    remarksConfirmation = e.RemarksConfirmation,
-                    firstName = e.Details.FirstName,
-                    lastName = e.Details.LastName
-                }).ToList();
+                        remarksConfirmation = e.RemarksConfirmation
+                    })
+                    .Distinct()
+                    .ToList();
 
-                // Return the JSON response indicating success with data
                 return Json(new { Success = true, Data = resList });
             }
             catch (Exception ex)
             {
-                // Log the exception (you can add logging here) and return a JSON error response
                 return Json(new { Success = false, Message = $"Internal server error: {ex.Message}" });
             }
         }
+
+
         #endregion
     }
 }
