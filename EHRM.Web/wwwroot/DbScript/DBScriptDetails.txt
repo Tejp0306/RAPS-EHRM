@@ -566,6 +566,172 @@ END;
 GO
 
 
+//Master sheet Tables
+
+-- ============================================
+-- 1. EmployeeMaster
+-- ============================================
+CREATE TABLE EmployeeMaster
+(
+    EmpId INT PRIMARY KEY IDENTITY(1,1),
+    EmployeeCode NVARCHAR(50) NOT NULL,
+    FirstName NVARCHAR(100),
+    MiddleName NVARCHAR(100),
+    LastName NVARCHAR(100),
+    Gender NVARCHAR(20),
+    DateOfBirth DATE,
+    Age INT,
+    MaritalStatus NVARCHAR(50),
+    DateOfJoining DATE,
+    BandLevel NVARCHAR(50),
+    Designation NVARCHAR(100),
+    Location NVARCHAR(100),
+    Department NVARCHAR(100),
+    FunctionProject NVARCHAR(100),
+    ProbationConfirmationStatus NVARCHAR(50),
+    ProbationConfirmationDate DATE,
+    TenureInRAPS DECIMAL(5, 2),
+    YearsInRAPS DECIMAL(5, 2),
+    TotalWorkExperience DECIMAL(5, 2),
+    UANNumber NVARCHAR(20),
+    AadharNumber NVARCHAR(20),
+    PANCardNumber NVARCHAR(20),
+    CTCPerAnnumOnDOJ DECIMAL(10, 2),
+    FilingPerson NVARCHAR(100),
+    FilingRecheck NVARCHAR(100),
+    Remark NVARCHAR(500)
+);
+
+-- ============================================
+-- 2. ContactDetails
+-- ============================================
+CREATE TABLE ContactDetails
+(
+    ContactId INT PRIMARY KEY IDENTITY(1,1),
+    EmpId INT FOREIGN KEY REFERENCES EmployeeMaster(EmpId) ON DELETE CASCADE,
+    OfficialContactNo NVARCHAR(20),
+    PersonalContactNo NVARCHAR(20),
+    OfficialEmailId NVARCHAR(100),
+    PersonalEmailId NVARCHAR(100),
+    EmergencyContactName NVARCHAR(100),
+    EmergencyContactNumber NVARCHAR(20),
+    EmergencyRelationship NVARCHAR(50)
+);
+
+-- ============================================
+-- 3. AddressDetails
+-- ============================================
+CREATE TABLE AddressDetails
+(
+    AddressId INT PRIMARY KEY IDENTITY(1,1),
+    EmpId INT FOREIGN KEY REFERENCES EmployeeMaster(EmpId) ON DELETE CASCADE,
+    PermanentAddress NVARCHAR(200),
+    PostalAddress NVARCHAR(200)
+);
+
+-- ============================================
+-- 4. EducationalDetails
+-- ============================================
+CREATE TABLE EducationalDetails
+(
+    EducationId INT PRIMARY KEY IDENTITY(1,1),
+    EmpId INT FOREIGN KEY REFERENCES EmployeeMaster(EmpId) ON DELETE CASCADE,
+    XthInstitution NVARCHAR(200),
+    XthPassingYear INT,
+    XIIthInstitution NVARCHAR(200),
+    XIIthPassingYear INT,
+    BachelorInstitution NVARCHAR(200),
+    BachelorDegree NVARCHAR(100),
+    BachelorCompletionYear INT,
+    MasterInstitution NVARCHAR(200),
+    MasterDegree NVARCHAR(100),
+    MasterCompletionYear INT,
+    PostDoctorateInstitution NVARCHAR(200),
+    PostDoctorateDegree NVARCHAR(100),
+    PostDoctorateCompletionYear INT,
+    ProfessionalCoursesInstitution NVARCHAR(200),
+    ProfessionalCoursesDegree NVARCHAR(100),
+    ProfessionalCoursesCompletionYear INT
+);
+
+-- ============================================
+-- 5. BankDetails
+-- ============================================
+CREATE TABLE BankDetails
+(
+    BankId INT PRIMARY KEY IDENTITY(1,1),
+    EmpId INT FOREIGN KEY REFERENCES EmployeeMaster(EmpId) ON DELETE CASCADE,
+    BankName NVARCHAR(100),
+    AccountNumber NVARCHAR(50),
+    IFSCCode NVARCHAR(20)
+);
+
+-- ============================================
+-- 6. FamilyDetails
+-- ============================================
+CREATE TABLE FamilyDetails
+(
+    FamilyId INT PRIMARY KEY IDENTITY(1,1),
+    EmpId INT FOREIGN KEY REFERENCES EmployeeMaster(EmpId) ON DELETE CASCADE,
+    Name NVARCHAR(100),
+    RelationWithEmployee NVARCHAR(50),
+    DateOfBirth DATE
+);
+
+-- ============================================
+-- 7. DependentDetails
+-- ============================================
+CREATE TABLE DependentDetails
+(
+    DependentId INT PRIMARY KEY IDENTITY(1,1),
+    EmpId INT FOREIGN KEY REFERENCES EmployeeMaster(EmpId) ON DELETE CASCADE,
+    DependentName NVARCHAR(100),
+    Relationship NVARCHAR(50),
+    DateOfBirth DATE
+);
+
+-- ============================================
+-- 8. MasterPreviousEmployments
+-- ============================================
+CREATE TABLE MasterPreviousEmployments
+(
+    EmploymentId INT PRIMARY KEY IDENTITY(1,1),
+    EmpId INT FOREIGN KEY REFERENCES EmployeeMaster(EmpId) ON DELETE CASCADE,
+    OrganisationName NVARCHAR(200),
+    YearsOfExperience DECIMAL(5, 2),
+    Designation NVARCHAR(100),
+    FromDate DATE,
+    ToDate DATE,
+    ReasonForLeaving NVARCHAR(200)
+);
+
+-- ============================================
+-- 9. ReportingDetails
+-- ============================================
+CREATE TABLE ReportingDetails
+(
+    ReportingId INT PRIMARY KEY IDENTITY(1,1),
+    EmpId INT FOREIGN KEY REFERENCES EmployeeMaster(EmpId) ON DELETE CASCADE,
+    DirectReporting NVARCHAR(100),
+    DottedReporting NVARCHAR(100),
+    SkipReporting NVARCHAR(100)
+);
+
+-- ============================================
+-- 10. ExitDetails
+-- ============================================
+CREATE TABLE ExitDetails
+(
+    ExitId INT PRIMARY KEY IDENTITY(1,1),
+    EmpId INT FOREIGN KEY REFERENCES EmployeeMaster(EmpId) ON DELETE CASCADE,
+    ResignationDate DATE,
+    TerminationDate DATE,
+    DateOfExit DATE,
+    ReasonForLeaving NVARCHAR(200)
+);
+
+
+
 
 
 

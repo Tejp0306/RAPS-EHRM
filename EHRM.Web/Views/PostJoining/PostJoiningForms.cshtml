@@ -1,0 +1,122 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Employee Forms";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@{
+
+    var empIdFromSession = HttpContextAccessor.HttpContext?.Session?.GetInt32("EmpId");
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<script src="~/CustomScripts/PostOnboardingForms.js"></script>
+<script src="~/jspdf/jspdf.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+<h2 class="text-center my-4">Post Onboarding Forms</h2>
+
+<div class="container">
+    <!-- ✅ BGV Form Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Background Verification Form</h5>
+            <p class="card-text">Details related to the background verification of the employee.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadEmployeeForm(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#previewModal">
+                    Preview Form
+                </button>
+
+                <button type="button" id="downloadBtn" onclick="loadDownloadForm(@empIdFromSession)" class="btn btn-success">
+                    <i class="bi bi-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ NDA Form Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Non-Disclosure Agreement (NDA)</h5>
+            <p class="card-text">Agreement ensuring confidentiality of sensitive information.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadEmployeeForm(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+                <a href="@Url.Action("DownloadForm", "Forms", new { formName = "NDAForm" })" class="btn btn-success">Download PDF</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Client Property Declaration Form Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Client Property Declaration Form</h5>
+            <p class="card-text">Declaration about handling of client’s property.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadFormPreview('ClientPropertyForm')" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+                <a href="@Url.Action("DownloadForm", "Forms", new { formName = "ClientPropertyForm" })" class="btn btn-success">Download PDF</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Personal Information Form Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Personal Information Form</h5>
+            <p class="card-text">Form containing personal details of the employee.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadFormPreview('PersonalInfoForm')" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+                <a href="@Url.Action("DownloadForm", "Forms", new { formName = "PersonalInfoForm" })" class="btn btn-success">Download PDF</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Master Sheet Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Master Sheet</h5>
+            <p class="card-text">Comprehensive summary of employee details.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadMasterForm(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#previewModal">
+                    Preview Form
+                </button>
+
+                <button type="button" id="downloadBtn" onclick="GetDownloadMasterForm(@empIdFromSession)" class="btn btn-success">
+                    <i class="bi bi-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Acknowledgment Form Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Acknowledgment Form</h5>
+            <p class="card-text">Employee acknowledgment of policies and procedures.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadFormPreview('AcknowledgmentForm')" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+                <a href="@Url.Action("DownloadForm", "Forms", new { formName = "AcknowledgmentForm" })" class="btn btn-success">Download PDF</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Modal to Show Dynamic Form Preview -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Form Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="formPreviewContent">
+                <p class="text-center">Loading form details...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/CustomScripts/PostOnboardingForms.js"></script>

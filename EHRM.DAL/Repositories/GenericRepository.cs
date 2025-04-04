@@ -58,6 +58,22 @@ namespace EHRM.DAL.Repositories
 
         }
 
+        public async Task<List<Bgvform>> GetBGVByEmpIdAsync(int EmpId)
+        {
+            var data = await _context.Set<Bgvform>().ToListAsync();
+            return await _context.Set<Bgvform>().Where(x => x.EmpId == EmpId).ToListAsync();
+
+        }
+
+        public async Task<List<PreviousEmployment>> GetPreviousEmploymentByEmpIdAsync(int EmpId)
+        {
+            var data = await _context.Set<PreviousEmployment>().ToListAsync();
+            return await _context.Set<PreviousEmployment>().Where(x => x.EmpId == EmpId).ToListAsync();
+
+        }
+
+
+
         public async Task<List<EmployeeDetail>> GetByRoleIdAsync(int RoleId)
         {
             return await _context.Set<EmployeeDetail>().Where(x => x.RoleId == RoleId).ToListAsync();

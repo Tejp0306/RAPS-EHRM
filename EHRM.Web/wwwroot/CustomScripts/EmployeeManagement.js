@@ -20,6 +20,72 @@
 
     });
 
+    $('#addExperienceBtn').on('click', function () {
+        const index = $('.experience-entry').length;
+        const experienceHtml = `
+            <div class="row mb-3 experience-entry">
+                <div class="col-md-6">
+                    <label class="form-label">Organisation Name</label>
+                    <input name="WorkExperiences[${index}].OrganisationName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Years of Experience</label>
+                    <input name="WorkExperiences[${index}].YearsOfExperience" class="form-control" type="number" step="0.01" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger remove-experience">Remove</button>
+                </div>
+            </div>`;
+        $('#experienceSection').append(experienceHtml);
+});
+
+    // Remove Work Experience
+    $(document).on('click', '.remove-experience', function () {
+        $(this).closest('.experience-entry').remove();
+    });
+
+    // Add Dependent
+    $('#addDependentBtn').on('click', function () {
+        const index = $('.dependent-entry').length;
+        const dependentHtml = `
+            <div class="row mb-3 dependent-entry">
+                <div class="col-md-4">
+                    <label class="form-label">Dependent Name</label>
+                    <input name="Dependents[${index}].DependentName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Relationship</label>
+                    <input name="Dependents[${index}].DependentRelationship" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date of Birth</label>
+                    <input name="Dependents[${index}].DependentDOB" class="form-control" type="date" />
+                </div>
+            </div>`;
+        $('#dependentSection').append(dependentHtml);
+    });
+
+    // Add Education
+    $('#addEducationBtn').on('click', function () {
+        const index = $('.education-entry').length;
+        const educationHtml = `
+            <div class="row mb-3 education-entry">
+                <div class="col-md-4">
+                    <label class="form-label">Institution Name</label>
+                    <input name="EducationDetails[${index}].InstitutionName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Degree Name</label>
+                    <input name="EducationDetails[${index}].DegreeName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Passing Year</label>
+                    <input name="EducationDetails[${index}].PassingYear" class="form-control" type="number" />
+                </div>
+            </div>`;
+        $('#educationSection').append(educationHtml);
+    });
+
 });
 
 
@@ -164,9 +230,9 @@ function getEmployeeData() {
                 data: 'profileStatus',
                 render: function (data) {
                     if (data === false) {
-                        return `<span class="badge bg-danger">Profile Incomplete</span>`;
+                        return `<span class="badge bg-danger">Incomplete</span>`;
                     } else {
-                        return `<span class="badge bg-success">Profile Completed</span>`;
+                        return `<span class="badge bg-success">Completed</span>`;
                     }
                 }
             },
@@ -190,7 +256,7 @@ function getEmployeeData() {
                     return `
                         <div class="d-flex justify-content-center">
                             <button class="btn btn-warning btn-sm mx-1 edit-btn" data-id="${rowData.id}">
-                                <i class="bi bi-pencil"></i> Edit/Complete
+                                <i class="bi bi-pencil"></i> Edit
                             </button>
                             <button class="btn btn-success btn-sm mx-1 activate-btn" 
                                 data-id="${rowData.id}" 
@@ -215,6 +281,7 @@ function getEmployeeData() {
 
     // Click handler for Activate/Deactivate buttons
     $('#employeeTable').on('click', '.activate-btn, .danger-btn', function () {
+
         const button = $(this);
         const EmpId = button.data('id');
         const isActivate = button.hasClass('activate-btn');
@@ -224,7 +291,7 @@ function getEmployeeData() {
 
         // Example: Send AJAX request to update status
         $.ajax({
-            url: isActivate ? '/Employee/Activate' : '/Employee/Deactivate',
+            url: isActivate ? '/Employee/Activate' : '/Employee/ ',
             method: 'POST',
             data: { id: EmpId },
             success: function () {

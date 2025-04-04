@@ -145,6 +145,17 @@ button:focus, .btn:focus {
     height: 20px;
     animation: spin 1s linear infinite;
 }
+/*Table heading should be center aligned*/
+th {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
 
 @keyframes spin {
     from {

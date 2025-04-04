@@ -35,7 +35,7 @@
         }
         <div class="card p-4">
             <div class="card-body">
-                <form method="post" enctype="multipart/form-data" asp-controller="Document" asp-action="UploadDocument" id="DocumentForm">
+                <form method="post" enctype="multipart/form-data" asp-controller="Document" asp-action="UploadDocument" id="DocumentForm" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <input asp-for="EmployeeId" type="hidden" id="EmployeeID"  value="@empIdFromSession" />
@@ -62,7 +62,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="File" class="form-label">Upload Description:</label>
-                            <input asp-for="File" class="file" type="file" id="file" placeholder="Select a file (Optional)" img src="~/Files/">
+                            <input asp-for="File" class="file" type="file" id="file" placeholder="Select a file (Optional)" img src="~/Files/" multiple>
                         </div>
                                        
                     </div>
