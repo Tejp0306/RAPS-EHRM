@@ -7,6 +7,8 @@ public partial class PersonalInfo
 {
     public int Id { get; set; }
 
+    public int? EmpId { get; set; }
+
     public string EmployeeName { get; set; } = null!;
 
     public string PersonalEmail { get; set; } = null!;

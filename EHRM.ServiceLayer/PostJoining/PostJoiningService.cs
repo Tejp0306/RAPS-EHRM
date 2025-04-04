@@ -33,6 +33,7 @@ namespace EHRM.ServiceLayer.PostJoining
             {
                 var newAckForm = new AcknowledgementForm
                 {
+                    EmpId = model.EmpId,
                     EmployeeName = model.EmployeeName,
                     SignatureDate = model.SignatureDate,
                     EmployeeSignature = model.EmployeeSignature,
@@ -57,12 +58,12 @@ namespace EHRM.ServiceLayer.PostJoining
                 };
             }
         }
-        public async Task<Result> GetAcknowldegementFormByIdAsync(int Id)
+        public async Task<Result> GetAcknowldegementFormByIdAsync(int empId)
         {
             try
             {
                 var holidayRepository = _unitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
-                var holiday = await holidayRepository.GetByIdAsync(Id);  // Fetch Holiday by ID
+                var holiday = await holidayRepository.GetEmployeeAcknowledgementByIdAsync(empId);  // Fetch Holiday by ID
 
                 if (holiday == null)
                 {
@@ -99,7 +100,47 @@ namespace EHRM.ServiceLayer.PostJoining
             }
         }
 
+        public async Task<Result> GetAcknowldegementAsync(int Id)
+        {
+            try
+            {
+                var holidayRepository = _unitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
+                var holiday = await holidayRepository.GetByIdAsync(Id);  // Fetch Holiday by ID
 
+                if (holiday == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Holidays not found."
+                    };
+                }
+
+                var acknowledgementFormViewModel = new AcknowledgementFormViewModel
+                {
+
+                    EmployeeName = holiday.EmployeeName,
+                    SignatureDate = holiday.SignatureDate,
+                    EmployeeSignature = holiday.EmployeeSignature
+
+
+                };
+
+                return new Result
+                {
+                    Success = true,
+                    Data = acknowledgementFormViewModel
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error fetching role: {ex.Message}"
+                };
+            }
+        }
         public async Task<Result> GetAllAcknowledgeFormAsync()
         {
             var AssetRepository = _unitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
@@ -126,6 +167,7 @@ namespace EHRM.ServiceLayer.PostJoining
             {
                 var newPersonalInfo = new PersonalInfo
                 {
+                    EmpId = model.EmpId,
                     EmployeeName = model.EmployeeName,
                     PersonalEmail = model.PersonalEmail,
                     PermanentAddress = model.PermanentAddress,
@@ -171,7 +213,59 @@ namespace EHRM.ServiceLayer.PostJoining
             return new Result { Success = true, Data = Asset };
         }
 
-        public async Task<Result> GetPersonalInfoByIdAsync(int Id)
+        public async Task<Result> GetPersonalInfoByIdAsync(int empId)
+        {
+            try
+            {
+                var personalInfoRepository = _unitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
+                var personalInfo = await personalInfoRepository.GetEmployeePersonalInfoByIdAsync(empId);  // Fetch Holiday by ID
+
+                if (personalInfo == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Holidays not found."
+                    };
+                }
+
+                var personalInfoFormViewModel = new PersonalInfomationViewModel
+                {
+
+                    EmployeeName = personalInfo.EmployeeName,
+                    PersonalEmail = personalInfo.PersonalEmail,
+                    PermanentAddress = personalInfo.PermanentAddress,
+                    CurrentAddress = personalInfo.CurrentAddress,
+                    HomePhone = personalInfo.HomePhone,
+                    MobilePhone = personalInfo.MobilePhone,
+                    EmergencyContact1Name = personalInfo.EmergencyContact1Name,
+                    EmergencyContact1Relationship = personalInfo.EmergencyContact1Relationship,
+                    EmergencyContact1Phone = personalInfo.EmergencyContact1Phone,
+                    EmergencyContact2Name = personalInfo.EmergencyContact2Name,
+                    EmergencyContact2Relationship = personalInfo.EmergencyContact2Relationship,
+                    EmergencyContact2Phone = personalInfo.EmergencyContact2Phone,
+                    Signature = personalInfo.Signature,
+                    FormDate = personalInfo.FormDate,
+
+                };
+
+                return new Result
+                {
+                    Success = true,
+                    Data = personalInfoFormViewModel
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error fetching role: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<Result> GetPersonalInfoAsync(int Id)
         {
             try
             {
@@ -222,7 +316,6 @@ namespace EHRM.ServiceLayer.PostJoining
                 };
             }
         }
-
         public async Task<Result> GetPersonalInfoFormAsync()
         {
             var AssetRepository = _unitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
@@ -241,6 +334,7 @@ namespace EHRM.ServiceLayer.PostJoining
             {
                 var newClientPropDec = new ClientPropertyDeclaration
                 {
+                    EmpId = model.EmpId,
                     EmployeeName = model.EmployeeName,
                     ClientName = model.ClientName,
                     ReceivedDate = model.ReceivedDate,
@@ -280,7 +374,53 @@ namespace EHRM.ServiceLayer.PostJoining
             return new Result { Success = true, Data = Asset };
         }
 
-        public async Task<Result> GetClientPropertDeclarationByIdAsync(int Id)
+        public async Task<Result> GetClientPropertDeclarationByIdAsync(int empId)
+        {
+            try
+            {
+                var personalInfoRepository = _unitOfWork.GetRepository<ClientPropertyDeclaration>();  // Using generic repository
+                var personalInfo = await personalInfoRepository.GetEmployeePropertyDeclarationByIdAsync(empId);  // Fetch Holiday by ID
+
+                if (personalInfo == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Holidays not found."
+                    };
+                }
+
+                var personalInfoFormViewModel = new ClientPropertyDeclarationViewModel
+                {
+
+                    EmployeeName = personalInfo.EmployeeName,
+                    ClientName = personalInfo.ClientName,
+                    ReceivedDate = personalInfo.ReceivedDate,
+                    ItemsReceived = personalInfo.ItemsReceived,
+                    EmployeeNameConfirm = personalInfo.EmployeeNameConfirm,
+                    Signature = personalInfo.Signature,
+                    ConfirmationDate = personalInfo.ConfirmationDate,
+                
+
+                };
+
+                return new Result
+                {
+                    Success = true,
+                    Data = personalInfoFormViewModel
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error fetching role: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<Result> GetClientPropertDecByIdAsync(int Id)
         {
             try
             {
@@ -345,6 +485,7 @@ namespace EHRM.ServiceLayer.PostJoining
             {
                 var newNDA = new NonDisclosureAgreement
                 {
+                    EmpId = model.empId,
                     EmployeeName = model.EmployeeName,
                     Signature = model.Signature,
                     AgreementDate = model.AgreementDate,
@@ -381,12 +522,12 @@ namespace EHRM.ServiceLayer.PostJoining
             return new Result { Success = true, Data = Asset };
         }
 
-        public async Task<Result> GetNDAFormByIdAsync(int Id)
+        public async Task<Result> GetNDAFormByIdAsync(int empId)
         {
             try
             {
                 var personalInfoRepository = _unitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
-                var personalInfo = await personalInfoRepository.GetByIdAsync(Id);  // Fetch Holiday by ID
+                var personalInfo = await personalInfoRepository.GetEmployeeNDAByIdAsync(empId);  // Fetch Holiday by ID
 
                 if (personalInfo == null)
                 {
@@ -428,6 +569,48 @@ namespace EHRM.ServiceLayer.PostJoining
             var AssetRepository = _unitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
             var Asset = await AssetRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = Asset };
+        }
+
+        public async Task<Result> GetNDAByIdAsync(int Id)
+        {
+            try
+            {
+                var personalInfoRepository = _unitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
+                var personalInfo = await personalInfoRepository.GetByIdAsync(Id);  // Fetch Holiday by ID
+
+                if (personalInfo == null)
+                {
+                    return new Result
+                    {
+                        Success = false,
+                        Message = "Holidays not found."
+                    };
+                }
+
+                var personalInfoFormViewModel = new NDAFormViewModel
+                {
+
+                    EmployeeName = personalInfo.EmployeeName,
+                    AgreementDate = personalInfo.AgreementDate,
+                    Signature = personalInfo.Signature,
+
+
+                };
+
+                return new Result
+                {
+                    Success = true,
+                    Data = personalInfoFormViewModel
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"Error fetching role: {ex.Message}"
+                };
+            }
         }
         #endregion
     }

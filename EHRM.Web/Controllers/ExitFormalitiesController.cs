@@ -24,6 +24,7 @@ namespace EHRM.Web.Controllers
             return View();
         }
 
+
         #region Exit Interview
 
         public IActionResult ExitInterview()
@@ -223,6 +224,7 @@ namespace EHRM.Web.Controllers
 
         #endregion
 
+
         #region Employee Undertaking
 
         public IActionResult EmployeeUndertaking()
@@ -327,7 +329,7 @@ namespace EHRM.Web.Controllers
             var name = userDetails.userName;
             var empid = userDetails.userId;
             ViewData["Name"] = name;
-            ViewData["EmpId"] = Convert.ToInt32(userDetails.userId); ;
+            ViewData["EmpId"] = Convert.ToInt32(userDetails.userId);
             return View();
         }
 

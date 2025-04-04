@@ -63,6 +63,7 @@
     <div class="asset-form mb-5">
         <div class="card p-4 form-container">
             <div class="card-body">
+                <input type="hidden" id="empId" name="empId" value="@ViewData["empId"]">
                 <form id="AcknowledgementForm" asp-controller="PostJoining" asp-action="SaveAcknowledgementForm" method="post">
 
                     <!-- Employee Acknowledgment -->
@@ -103,66 +104,6 @@
 
 
 
-<!-- Acknowledgement List Table -->
- <div class="container mt-4">
-    <h3 class="page-heading">Acknowledgement Records</h3>
-    <div class="table-responsive">
-        <table id="acknowledgementTable" class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Employee Name</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Sample Data (Dynamically generated in backend) -->
-                <tr>
-                    
-                </tr>
-              
-            </tbody>
-        </table>
-    </div>
-</div> 
-
-    <!-- Bootstrap Modal -->
- <div class="modal fade" id="acknowledgementModal" tabindex="-1" aria-labelledby="acknowledgementModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="acknowledgementModalLabel">Acknowledgement Form</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="AcknowledgementForm">
-                        <!-- Acknowledgment Statement -->
-                        <div class="mb-3">
-                            <p id="acknowledgementText">
-                                I, hereby acknowledge that I have read and fully understood all the policies mentioned in the Employee Handbook provided to me. I agree to abide by these policies and will not violate any of them.
-                            </p>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="SignatureDate" class="form-label">Signature Date :</label>
-                            <input type="text" class="form-control border-0 bg-light" id="SignatureDate0" readonly>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="EmployeeSignature" class="form-label">Employee Signature :</label>
-                            <input type="text" class="form-control border-0 bg-light" id="EmployeeSignature" readonly>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="downloadBtn" class="btn btn-success">
-                        <i class="bi bi-download"></i> Download
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">

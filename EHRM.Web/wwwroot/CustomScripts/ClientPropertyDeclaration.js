@@ -1,64 +1,24 @@
-﻿$(document).ready(function () {
-    getClientDeclaration();
-});
+﻿var empIdFromSession = parseInt('@empIdFromSession');
 
-// Function to fetch acknowledgment data and populate the DataTable
-function getClientDeclaration() {
-    $('#clientDeclarationTable').DataTable({
-        destroy: true,
-        ajax: {
-            url: '/PostJoining/GetAllClientPropertyDeclaration',
-            method: 'GET',
-            dataSrc: ''
-        },
-        columns: [
-            { data: 'employeeName' },
-            { data: 'clientName' },
-            {
-                data: 'id',
-                render: function (data) {
-                    return `
-                        <div class="d-flex justify-content-center">
-                            <button class="btn btn-info btn-sm mx-1 view-btn" data-id="${data}">
-                                <i class="bi bi-eye"></i> View & Download
-                            </button>
-                        </div>
-                    `;
-                },
-                orderable: false
-            }
-        ],
-        pageLength: 5,
-        lengthMenu: [5, 10, 15, 20]
-    });
-
-    // Bind click event for dynamically added buttons
-    $('#clientDeclarationTable tbody').on('click', '.view-btn', function () {
-        const id = $(this).data('id');
-        openClientDeclarationModal(id);
-    });
-}
-
-function openClientDeclarationModal(Id) {
+function openClientDeclarationModal(empId) {
     $.ajax({
-        url: `/PostJoining/GetClientDeclarationById/${Id}`,
+        url: `/PostJoining/GetClientDeclarationById/${empId}`,
         method: 'GET',
         success: function (response) {
             if (response.success) {
-                console.log("API Response:", response);
 
                 const data = response.data.data || response.data;
-                debugger;
+
                 // Populate modal fields
-                $('#EmployeeNameone').val(data?.employeeName || "N/A");
-                $('#ClientNameone').val(data?.clientName || "N/A");
-                $('#ReceivedDateone').val(data?.receivedDate || "N/A");
-                $('#ItemsReceivedone').val(data?.itemsReceived || "N/A");
-                $('#Signatureone').val(data?.signature || "N/A");
-                $('#ConfirmationDateone').val(data?.confirmationDate || "N/A");
+                $('#EmployeeName').val(data?.employeeName || "N/A");
+                $('#ClientName').val(data?.clientName || "N/A");
+                $('#ReceivedDate').val(data?.receivedDate || "N/A");
+                $('#ItemsReceived').val(data?.itemsReceived || "N/A");
+                $('#SignatureEmployee').val(data?.signature || "N/A");
+                $('#ConfirmationDate').val(data?.confirmationDate || "N/A");
 
                 // Set Employee Name Confirmation inside the <p> tag
-                $('#EmployeeNameConfirmone').html(data?.employeeName || "N/A");
+                $('#EmployeeNameConfirm').html(data?.employeeName || "N/A");
 
                 // Ensure download button exists
                 if ($('#downloadBtn').length === 0) {
@@ -67,13 +27,31 @@ function openClientDeclarationModal(Id) {
                     );
                 }
 
-                // Attach click event (ensure no duplicate events)
-                $('#downloadBtn').off('click').on('click', function () {
-                    downloadClientDeclaration(data);
-                });
+                
 
                 // Show the modal
                 $('#clientDeclarationModal').modal('show');
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function () {
+            alert("An error occurred while fetching the data.");
+        }
+    });
+}
+
+function downloadClientDecla(empId) {
+    $.ajax({
+        url: `/PostJoining/GetClientDeclarationById/${empId}`,
+        method: 'GET',
+        success: function (response) {
+            if (response.success) {
+
+
+                const data = response.data.data || response.data;
+                downloadClientDeclaration(data)
+              
             } else {
                 alert("Error: " + response.message);
             }

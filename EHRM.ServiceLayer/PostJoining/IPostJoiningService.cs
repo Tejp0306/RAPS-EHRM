@@ -17,14 +17,16 @@ namespace EHRM.ServiceLayer.PostJoining
         Task<Result> CreateAcknowldegementFormAsync(AcknowledgementFormViewModel model);
         Task<Result> GetAllAcknowledgeFormAsync();
         Task<Result> GetAcknowledgeFormAsync(); // this is for displaying at Acknowldegement Form details
-        Task<Result> GetAcknowldegementFormByIdAsync(int Id);
+        Task<Result> GetAcknowldegementFormByIdAsync(int empId);
+        Task<Result> GetAcknowldegementAsync(int Id);
         #endregion
 
 
         #region Personal Information
         Task<Result> CreatePersonalInformationFormAsync(PersonalInfomationViewModel model);
         Task<Result> GetAllPersonalInformationFormAsync();
-        Task<Result> GetPersonalInfoByIdAsync(int Id);
+        Task<Result> GetPersonalInfoByIdAsync(int empId);
+        Task<Result> GetPersonalInfoAsync(int Id);
 
         Task<Result> GetPersonalInfoFormAsync(); // this is for displaying at PersonalInfo Form details
 
@@ -37,7 +39,8 @@ namespace EHRM.ServiceLayer.PostJoining
 
         Task<Result> GetAllClientPropertDeclarationFormAsync();
 
-        Task<Result> GetClientPropertDeclarationByIdAsync(int Id);
+        Task<Result> GetClientPropertDeclarationByIdAsync(int empId);
+        Task<Result> GetClientPropertDecByIdAsync(int Id);
 
         Task<Result> GetClientPropertDeclarationFormAsync(); // this is for displaying at ClientPropertDeclaration Form details
 
@@ -50,8 +53,9 @@ namespace EHRM.ServiceLayer.PostJoining
         Task<Result> CreateNDAFormAsync(NDAFormViewModel model);
 
         Task<Result> GetAllNDAFormAsync();
+        Task<Result> GetNDAByIdAsync(int Id);
 
-        Task<Result> GetNDAFormByIdAsync(int Id);
+        Task<Result> GetNDAFormByIdAsync(int empId);
 
         Task<Result> GetNDAFormAsync(); // this is for displaying at NDA Form details
 
