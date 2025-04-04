@@ -3,18 +3,40 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
-
     ViewData["Title"] = "Employee Forms";
-
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
 }
-
 @{
 
     var empIdFromSession = HttpContextAccessor.HttpContext?.Session?.GetInt32("EmpId");
-
 }
+
+
+<script src="~/CustomScripts/PostOnboardingForms.js"></script>
+
+
+
+<div class="container">
+    <!-- ✅ BGV Form Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Background Verification Form</h5>
+            <p class="card-text">Details related to the background verification of the employee.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadEmployeeForm(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#previewModal">
+                    Preview Form
+                </button>
+
+                <button type="button" id="downloadBtn" onclick="loadDownloadForm(@empIdFromSession)" class="btn btn-success">
+                    <i class="bi bi-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+
 <style>
     .page-heading {
         color: #007bff;
@@ -59,16 +81,22 @@
 <div class="container">
     <h2 class="page-heading">Post Onboarding Forms</h2>
 
+
     <!-- ✅ NDA Form Section -->
     <div class="card mb-4 shadow-lg">
         <div class="card-body">
             <h5 class="card-title">Non-Disclosure Agreement (NDA)</h5>
             <p class="card-text">Agreement ensuring confidentiality of sensitive information.</p>
             <div class="d-flex justify-content-between">
+
+                <button class="btn btn-info" onclick="loadEmployeeForm(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+                <a href="@Url.Action("DownloadForm", "Forms", new { formName = "NDAForm" })" class="btn btn-success">Download PDF</a>
+
                 <button class="btn btn-info preview-btn" onclick="ndaModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#ndaModal">Preview</button>
                 <button type="button" id="downloadBtn" onclick="ndaDownload(@empIdFromSession)" class="btn btn-success">
                     <i class="bi bi-download"></i> Download
                 </button>
+
             </div>
         </div>
     </div>
@@ -79,10 +107,15 @@
             <h5 class="card-title">Client Property Declaration Form</h5>
             <p class="card-text">Declaration about handling of client’s property.</p>
             <div class="d-flex justify-content-between">
+
+                <button class="btn btn-info" onclick="loadFormPreview('ClientPropertyForm')" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+                <a href="@Url.Action("DownloadForm", "Forms", new { formName = "ClientPropertyForm" })" class="btn btn-success">Download PDF</a>
+
                 <button class="btn btn-info preview-btn" onclick="openClientDeclarationModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#clientDeclarationModal">Preview</button>
                 <button type="button" id="downloadBtn" onclick="downloadClientDecla(@empIdFromSession)" class="btn btn-success">
                     <i class="bi bi-download"></i> Download
                 </button>
+
             </div>
         </div>
     </div>
@@ -93,13 +126,31 @@
             <h5 class="card-title">Personal Information Form</h5>
             <p class="card-text">Form containing personal details of the employee.</p>
             <div class="d-flex justify-content-between">
+
+                <button class="btn btn-info" onclick="loadFormPreview('PersonalInfoForm')" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+                <a href="@Url.Action("DownloadForm", "Forms", new { formName = "PersonalInfoForm" })" class="btn btn-success">Download PDF</a>
+
                 <button class="btn btn-info preview-btn" onclick="openPersonalInfoModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Preview</button>
                 <button type="button" id="downloadBtn" onclick="downloadPersonalInformation(@empIdFromSession)" class="btn btn-success">
                     <i class="bi bi-download"></i> Download
                 </button>
+
             </div>
         </div>
     </div>
+
+
+    <!-- ✅ Master Sheet Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Master Sheet</h5>
+            <p class="card-text">Comprehensive summary of employee details.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadMasterForm(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#previewModal">
+                    Preview Form
+                </button>
+
+                <button type="button" id="downloadBtn" onclick="GetDownloadMasterForm(@empIdFromSession)" class="btn btn-success">
 
     <!-- ✅ Acknowledgment Form Section -->
     <div class="card mb-4 shadow-lg">
@@ -109,12 +160,15 @@
             <div class="d-flex justify-content-between">
                 <button class="btn btn-info preview-btn" onclick="openAcknowledgementModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#acknowledgementModal">Preview</button>
                 <button type="button" id="downloadBtn" onclick="downloadAcknowledgementForm(@empIdFromSession)" class="btn btn-success">
+
                     <i class="bi bi-download"></i> Download
                 </button>
             </div>
         </div>
     </div>
-</div>
+
+
+
 
 
 <!-- NDA Modal -->
@@ -174,6 +228,18 @@
         </div>
     </div>
 </div>
+
+
+<!-- ✅ Modal to Show Dynamic Form Preview -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Form Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="formPreviewContent">
+                <p class="text-center">Loading form details...</p>
 
 <!-- Personal Info Modal -->
 <div class="modal fade" id="personalInfoModal" tabindex="-1" aria-labelledby="personalInfoModalLabel" aria-hidden="true">
@@ -275,10 +341,13 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+
+
 
 <!-- Client Declaration Modal -->
 <div class="modal fade" id="clientDeclarationModal" tabindex="-1" aria-labelledby="clientDeclarationModalLabel" aria-hidden="true">
@@ -375,10 +444,4 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
 

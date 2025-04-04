@@ -73,6 +73,9 @@ function GetTeamNames() {
     });
 
 }
+
+
+
 function GetEmployeeDetail(TeamId) {
 
     $.ajax({

@@ -95,9 +95,12 @@
             font-size: 14px;
         }
 
-           /*  .dropdown-item:hover {
+        /* Uncomment if needed to apply hover effect on dropdown items */
+        /*
+            .dropdown-item:hover {
                 background-color: #e9ecef;
-            } */
+            }
+            */
 
         .navbar-brand {
             font-size: 24px;
@@ -113,21 +116,24 @@
 
         /* Keyframes for scrolling effect */
         @@keyframes scroll-left {
-            from {
+            from
+
+        {
                 transform: translateX(100%);
             }
 
             to {
                 transform: translateX(-100%);
             }
+
         }
 
         /* Stop scrolling when mouse hovers */
         .notification-text:hover {
             animation-play-state: paused; /* Pause animation on hover */
         }
-
     </style>
+
 </head>
 
 <body>
@@ -254,7 +260,7 @@
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Raps Consulting Inc.</a>, All Rights Reserved.
+                            &copy; <a href="https://www.rapscorp.com" target="_blank">Raps Consulting Inc.</a>, All Rights Reserved.
                         </div>
 
                         <div class="col-12 col-sm-6 text-center text-sm-end">
@@ -316,5 +322,7 @@
 
     </script>
 </body>
+@RenderSection("Scripts", required: false)
+
 
 </html>
