@@ -57,6 +57,30 @@ namespace EHRM.DAL.Repositories
             return await _context.Set<EmployeePunchDetail>().Where(x => x.Empid == EmpId).ToListAsync();
 
         }
+        public async Task<NonDisclosureAgreement> GetEmployeeNDAByIdAsync(int empId)
+        {
+            var data = await _context.Set<NonDisclosureAgreement>().ToListAsync();
+            return await _context.Set<NonDisclosureAgreement>().Where(x => x.EmpId == empId).FirstAsync();
+
+        }
+        public async Task<PersonalInfo> GetEmployeePersonalInfoByIdAsync(int empId)
+        {
+            var data = await _context.Set<PersonalInfo>().ToListAsync();
+            return await _context.Set<PersonalInfo>().Where(x => x.EmpId == empId).FirstAsync();
+
+        }
+        public async Task<ClientPropertyDeclaration> GetEmployeePropertyDeclarationByIdAsync(int empId)
+        {
+            var data = await _context.Set<ClientPropertyDeclaration>().ToListAsync();
+            return await _context.Set<ClientPropertyDeclaration>().Where(x => x.EmpId == empId).FirstAsync();
+
+        }
+        public async Task<AcknowledgementForm> GetEmployeeAcknowledgementByIdAsync(int empId)
+        {
+            var data = await _context.Set<AcknowledgementForm>().ToListAsync();
+            return await _context.Set<AcknowledgementForm>().Where(x => x.EmpId == empId).FirstAsync();
+
+        }
 
         public async Task<List<EmployeeDetail>> GetByRoleIdAsync(int RoleId)
         {
@@ -142,6 +166,7 @@ namespace EHRM.DAL.Repositories
             return await _context.Set<Declaration>().Where(x => x.EmpId == EmpId).ToListAsync();
         }
 
+      
     }
 
 

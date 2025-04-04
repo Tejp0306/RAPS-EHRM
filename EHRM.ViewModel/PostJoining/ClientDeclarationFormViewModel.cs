@@ -9,6 +9,7 @@ namespace EHRM.ViewModel.PostJoining
     public class ClientPropertyDeclarationViewModel
     {
         public int Id { get; set; }
+        public int EmpId { get; set; }
 
         public string EmployeeName { get; set; }
 

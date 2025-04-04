@@ -98,6 +98,7 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.EmpId).HasColumnName("empId");
             entity.Property(e => e.EmployeeName).HasMaxLength(255);
             entity.Property(e => e.SignatureDate)
                 .HasMaxLength(255)
@@ -135,6 +136,7 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.EmpId).HasColumnName("empId");
             entity.Property(e => e.EmployeeName).HasMaxLength(255);
             entity.Property(e => e.EmployeeNameConfirm).HasMaxLength(255);
             entity.Property(e => e.ReceivedDate).HasMaxLength(255);
@@ -933,6 +935,7 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.EmpId).HasColumnName("empId");
             entity.Property(e => e.EmployeeName).HasMaxLength(255);
             entity.Property(e => e.Signature).HasMaxLength(255);
         });
@@ -966,6 +969,7 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.EmergencyContact2Name).HasMaxLength(255);
             entity.Property(e => e.EmergencyContact2Phone).HasMaxLength(20);
             entity.Property(e => e.EmergencyContact2Relationship).HasMaxLength(100);
+            entity.Property(e => e.EmpId).HasColumnName("empId");
             entity.Property(e => e.EmployeeName).HasMaxLength(255);
             entity.Property(e => e.FormDate).HasMaxLength(255);
             entity.Property(e => e.HomePhone).HasMaxLength(20);

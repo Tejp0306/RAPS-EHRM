@@ -32,6 +32,11 @@ namespace EHRM.Web.Controllers
             return View();
         }
 
+        public IActionResult PostJoiningForms()
+        {
+            return View();
+        }
+
         #region Acknowledgement Form
         public IActionResult AcknowledgementForm()
         {
@@ -49,6 +54,10 @@ namespace EHRM.Web.Controllers
 
         public async Task<IActionResult> SaveAcknowledgementForm(AcknowledgementFormViewModel model)
         {
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var empId = userDetails.userId;
+            model.EmpId = Convert.ToInt32(empId);
 
 
             var result = await _post.CreateAcknowldegementFormAsync(model);
@@ -72,12 +81,32 @@ namespace EHRM.Web.Controllers
 
         }
 
-        [HttpGet("PostJoining/GetAcknowlegementFormDetails/{acknowlegementFormID}")]
-        public async Task<JsonResult> GetAcknowlegementFormDetails([FromRoute] int acknowlegementFormID)
+        [HttpGet("PostJoining/GetAcknowlegementFormDetails/{EmpId}")]
+        public async Task<JsonResult> GetAcknowlegementFormDetails([FromRoute] int EmpId)
         {
             try
             {
-                var asset = await _post.GetAcknowldegementFormByIdAsync(acknowlegementFormID);
+                var asset = await _post.GetAcknowldegementFormByIdAsync(EmpId);
+
+                if (asset == null)
+                {
+                    return Json(new { success = false, message = "Asset not found." });
+                }
+
+                return Json(new { success = true, data = asset });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the Asset details." });
+            }
+        }
+
+        [HttpGet("PostJoining/GetAcknowlegementDetails/{acknowlegementFormID}")]
+        public async Task<JsonResult> GetAcknowlegementDetails([FromRoute] int acknowlegementFormID)
+        {
+            try
+            {
+                var asset = await _post.GetAcknowldegementAsync(acknowlegementFormID);
 
                 if (asset == null)
                 {
@@ -201,7 +230,10 @@ namespace EHRM.Web.Controllers
 
         public async Task<IActionResult> SavePersonalInfoForm(PersonalInfomationViewModel model)
         {
-
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var empId = userDetails.userId;
+            model.EmpId = Convert.ToInt32(empId);
 
             var result = await _post.CreatePersonalInformationFormAsync(model);
 
@@ -274,12 +306,33 @@ namespace EHRM.Web.Controllers
             }
         }
 
-        [HttpGet("PostJoining/GetPersonalInfoById/{personalInfoID}")]
-        public async Task<JsonResult> GetPersonalInfoById([FromRoute] int personalInfoID)
+        [HttpGet("PostJoining/GetPersonalInfoById/{EmpId}")]
+        public async Task<JsonResult> GetPersonalInfoById([FromRoute] int EmpId)
         {
             try
             {
-                var asset = await _post.GetPersonalInfoByIdAsync(personalInfoID);
+                var asset = await _post.GetPersonalInfoByIdAsync(EmpId);
+
+                if (asset == null)
+                {
+                    return Json(new { success = false, message = "Asset not found." });
+                }
+
+                return Json(new { success = true, data = asset });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the Asset details." });
+            }
+        }
+
+
+        [HttpGet("PostJoining/GetPersInfoById/{personalInfoID}")]
+        public async Task<JsonResult> GetPersInfoById([FromRoute] int personalInfoID)
+        {
+            try
+            {
+                var asset = await _post.GetPersonalInfoAsync(personalInfoID);
 
                 if (asset == null)
                 {
@@ -352,7 +405,10 @@ namespace EHRM.Web.Controllers
 
         public async Task<IActionResult> SaveClientPropertyDeclarationForm(ClientPropertyDeclarationViewModel model)
         {
-
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var empId = userDetails.userId;
+            model.EmpId = Convert.ToInt32(empId);
 
             var result = await _post.CreateClientPropertDeclarationFormAsync(model);
 
@@ -425,12 +481,32 @@ namespace EHRM.Web.Controllers
             }
         }
 
-        [HttpGet("PostJoining/GetClientDeclarationById/{ID}")]
-        public async Task<JsonResult> GetClientDeclarationById([FromRoute] int ID)
+        [HttpGet("PostJoining/GetClientDeclarationById/{EmpId}")]
+        public async Task<JsonResult> GetClientDeclarationById([FromRoute] int EmpId)
         {
             try
             {
-                var asset = await _post.GetClientPropertDeclarationByIdAsync(ID);
+                var asset = await _post.GetClientPropertDeclarationByIdAsync(EmpId);
+
+                if (asset == null)
+                {
+                    return Json(new { success = false, message = "Asset not found." });
+                }
+
+                return Json(new { success = true, data = asset });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the Asset details." });
+            }
+        }
+
+        [HttpGet("PostJoining/GetClientDeclaration/{ID}")]
+        public async Task<JsonResult> GetClientDeclaration([FromRoute] int ID)
+        {
+            try
+            {
+                var asset = await _post.GetClientPropertDecByIdAsync(ID);
 
                 if (asset == null)
                 {
@@ -502,7 +578,10 @@ namespace EHRM.Web.Controllers
         public async Task<IActionResult> SaveNDAForm(NDAFormViewModel model)
         {
 
-
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var empId = userDetails.userId;
+            model.empId = Convert.ToInt32(empId);
             var result = await _post.CreateNDAFormAsync(model);
 
             // Handle the result of the create operation
@@ -574,12 +653,12 @@ namespace EHRM.Web.Controllers
             }
         }
 
-        //[HttpGet("PostJoining/GetNDAFormById/{ID}")]
-        public async Task<JsonResult> GetNDAFormById([FromRoute] int ID)
+        [HttpGet("PostJoining/GetNDAFormById/{EmpId}")]
+        public async Task<JsonResult> GetNDAFormById(int EmpId)
         {
             try
             {
-                var asset = await _post.GetNDAFormByIdAsync(ID);
+                var asset = await _post.GetNDAFormByIdAsync(EmpId);
 
                 if (asset == null)
                 {
@@ -625,6 +704,26 @@ namespace EHRM.Web.Controllers
             {
                 // Handle the case where the service failed
                 return Json(new { Success = false, Message = result.Message ?? "No Asset found." });
+            }
+        }
+
+        //[HttpGet("PostJoining/GetNDAFormById/{ID}")]
+        public async Task<JsonResult> GetNDAById([FromRoute] int ID)
+        {
+            try
+            {
+                var asset = await _post.GetNDAByIdAsync(ID);
+
+                if (asset == null)
+                {
+                    return Json(new { success = false, message = "Asset not found." });
+                }
+
+                return Json(new { success = true, data = asset });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the Asset details." });
             }
         }
 

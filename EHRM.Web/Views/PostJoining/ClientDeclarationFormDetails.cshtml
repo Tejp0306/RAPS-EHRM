@@ -169,14 +169,14 @@
 
     function openClientDeclarationModalDetail(Id) {
         $.ajax({
-            url: `/PostJoining/GetClientDeclarationById/${Id}`,
+            url: `/PostJoining/GetClientDeclaration/${Id}`,
             method: 'GET',
             success: function (response) {
                 if (response.success) {
-                    console.log("API Response:", response);
+          
 
                     const data = response.data.data || response.data;
-                    debugger;
+
                     // Populate modal fields
                     $('#EmployeeNameone').val(data?.employeeName || "N/A");
                     $('#ClientNameone').val(data?.clientName || "N/A");

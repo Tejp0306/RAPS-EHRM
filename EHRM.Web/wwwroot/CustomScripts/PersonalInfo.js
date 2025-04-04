@@ -1,73 +1,34 @@
-﻿$(document).ready(function () {
-    getPersonalInfoData();
-});
+﻿var empIdFromSession = parseInt('@empIdFromSession');
 
-// Function to fetch acknowledgment data and populate the DataTable
-function getPersonalInfoData() {
-    $('#personalInfoTable').DataTable({
-        destroy: true,
-        ajax: {
-            url: '/PostJoining/GetAllPersonalInfoForm',
-            method: 'GET',
-            dataSrc: ''
-        },
-        columns: [
-            { data: 'employeeName' },
-            { data: 'personalEmail' },
-            {
-                data: 'id',
-                render: function (data) {
-                    return `
-                        <div class="d-flex justify-content-center">
-                            <button class="btn btn-info btn-sm mx-1 view-btn" data-id="${data}">
-                                <i class="bi bi-eye"></i> View & Download
-                            </button>
-                        </div>
-                    `;
-                },
-                orderable: false
-            }
-        ],
-        pageLength: 5,
-        lengthMenu: [5, 10, 15, 20]
-    });
 
-    // Bind click event for dynamically added buttons
-    $('#personalInfoTable tbody').on('click', '.view-btn', function () {
-        const id = $(this).data('id');
-        openPersonalInfoModal(id);
-    });
-}
-
-function openPersonalInfoModal(personalInfoID) {
+function openPersonalInfoModal(empId) {
     $.ajax({
-        url: `/PostJoining/GetPersonalInfoById/${personalInfoID}`,
+        url: `/PostJoining/GetPersonalInfoById/${empId}`,
         method: 'GET',
         success: function (response) {
             if (response.success) {
-                console.log("API Response:", response);
 
                 const data = response.data.data || response.data;
 
                 // Populate modal fields
-                $('#EmployeeNameOne').val(data?.employeeName || "N/A");
-                $('#PersonalEmailone').val(data?.personalEmail || "N/A");
-                $('#PermanentAddressone').val(data?.permanentAddress || "N/A");
-                $('#CurrentAddressone').val(data?.currentAddress || "N/A");
-                $('#MobilePhoneone').val(data?.mobilePhone || "N/A");
+                $('#EmpName').val(data?.employeeName || "N/A");
+                $('#PersEmail').val(data?.personalEmail || "N/A");
+                $('#PermanentAdd').val(data?.permanentAddress || "N/A");
+                $('#CurrentAdd').val(data?.currentAddress || "N/A");
+                $('#MobilePhn').val(data?.mobilePhone || "N/A");
 
                 // Emergency Contacts
-                $('#EmergencyContact1Nameone').val(data?.emergencyContact1Name || "N/A");
-                $('#EmergencyContact1Relationshipone').val(data?.emergencyContact1Relationship || "N/A");
-                $('#EmergencyContact1Phoneone').val(data?.emergencyContact1Phone || "N/A");
+                $('#EmergencyCont1Name').val(data?.emergencyContact1Name || "N/A");
+                $('#EmergencyCont1Relationship').val(data?.emergencyContact1Relationship || "N/A");
+                $('#EmergencyCont1Phone').val(data?.emergencyContact1Phone || "N/A");
 
-                $('#EmergencyContact2Nameone').val(data?.emergencyContact2Name || "N/A");
-                $('#EmergencyContact2Relationshipone').val(data?.emergencyContact2Relationship || "N/A");
-                $('#EmergencyContact2Phoneone').val(data?.emergencyContact2Phone || "N/A");
+                $('#EmergencyCont2Name').val(data?.emergencyContact2Name || "N/A");
+                $('#EmergencyCont2Relationship').val(data?.emergencyContact2Relationship || "N/A");
+                $('#EmergencyCont2Phone').val(data?.emergencyContact2Phone || "N/A");
 
                 // Signature and Date
-                $('#Signatureone').val(data?.signature || "N/A");
-                $('#FormDateOne').val(data?.formDate || "N/A");
+                $('#Sign').val(data?.signature || "N/A");
+                $('#FormDateO').val(data?.formDate || "N/A");
 
                 // Ensure download button exists
                 if ($('#downloadBtn').length === 0) {
@@ -76,10 +37,6 @@ function openPersonalInfoModal(personalInfoID) {
                     `);
                 }
 
-                // Attach click event (ensure no duplicate events)
-                $('#downloadBtn').off('click').on('click', function () {
-                    downloadPersonalInfo(data);
-                });
 
                 // Show the modal
                 $('#personalInfoModal').modal('show');
@@ -93,25 +50,43 @@ function openPersonalInfoModal(personalInfoID) {
     });
 }
 
+function downloadPersonalInformation(empId) {
+    $.ajax({
+        url: `/PostJoining/GetPersonalInfoById/${empId}`,
+        method: 'GET',
+        success: function (response) {
+            if (response.success) {
+
+                const data = response.data.data || response.data;
+                downloadPersonalInfo(data);
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function () {
+            alert("An error occurred while fetching the data.");
+        }
+    });
+}
 
 function downloadPersonalInfo(data) {
     const jsPDF = window.jspdf.jsPDF;
     const doc = new jsPDF();
-
+    debugger;
     // Extract modal content
-    const employeeName = $('#EmployeeNameOne').val() || "N/A";
-    const personalEmail = $('#PersonalEmailone').val() || "N/A";
-    const permanentAddress = $('#PermanentAddressone').val() || "N/A";
-    const currentAddress = $('#CurrentAddressone').val() || "N/A";
-    const mobilePhone = $('#MobilePhoneone').val() || "N/A";
-    const emergencyContact1Name = $('#EmergencyContact1Nameone').val() || "N/A";
-    const emergencyContact1Relationship = $('#EmergencyContact1Relationshipone').val() || "N/A";
-    const emergencyContact1Phone = $('#EmergencyContact1Phoneone').val() || "N/A";
-    const emergencyContact2Name = $('#EmergencyContact2Nameone').val() || "N/A";
-    const emergencyContact2Relationship = $('#EmergencyContact2Relationshipone').val() || "N/A";
-    const emergencyContact2Phone = $('#EmergencyContact2Phoneone').val() || "N/A";
-    const signature = $('#Signatureone').val() || "N/A";
-    const formDate = $('#FormDateOne').val() || "N/A";
+    const employeeName = data?.employeeName || "N/A";
+    const personalEmail = data?.personalEmail || "N/A";
+    const permanentAddress = data?.permanentAddress || "N/A";
+    const currentAddress = data?.currentAddress || "N/A";
+    const mobilePhone = data?.mobilePhone || "N/A";
+    const emergencyContact1Name = data?.emergencyContact1Name || "N/A";
+    const emergencyContact1Relationship = data?.emergencyContact1Relationship || "N/A";
+    const emergencyContact1Phone = data?.emergencyContact1Phone || "N/A";
+    const emergencyContact2Name = data?.emergencyContact2Name || "N/A";
+    const emergencyContact2Relationship = data?.emergencyContact2Relationship || "N/A";
+    const emergencyContact2Phone = data?.emergencyContact2Phone || "N/A";
+    const signature = data?.signature || "N/A";
+    const formDate = data?.formDate || "N/A";
 
     // Set PDF Title
     doc.setFont("helvetica", "bold");

@@ -38,6 +38,10 @@ namespace EHRM.DAL.Repositories
         Task<List<Declaration>> GetDeclarationDetailsByIdAsync(int EmpId);
 
         //Get Leave Status By Leave Id
+        Task<NonDisclosureAgreement> GetEmployeeNDAByIdAsync(int EmpId);
+        Task<PersonalInfo> GetEmployeePersonalInfoByIdAsync(int EmpId);
+        Task<ClientPropertyDeclaration> GetEmployeePropertyDeclarationByIdAsync(int EmpId);
+        Task<AcknowledgementForm> GetEmployeeAcknowledgementByIdAsync(int EmpId);
 
         Task<List<LeaveStatuss>> GetStatusByLeaveIdAsync(int leaveid);
 
