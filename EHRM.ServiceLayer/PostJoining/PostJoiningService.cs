@@ -2,34 +2,21 @@
 using EHRM.DAL.UnitOfWork;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.MasterEmployee;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.SqlServer.Scaffolding.Internal;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Data;
-using System.Globalization;
-using EHRM.ServiceLayer.Models;
-using EHRM.ServiceLayer.Master;
 
-using EHRM.ViewModel.Master;
+using Microsoft.Extensions.Configuration;
+
+
+using System.Data;
+
+using Newtonsoft.Json.Linq;
+
+using EHRM.ServiceLayer.Models;
+
 using EHRM.ViewModel.PostJoining;
-using EHRM.ViewModel.Self;
-using Microsoft.EntityFrameworkCore;
+
 
 
 namespace EHRM.ServiceLayer.PostJoining
@@ -797,18 +784,16 @@ namespace EHRM.ServiceLayer.PostJoining
 
         public async Task<Result> GetBackGroundFormDetailsAsync()
         {
-            var bgvRepository = _UnitOfWork.GetRepository<Bgvform>();  // Using generic repository
-            var previousEmploymentRepository = _UnitOfWork.GetRepository<PreviousEmployment>();  // Using generic repository
+            var bgvRepository = _UnitOfWork.GetRepository<Bgvform>(); 
 
-            // Fetch all records from both tables
+
             var bgvForms = await bgvRepository.GetAllAsync();
-            var previousEmployments = await previousEmploymentRepository.GetAllAsync();
 
-            // Combine the results in a dictionary or an object
+
             var responseData = new
             {
                 BgvForms = bgvForms,
-                PreviousEmployments = previousEmployments
+                
             };
 
             return new Result { Success = true, Data = responseData };
@@ -836,14 +821,6 @@ namespace EHRM.ServiceLayer.PostJoining
 
 
 
-        private readonly IUnitOfWork _unitOfWork;
-
-        public PostJoiningService(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
-
-
         #region Acknowldegement Form
 
         public async Task<Result> CreateAcknowldegementFormAsync(AcknowledgementFormViewModel model)
@@ -859,9 +836,9 @@ namespace EHRM.ServiceLayer.PostJoining
                     EmployeeSignature = model.EmployeeSignature,
                 };
 
-                var AssetRepository = _unitOfWork.GetRepository<AcknowledgementForm>();
+                var AssetRepository = _UnitOfWork.GetRepository<AcknowledgementForm>();
                 await AssetRepository.AddAsync(newAckForm);
-                await _unitOfWork.SaveAsync();
+                await _UnitOfWork.SaveAsync();
 
                 return new Result
                 {
@@ -882,7 +859,7 @@ namespace EHRM.ServiceLayer.PostJoining
         {
             try
             {
-                var holidayRepository = _unitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
+                var holidayRepository = _UnitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
                 var holiday = await holidayRepository.GetEmployeeAcknowledgementByIdAsync(empId);  // Fetch Holiday by ID
 
                 if (holiday == null)
@@ -924,7 +901,7 @@ namespace EHRM.ServiceLayer.PostJoining
         {
             try
             {
-                var holidayRepository = _unitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
+                var holidayRepository = _UnitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
                 var holiday = await holidayRepository.GetByIdAsync(Id);  // Fetch Holiday by ID
 
                 if (holiday == null)
@@ -963,14 +940,14 @@ namespace EHRM.ServiceLayer.PostJoining
         }
         public async Task<Result> GetAllAcknowledgeFormAsync()
         {
-            var AssetRepository = _unitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
+            var AssetRepository = _UnitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
             var Asset = await AssetRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = Asset };
         }
 
         public async Task<Result> GetAcknowledgeFormAsync()
         {
-            var AssetRepository = _unitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
+            var AssetRepository = _UnitOfWork.GetRepository<AcknowledgementForm>();  // Using generic repository
             var Asset = await AssetRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = Asset };
         }
@@ -1006,9 +983,9 @@ namespace EHRM.ServiceLayer.PostJoining
                  
                 };
 
-                var AssetRepository = _unitOfWork.GetRepository<PersonalInfo>();
+                var AssetRepository = _UnitOfWork.GetRepository<PersonalInfo>();
                 await AssetRepository.AddAsync(newPersonalInfo);
-                await _unitOfWork.SaveAsync();
+                await _UnitOfWork.SaveAsync();
 
                 return new Result
                 {
@@ -1028,7 +1005,7 @@ namespace EHRM.ServiceLayer.PostJoining
 
         public async Task<Result> GetAllPersonalInformationFormAsync()
         {
-            var AssetRepository = _unitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
+            var AssetRepository = _UnitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
             var Asset = await AssetRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = Asset };
         }
@@ -1037,7 +1014,7 @@ namespace EHRM.ServiceLayer.PostJoining
         {
             try
             {
-                var personalInfoRepository = _unitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
+                var personalInfoRepository = _UnitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
                 var personalInfo = await personalInfoRepository.GetEmployeePersonalInfoByIdAsync(empId);  // Fetch Holiday by ID
 
                 if (personalInfo == null)
@@ -1089,7 +1066,7 @@ namespace EHRM.ServiceLayer.PostJoining
         {
             try
             {
-                var personalInfoRepository = _unitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
+                var personalInfoRepository = _UnitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
                 var personalInfo = await personalInfoRepository.GetByIdAsync(Id);  // Fetch Holiday by ID
 
                 if (personalInfo == null)
@@ -1138,7 +1115,7 @@ namespace EHRM.ServiceLayer.PostJoining
         }
         public async Task<Result> GetPersonalInfoFormAsync()
         {
-            var AssetRepository = _unitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
+            var AssetRepository = _UnitOfWork.GetRepository<PersonalInfo>();  // Using generic repository
             var Asset = await AssetRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = Asset };
         }
@@ -1167,9 +1144,9 @@ namespace EHRM.ServiceLayer.PostJoining
 
                 };
 
-                var AssetRepository = _unitOfWork.GetRepository<ClientPropertyDeclaration>();
+                var AssetRepository = _UnitOfWork.GetRepository<ClientPropertyDeclaration>();
                 await AssetRepository.AddAsync(newClientPropDec);
-                await _unitOfWork.SaveAsync();
+                await _UnitOfWork.SaveAsync();
 
                 return new Result
                 {
@@ -1189,7 +1166,7 @@ namespace EHRM.ServiceLayer.PostJoining
 
         public async Task<Result> GetAllClientPropertDeclarationFormAsync()
         {
-            var AssetRepository = _unitOfWork.GetRepository<ClientPropertyDeclaration>();  // Using generic repository
+            var AssetRepository = _UnitOfWork.GetRepository<ClientPropertyDeclaration>();  // Using generic repository
             var Asset = await AssetRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = Asset };
         }
@@ -1198,7 +1175,7 @@ namespace EHRM.ServiceLayer.PostJoining
         {
             try
             {
-                var personalInfoRepository = _unitOfWork.GetRepository<ClientPropertyDeclaration>();  // Using generic repository
+                var personalInfoRepository = _UnitOfWork.GetRepository<ClientPropertyDeclaration>();  // Using generic repository
                 var personalInfo = await personalInfoRepository.GetEmployeePropertyDeclarationByIdAsync(empId);  // Fetch Holiday by ID
 
                 if (personalInfo == null)
@@ -1244,7 +1221,7 @@ namespace EHRM.ServiceLayer.PostJoining
         {
             try
             {
-                var personalInfoRepository = _unitOfWork.GetRepository<ClientPropertyDeclaration>();  // Using generic repository
+                var personalInfoRepository = _UnitOfWork.GetRepository<ClientPropertyDeclaration>();  // Using generic repository
                 var personalInfo = await personalInfoRepository.GetByIdAsync(Id);  // Fetch Holiday by ID
 
                 if (personalInfo == null)
@@ -1288,7 +1265,7 @@ namespace EHRM.ServiceLayer.PostJoining
 
         public async Task<Result> GetClientPropertDeclarationFormAsync()
         {
-            var AssetRepository = _unitOfWork.GetRepository<ClientPropertyDeclaration>();  // Using generic repository
+            var AssetRepository = _UnitOfWork.GetRepository<ClientPropertyDeclaration>();  // Using generic repository
             var Asset = await AssetRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = Asset };
         }
@@ -1315,9 +1292,9 @@ namespace EHRM.ServiceLayer.PostJoining
 
                 };
 
-                var AssetRepository = _unitOfWork.GetRepository<NonDisclosureAgreement>();
+                var AssetRepository = _UnitOfWork.GetRepository<NonDisclosureAgreement>();
                 await AssetRepository.AddAsync(newNDA);
-                await _unitOfWork.SaveAsync();
+                await _UnitOfWork.SaveAsync();
 
                 return new Result
                 {
@@ -1337,7 +1314,7 @@ namespace EHRM.ServiceLayer.PostJoining
 
         public async Task<Result> GetAllNDAFormAsync()
         {
-            var AssetRepository = _unitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
+            var AssetRepository = _UnitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
             var Asset = await AssetRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = Asset };
         }
@@ -1346,7 +1323,7 @@ namespace EHRM.ServiceLayer.PostJoining
         {
             try
             {
-                var personalInfoRepository = _unitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
+                var personalInfoRepository = _UnitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
                 var personalInfo = await personalInfoRepository.GetEmployeeNDAByIdAsync(empId);  // Fetch Holiday by ID
 
                 if (personalInfo == null)
@@ -1386,7 +1363,7 @@ namespace EHRM.ServiceLayer.PostJoining
 
         public async Task<Result> GetNDAFormAsync()
         {
-            var AssetRepository = _unitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
+            var AssetRepository = _UnitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
             var Asset = await AssetRepository.GetAllAsync();  // Fetch all roles
             return new Result { Success = true, Data = Asset };
         }
@@ -1395,7 +1372,7 @@ namespace EHRM.ServiceLayer.PostJoining
         {
             try
             {
-                var personalInfoRepository = _unitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
+                var personalInfoRepository = _UnitOfWork.GetRepository<NonDisclosureAgreement>();  // Using generic repository
                 var personalInfo = await personalInfoRepository.GetByIdAsync(Id);  // Fetch Holiday by ID
 
                 if (personalInfo == null)

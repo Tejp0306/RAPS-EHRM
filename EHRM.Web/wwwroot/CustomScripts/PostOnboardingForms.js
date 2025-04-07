@@ -10,7 +10,7 @@ $(document).ready(function () {
 });
 
 
-// ✅ Load Employee Form with Data
+// ✅ Load Employee Form with Data(on bgv preview)
 function loadEmployeeForm(empId) {
     $('#formPreviewContent').html('<p class="text-center text-muted">Loading form details...</p>');
 
@@ -33,7 +33,7 @@ function loadEmployeeForm(empId) {
     });
 }
 
-// ✅ Load Employee Form with Data
+// ✅ Load Employee Form with Data(on bgv download)
 function loadDownloadForm(empId) {
 
 
@@ -78,6 +78,8 @@ function GetDownloadMasterForm(empId) {
     });
 }
 
+
+//download master data
 function DownloadMasterForm(data) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -88,12 +90,19 @@ function DownloadMasterForm(data) {
         headStyles: { fillColor: [50, 50, 50], textColor: [255, 255, 255] }
     });
 
+    // Utility function to format dates
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "-";
+        const date = new Date(dateStr);
+        return !isNaN(date.getTime()) ? date.toLocaleDateString() : "-";
+    };
+
     // Set PDF Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
     doc.text("Employee Master Sheet", 20, 20);
 
-    let y = 30; // Start position
+    let y = 30;
 
     const addSectionTitle = (title) => {
         doc.setFontSize(12);
@@ -102,9 +111,10 @@ function DownloadMasterForm(data) {
         y += 6;
     };
 
-    const addTable = (rows) => {
+    const addTable = (rows, headers = null) => {
         doc.autoTable({
             startY: y,
+            head: headers ? [headers] : undefined,
             body: rows,
             theme: "striped",
             styles: { cellWidth: "wrap" }
@@ -156,16 +166,46 @@ function DownloadMasterForm(data) {
     ]);
 
     // ✅ Work Experience
-    addSectionTitle("Previous Work Experience");
-    if (data.masterWorkExperience.length > 0) {
-        let experienceRows = data.masterWorkExperience.map((exp, index) => [
-            `Experience ${index + 1}`, exp.organisationName, "Designation", exp.designation,
-            "Years of Experience", exp.yearsOfExperience
-        ]);
-        addTable(experienceRows);
+    addSectionTitle("Work Experience");
+
+    const experiences = data.masterWorkExperience || [];
+
+    if (experiences.length > 0) {
+        const experienceRows = experiences.map((exp, index) => ([
+            index + 1,
+            exp.organisationName || "N/A",
+            exp.designation || "N/A",
+            exp.yearsOfExperience || "N/A",
+            formatDate(exp.fromDate),
+            formatDate(exp.toDate),
+            exp.reasonForLeaving || "N/A"
+        ]));
+
+        doc.autoTable({
+            startY: y,
+            head: [[
+                "SNo", "Organization Name", "Designation", "Years", "From Date", "To Date", "Reason for Leaving"
+            ]],
+            body: experienceRows,
+            theme: "striped",
+            styles: { cellWidth: 'wrap' },
+            columnStyles: {
+                0: { cellWidth: 20 },   // S.No
+                1: { cellWidth: 35 },   // Org Name
+                2: { cellWidth: 30 },   // Designation
+                3: { cellWidth: 20 },   // Years
+                4: { cellWidth: 25 },   // From Date
+                5: { cellWidth: 25 },   // To Date
+                6: { cellWidth: 50 }    // Reason for Leaving
+            },
+            useCss: true
+        });
+
+        y = doc.lastAutoTable.finalY + 10;
     } else {
-        addTable([["No Work Experience Found"]]);
+        addTable(["Message"], [["No Work Experience Found"]]);
     }
+
 
     // ✅ Bank Details
     addSectionTitle("Bank Details");
@@ -200,6 +240,7 @@ function DownloadMasterForm(data) {
     doc.save(`Employee_MasterSheet_${data.masterEmployee.firstName}_${data.masterEmployee.lastName}.pdf`);
 }
 
+
 // ✅ Helper Function to Format Date
 function formatDate(dateStr) {
     if (!dateStr) return "N/A";
@@ -207,12 +248,8 @@ function formatDate(dateStr) {
     return date.toISOString().split("T")[0];
 }
 
-function formatDate(dateString) {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-}
 
+//preview bgv
 function renderEmployeeData(data) {
 
     let formContent = `
@@ -283,8 +320,8 @@ function renderEmployeeData(data) {
                     <td>${emp.officialTitle || '-'}</td>
                     <td>${emp.payrollCompanyName || '-'}</td>
                     <td>${emp.organizationAddress || '-'}</td>
-                    <td>${formatDate(emp.fromDate)}</td>
-                    <td>${formatDate(emp.toDate)}</td>
+            <td>${emp.fromDate && emp.fromDate !== '0001-01-01' ? formatDate(emp.fromDate) : '-'}</td>
+            <td>${emp.toDate && emp.toDate !== '0001-01-01' ? formatDate(emp.toDate) : '-'}</td>
                     <td>${emp.employeeCode || '-'}</td>
                     <td>${emp.ctcPerAnnum || '-'}</td>
                     <td>${emp.keyResponsibility || '-'}</td>
@@ -292,7 +329,7 @@ function renderEmployeeData(data) {
                     <td>${emp.reasonForLeaving || '-'}</td>
                     <td>${emp.reportingManagerName || '-'}</td>
                     <td>${emp.reportingManagerDesignation || '-'}</td>
-                    <td>${emp.isReportingManagerStillInCompany ? 'Yes' : 'No'}</td>
+            <td>${emp.isReportingManagerStillInCompany === 'Yes' ? 'Yes' : 'No'}</td>
                     <td>${emp.companyLandline || '-'}</td>
                     <td>${emp.personalMobileNo || '-'}</td>
                     <td>${emp.bestTimeToReach || '-'}</td>
@@ -302,6 +339,7 @@ function renderEmployeeData(data) {
         formContent += `
                 <tr><td colspan="19" class="text-center">No previous employment details found.</td></tr>`;
     }
+
 
     formContent += `
                 </tbody>
@@ -317,7 +355,7 @@ function renderEmployeeData(data) {
 
 }
 
-
+//bgv download
 function downloadEmployeeForm(data) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -328,7 +366,7 @@ function downloadEmployeeForm(data) {
     doc.text("Employee Background Verification Form", 20, 20);
     let y = 30;
 
-    // ✅ Helper to Add Section Titles
+    // Helper: Add Section Title
     const addSectionTitle = (title) => {
         doc.setFontSize(12);
         doc.setFont("helvetica", "bold");
@@ -336,7 +374,7 @@ function downloadEmployeeForm(data) {
         y += 8;
     };
 
-    // ✅ Helper to Add Tables
+    // Helper: Add Tables
     const addTable = (headers, rows) => {
         doc.autoTable({
             startY: y,
@@ -349,7 +387,7 @@ function downloadEmployeeForm(data) {
         y = doc.lastAutoTable.finalY + 10;
     };
 
-    // ✅ Employee Personal Information
+    // Personal Info
     addSectionTitle("Employee Personal Information");
     addTable(
         ["Field", "Value", "Field", "Value"],
@@ -365,7 +403,7 @@ function downloadEmployeeForm(data) {
         ]
     );
 
-    // ✅ Education Information
+    // Education Info
     addSectionTitle("Education Information");
     addTable(
         ["Field", "Value", "Field", "Value"],
@@ -376,7 +414,7 @@ function downloadEmployeeForm(data) {
         ]
     );
 
-    // ✅ Reference Information
+    // Reference Info
     addSectionTitle("Reference Information");
     addTable(
         ["Field", "Value", "Field", "Value"],
@@ -386,24 +424,26 @@ function downloadEmployeeForm(data) {
         ]
     );
 
-    // ✅ Previous Employment Details
+    // Previous Employment Info
     addSectionTitle("Previous Employment Details");
 
-    if (data.previousEmployments && data.previousEmployments.length > 0) {
-        let employmentRows = data.previousEmployments.map((emp, index) => [
+    const previousEmployments = data.previousEmployments || [];
+
+    if (previousEmployments.length > 0) {
+        let employmentRows = previousEmployments.map((emp, index) => [
             [`Employment #${index + 1}`, "", "", ""],
             ["Nature of Employment", emp.natureOfEmployment || "N/A", "Designation", emp.currentDesignation || "N/A"],
             ["Department", emp.department || "N/A", "Official Title", emp.officialTitle || "N/A"],
             ["Company Name", emp.payrollCompanyName || "N/A", "Organization Address", emp.organizationAddress || "N/A"],
-            ["From Date", formatDate(emp.fromDate), "To Date", formatDate(emp.toDate)],
+            ["From Date", (emp.fromDate && emp.fromDate !== "0001-01-01") ? formatDate(emp.fromDate) : "N/A", "To Date", (emp.toDate && emp.toDate !== "0001-01-01") ? formatDate(emp.toDate) : "N/A"],
             ["Employee Code", emp.employeeCode || "N/A", "CTC Per Annum", emp.ctcPerAnnum || "N/A"],
             ["Key Responsibility", emp.keyResponsibility || "N/A", "Employment Tenure", emp.employmentTenure || "N/A"],
             ["Reason for Leaving", emp.reasonForLeaving || "N/A", "", ""],
             ["Reporting Manager", emp.reportingManagerName || "N/A", "Manager Designation", emp.reportingManagerDesignation || "N/A"],
-            ["Still in Company", emp.isReportingManagerStillInCompany || "N/A", "Best Time to Reach", emp.bestTimeToReach || "N/A"],
+            ["Still in Company", emp.isReportingManagerStillInCompany === "Yes" ? "Yes" : "No", "Best Time to Reach", emp.bestTimeToReach || "N/A"],
             ["Company Landline", emp.companyLandline || "N/A", "Personal Mobile No.", emp.personalMobileNo || "N/A"],
-            ["", "", "", ""] // Empty row for spacing
-        ]).flat(); // Flatten array to properly format table
+            ["", "", "", ""] // Spacer row
+        ]).flat();
 
         addTable(
             ["Field", "Value", "Field", "Value"],
@@ -413,26 +453,13 @@ function downloadEmployeeForm(data) {
         addTable(["Message", ""], [["No previous employment details found.", ""]]);
     }
 
-    // ✅ Save as PDF
+    // Save
     doc.save(`Employee_BGV_${data.firstName || "N/A"}_${data.lastName || "N/A"}.pdf`);
 }
 
-// ✅ Helper Function to Format Date
-function formatDate(dateStr) {
-    if (!dateStr || dateStr === "0001-01-01") return "N/A"; // Handle default min date
-    let date = new Date(dateStr);
-    return date.toISOString().split("T")[0];
-}
 
 
-// ✅ Helper Function to Format Date
-function formatDate(dateStr) {
-    if (!dateStr) return "N/A";
-    let date = new Date(dateStr);
-    return date.toISOString().split("T")[0];
-}
-
-
+//master preview
 function loadMasterForm(empId) {
 
     // ✅ AJAX Call to Fetch Data for BGV Form
@@ -454,7 +481,7 @@ function loadMasterForm(empId) {
     });
 }
 
-
+//render master
 function renderMasterData(data) {
     if (!data || !data.masterEmployee) {
         $('#formPreviewContent').html('<p class="text-danger">No data available for this employee.</p>');
@@ -470,6 +497,8 @@ function renderMasterData(data) {
     let masterFamilyDetails = data.masterFamilyDetails || {};
     let masterReportingDetails = data.masterReportingDetails || {};
     let masterEmergencyContactViewModel = data.masterEmergencyContactViewModel || {};
+    let masterWorkExperience = Array.isArray(data.masterWorkExperience) ? data.masterWorkExperience : [];
+
 
     let formContent = `
         <h5>Employee Information</h5>
@@ -572,8 +601,8 @@ function renderMasterData(data) {
                 </thead>
                 <tbody>`;
 
-    if (data.masterWorkExperience && data.masterWorkExperience.length > 0) {
-        data.masterWorkExperience.forEach(emp => {
+    if (masterWorkExperience.length > 0) {
+        masterWorkExperience.forEach(emp => {
             formContent += `
                 <tr>
                     <td>${emp.organisationName || '-'}</td>
@@ -593,20 +622,14 @@ function renderMasterData(data) {
             </table>
         </div>`;
 
-    // ✅ Render the final content in the preview modal
+    // Render final HTML
     $('#formPreviewContent').html(formContent);
 
     $('#downloadBtn').off('click').on('click', function () {
-        downloadEmployeeForm(data);
+        DownloadMasterForm(data);
     });
 }
 
-// ✅ Helper Function to Format Dates
-function formatDate(dateString) {
-    if (!dateString) return '-';
-    let date = new Date(dateString);
-    return date.toLocaleDateString('en-GB'); // Format: DD/MM/YYYY
-}
 
 
 

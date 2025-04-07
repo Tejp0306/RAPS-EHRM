@@ -1,5 +1,4 @@
-
-﻿using EHRM.ViewModel.MasterEmployee;
+using EHRM.ViewModel.MasterEmployee;
 using EHRM.ViewModel.MainMenu;
 using Microsoft.AspNetCore.Mvc;
 using EHRM.ServiceLayer.PostJoining;
@@ -9,7 +8,6 @@ using EHRM.DAL.Database;
 using EHRM.ServiceLayer.Helpers;
 using NuGet.Protocol;
 using Newtonsoft.Json.Linq;
-
 ﻿using System.Security.Cryptography.Xml;
 using EHRM.DAL.Database;
 using EHRM.ServiceLayer.Calendar;
@@ -35,6 +33,10 @@ namespace EHRM.Web.Controllers
     {
         private readonly IPostJoiningService _post;
 
+        public PostJoiningController(IPostJoiningService post)
+        {
+            _post = post;
+        }
 
         public IActionResult MasterSheet()
         {
@@ -42,18 +44,11 @@ namespace EHRM.Web.Controllers
         }
 
         public IActionResult BGVForm()
-
-        public PostJoiningController(IPostJoiningService post)
-        {
-
-            _post = post;
-        }
-        public IActionResult Index()
-
         {
             return View();
         }
 
+       
         public IActionResult PostJoiningForms()
         {
             return View();
@@ -66,23 +61,9 @@ namespace EHRM.Web.Controllers
         }
 
         public IActionResult AdminMasterSheetView()
-
-        #region Acknowledgement Form
-        public IActionResult AcknowledgementForm()
-        {
-            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
-            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
-            var name = userDetails.userName;
-            ViewData["Name"] = name;
-            return View();
-        }
-
-        public IActionResult AcknowledgementFormDetails()
-
         {
             return View();
         }
-
 
         public IActionResult AddExperience()
         {
@@ -108,35 +89,16 @@ namespace EHRM.Web.Controllers
             if (result)
             {
                 TempData["SuccessMessage"] = "Master Personal Info saved successfully.";
-                return Redirect("MasterSheet");
-
-        public async Task<IActionResult> SaveAcknowledgementForm(AcknowledgementFormViewModel model)
-        {
-            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
-            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
-            var empId = userDetails.userId;
-            model.EmpId = Convert.ToInt32(empId);
-
-
-            var result = await _post.CreateAcknowldegementFormAsync(model);
-
-            // Handle the result of the create operation
-            if (result.Success)
-            {
-                // Success handling
-                TempData["ToastType"] = "success";  // Success, danger, warning, info
-                TempData["ToastMessage"] = "Form Submitted successfully!";
-                return RedirectToAction("AcknowledgementForm"); // Redirect back to the EmployeeType view
-
+                return Redirect("AddExperience");
 
             }
             else
             {
-
                 TempData["ErrorMessage"] = "An error occurred while saving data.";
                 return View(model);
             }
         }
+
 
         // Save Contact Info of MasterSheet
 
@@ -451,14 +413,11 @@ namespace EHRM.Web.Controllers
             }
             else
             {
-
                 TempData["ErrorMessage"] = "An error occurred while saving data.";
                 return View(model);
             }
+
         }
-
-
-
         // Save Reporting Info of MasterSheet
 
         public async Task<IActionResult> SaveReportingMasterInfo(EmployeeFormViewModel model)
@@ -608,7 +567,40 @@ namespace EHRM.Web.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetMasterSheetFormDetails()
+        {
+            try
+            {
+                var result = await _post.GetMasterSheetFormDetailsAsync();
 
+                if (result?.Success == true && result.Data != null)
+                {
+                    var jsonData = JObject.FromObject(result.Data);
+
+                    // Extract MasterForm instead of EmployeeMaster
+                    var employeeMasterList = jsonData["MasterForm"]?.ToObject<List<EmployeeMaster>>() ?? new List<EmployeeMaster>();
+
+                    var response = new
+                    {
+                        BgvForms = employeeMasterList.Select(emp => new
+                        {
+                            EmpId = emp.EmpId,
+                            EmployeeName = $"{emp.FirstName} {emp.LastName}",
+                            EmailAddress = emp.PancardNumber // Change if you need a different field
+                        }).ToList()
+                    };
+
+                    return Json(new { Success = true, Data = response });
+                }
+
+                return Json(new { Success = false, Message = result?.Message ?? "No background form details found." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = "An error occurred while retrieving background form details.", Error = ex.Message });
+            }
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetMasterSheetData(int EmpId)
@@ -640,14 +632,293 @@ namespace EHRM.Web.Controllers
             // Fetch the result from the service layer
             var result = await _post.GetBackGroundFormDetailsAsync();
 
-                // Error handling for the case where creation fails
-                TempData["ToastType"] = "danger"; // Store error message
-                TempData["ToastMessage"] = "An error occurred while submitting the form.";
-                return RedirectToAction("PersonalInformationForm"); // Redirect back to the EmployeeType view
+            if (result.Success)
+            {
+                return Json(result.Data); // Return data as JSON
+            }
+
+            // Handle the error scenario
+            TempData["ToastType"] = "danger";
+            TempData["ToastMessage"] = "An error occurred while retrieving background form details.";
+
+            return Json(new { success = false, message = "Failed to retrieve background form details." });
+        }
+
+
+        [HttpGet("PostJoining/GetBGVDataByEmpId/{EmpId}")]
+        public async Task<JsonResult> GetBGVDataByEmpId([FromRoute] int EmpId)
+        {
+            try
+            {
+                var nb = await _post.GetEmployeeDetailsAsync(EmpId);
+
+                if (nb == null)
+                {
+                    return Json(new { success = false, message = "Notice not found." });
+                }
+
+
+                return Json(new { success = true, data = nb });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
             }
 
         }
 
+
+
+        // Get MasterSheet Data for Admin
+
+        [HttpGet("PostJoining/GetMasterSheetDataByEmpId/{EmpId}")]
+        public async Task<JsonResult> GetMasterSheetDataByEmpId([FromRoute] int EmpId)
+        {
+            try
+            {
+                EmployeeFormViewModel employeeMasterData = await Task.Run(() => _post.GetMasterSheetDataAsync(EmpId));
+
+                if (employeeMasterData == null)
+                {
+                    return Json(new { success = false, message = "Employee data not found." });
+                }
+
+                return Json(new { success = true, data = employeeMasterData });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the employee data.", error = ex.Message });
+            }
+
+        }
+
+
+
+
+        #region Acknowledgement Form
+        public IActionResult AcknowledgementForm()
+        {
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var name = userDetails.userName;
+            ViewData["Name"] = name;
+            return View();
+        }
+
+        public IActionResult AcknowledgementFormDetails()
+
+        {
+            return View();
+        }
+
+
+        
+        public async Task<IActionResult> SaveAcknowledgementForm(AcknowledgementFormViewModel model)
+        {
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var empId = userDetails.userId;
+            model.EmpId = Convert.ToInt32(empId);
+
+
+            var result = await _post.CreateAcknowldegementFormAsync(model);
+
+            // Handle the result of the create operation
+            if (result.Success)
+            {
+                // Success handling
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Form Submitted successfully!";
+                return RedirectToAction("AcknowledgementForm"); // Redirect back to the EmployeeType view
+
+
+            }
+            else
+            {
+
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        
+        [HttpGet("PostJoining/GetAcknowlegementFormDetails/{EmpId}")]
+        public async Task<JsonResult> GetAcknowlegementFormDetails([FromRoute] int EmpId)
+        {
+            try
+            {
+                var asset = await _post.GetAcknowldegementFormByIdAsync(EmpId);
+
+                if (asset == null)
+                {
+                    return Json(new { success = false, message = "Asset not found." });
+                }
+
+                return Json(new { success = true, data = asset });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the Asset details." });
+            }
+        }
+
+        [HttpGet("PostJoining/GetAcknowlegementDetails/{acknowlegementFormID}")]
+        public async Task<JsonResult> GetAcknowlegementDetails([FromRoute] int acknowlegementFormID)
+        {
+            try
+            {
+                var asset = await _post.GetAcknowldegementAsync(acknowlegementFormID);
+
+                if (asset == null)
+                {
+                    return Json(new { success = false, message = "Asset not found." });
+                }
+
+                return Json(new { success = true, data = asset });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the Asset details." });
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<JsonResult> GetAllAcknowledgeForm()
+        {
+            // Retrieve JWT token from session
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+
+            // Extract user details from JWT token
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+
+            // Get the logged-in employee's name
+            var loggedInEmployeeName = userDetails.userName;
+
+            if (string.IsNullOrEmpty(loggedInEmployeeName))
+            {
+                return Json(new { Success = false, Message = "Session expired or user not logged in." });
+            }
+
+            // Fetch all acknowledgment forms
+            var result = await _post.GetAllAcknowledgeFormAsync();
+
+            if (result.Success && result.Data != null)
+            {
+                var allForms = result.Data as IEnumerable<AcknowledgementForm>;
+
+                if (allForms != null)
+                {
+                    // Filter forms based on the logged-in employee's name
+                    var filteredForms = allForms
+                        .Where(asset => asset.EmployeeName == loggedInEmployeeName)
+                        .Select(asset => new
+                        {
+                            Id = asset.Id,
+                            EmployeeName = asset.EmployeeName,
+                            SignatureDate = asset.SignatureDate
+                        })
+                        .ToList();
+
+                    return Json(filteredForms);
+                }
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in expected format." });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, Message = result.Message ?? "No acknowledgment forms found." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAcknowledgeForm()
+        {
+            // Fetch the result from the service layer
+            var result = await _post.GetAcknowledgeFormAsync();
+
+            // Check if the result is successful and contains data
+            if (result.Success && result.Data != null)
+            {
+                var Asset = result.Data as IEnumerable<AcknowledgementForm>;
+                if (Asset != null)
+                {
+                    var AssetList = Asset.Select(asset => new
+                    {
+                        Id = asset.Id,
+                        EmployeeName = asset.EmployeeName,
+                        SignatureDate = asset.SignatureDate,
+
+                    }).ToList();
+
+                    return Json(AssetList);
+                }
+
+                else
+                {
+                    return Json(new { Success = false, Message = "Data is not in expected format." });
+                }
+            }
+            else
+            {
+                // Handle the case where the service failed
+                return Json(new { Success = false, Message = result.Message ?? "No Asset found." });
+            }
+        }
+
+
+
+        #endregion
+
+
+        #region Personal Information Form
+
+        public IActionResult PersonalInformationForm()
+        {
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var name = userDetails.userName;
+            ViewData["Name"] = name;
+            return View();
+        }
+
+        public IActionResult PersonalInformationDetails()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SavePersonalInfoForm(PersonalInfomationViewModel model)
+        {
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var empId = userDetails.userId;
+            model.EmpId = Convert.ToInt32(empId);
+
+            var result = await _post.CreatePersonalInformationFormAsync(model);
+
+            // Handle the result of the create operation
+            if (result.Success)
+            {
+                // Success handling
+                TempData["ToastType"] = "success";  // Success, danger, warning, info
+                TempData["ToastMessage"] = "Form Submitted successfully!";
+                return RedirectToAction("PersonalInformationForm"); // Redirect back to the EmployeeType view
+
+
+            }
+            else
+            {
+
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+
+
+        
         [HttpGet]
         public async Task<JsonResult> GetAllPersonalInfoForm()
         {
@@ -1067,6 +1338,7 @@ namespace EHRM.Web.Controllers
 
 
         #endregion
+
 
 
         #region Non Disclosure Agreement Form

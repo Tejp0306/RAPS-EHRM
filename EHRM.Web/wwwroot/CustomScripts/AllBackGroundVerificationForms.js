@@ -13,27 +13,24 @@ function getPersonalInfoDataDetail() {
         url: '/PostJoining/GetBackGroundFormDetails',
         method: 'GET',
         dataType: 'json',
-        success: function (json) {
-            console.log("Full API Response:", json); // Debugging API response
-
-            // Check if response contains valid data
-            if (!json || !json.success || !json.data || !Array.isArray(json.data.bgvForms)) {
-                console.warn("Invalid or missing BgvForms data.");
-                return;
-            }
-
-            console.log("Processed Data for Table:", json.data.bgvForms);
+        success: function (response) {
+            console.log("Full API Response:", response); // ✅ Correct variable
 
             $('#AllBackgroundVerificationData').DataTable({
                 destroy: true,
-                processing: true, // Show loading indicator
-                data: json.data.bgvForms, // Using correct response structure
-
+                processing: true,
+                data: response.bgvForms,
                 columns: [
-
                     { data: 'empId', title: 'Employee Id' },
-                    { data: 'employeeName', title: 'Employee Name' },
-                    { data: 'emailAddress', title: 'Email Address' },
+                    {
+                        title: 'Employee Name',
+                        render: function (data, type, row) {
+                            const first = row.firstName || '';
+                            const middle = row.middleName || '';
+                            return `${first} ${middle}`.trim();
+                        }
+                    },
+                    { data: 'email', title: 'Email Address' },
                     {
                         data: 'empId',
                         title: 'Actions',
@@ -52,11 +49,13 @@ function getPersonalInfoDataDetail() {
                 pageLength: 5,
                 lengthMenu: [5, 10, 15, 20]
             });
+
         },
         error: function (xhr, status, error) {
             console.error("AJAX Error:", xhr.responseText || error);
         }
     });
+
 
     // Bind click events properly
     $('#AllBackgroundVerificationData tbody').off("click").on('click', '.view-btn', function () {
@@ -65,6 +64,8 @@ function getPersonalInfoDataDetail() {
         bgvformModalDetail(id);
     });
 }
+
+
 
 
 function bgvformModalDetail(EmpId) {
@@ -175,13 +176,13 @@ function renderBGVData(data) {
                     <td>${formatDate(emp.fromDate)}</td>
                     <td>${formatDate(emp.toDate)}</td>
                     <td>${emp.employeeCode || '-'}</td>
-                    <td>${emp.ctcPerAnnum || '-'}</td>
+                <td>${emp.ctcPerAnnum != null ? emp.ctcPerAnnum : '-'}</td>
                     <td>${emp.keyResponsibility || '-'}</td>
                     <td>${emp.employmentTenure || '-'}</td>
                     <td>${emp.reasonForLeaving || '-'}</td>
                     <td>${emp.reportingManagerName || '-'}</td>
                     <td>${emp.reportingManagerDesignation || '-'}</td>
-                    <td>${emp.isReportingManagerStillInCompany ? 'Yes' : 'No'}</td>
+                <td>${emp.isReportingManagerStillInCompany === 'Yes' ? 'Yes' : 'No'}</td>
                     <td>${emp.companyLandline || '-'}</td>
                     <td>${emp.personalMobileNo || '-'}</td>
                     <td>${emp.bestTimeToReach || '-'}</td>
@@ -190,6 +191,7 @@ function renderBGVData(data) {
     } else {
         formContent += `<tr><td colspan="19" class="text-center">No previous employment details found.</td></tr>`;
     }
+
 
     formContent += `</tbody></table></div>`;
 
@@ -216,13 +218,11 @@ function downloadBGVForm(data) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Set PDF Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
     doc.text("Employee Background Verification Form", 20, 20);
     let y = 30;
 
-    // ✅ Helper to Add Section Titles
     const addSectionTitle = (title) => {
         doc.setFontSize(12);
         doc.setFont("helvetica", "bold");
@@ -230,7 +230,6 @@ function downloadBGVForm(data) {
         y += 8;
     };
 
-    // ✅ Helper to Add Tables
     const addTable = (headers, rows) => {
         doc.autoTable({
             startY: y,
@@ -243,7 +242,6 @@ function downloadBGVForm(data) {
         y = doc.lastAutoTable.finalY + 10;
     };
 
-    // ✅ Employee Personal Information
     addSectionTitle("Employee Personal Information");
     addTable(
         ["Field", "Value", "Field", "Value"],
@@ -259,7 +257,6 @@ function downloadBGVForm(data) {
         ]
     );
 
-    // ✅ Education Information
     addSectionTitle("Education Information");
     addTable(
         ["Field", "Value", "Field", "Value"],
@@ -270,7 +267,6 @@ function downloadBGVForm(data) {
         ]
     );
 
-    // ✅ Reference Information
     addSectionTitle("Reference Information");
     addTable(
         ["Field", "Value", "Field", "Value"],
@@ -280,35 +276,37 @@ function downloadBGVForm(data) {
         ]
     );
 
-    // ✅ Previous Employment Details
     addSectionTitle("Previous Employment Details");
 
-    if (data.previousEmployments && data.previousEmployments.length > 0) {
-        let employmentRows = data.previousEmployments.map((emp, index) => [
-            [`Employment #${index + 1}`, "", "", ""],
-            ["Nature of Employment", emp.natureOfEmployment || "N/A", "Designation", emp.currentDesignation || "N/A"],
-            ["Department", emp.department || "N/A", "Official Title", emp.officialTitle || "N/A"],
-            ["Company Name", emp.payrollCompanyName || "N/A", "Organization Address", emp.organizationAddress || "N/A"],
-            ["From Date", formatDate(emp.fromDate), "To Date", formatDate(emp.toDate)],
-            ["Employee Code", emp.employeeCode || "N/A", "CTC Per Annum", emp.ctcPerAnnum || "N/A"],
-            ["Key Responsibility", emp.keyResponsibility || "N/A", "Employment Tenure", emp.employmentTenure || "N/A"],
-            ["Reason for Leaving", emp.reasonForLeaving || "N/A", "", ""],
-            ["Reporting Manager", emp.reportingManagerName || "N/A", "Manager Designation", emp.reportingManagerDesignation || "N/A"],
-            ["Still in Company", emp.isReportingManagerStillInCompany || "N/A", "Best Time to Reach", emp.bestTimeToReach || "N/A"],
-            ["Company Landline", emp.companyLandline || "N/A", "Personal Mobile No.", emp.personalMobileNo || "N/A"],
-            ["", "", "", ""] // Empty row for spacing
-        ]).flat(); // Flatten array to properly format table
+    const previousEmployments = data.previousEmployments || [];
 
-        addTable(
-            ["Field", "Value", "Field", "Value"],
-            employmentRows
-        );
+    if (previousEmployments.length > 0) {
+        let employmentRows = [];
+
+        previousEmployments.forEach((emp, index) => {
+            employmentRows.push([`Employment #${index + 1}`, "", "", ""]);
+            employmentRows.push(["Nature of Employment", emp.natureOfEmployment || "N/A", "Designation", emp.currentDesignation || "N/A"]);
+            employmentRows.push(["Department", emp.department || "N/A", "Official Title", emp.officialTitle || "N/A"]);
+            employmentRows.push(["Company Name", emp.payrollCompanyName || "N/A", "Organization Address", emp.organizationAddress || "N/A"]);
+            employmentRows.push(["From Date", formatDate(emp.fromDate), "To Date", formatDate(emp.toDate)]);
+            employmentRows.push(["Employee Code", emp.employeeCode || "N/A", "CTC Per Annum", emp.ctcPerAnnum || "N/A"]);
+            employmentRows.push(["Key Responsibility", emp.keyResponsibility || "N/A", "Employment Tenure", emp.employmentTenure || "N/A"]);
+            employmentRows.push(["Reason for Leaving", emp.reasonForLeaving || "N/A", "", ""]);
+            employmentRows.push(["Reporting Manager", emp.reportingManagerName || "N/A", "Manager Designation", emp.reportingManagerDesignation || "N/A"]);
+            employmentRows.push(["Still in Company", emp.isReportingManagerStillInCompany || "N/A", "Best Time to Reach", emp.bestTimeToReach || "N/A"]);
+            employmentRows.push(["Company Landline", emp.companyLandline || "N/A", "Personal Mobile No.", emp.personalMobileNo || "N/A"]);
+            employmentRows.push(["", "", "", ""]); // Spacer
+        });
+
+        addTable(["Field", "Value", "Field", "Value"], employmentRows);
     } else {
         addTable(["Message", ""], [["No previous employment details found.", ""]]);
     }
 
-    // ✅ Save as PDF
+
     doc.save(`Employee_BGV_${data.firstName || "N/A"}_${data.lastName || "N/A"}.pdf`);
 }
+
+
 
 

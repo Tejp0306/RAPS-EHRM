@@ -17,20 +17,27 @@ function getMasterSheetDataDetail() {
             console.log("Full API Response:", json); // Debugging API response
 
             // Check if response contains valid data
-            if (!json || !json.success || !json.data || !Array.isArray(json.data.bgvForms)) {
+            if (
+                !json ||
+                !json.success ||
+                !json.data ||
+                !Array.isArray(json.data.bgvForms) ||
+                json.data.bgvForms.length === 0
+            ) {
                 console.warn("Invalid or missing BgvForms data.");
                 return;
             }
+
+
 
             console.log("Processed Data for Table:", json.data.bgvForms);
 
             $('#AllMasterSheetData').DataTable({
                 destroy: true,
                 processing: true, // Show loading indicator
-                data: json.data.bgvForms, // Using correct response structure
+                data: json.data.bgvForms, // ✅ Updated to use actual array
 
                 columns: [
-
                     { data: 'empId', title: 'Employee Id' },
                     { data: 'employeeName', title: 'Employee Name' },
                     { data: 'emailAddress', title: 'Email Address' },
@@ -52,6 +59,8 @@ function getMasterSheetDataDetail() {
                 pageLength: 5,
                 lengthMenu: [5, 10, 15, 20]
             });
+
+
         },
         error: function (xhr, status, error) {
             console.error("AJAX Error:", xhr.responseText || error);
@@ -200,7 +209,7 @@ function renderMasterData(data) {
             <tr><th>Relationship</th><td>${masterEmergencyContactViewModel.relationship || '-'}</td></tr>
         </table>
 
-        <h5 class="mt-4">Previous Employments</h5>
+        <h5 class="mt-4">Work Experience</h5>
         <div class="table-responsive" style="max-height: 300px; overflow-x: auto; white-space: nowrap;">
             <table class="table table-bordered">
                 <thead class="table-light">
@@ -230,6 +239,8 @@ function renderMasterData(data) {
     } else {
         formContent += `<tr><td colspan="6" class="text-center">No previous employment details found.</td></tr>`;
     }
+
+
 
     formContent += `
                 </tbody>
@@ -333,15 +344,48 @@ function DownloadMasterForm(data) {
 
     // ✅ Work Experience
     addSectionTitle("Previous Work Experience");
-    if (data.masterWorkExperience.length > 0) {
-        let experienceRows = data.masterWorkExperience.map((exp, index) => [
-            `Experience ${index + 1}`, exp.organisationName, "Designation", exp.designation,
-            "Years of Experience", exp.yearsOfExperience
-        ]);
-        addTable(experienceRows);
+
+    const experiences = data.masterWorkExperience || [];
+
+    if (experiences.length > 0) {
+        const experienceRows = experiences.map((exp, index) => ([
+            index + 1,
+            exp.organisationName || "N/A",
+            exp.designation || "N/A",
+            exp.yearsOfExperience || "N/A",
+            formatDate(exp.fromDate),
+            formatDate(exp.toDate),
+            exp.reasonForLeaving || "N/A"
+        ]));
+
+        doc.autoTable({
+            startY: y,
+            head: [[
+                "SNo", "Organization Name", "Designation", "Years", "From Date", "To Date", "Reason for Leaving"
+            ]],
+            body: experienceRows,
+            theme: "striped",
+            styles: { cellWidth: 'wrap' },
+            columnStyles: {
+                0: { cellWidth: 20 },   // S.No
+                1: { cellWidth: 35 },   // Org Name
+                2: { cellWidth: 30 },   // Designation
+                3: { cellWidth: 20 },   // Years
+                4: { cellWidth: 25 },   // From Date
+                5: { cellWidth: 25 },   // To Date
+                6: { cellWidth: 50 }    // Reason for Leaving
+            },
+            useCss: true
+        });
+
+        y = doc.lastAutoTable.finalY + 10;
     } else {
-        addTable([["No Work Experience Found"]]);
+        addTable(["Message"], [["No Work Experience Found"]]);
     }
+
+
+
+
 
     // ✅ Bank Details
     addSectionTitle("Bank Details");
