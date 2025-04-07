@@ -17,7 +17,7 @@ namespace EHRM.DAL.Repositories
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
         Task<List<EmployeeDetail>> GetByRoleIdAsync(int RoleId);
-        Task <List<EmployeePunchDetail>> GetByEmpIdAsync(int EmpId);
+        Task<List<EmployeePunchDetail>> GetByEmpIdAsync(int EmpId);
   
         Task<List<EmployeeDetail>> GetByTeamIdAsync(int RoleId);
         Task<List<EmployeesDeclaration>> GetByDeclarationEmpIdDOB(int EmpId, DateTime DOB);
@@ -38,8 +38,16 @@ namespace EHRM.DAL.Repositories
         Task<List<Declaration>> GetDeclarationDetailsByIdAsync(int EmpId);
 
         //Get Leave Status By Leave Id
+        Task<NonDisclosureAgreement> GetEmployeeNDAByIdAsync(int EmpId);
+        Task<PersonalInfo> GetEmployeePersonalInfoByIdAsync(int EmpId);
+        Task<ClientPropertyDeclaration> GetEmployeePropertyDeclarationByIdAsync(int EmpId);
+        Task<AcknowledgementForm> GetEmployeeAcknowledgementByIdAsync(int EmpId);
 
         Task<List<LeaveStatuss>> GetStatusByLeaveIdAsync(int leaveid);
+
+        Task<List<Bgvform>> GetBGVByEmpIdAsync(int EmpId);
+
+        Task<List<PreviousEmployment>> GetPreviousEmploymentByEmpIdAsync(int EmpId);
 
     }
 }

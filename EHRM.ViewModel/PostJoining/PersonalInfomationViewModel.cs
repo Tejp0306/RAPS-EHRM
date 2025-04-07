@@ -12,6 +12,7 @@ namespace EHRM.ViewModel.PostJoining
     {
         
         public int ID { get; set; }
+        public int EmpId { get; set; }
 
        
         public string EmployeeName { get; set; }

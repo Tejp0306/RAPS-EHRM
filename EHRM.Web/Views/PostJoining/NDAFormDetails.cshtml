@@ -97,17 +97,17 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Full Name of Employee:</label>
-                            <input type="text" id="EmployeeNameone" name="EmployeeName" class="form-control" readonly>
+                            <input type="text" id="EmployeeName" name="EmployeeName" class="form-control" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Date:</label>
-                            <input type="text" id="AgreementDateone" name="AgreementDate" class="form-control" readonly>
+                            <input type="text" id="AgreementDate" name="AgreementDate" class="form-control" readonly>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Signature:</label>
-                        <input type="text" id="Signatureone" name="Signature" class="form-control" readonly>
+                        <input type="text" id="Signature" name="Signature" class="form-control" readonly>
                     </div>
                 </form>
             </div>
@@ -165,18 +165,18 @@
 
         function ndaModalDetail(Id) {
         $.ajax({
-            url: `/PostJoining/GetNDAFormById/${Id}`,
+            url: `/PostJoining/GetNDAById/${Id}`,
             method: 'GET',
             success: function (response) {
                 if (response.success) {
-                    console.log("API Response:", response);
+    
 
                     const data = response.data.data || response.data;
 
                     // Populate input fields
-                    $('#EmployeeNameone').val(data?.employeeName || "");
-                    $('#AgreementDateone').val(data?.agreementDate || "");
-                    $('#Signatureone').val(data?.signature || "");
+                    $('#EmployeeName').val(data?.employeeName || "");
+                    $('#AgreementDate').val(data?.agreementDate || "");
+                    $('#Signature').val(data?.signature || "");
 
                     // Show the modal
                     $('#ndaModalDetail').modal('show');
@@ -197,43 +197,52 @@
     }
 
     function downloadNDAFormDetail(data) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+      const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-        // Extract modal content
-        const employeeName = data?.employeeName || "N/A";
-        const agreementDate = data?.agreementDate || "N/A";
-        const employeeSignature = data?.signature || "N/A";
+    // Extract modal content
+    const employeeName = data?.employeeName || "N/A";
+    const agreementDate = data?.agreementDate || "N/A";
+    const employeeSignature = data?.signature || "N/A";
 
-        // Set PDF Title
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(16);
-        doc.text("Non-Disclosure Agreement (NDA)", 20, 20);
+    // Set PDF Title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("Non-Disclosure Agreement (NDA)", 20, 20);
 
-        // NDA Content
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(12);
-        doc.text("In performing your duties, you may have access to company data, including but not limited to:", 20, 40, { maxWidth: 170 });
+    // NDA Content
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
 
-        doc.text("- Personal information about RAPS Consulting Inc. (RAPS) employees.", 25, 50, { maxWidth: 160 });
-        doc.text("- Other private/proprietary/confidential data or technical information.", 25, 60, { maxWidth: 160 });
-        doc.text("- Financial, contractor, or organizational data.", 25, 70, { maxWidth: 160 });
+    // Initial text
+    doc.text("In performing your duties, you may have access to company data, including but not limited to:", 20, 40, { maxWidth: 170 });
 
-        doc.text("By signing this document, you agree to:", 20, 90, { maxWidth: 170 });
-        doc.text("- Protect user credentials and sensitive information.", 25, 100, { maxWidth: 160 });
-        doc.text("- Not disclose information to unauthorized personnel.", 25, 110, { maxWidth: 160 });
-        doc.text("- Ensure confidentiality and safeguard all company data.", 25, 120, { maxWidth: 160 });
+    doc.text("• Information about RAPS Consulting Inc. (RAPS) employees, other private/proprietary/confidential data", 20, 55, { maxWidth: 170 });
+    doc.text("• Technical information, as well as financial, contractor, or organizational data.", 20, 65, { maxWidth: 170 });
 
-        // Employee Details
-        doc.setFont("helvetica", "bold");
-        doc.text("Employee Details:", 20, 140);
-        doc.setFont("helvetica", "normal");
-        doc.text(`Full Name: ${employeeName}`, 20, 150);
-        doc.text(`Date: ${agreementDate}`, 20, 160);
-        doc.text(`Signature: ${employeeSignature}`, 20, 170);
+    doc.text("You are charged with the responsibility of accessing only the files/information you need to perform your job and of safeguarding and maintaining the confidentiality of that information.", 20, 80, { maxWidth: 170 });
 
-        // Save the PDF
-        doc.save(`NDA_Agreement_${data.id || "Form"}.pdf`);
+    // Safeguarding section
+    doc.text("Safeguarding includes:", 20, 100, { maxWidth: 160 });
+
+    doc.text("• Protecting user IDs, passwords, storage media, online screens, printouts, magnetic tapes, personal computer hard disks, laptops, and technical information from unauthorized access.", 25, 115, { maxWidth: 160 });
+    doc.text("• Not removing information from RAPS property other than for temporary periods as necessary.", 25, 135, { maxWidth: 160 });
+    doc.text("• Maintaining confidentiality by not disclosing information to anyone except authorized personnel.", 25, 150, { maxWidth: 160 });
+
+    // Final statement
+    doc.text("A copy of this agreement will be maintained in your employment file. Violation of these requirements may result in disciplinary action, up to and including termination of employment.", 20, 170, { maxWidth: 170 });
+
+    // Employee Details
+    doc.setFont("helvetica", "bold");
+    doc.text("Employee Details:", 20, 190);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Full Name: ${employeeName}`, 20, 200);
+    doc.text(`Date: ${agreementDate}`, 20, 210);
+    doc.text(`Signature: ${employeeSignature}`, 20, 220);
+
+    // Save the PDF
+    doc.save(`NDA_Agreement_${data.id || "Form"}.pdf`);
+
     }
 
 </script>

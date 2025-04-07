@@ -73,11 +73,11 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Employee Name</label>
-                            <input type="text" id="EmployeeNameOne" name="EmployeeName" class="form-control" readonly required>
+                            <input type="text" id="EmployeeName" name="EmployeeName" class="form-control" readonly required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Personal Email ID</label>
-                            <input type="email" id="PersonalEmailone" name="PersonalEmail" class="form-control" readonly required>
+                            <input type="email" id="PersonalEmail" name="PersonalEmail" class="form-control" readonly required>
                         </div>
                     </div>
 
@@ -85,11 +85,11 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Permanent Address</label>
-                            <input type="text" id="PermanentAddressone" name="PermanentAddress" class="form-control" readonly required>
+                            <input type="text" id="PermanentAddress" name="PermanentAddress" class="form-control" readonly required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Current Address</label>
-                            <input type="text" id="CurrentAddressone" name="CurrentAddress" class="form-control" readonly required>
+                            <input type="text" id="CurrentAddress" name="CurrentAddress" class="form-control" readonly required>
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@
                         </div> *@
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Mobile #</label>
-                            <input type="text" id="MobilePhoneone" name="MobilePhone" class="form-control" readonly required>
+                            <input type="text" id="MobilePhone" name="MobilePhone" class="form-control" readonly required>
                         </div>
                     </div>
 
@@ -114,15 +114,15 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Contact 1 Name</label>
-                            <input type="text" id="EmergencyContact1Nameone" name="EmergencyContact1Name" class="form-control" readonly required>
+                            <input type="text" id="EmergencyContact1Name" name="EmergencyContact1Name" class="form-control" readonly required>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Relationship</label>
-                            <input type="text" id="EmergencyContact1Relationshipone" name="EmergencyContact1Relationship" class="form-control" readonly required>
+                            <input type="text" id="EmergencyContact1Relationship" name="EmergencyContact1Relationship" class="form-control" readonly required>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Phone Number</label>
-                            <input type="text" id="EmergencyContact1Phoneone" name="EmergencyContact1Phone" class="form-control" readonly required>
+                            <input type="text" id="EmergencyContact1Phone" name="EmergencyContact1Phone" class="form-control" readonly required>
                         </div>
                     </div>
 
@@ -134,11 +134,11 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Relationship</label>
-                            <input type="text" id="EmergencyContact2Relationshipone" name="EmergencyContact2Relationship" class="form-control" readonly>
+                            <input type="text" id="EmergencyContact2Relationship" name="EmergencyContact2Relationship" class="form-control" readonly>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Phone Number</label>
-                            <input type="text" id="EmergencyContact2Phoneone" name="EmergencyContact2Phone" class="form-control" readonly>
+                            <input type="text" id="EmergencyContact2Phone" name="EmergencyContact2Phone" class="form-control" readonly>
                         </div>
                     </div>
 
@@ -146,11 +146,11 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Signature</label>
-                            <input type="text" id="Signatureone" name="Signature" class="form-control" value="@ViewData["Name"]" readonly>
+                            <input type="text" id="Signature" name="Signature" class="form-control" value="@ViewData["Name"]" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Date</label>
-                            <input type="text" id="FormDateOne" name="FormDateOne" class="form-control" required readonly>
+                            <input type="text" id="FormDate" name="FormDateOne" class="form-control" required readonly>
                         </div>
                     </div>
 
@@ -220,33 +220,32 @@
     // Function to open the modal and load acknowledgment details
     function personalInfoModalDetail(personalInfoID) {
           $.ajax({
-            url: `/PostJoining/GetPersonalInfoById/${personalInfoID}`,
+            url: `/PostJoining/GetPersInfoById/${personalInfoID}`,
             method: 'GET',
             success: function (response) {
                 if (response.success) {
-                    console.log("API Response:", response);
 
                     const data = response.data.data || response.data;
 
                     // Populate modal fields
-                    $('#EmployeeNameOne').val(data?.employeeName || "N/A");
-                    $('#PersonalEmailone').val(data?.personalEmail || "N/A");
-                    $('#PermanentAddressone').val(data?.permanentAddress || "N/A");
-                    $('#CurrentAddressone').val(data?.currentAddress || "N/A");
-                    $('#MobilePhoneone').val(data?.mobilePhone || "N/A");
+                    $('#EmployeeName').val(data?.employeeName || "N/A");
+                    $('#PersonalEmail').val(data?.personalEmail || "N/A");
+                    $('#PermanentAddress').val(data?.permanentAddress || "N/A");
+                    $('#CurrentAddress').val(data?.currentAddress || "N/A");
+                    $('#MobilePhone').val(data?.mobilePhone || "N/A");
 
                     // Emergency Contacts
-                    $('#EmergencyContact1Nameone').val(data?.emergencyContact1Name || "N/A");
-                    $('#EmergencyContact1Relationshipone').val(data?.emergencyContact1Relationship || "N/A");
-                    $('#EmergencyContact1Phoneone').val(data?.emergencyContact1Phone || "N/A");
+                    $('#EmergencyContact1Name').val(data?.emergencyContact1Name || "N/A");
+                    $('#EmergencyContact1Relationship').val(data?.emergencyContact1Relationship || "N/A");
+                    $('#EmergencyContact1Phone').val(data?.emergencyContact1Phone || "N/A");
 
                     $('#EmergencyContact2Nameone').val(data?.emergencyContact2Name || "N/A");
-                    $('#EmergencyContact2Relationshipone').val(data?.emergencyContact2Relationship || "N/A");
-                    $('#EmergencyContact2Phoneone').val(data?.emergencyContact2Phone || "N/A");
+                    $('#EmergencyContact2Relationship').val(data?.emergencyContact2Relationship || "N/A");
+                    $('#EmergencyContact2Phone').val(data?.emergencyContact2Phone || "N/A");
 
                     // Signature and Date
-                    $('#Signatureone').val(data?.signature || "N/A");
-                    $('#FormDateOne').val(data?.formDate || "N/A");
+                    $('#Signature').val(data?.signature || "N/A");
+                    $('#FormDate').val(data?.formDate || "N/A");
 
                     // Ensure download button exists
                     if ($('#downloadBtn').length === 0) {
@@ -277,19 +276,19 @@
         const doc = new jsPDF();
 
         // Extract modal content
-        const employeeName = $('#EmployeeNameOne').val() || "N/A";
-        const personalEmail = $('#PersonalEmailone').val() || "N/A";
-        const permanentAddress = $('#PermanentAddressone').val() || "N/A";
-        const currentAddress = $('#CurrentAddressone').val() || "N/A";
-        const mobilePhone = $('#MobilePhoneone').val() || "N/A";
-        const emergencyContact1Name = $('#EmergencyContact1Nameone').val() || "N/A";
-        const emergencyContact1Relationship = $('#EmergencyContact1Relationshipone').val() || "N/A";
-        const emergencyContact1Phone = $('#EmergencyContact1Phoneone').val() || "N/A";
+        const employeeName = $('#EmployeeName').val() || "N/A";
+        const personalEmail = $('#PersonalEmail').val() || "N/A";
+        const permanentAddress = $('#PermanentAddress').val() || "N/A";
+        const currentAddress = $('#CurrentAddress').val() || "N/A";
+        const mobilePhone = $('#MobilePhone').val() || "N/A";
+        const emergencyContact1Name = $('#EmergencyContact1Name').val() || "N/A";
+        const emergencyContact1Relationship = $('#EmergencyContact1Relationship').val() || "N/A";
+        const emergencyContact1Phone = $('#EmergencyContact1Phone').val() || "N/A";
         const emergencyContact2Name = $('#EmergencyContact2Nameone').val() || "N/A";
-        const emergencyContact2Relationship = $('#EmergencyContact2Relationshipone').val() || "N/A";
-        const emergencyContact2Phone = $('#EmergencyContact2Phoneone').val() || "N/A";
-        const signature = $('#Signatureone').val() || "N/A";
-        const formDate = $('#FormDateOne').val() || "N/A";
+        const emergencyContact2Relationship = $('#EmergencyContact2Relationship').val() || "N/A";
+        const emergencyContact2Phone = $('#EmergencyContact2Phone').val() || "N/A";
+        const signature = $('#Signature').val() || "N/A";
+        const formDate = $('#FormDate').val() || "N/A";
 
         // Set PDF Title
         doc.setFont("helvetica", "bold");

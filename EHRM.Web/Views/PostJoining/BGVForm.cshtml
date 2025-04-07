@@ -1,0 +1,171 @@
+﻿@using EHRM.ViewModel.MasterEmployee
+@model BGVViewModel
+@using Microsoft.AspNetCore.Http
+@{
+    ViewBag.Title = "BGVForm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+
+    var empIdFromSession = HttpContextAccessor.HttpContext?.Session?.GetInt32("EmpId");
+}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<link type="text/css" href="~/CustomStyle/style.css" rel="stylesheet" />
+
+<h3 class="page-heading">Background Verification Form</h3>
+
+<form asp-controller="PostJoining" asp-action="SaveBGVForm" method="post" class="bg-light p-4 rounded shadow-sm">
+    <input asp-for="EmpId" type="hidden" id="EmpId" value="@empIdFromSession" />
+
+    <!-- Personal Details -->
+    <div class="form-section text-white p-2 rounded mb-3">
+        <h5 class="mb-0"> Personal Details</h5>
+    </div>
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label asp-for="FirstName" class="form-label">First Name</label>
+            <input asp-for="FirstName" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="MiddleName" class="form-label">Middle Name</label>
+            <input asp-for="MiddleName" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <label asp-for="LastName" class="form-label">Last Name</label>
+            <input asp-for="LastName" class="form-control" required>
+        </div>
+    </div>
+
+    <!-- Father's Details -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label asp-for="FatherFirstName" class="form-label">Father's First Name</label>
+            <input asp-for="FatherFirstName" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="FatherMiddleName" class="form-label">Father's Middle Name</label>
+            <input asp-for="FatherMiddleName" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <label asp-for="FatherLastName" class="form-label">Father's Last Name</label>
+            <input asp-for="FatherLastName" class="form-control" required>
+        </div>
+    </div>
+
+    <!-- DOB, Place of Birth, Gender, Marital Status, Nationality -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
+            <input asp-for="DateOfBirth" type="date" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="PlaceOfBirth" class="form-label">Place of Birth</label>
+            <input asp-for="PlaceOfBirth" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Gender" class="form-label">Gender</label>
+            <select asp-for="Gender" class="form-select" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="MaritalStatus" class="form-label">Marital Status</label>
+            <input asp-for="MaritalStatus" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Nationality" class="form-label">Nationality</label>
+            <input asp-for="Nationality" class="form-control" required>
+        </div>
+    </div>
+
+    <!-- Contact Details -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label asp-for="MobileNumber" class="form-label">Mobile Number</label>
+            <input asp-for="MobileNumber" type="tel" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="AlternateNumber" class="form-label">Alternate Number</label>
+            <input asp-for="AlternateNumber" type="tel" class="form-control">
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Email" class="form-label">Email Address</label>
+            <input asp-for="Email" type="email" class="form-control" required>
+        </div>
+    </div>
+
+    <!-- Education Details -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label asp-for="CourseName" class="form-label">Course Name</label>
+            <input asp-for="CourseName" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="ProgramType" class="form-label">Program Type</label>
+            <select asp-for="ProgramType" class="form-select" required>
+                <option value="Full Time">Full Time</option>
+                <option value="Part Time">Part Time</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="CollegeName" class="form-label">College Name</label>
+            <input asp-for="CollegeName" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="UniversityBoardName" class="form-label">University/Board Name</label>
+            <input asp-for="UniversityBoardName" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="PassingYear" class="form-label">Passing Year</label>
+            <input asp-for="PassingYear" type="number" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="ProofType" class="form-label">Proof Type</label>
+            <input asp-for="ProofType" class="form-control" required>
+        </div>
+    </div>
+
+    <!-- Current Address Details -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label asp-for="CompleteAddress" class="form-label">Complete Address</label>
+            <input asp-for="CompleteAddress" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="NearestLandmark" class="form-label">Nearest Landmark</label>
+            <input asp-for="NearestLandmark" class="form-control">
+        </div>
+    </div>
+
+    <!-- Reference Details -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label asp-for="ReferenceName" class="form-label">Reference Name</label>
+            <input asp-for="ReferenceName" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="ReferenceContact" class="form-label">Reference Contact</label>
+            <input asp-for="ReferenceContact" type="tel" class="form-control" required>
+        </div>
+    </div>
+
+    <!-- Consent -->
+    <div class="form-check mb-3">
+        <input asp-for="ConsentGiven" class="form-check-input" type="checkbox" required>
+        <label class="form-check-label">I hereby provide my consent for background verification.</label>
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-secondary">Reset</button>
+    </div>
+</form>
+
+
+

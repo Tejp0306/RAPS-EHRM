@@ -150,11 +150,10 @@
     // Function to open the modal and load acknowledgment details
     function openAcknowledgementModalDetail(acknowlegementFormID) {
         $.ajax({
-            url: `/PostJoining/GetAcknowlegementFormDetails/${acknowlegementFormID}`,
+            url: `/PostJoining/GetAcknowlegementDetails/${acknowlegementFormID}`,
             method: 'GET',
             success: function (response) {
                 if (response.success) {
-                    console.log("API Response:", response); // Debugging log
 
                     const data = response.data.data || response.data;
 

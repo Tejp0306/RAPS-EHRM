@@ -10,6 +10,7 @@ namespace EHRM.ViewModel.PostJoining
     public class NDAFormViewModel
     {
         public int Id { get; set; }
+        public int empId { get; set; }
 
 
         public string EmployeeName { get; set; }
