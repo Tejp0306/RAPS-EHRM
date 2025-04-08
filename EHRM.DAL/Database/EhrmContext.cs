@@ -453,7 +453,7 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.YearsInRaps)
                 .HasColumnType("decimal(5, 2)")
                 .HasColumnName("YearsInRAPS");
-
+        });
         modelBuilder.Entity<EmployeeExitChecklist>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Employee__3213E83FEC5262D2");
