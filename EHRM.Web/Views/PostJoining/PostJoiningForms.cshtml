@@ -85,9 +85,6 @@
             <p class="card-text">Declaration about handling of client’s property.</p>
             <div class="d-flex justify-content-between">
 
-                <button class="btn btn-info" onclick="loadFormPreview('ClientPropertyForm')" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
-                <a href="@Url.Action("DownloadForm", "Forms", new { formName = "ClientPropertyForm" })" class="btn btn-success">Download PDF</a>
-
                 <button class="btn btn-info preview-btn" onclick="openClientDeclarationModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#clientDeclarationModal">Preview</button>
                 <button type="button" id="downloadBtn" onclick="downloadClientDecla(@empIdFromSession)" class="btn btn-success">
                     <i class="bi bi-download"></i> Download
