@@ -194,7 +194,7 @@ namespace EHRM.Web.Controllers
 
                     CookieOptions options = new CookieOptions
                     {
-                        Expires = DateTime.Now.AddMinutes(1),  
+                        Expires = DateTime.Now.AddHours(8),  
                         HttpOnly = true
                     };
                     Response.Cookies.Append("PunchCooldown", "true", options);
