@@ -22,7 +22,7 @@ namespace EHRM.ServiceLayer.Calendar
 
         public CalendarService(IConfiguration configuration, IUnitOfWork unitOfWork)
         {
-            _connectionString = configuration.GetConnectionString("EHRMConnection");
+            _connectionString = ConnectionStringConfiguration._DefaultConnectionString;
             if (string.IsNullOrEmpty(_connectionString))
             {
                 throw new Exception("Database connection string is not configured properly.");

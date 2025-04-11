@@ -35,10 +35,24 @@ namespace EHRM.Infrastructure.Configurations
 {
     public static class ServiceRegistration
     {
+
         public static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<EhrmContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("EHRMConnection")));
+            var environmentName = configuration["AppSetting:EnvironmentName"];
+            if (environmentName == "Development")
+            {
+                ConnectionStringConfiguration._DefaultConnectionString = configuration.GetConnectionString("DevelopmentConnection");
+                services.AddDbContext<EhrmContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DevelopmentConnection")));
+            }
+            else
+            {
+                ConnectionStringConfiguration._DefaultConnectionString = configuration.GetConnectionString("ProductionConnection");
+                services.AddDbContext<EhrmContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("ProductionConnection")));
+            }
+
+
             // Register Generic Repository
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));  // Register the generic repository
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -104,13 +118,15 @@ namespace EHRM.Infrastructure.Configurations
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
-                options.Cookie.HttpOnly = true; // Set cookie options
-                options.Cookie.IsEssential = true; // Make the session cookie essential
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
 
 
         }
+
+
 
     }
 
