@@ -42,7 +42,7 @@ namespace EHRM.Web.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public AccountController(EhrmContext context, IWebHostEnvironment webHostEnvironment, IServiceProvider serviceProvider, IConfiguration configuration, IEmailService emailService, IAccountService accountService, IHttpContextAccessor httpContextAccessor )
+        public AccountController(EhrmContext context, IWebHostEnvironment webHostEnvironment, IServiceProvider serviceProvider, IConfiguration configuration, IEmailService emailService, IAccountService accountService, IHttpContextAccessor httpContextAccessor)
         {
             //_logger = logger;
             _context = context;
@@ -79,7 +79,7 @@ namespace EHRM.Web.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-     
+
         public IActionResult Login()
         {
             return View();
@@ -302,7 +302,7 @@ namespace EHRM.Web.Controllers
         }
         private async Task SendOtp(string email, string otp)
         {
-            
+
             string template = await GetTemplateFromFile("OTPEmailTemplate");
             string body = template.Replace("{{otp}}", otp);
 
@@ -402,12 +402,13 @@ namespace EHRM.Web.Controllers
                     HttpContext.Session.SetString("GroupByUserDetails", jsonFoUserDetails);
                     HttpContext.Session.SetString("GroupedSubMenus", jsonString);
                     Response.Cookies.Append("EmpId", employee.EmpId.ToString(), new CookieOptions
-                    { 
+                    {
                         Secure = true,   // Ensures the cookie is sent only over HTTPS
                         Expires = DateTimeOffset.UtcNow.AddDays(7) // Sets an expiration date (7 days here)
                     });
 
-                    return RedirectToAction("Dashboard", "Dashboard");
+                     return RedirectToAction("Dashboard", "Dashboard");
+                    //return RedirectToAction("RedirectAfterLogin");
                 }
 
                 // OTP handling when MagicOTP.key is not enabled
@@ -453,7 +454,7 @@ namespace EHRM.Web.Controllers
                 // Store token in both cookie and session
                 StoreToken(jwtTokens);
                 //var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
-                
+
                 //if (string.IsNullOrEmpty(jwtTokenFromSession))
                 //{
                 //    TempData["ToastType"] = "danger";  // Success, danger, warning, info
@@ -463,14 +464,14 @@ namespace EHRM.Web.Controllers
 
                 //var (userId, userName, email, roleIdFromSession) = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
 
-               // var employeeFromSession = await _context.EmployeesCreds.FirstOrDefaultAsync(e => e.Email == email && e.Active == true);
+                // var employeeFromSession = await _context.EmployeesCreds.FirstOrDefaultAsync(e => e.Email == email && e.Active == true);
                 //if (employeeFromSession == null || !employeeFromSession.Active)
                 //{
                 //    TempData["ToastType"] = "danger";  // Success, danger, warning, info
                 //    TempData["ToastMessage"] = "Employee not found or inactive. Please contact support.";
                 //    return RedirectToAction("Login");
                 //}
-              
+
                 HttpContext.Session.Remove("Otp");
 
                 var subMenusFromSession = await _context.SubMenus
@@ -511,14 +512,30 @@ namespace EHRM.Web.Controllers
                 HttpContext.Session.SetString("GroupByUserDetails", jsonFoUserDetailsFromSession);
                 HttpContext.Session.SetString("GroupedSubMenus", jsonStringFromSession);
                 HttpContext.Session.SetString("EmpId", employees.EmpId.ToString());
-                
+
                 return RedirectToAction("Dashboard", "Dashboard");
+               // return RedirectToAction("RedirectAfterLogin");
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+        //public IActionResult RedirectAfterLogin()
+        //{
+        //    var redirectMessage = HttpContext.Session.GetString("RedirectMessage");
+        //    HttpContext.Session.Remove("RedirectMessage");
+        //    if (!string.IsNullOrEmpty(redirectMessage))
+        //    {
+        //        TempData["ToastType"] = "success";
+        //        TempData["ToastMessage"] = redirectMessage;
+        //    }
+
+        //    return RedirectToAction("Dashboard", "Dashboard");
+        //}
+
+
 
         // Helper method to store token in both cookie and session
         private void StoreToken(string jwtToken)
@@ -562,7 +579,7 @@ namespace EHRM.Web.Controllers
         [HttpGet]
         public IActionResult ChangePassword()
         {
-           // _httpContextAccessor.HttpContext.Session[""];
+            // _httpContextAccessor.HttpContext.Session[""];
             // Load the ChangePassword view.
             return View();
         }
@@ -571,7 +588,7 @@ namespace EHRM.Web.Controllers
         // POST: Account/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (ModelState.IsValid && model.NewPassword == model.ConfirmPassword)
             {
@@ -627,10 +644,10 @@ namespace EHRM.Web.Controllers
             return View(model);
         }
 
-      
-    
 
-         // POST: Account/SendResetLink
+
+
+        // POST: Account/SendResetLink
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendResetLink(string email)
@@ -655,11 +672,11 @@ namespace EHRM.Web.Controllers
                             <p>If you did not request a password reset, please contact our support team at support@rapscorp.com.</p>
                             <p>Thank you!</p>
                             <p>Best regards,<br>Raps Managed Services</p>"
-                      };
+                };
 
                 // Sending the email
-                    _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
-                
+                _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
+
 
                 // Show a success message to the user
                 TempData["ToastType"] = "success";
@@ -677,6 +694,7 @@ namespace EHRM.Web.Controllers
                 return RedirectToAction("Login"); // Return to the Login view
             }
         }
+
 
 
     }

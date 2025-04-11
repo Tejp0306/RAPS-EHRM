@@ -226,15 +226,25 @@
                             <!-- Single Button (Toggling between Punch In and Punch Out) -->
                             @{
                                 var punchResValue = Context.Request.Cookies["PunchRes"];
+                                var punchCooldown = Context.Request.Cookies["PunchCooldown"];
+
                                 if (punchResValue != null)
                                 {
+                                    // User has punched in — show Punch Out
                                     <a id="punchButton" asp-action="UpdatePunchOutAsync" asp-controller="Dashboard" class="dropdown-item"><b>Punch Out</b></a>
+                                }
+                                else if (punchCooldown != null)
+                                {
+                                // Within cooldown — disable Punch In
+                                    <button id="punchButton" class="dropdown-item" disabled style="opacity: 0.5; cursor: not-allowed;"><b>Punch In (Locked)</b></button>
                                 }
                                 else
                                 {
+                                    // Can punch in
                                     <a asp-action="SavePunchInAsync" asp-controller="Dashboard" id="punchButton" class="dropdown-item"><b>Punch In</b></a>
                                 }
                             }
+
                             @* <a href="#" class="dropdown-item">Settings</a> *@
                             <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Log Out</a>
                             <a asp-controller="Account" asp-action="ChangePassword" class="dropdown-item">Change Password</a>
@@ -315,6 +325,7 @@
         
 
     </script>
+
 </body>
 
 </html>

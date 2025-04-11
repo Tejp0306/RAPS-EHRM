@@ -19,6 +19,8 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<AssetsDb> AssetsDbs { get; set; }
 
+    public virtual DbSet<Client> Clients { get; set; }
+
     public virtual DbSet<ClientPropertyDeclaration> ClientPropertyDeclarations { get; set; }
 
     public virtual DbSet<DailyEntry> DailyEntries { get; set; }
@@ -79,13 +81,15 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<Team> Teams { get; set; }
 
+    public virtual DbSet<Tenant> Tenants { get; set; }
+
     public virtual DbSet<TimeSheet> TimeSheets { get; set; }
 
     public virtual DbSet<UserDocument> UserDocuments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost;Database=EHRM;User Id=EHRMAdmin;Password=9YeCsU3QGQp2Mnxebcmj===;TrustServerCertificate=true;");
+        => optionsBuilder.UseSqlServer("Server=RAMYA-0PF3X4NQG;Database=EHRM;Trusted_Connection=True;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -123,6 +127,58 @@ public partial class EhrmContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Summary).IsUnicode(false);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Client>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Client__3214EC076D791AD4");
+
+            entity.ToTable("Client");
+
+            entity.Property(e => e.Address)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.AdminName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.AdminUsername)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.City)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ConfirmPasswordHash).IsUnicode(false);
+            entity.Property(e => e.ContactEmail)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Country)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Date)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.MobileNumber)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.OrganizationId)
+                .IsUnicode(false)
+                .HasColumnName("OrganizationID");
+            entity.Property(e => e.OrganizationName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.OrganizationType)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.PasswordHash).IsUnicode(false);
+            entity.Property(e => e.PostalCode)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
         });
 
         modelBuilder.Entity<ClientPropertyDeclaration>(entity =>
@@ -215,9 +271,17 @@ public partial class EhrmContext : DbContext
 
             entity.HasIndex(e => e.EmailAddress, "UQ__Employee__49A147409E8B4859").IsUnique();
 
+            entity.HasIndex(e => e.EmailAddress, "UQ__Employee__49A14740ED08409F").IsUnique();
+
             entity.HasIndex(e => e.LoginId, "UQ__Employee__4DDA2839617BBF18").IsUnique();
 
+            entity.HasIndex(e => e.LoginId, "UQ__Employee__4DDA2839A8FBEA03").IsUnique();
+
+            entity.HasIndex(e => e.AadharNumber, "UQ__Employee__5003EE65B2BCB70D").IsUnique();
+
             entity.HasIndex(e => e.AadharNumber, "UQ__Employee__5003EE65C4D9A885").IsUnique();
+
+            entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB981D0C48DB").IsUnique();
 
             entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB98B9D6DE67").IsUnique();
 
@@ -526,6 +590,8 @@ public partial class EhrmContext : DbContext
             entity.ToTable("EmployeesCred");
 
             entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB983948E035").IsUnique();
+
+            entity.HasIndex(e => e.EmpId, "UQ__Employee__AF2DBB98F46D626D").IsUnique();
 
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FirstName).HasMaxLength(100);
@@ -1148,6 +1214,19 @@ public partial class EhrmContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Tenant>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Tenant__3214EC0774AE2F05");
+
+            entity.ToTable("Tenant");
+
+            entity.HasIndex(e => e.TenantId, "UQ__Tenant__2E9B47E007263D7C").IsUnique();
+
+            entity.Property(e => e.ConnectionString).HasMaxLength(255);
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.TenantId).HasMaxLength(255);
         });
 
         modelBuilder.Entity<TimeSheet>(entity =>
