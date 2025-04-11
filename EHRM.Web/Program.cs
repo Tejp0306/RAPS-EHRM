@@ -13,6 +13,7 @@ using EHRM.Infrastructure.Middleware;
 using EHRM.Infrastructure.Extension;
 using Logger;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 
 
 
@@ -45,7 +46,10 @@ app.UseMiddleware<SessionExpirationMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto
+});
 
 // Define routes properly:
 app.UseEndpoints(endpoints =>
