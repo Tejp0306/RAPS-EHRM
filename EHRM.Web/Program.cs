@@ -41,7 +41,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseRouting();
 
 app.UseSession(); // Enable session before UseAutho
-app.UseMiddleware<SessionExpirationMiddleware>();
+//app.UseMiddleware<SessionExpirationMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -50,7 +50,7 @@ app.UseAuthorization();
 // Define routes properly:
 app.UseEndpoints(endpoints =>
 {
-    // Default route — Login Page
+    // Default route â€” Login Page
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Account}/{action=Login}/{id?}");
