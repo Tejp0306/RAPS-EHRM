@@ -30,6 +30,7 @@ using EHRM.ServiceLayer.Hierarchy;
 using EHRM.ServiceLayer.LeaveDashBoard;
 using EHRM.ServiceLayer.PostJoining;
 using EHRM.ServiceLayer.ExitFormalities;
+using EHRM.ServiceLayer;
 
 namespace EHRM.Infrastructure.Configurations
 {
