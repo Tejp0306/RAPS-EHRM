@@ -31,6 +31,7 @@ using EHRM.ServiceLayer.LeaveDashBoard;
 using EHRM.ServiceLayer.PostJoining;
 using EHRM.ServiceLayer.ExitFormalities;
 using EHRM.ServiceLayer;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace EHRM.Infrastructure.Configurations
 {
@@ -79,6 +80,11 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<IAssetService, AssetService>();
             services.AddSingleton<ILoggerManager, LoggerManager>();
             services.AddSingleton<IEmailService, EmailService>();
+
+            services.AddDataProtection()
+            .PersistKeysToFileSystem(new DirectoryInfo(@"/var/appkeys/"))
+            .SetApplicationName("ehrm");
+
             // HttpContextAccessor
             services.AddHttpContextAccessor();
 
