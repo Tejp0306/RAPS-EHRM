@@ -47,13 +47,18 @@
         border-radius: 8px;
     }
 </style>
+<script src="~/JsPDF/jspdf.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
+
+
 <script src="~/CustomScripts/PersonalInfo.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="~/CustomScripts/NDA.js"></script>
 <script src="~/CustomScripts/ClientPropertyDeclaration.js"></script>
+<script src="~/CustomScripts/PostOnboardingForms.js"></script>
 <script src="~/CustomScripts/AcknowledgementForm.js"></script>
-<script src="~/jspdf/jspdf.js"></script>
+
 
 
 <div class="container">
@@ -79,10 +84,12 @@
             <h5 class="card-title">Client Property Declaration Form</h5>
             <p class="card-text">Declaration about handling of client’s property.</p>
             <div class="d-flex justify-content-between">
+
                 <button class="btn btn-info preview-btn" onclick="openClientDeclarationModal(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#clientDeclarationModal">Preview</button>
                 <button type="button" id="downloadBtn" onclick="downloadClientDecla(@empIdFromSession)" class="btn btn-success">
                     <i class="bi bi-download"></i> Download
                 </button>
+
             </div>
         </div>
     </div>
@@ -114,6 +121,40 @@
             </div>
         </div>
     </div>
+
+    <!-- ✅ BGV Form Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Background Verification Form</h5>
+            <p class="card-text">Details related to the background verification of the employee.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadEmployeeForm(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#previewModal">
+                    Preview
+                </button>
+
+                <button type="button" id="downloadBtn" onclick="loadDownloadForm(@empIdFromSession)" class="btn btn-success">
+                    <i class="bi bi-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Master Sheet Section -->
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Master Sheet</h5>
+            <p class="card-text">Comprehensive summary of employee details.</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-info" onclick="loadMasterForm(@empIdFromSession)" data-bs-toggle="modal" data-bs-target="#previewModal">
+                    Preview
+                </button>
+                <button type="button" id="downloadBtn" onclick="GetDownloadMasterForm(@empIdFromSession)" class="btn btn-success">
+                    <i class="bi bi-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -376,9 +417,17 @@
     </div>
 </div>
 
-
-
-
-
-
-
+<!-- ✅ Modal to Show Dynamic Form Preview -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Form Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="formPreviewContent">
+                <p class="text-center">Loading form details...</p>
+            </div> <!-- ✅ Closing modal-body -->
+        </div> <!-- ✅ Closing modal-content -->
+    </div> <!-- ✅ Closing modal-dialog -->
+</div> <!-- ✅ Closing modal -->

@@ -1,25 +1,31 @@
-﻿using System.Security.Cryptography.Xml;
+using EHRM.ViewModel.MasterEmployee;
+using EHRM.ViewModel.MainMenu;
+using Microsoft.AspNetCore.Mvc;
+using EHRM.ServiceLayer.PostJoining;
+using EHRM.ViewModel.Employee;
+using Microsoft.EntityFrameworkCore;
 using EHRM.DAL.Database;
+using EHRM.ServiceLayer.Helpers;
+using NuGet.Protocol;
+using Newtonsoft.Json.Linq;
+using System.Security.Cryptography.Xml;
 using EHRM.ServiceLayer.Calendar;
 using EHRM.ServiceLayer.Document;
-using EHRM.ServiceLayer.Helpers;
-using EHRM.ServiceLayer.PostJoining;
 using EHRM.ServiceLayer.Review;
 using EHRM.ServiceLayer.Utility;
 using EHRM.ViewModel.Document;
-using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.EmployeeDeclaration;
 using EHRM.ViewModel.Master;
 using EHRM.ViewModel.PostJoining;
 using EHRM.ViewModel.Review;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace EHRM.Web.Controllers
 {
     public class PostJoiningController : Controller
     {
+        #region ctor
         private readonly IPostJoiningService _post;
 
         public PostJoiningController(IPostJoiningService post)
@@ -27,15 +33,34 @@ namespace EHRM.Web.Controllers
 
             _post = post;
         }
+        #endregion
+
+        #region [Views Actions]
         public IActionResult Index()
+
         {
             return View();
         }
-
         public IActionResult PostJoiningForms()
         {
             return View();
         }
+        public IActionResult MasterSheet()
+        {
+            return View();
+        }
+        public IActionResult BGVForm() { return View(); }
+
+        public IActionResult AdminBGVView()
+        {
+            return View();
+        }
+
+        public IActionResult AdminMasterSheetView()
+        {
+            return View();
+        }
+        #endregion
 
         #region Acknowledgement Form
         public IActionResult AcknowledgementForm()
@@ -51,15 +76,12 @@ namespace EHRM.Web.Controllers
         {
             return View();
         }
-
         public async Task<IActionResult> SaveAcknowledgementForm(AcknowledgementFormViewModel model)
         {
             var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
             var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
             var empId = userDetails.userId;
             model.EmpId = Convert.ToInt32(empId);
-
-
             var result = await _post.CreateAcknowldegementFormAsync(model);
 
             // Handle the result of the create operation
@@ -69,7 +91,6 @@ namespace EHRM.Web.Controllers
                 TempData["ToastType"] = "success";  // Success, danger, warning, info
                 TempData["ToastMessage"] = "Form Submitted successfully!";
                 return RedirectToAction("AcknowledgementForm"); // Redirect back to the EmployeeType view
-
             }
             else
             {
@@ -206,11 +227,7 @@ namespace EHRM.Web.Controllers
                 return Json(new { Success = false, Message = result.Message ?? "No Asset found." });
             }
         }
-
-
-
         #endregion
-
 
         #region Personal Information Form
 
@@ -244,7 +261,6 @@ namespace EHRM.Web.Controllers
                 TempData["ToastType"] = "success";  // Success, danger, warning, info
                 TempData["ToastMessage"] = "Form Submitted successfully!";
                 return RedirectToAction("PersonalInformationForm"); // Redirect back to the EmployeeType view
-
             }
             else
             {
@@ -384,7 +400,6 @@ namespace EHRM.Web.Controllers
 
         #endregion
 
-
         #region Client Property Declaration
 
         public IActionResult ClientDeclarationForm()
@@ -398,10 +413,8 @@ namespace EHRM.Web.Controllers
 
         public IActionResult ClientDeclarationFormDetails()
         {
-
             return View();
         }
-
 
         public async Task<IActionResult> SaveClientPropertyDeclarationForm(ClientPropertyDeclarationViewModel model)
         {
@@ -526,6 +539,7 @@ namespace EHRM.Web.Controllers
             // Fetch the result from the service layer
             var result = await _post.GetClientPropertDeclarationFormAsync();
 
+
             // Check if the result is successful and contains data
             if (result.Success && result.Data != null)
             {
@@ -555,9 +569,7 @@ namespace EHRM.Web.Controllers
             }
         }
 
-
         #endregion
-
 
         #region Non Disclosure Agreement Form
         public IActionResult NDAForm()
@@ -577,7 +589,6 @@ namespace EHRM.Web.Controllers
 
         public async Task<IActionResult> SaveNDAForm(NDAFormViewModel model)
         {
-
             var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
             var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
             var empId = userDetails.userId;
@@ -726,7 +737,442 @@ namespace EHRM.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while retrieving the Asset details." });
             }
         }
-
         #endregion
+
+        public IActionResult AddExperience()
+        {
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            var userId = userDetails.userId;
+            ViewData["userId"] = userId;
+            return View();
+        }
+        // Save Personal Info of MasterSheet
+        [HttpPost]
+        public async Task<IActionResult> SavePersonalMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterEmployee.AadharNumber is null)
+            {
+                // Return to the form if validation fails
+                return Redirect("MasterSheet");
+            }
+
+            var result = await _post.SaveMasterSheetAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Personal Info saved successfully.";
+                return Redirect("MasterSheet");
+            }
+            else
+            {
+
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        // Save Contact Info of MasterSheet
+        public async Task<IActionResult> SaveContactMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterContactDetails.PersonalContactNo is null)
+            {
+                // Return to the form if validation fails
+                return Redirect("MasterSheet");
+            }
+
+            var result = await _post.SaveMasterContactAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Contact saved successfully.";
+                return Redirect("MasterSheet");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        // Save Address Info of MasterSheet
+        public async Task<IActionResult> SaveAddressMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterAddress.PermanentAddress is null)
+            {
+                // Return to the form if validation fails
+                return Redirect("MasterSheet");
+            }
+
+            var result = await _post.SaveMasterAddressAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Address saved successfully.";
+                return Redirect("MasterSheet");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        // Save Education Info of MasterSheet
+        public async Task<IActionResult> SaveEducationMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterEducation.XthInstitution is null)
+            {
+                // Return to the form if validation fails
+                return Redirect("MasterSheet");
+            }
+
+            var result = await _post.SaveMasterEducationAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Address saved successfully.";
+                return Redirect("MasterSheet");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        // Save Experience Info of MasterSheet
+        public async Task<IActionResult> SaveExperienceMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterWorkExperience[0].OrganisationName is null)
+            {
+                // Return to the form if validation fails
+                return Redirect("MasterSheet");
+            }
+
+            var result = await _post.SaveMasterExperienceAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Address saved successfully.";
+                return Redirect("MasterSheet");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        // Save Bank Info of MasterSheet
+        public async Task<IActionResult> SaveBankMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterBankDetails.BankName is null)
+            {
+                // Return to the form if validation fails
+                return Redirect("MasterSheet");
+            }
+
+            var result = await _post.SaveMasterBankAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Address saved successfully.";
+                return Redirect("MasterSheet");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        // Save Emergency Info of MasterSheet
+        public async Task<IActionResult> SaveEmergencyMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterEmergencyContactViewModel.EmergencyContactNumber is null)
+            {
+                // Return to the form if validation fails
+                return Redirect("MasterSheet");
+            }
+
+            var result = await _post.SaveMasterEmergencyAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Address saved successfully.";
+                return Redirect("MasterSheet");
+            }
+            else
+            {
+
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        // Save Reporting Info of MasterSheet
+        public async Task<IActionResult> SaveReportingMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterReportingDetails.DirectReporting is null)
+            {
+                // Return to the form if validation fails
+                return Redirect("MasterSheet");
+            }
+
+            var result = await _post.SaveMasterReportingAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Address saved successfully.";
+                return Redirect("MasterSheet");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        // Save Family Info of MasterSheet
+        public async Task<IActionResult> SaveFamilyMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterFamilyDetails.RelationWithEmployee is null)
+            {
+                // Return to the form if validation fails
+                return Redirect("MasterSheet");
+            }
+
+            var result = await _post.SaveMasterFamilyAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Address saved successfully.";
+                return Redirect("MasterSheet");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        // Save Dependent Info of MasterSheet
+        public async Task<IActionResult> SaveDependentMasterInfo(EmployeeFormViewModel model)
+        {
+            if (model.MasterDependentDetails.DependentName is null)
+            {
+                // Return to the form if validation fails
+                return View(model);
+            }
+
+            var result = await _post.SaveMasterDependentAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Master Address saved successfully.";
+                return Redirect("MasterSheet");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveBGVForm(BGVViewModel model)
+        {
+            if (model.Email is null)
+            {
+                // Return to the form if validation fails
+                return View(model);
+            }
+
+            var result = await _post.SaveBGVFormAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "BGV Form saved successfully.";
+                return RedirectToAction("AddExperience");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SavePreviousEmployments(EmploymentViewModel model)
+        {
+
+            if (model.PreviousEmployments is null)
+            {
+                // Return to the form if validation fails
+                return View(model);
+            }
+
+            var result = await _post.SavePreviousEmploymentsAsync(model);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "BGV Form saved successfully.";
+                return RedirectToAction("AddExperience");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving data.";
+                return View(model);
+            }
+
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetBGVDetails(int EmpId)
+        {
+            try
+            {
+                var nb = await _post.GetEmployeeDetailsAsync(EmpId);
+
+                if (nb == null)
+                {
+                    return Json(new { success = false, message = "Notice not found." });
+                }
+
+
+                return Json(new { success = true, data = nb });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
+            }
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMasterSheetData(int EmpId)
+        {
+            try
+            {
+                EmployeeFormViewModel employeeData = await Task.Run(() => _post.GetMasterSheetDataAsync(EmpId));
+
+                if (employeeData == null)
+                {
+                    return Json(new { success = false, message = "Employee data not found." });
+                }
+
+                return Json(new { success = true, data = employeeData });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the employee data.", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get All BGV and MasterSheet Data for Admin
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<JsonResult> GetBackGroundFormDetails()
+        {
+            // Fetch the result from the service layer
+            var result = await _post.GetBackGroundFormDetailsAsync();
+
+            if (result.Success)
+            {
+                return Json(result.Data); // Return data as JSON
+            }
+
+            // Handle the error scenario
+            TempData["ToastType"] = "danger";
+            TempData["ToastMessage"] = "An error occurred while retrieving background form details.";
+
+            return Json(new { success = false, message = "Failed to retrieve background form details." });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="EmpId"></param>
+        /// <returns></returns>
+        [HttpGet("PostJoining/GetBGVDataByEmpId/{EmpId}")]
+        public async Task<JsonResult> GetBGVDataByEmpId([FromRoute] int EmpId)
+        {
+            try
+            {
+                var nb = await _post.GetEmployeeDetailsAsync(EmpId);
+
+                if (nb == null)
+                {
+                    return Json(new { success = false, message = "Notice not found." });
+                }
+
+
+                return Json(new { success = true, data = nb });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
+            }
+
+        }
+
+        /// <summary>
+        /// Get MasterSheet Data for Admin
+        /// </summary>
+        /// <param name="EmpId"></param>
+        /// <returns></returns>
+        [HttpGet("PostJoining/GetMasterSheetDataByEmpId/{EmpId}")]
+        public async Task<JsonResult> GetMasterSheetDataByEmpId([FromRoute] int EmpId)
+        {
+            try
+            {
+                EmployeeFormViewModel employeeMasterData = await Task.Run(() => _post.GetMasterSheetDataAsync(EmpId));
+
+                if (employeeMasterData == null)
+                {
+                    return Json(new { success = false, message = "Employee data not found." });
+                }
+
+                return Json(new { success = true, data = employeeMasterData });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while retrieving the employee data.", error = ex.Message });
+            }
+
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetMasterSheetFormDetails()
+        {
+            try
+            {
+                var result = await _post.GetMasterSheetFormDetailsAsync();
+
+                if (result?.Success == true && result.Data != null)
+                {
+                    var jsonData = JObject.FromObject(result.Data);
+
+                    // Extract MasterForm instead of EmployeeMaster
+                    var employeeMasterList = jsonData["MasterForm"]?.ToObject<List<EmployeeMaster>>() ?? new List<EmployeeMaster>();
+
+                    var response = new
+                    {
+                        BgvForms = employeeMasterList.Select(emp => new
+                        {
+                            EmpId = emp.EmpId,
+                            EmployeeName = $"{emp.FirstName} {emp.LastName}",
+                            EmailAddress = emp.PancardNumber // Change if you need a different field
+                        }).ToList()
+                    };
+
+                    return Json(new { Success = true, Data = response });
+                }
+
+                return Json(new { Success = false, Message = result?.Message ?? "No background form details found." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = "An error occurred while retrieving background form details.", Error = ex.Message });
+            }
+        }
     }
 }
