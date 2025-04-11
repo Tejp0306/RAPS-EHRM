@@ -30,6 +30,7 @@ using EHRM.ServiceLayer.Hierarchy;
 using EHRM.ServiceLayer.LeaveDashBoard;
 using EHRM.ServiceLayer.PostJoining;
 using EHRM.ServiceLayer.ExitFormalities;
+using EHRM.ServiceLayer.SuperAdmin;
 
 namespace EHRM.Infrastructure.Configurations
 {
@@ -57,6 +58,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<ILeaveDashboardService, LeaveDashboardService>();
             services.AddScoped<IPostJoiningService, PostJoiningService>();
             services.AddScoped<IExitFormalitiesService, ExitFormalitiesService>();
+            services.AddScoped<ISuperAdminService, SuperAdminService>();
 
 
             //services.AddScoped<ISubMenuService, SubMenuService>();
