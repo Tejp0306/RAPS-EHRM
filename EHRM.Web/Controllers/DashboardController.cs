@@ -130,7 +130,7 @@ namespace EHRM.Web.Controllers
                      //TempData["ToastMessage"] = "Punch-In saved successfully!";
                      EmailServiceModel _email = new()
                      {
-                         RecipentMail = "arjunsingh@rapscorp.com",  // Replace with actual recipient email
+                         RecipentMail = "saksham@rapscorp.com",  // Replace with actual recipient email
                          CcMail = "saksham@rapscorp.com",  // Replace with actual CC email
                          Subject = "Punched In",  // Subject for Punch In
                                                   // Include the user name and the current time in the email body for personalization
@@ -172,47 +172,49 @@ namespace EHRM.Web.Controllers
             try
             {
                 // Call the service method to update the role
-                //var result =  _accountService.UpdatePunchOutAsync(EmpId);
-                var result =await _dashboard.UpdatePunchOutAsync(EmpId);
-                if (result.Success) {
-                //if (result.IsCompletedSuccessfully)
-                //{
-                    // Success handling for create
-                    //TempData["ToastType"] = "success";
-                    //TempData["ToastMessage"] = "Punch-Out saved successfully!";
-                    
+                var result = await _dashboard.UpdatePunchOutAsync(EmpId);
+
+                if (result.Success)
+                {
                     // Prepare email content for Punch Out
                     EmailServiceModel _email = new()
                     {
-                        RecipentMail = "arjunsingh@rapscorp.com",  // Replace with actual recipient email
+                        RecipentMail = "saksham@rapscorp.com",  // Replace with actual recipient email
                         CcMail = "saksham@rapscorp.com",  // Replace with actual CC email
                         Subject = "Punched Out",  // Subject for Punch Out
                         Body = $"{userName} has punched out successfully at {currentTime}. Thanks."  // Personalized Body for Punch Out
                     };
 
                     // Sending the email for Punch Out
-                    _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
+                     _emailService.SendEmailAsync(_email.RecipentMail, _email.CcMail, _email.Subject, _email.Body);
+
+                    // Remove "PunchRes" cookie (if needed)
                     Response.Cookies.Delete("PunchRes");
+
+
+                    CookieOptions options = new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMinutes(1),  
+                        HttpOnly = true
+                    };
+                    Response.Cookies.Append("PunchCooldown", "true", options);
+
+                    // Redirect to Dashboard after successful punch-out
                     return RedirectToAction("Dashboard");
-                    //return Json(new { success = true }); 
                 }
                 else
                 {
-                    // Error handling for create failure
-                    //TempData["ToastType"] = "danger";
-                    //TempData["ToastMessage"] = "Punch-Out saved successfully!";
+                    // Error handling if punch-out fails
                     return RedirectToAction("Dashboard");
-                    //return Json(new { success = false });// Redirect to the same page in case of error
                 }
             }
             catch (Exception ex)
             {
                 ViewBag.ErrorMessage = $"Unexpected error occurred: {ex.Message}";
-                //return RedirectToAction("Dashboard");
                 return Json(new { success = false });
             }
-
         }
+
 
     }
 }

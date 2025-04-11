@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /EHRM.Web/wwwroot/ProfileImage
+/EHRM.Web/Files
+/EHRM.Web/wwwroot/Files

@@ -49,7 +49,7 @@
             <h3 class="page-heading1">RAPS Consulting Inc.</h3>
             <h4 class="page-heading">TIME SHEET</h4>
     <div class="card">
-        <form id="timeform">
+        <form id="timeform" asp-controller="Self" asp-action="SubmitTimeSheet">
             <input type="hidden" id="empId" name="empId" value="@ViewData["empId"]">
             <input type="hidden" id="timesheetId">
         <div class="card-body">
@@ -263,10 +263,6 @@
             }
         });
     }
-
-
-
-
 
 
 

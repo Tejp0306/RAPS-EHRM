@@ -23,7 +23,7 @@ namespace EHRM.ServiceLayer.Hierarchy
 
         public HierarchyService(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("EHRMConnection");
+            _connectionString = ConnectionStringConfiguration._DefaultConnectionString;
             if (string.IsNullOrEmpty(_connectionString))
             {
                 throw new Exception("Database connection string is not configured properly.");

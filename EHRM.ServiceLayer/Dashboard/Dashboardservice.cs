@@ -20,9 +20,9 @@ namespace EHRM.ServiceLayer.Dashboard
         private readonly string _connectionString;
         private readonly IUnitOfWork _unitOfWork;
 
-        public Dashboardservice(IConfiguration configuration,IUnitOfWork unitOfWork)
+        public Dashboardservice(IConfiguration configuration, IUnitOfWork unitOfWork)
         {
-            _connectionString = configuration.GetConnectionString("EHRMConnection");
+            _connectionString = ConnectionStringConfiguration._DefaultConnectionString;
             if (string.IsNullOrEmpty(_connectionString))
             {
                 throw new Exception("Database connection string is not configured properly.");
@@ -72,7 +72,7 @@ namespace EHRM.ServiceLayer.Dashboard
                 using (SqlCommand cmd = new SqlCommand("GetAllEmployeeDetailsForAdmin", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    
+
 
                     conn.Open();
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -92,7 +92,7 @@ namespace EHRM.ServiceLayer.Dashboard
                                 {
                                     Empid = Convert.ToInt32(reader["EmpId"]),
                                     //EmployeeName= reader["LastName"].ToString() + reader["LastName"].ToString()
-                                    
+
                                 }
                             });
                         }

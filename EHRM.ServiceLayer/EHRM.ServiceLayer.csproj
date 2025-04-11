@@ -7,8 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Finbuckle.MultiTenant" Version="8.0.0" />
+    <PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="Finbuckle.MultiTenant.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EHRM.DAL\EHRM.DAL.csproj" />
     <ProjectReference Include="..\EHRM.ViewModel\EHRM.ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Session\" />
   </ItemGroup>
 
 </Project>
