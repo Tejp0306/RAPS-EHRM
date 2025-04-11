@@ -19,7 +19,7 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<AssetsDb> AssetsDbs { get; set; }
 
-    public virtual DbSet<Client> Clients { get; set; }
+    public virtual DbSet<BankDetail> BankDetails { get; set; }
 
     public virtual DbSet<ClientPropertyDeclaration> ClientPropertyDeclarations { get; set; }
 
