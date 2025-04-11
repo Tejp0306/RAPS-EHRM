@@ -106,8 +106,6 @@ public partial class EhrmContext : DbContext
 
     public virtual DbSet<Team> Teams { get; set; }
 
-    public virtual DbSet<Tenant> Tenants { get; set; }
-
     public virtual DbSet<TimeSheet> TimeSheets { get; set; }
 
     public virtual DbSet<UserDocument> UserDocuments { get; set; }
