@@ -42,7 +42,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseRouting();
 
 app.UseSession(); // Enable session before UseAutho
-//app.UseMiddleware<SessionExpirationMiddleware>();
+app.UseMiddleware<SessionExpirationMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
