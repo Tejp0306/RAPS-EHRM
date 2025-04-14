@@ -59,6 +59,11 @@ namespace EHRM.Web.Controllers
                     Response.Cookies.Delete("PunchRes");
 
                 }
+                var punchCooldownCookie = HttpContext.Request.Cookies["PunchCooldown"];
+                if (punchCooldownCookie != null && punchCooldownCookie != empId.ToString())
+                {
+                    Response.Cookies.Delete("PunchCooldown");
+                }
 
                 // Logic for Manager (Role 4)
                 if (roleId == 4)
@@ -197,7 +202,7 @@ namespace EHRM.Web.Controllers
                         Expires = DateTime.Now.AddHours(8),  
                         HttpOnly = true
                     };
-                    Response.Cookies.Append("PunchCooldown", "true", options);
+                    Response.Cookies.Append("PunchCooldown", EmpId.ToString(), options);
 
                     // Redirect to Dashboard after successful punch-out
                     return RedirectToAction("Dashboard");
