@@ -289,50 +289,50 @@ namespace EHRM.Web.Controllers
         //}
 
 
-        [HttpPost]
-        public JsonResult UploadFiles(List<IFormFile> Files)
-        {
-            try
-            {
-                if (Files == null || Files.Count == 0)
-                {
-                    return Json(new { success = false, message = "No files uploaded." });
-                }
+        // [HttpPost]
+        // public JsonResult UploadFiles(List<IFormFile> Files)
+        // {
+        //     try
+        //     {
+        //         if (Files == null || Files.Count == 0)
+        //         {
+        //             return Json(new { success = false, message = "No files uploaded." });
+        //         }
 
-                List<string> filePaths = new List<string>();
+        //         List<string> filePaths = new List<string>();
 
-                // Corrected path (No extra backslashes)
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
+        //         // Corrected path (No extra backslashes)
+        //         string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
 
-                // Ensure the directory exists
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+        //         // Ensure the directory exists
+        //         if (!Directory.Exists(path))
+        //         {
+        //             Directory.CreateDirectory(path);
+        //         }
 
-                foreach (var file in Files)
-                {
-                    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    string filePath = Path.Combine(path, fileName); // Corrected file save path
+        //         foreach (var file in Files)
+        //         {
+        //             string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+        //             string filePath = Path.Combine(path, fileName); // Corrected file save path
 
-                    // Save the file
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
+        //             // Save the file
+        //             using (var stream = new FileStream(filePath, FileMode.Create))
+        //             {
+        //                 file.CopyTo(stream);
+        //             }
 
-                    // Store the file path in the correct format: \Files\filename.ext
-                    string storedPath = Path.Combine("Files", fileName);  // Removed leading backslash
-                    filePaths.Add("//" + storedPath); // Ensure correct format for output
-                }
+        //             // Store the file path in the correct format: \Files\filename.ext
+        //             string storedPath = Path.Combine("Files", fileName);  // Removed leading backslash
+        //             filePaths.Add("//" + storedPath); // Ensure correct format for output
+        //         }
 
-                return Json(new { success = true, filePaths });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "File upload failed: " + ex.Message });
-            }
-        }
+        //         return Json(new { success = true, filePaths });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return Json(new { success = false, message = "File upload failed: " + ex.Message });
+        //     }
+        // }
 
         //[HttpPost]
         //public JsonResult UploadFiles(List<IFormFile> Files)
