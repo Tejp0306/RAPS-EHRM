@@ -287,7 +287,7 @@ namespace EHRM.Web.Controllers
             }
 
             // Define the directory path to store files
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "\\Files");
 
 
             // Create the folder if it doesn't exist
