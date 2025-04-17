@@ -54,7 +54,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 // Define routes properly:
 app.UseEndpoints(endpoints =>
 {
-    // Default route — Login Page
+    // Default route â€” Login Page
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Account}/{action=Login}/{id?}");
