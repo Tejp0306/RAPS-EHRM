@@ -291,7 +291,7 @@ namespace EHRM.Web.Controllers
             // Define the directory path to store files
             string path;
 
-            if (_configuration["AppSettings:EnvironmentName"].ToString().Equals("Production"))
+            if (_configuration["AppSetting:EnvironmentName"].ToString().Equals("Production"))
             {
                 path = Path.Combine(Directory.GetCurrentDirectory(), "Files");
             }
