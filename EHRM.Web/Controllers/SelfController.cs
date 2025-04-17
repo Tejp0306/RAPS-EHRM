@@ -253,44 +253,6 @@ namespace EHRM.Web.Controllers
             return Json(new { success = true, data = timeSheet });
         }
 
-        //private string Upload(TimeSheetViewModel model)
-        //{
-        //    // Check if a file is provided, if not, simply return null (indicating no file upload)
-        //    if (model.Files == null || model.Files.Length == 0)
-        //    {
-        //        return null; // No file uploaded, return null or an empty string
-        //    }
-
-        //    // Define the directory path to store files
-        //    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
-
-
-        //    // Create the folder if it doesn't exist
-        //    if (!Directory.Exists(path))
-        //    {
-        //        Directory.CreateDirectory(path);
-        //    }
-
-        //    // Generate a unique file name to avoid name conflicts (optional, can use the original name)
-        //    //FileInfo fileInfo = new FileInfo(model.File.FileName);
-        //    //string fileName = Guid.NewGuid().ToString() + fileInfo.Extension;  // Unique file name generation
-        //                                                                       // You can also use model.FileName here if you want to allow users to specify the name
-
-        //    // Combine path with the file name to get the full file path
-        //    //string fileNameWithPath = Path.Combine(path, fileName);
-
-        //    // Save the file to the specified directory
-        //    //using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-        //    //{
-        //    //    model.File.CopyTo(stream);
-        //    //}
-
-        //    // Return the full file path or file name
-        //    return Path.Combine("\\Files", "fileName");
-        //}
-
-
-
         [HttpPost]
         public JsonResult UploadFiles(List<IFormFile> Files)
         {
@@ -346,6 +308,55 @@ namespace EHRM.Web.Controllers
             }
         }
 
+        //[HttpPost]
+        //public JsonResult UploadFiles(List<IFormFile> Files)
+        //{
+        //    try
+        //    {
+        //        // Check if files are provided
+        //        if (Files == null || Files.Count == 0)
+        //        {
+        //            return Json(new { success = false, message = "No files uploaded." });
+        //        }
+
+        //        List<string> filePaths = new List<string>();
+
+        //        // Define the directory path to store files
+        //        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
+
+        //        // Create the folder if it doesn't exist
+        //        if (!Directory.Exists(path))
+        //        {
+        //            Directory.CreateDirectory(path);
+        //        }
+
+        //        foreach (var file in Files)
+        //        {
+        //            // Generate a unique file name
+        //            FileInfo fileInfo = new FileInfo(file.FileName);
+        //            string fileName = Guid.NewGuid().ToString() + fileInfo.Extension;
+
+        //            // Combine path with file name
+        //            string fileNameWithPath = Path.Combine(path, fileName);
+
+        //            // Save the file
+        //            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+        //            {
+        //                file.CopyTo(stream);
+        //            }
+
+        //            // Store the relative path for client access
+        //            string storedPath = Path.Combine("Files", fileName);
+        //            filePaths.Add("/" + storedPath.Replace("\\", "/")); // Ensure forward slashes for URL
+        //        }
+
+        //        return Json(new { success = true, filePaths });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = "File upload failed: " + ex.Message });
+        //    }
+        //}
 
 
         [HttpGet]
