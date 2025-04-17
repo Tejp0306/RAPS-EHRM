@@ -17,11 +17,12 @@ namespace EHRM.Web.Controllers
     public class SelfController : Controller
     {
         private readonly ISelfService _self;
-
-        public SelfController(ISelfService Self)
+        private readonly IConfiguration _configuration;
+        public SelfController(ISelfService Self, IConfiguration configuration)
         {
 
             _self = Self;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -300,9 +301,19 @@ namespace EHRM.Web.Controllers
                 }
 
                 List<string> filePaths = new List<string>();
-
+                string path;
+                if (_configuration["AppSetting:EnvironmentName"].ToString().Equals("Production"))
+                {
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "Files");
+                }
+                else
+                {
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
+                }
                 // Corrected path (No extra backslashes)
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
+               
+
+
 
                 // Ensure the directory exists
                 if (!Directory.Exists(path))

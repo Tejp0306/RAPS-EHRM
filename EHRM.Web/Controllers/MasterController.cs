@@ -11,10 +11,12 @@ namespace EHRM.Web.Controllers
     {
         private readonly IMasterService _master;
         private readonly string _fileStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "Files");
-        public MasterController(IMasterService master)
+        private readonly IConfiguration _configuration;
+        public MasterController(IMasterService master, IConfiguration configuration)
         {
 
             _master = master;
+            _configuration = configuration;
         }
         public IActionResult Index()
         {
@@ -287,7 +289,17 @@ namespace EHRM.Web.Controllers
             }
 
             // Define the directory path to store files
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
+            string path;
+
+            if (_configuration["AppSettings:EnvironmentName"].ToString().Equals("Production"))
+            {
+                path = Path.Combine(Directory.GetCurrentDirectory(), "Files");
+            }
+            else
+            {
+                path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
+            }
+            
 
 
             // Create the folder if it doesn't exist
