@@ -294,7 +294,7 @@ namespace EHRM.Web.Controllers
 
             if (_configuration["AppSetting:EnvironmentName"].ToString().Equals("Production"))
             {
-                path = Path.Combine(Directory.GetCurrentDirectory(), "Files");
+                path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "Files");
             }
             else
             {
