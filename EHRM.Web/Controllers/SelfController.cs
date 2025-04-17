@@ -290,6 +290,7 @@ namespace EHRM.Web.Controllers
         //}
 
 
+
         [HttpPost]
         public JsonResult UploadFiles(List<IFormFile> Files)
         {
@@ -345,105 +346,6 @@ namespace EHRM.Web.Controllers
             }
         }
 
-        //[HttpPost]
-        //public JsonResult UploadFiles(List<IFormFile> Files)
-        //{
-        //    try
-        //    {
-        //        // Check if files are provided
-        //        if (Files == null || Files.Count == 0)
-        //        {
-        //            return Json(new { success = false, message = "No files uploaded." });
-        //        }
-
-        //        List<string> filePaths = new List<string>();
-
-        //        // Define the directory path to store files
-        //        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
-
-        //        // Create the folder if it doesn't exist
-        //        if (!Directory.Exists(path))
-        //        {
-        //            Directory.CreateDirectory(path);
-        //        }
-
-        //        foreach (var file in Files)
-        //        {
-        //            // Generate a unique file name
-        //            FileInfo fileInfo = new FileInfo(file.FileName);
-        //            string fileName = Guid.NewGuid().ToString() + fileInfo.Extension;
-
-        //            // Combine path with file name
-        //            string fileNameWithPath = Path.Combine(path, fileName);
-
-        //            // Save the file
-        //            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-        //            {
-        //                file.CopyTo(stream);
-        //            }
-
-        //            // Store the relative path for client access
-        //            string storedPath = Path.Combine("Files", fileName);
-        //            filePaths.Add("/" + storedPath.Replace("\\", "/")); // Ensure forward slashes for URL
-        //        }
-
-        //        return Json(new { success = true, filePaths });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = "File upload failed: " + ex.Message });
-        //    }
-        //}
-
-        [HttpPost]
-        public JsonResult UploadFiles(List<IFormFile> Files)
-        {
-            try
-            {
-                // Check if files are provided
-                if (Files == null || Files.Count == 0)
-                {
-                    return Json(new { success = false, message = "No files uploaded." });
-                }
-
-                List<string> filePaths = new List<string>();
-
-                // Define the directory path to store files
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
-
-                // Create the folder if it doesn't exist
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                foreach (var file in Files)
-                {
-                    // Generate a unique file name
-                    FileInfo fileInfo = new FileInfo(file.FileName);
-                    string fileName = Guid.NewGuid().ToString() + fileInfo.Extension;
-
-                    // Combine path with file name
-                    string fileNameWithPath = Path.Combine(path, fileName);
-
-                    // Save the file
-                    using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
-
-                    // Store the relative path for client access
-                    string storedPath = Path.Combine("Files", fileName);
-                    filePaths.Add("/" + storedPath.Replace("\\", "/")); // Ensure forward slashes for URL
-                }
-
-                return Json(new { success = true, filePaths });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "File upload failed: " + ex.Message });
-            }
-        }
 
 
         [HttpGet]
