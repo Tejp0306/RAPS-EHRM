@@ -17,11 +17,12 @@ namespace EHRM.Web.Controllers
     public class SelfController : Controller
     {
         private readonly ISelfService _self;
-
-        public SelfController(ISelfService Self)
+        private readonly IConfiguration _configuration;
+        public SelfController(ISelfService Self, IConfiguration configuration)
         {
 
             _self = Self;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -289,118 +290,33 @@ namespace EHRM.Web.Controllers
         //}
 
 
-        // [HttpPost]
-        // public JsonResult UploadFiles(List<IFormFile> Files)
-        // {
-        //     try
-        //     {
-        //         if (Files == null || Files.Count == 0)
-        //         {
-        //             return Json(new { success = false, message = "No files uploaded." });
-        //         }
-
-        //         List<string> filePaths = new List<string>();
-
-        //         // Corrected path (No extra backslashes)
-        //         string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
-
-        //         // Ensure the directory exists
-        //         if (!Directory.Exists(path))
-        //         {
-        //             Directory.CreateDirectory(path);
-        //         }
-
-        //         foreach (var file in Files)
-        //         {
-        //             string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-        //             string filePath = Path.Combine(path, fileName); // Corrected file save path
-
-        //             // Save the file
-        //             using (var stream = new FileStream(filePath, FileMode.Create))
-        //             {
-        //                 file.CopyTo(stream);
-        //             }
-
-        //             // Store the file path in the correct format: \Files\filename.ext
-        //             string storedPath = Path.Combine("Files", fileName);  // Removed leading backslash
-        //             filePaths.Add("//" + storedPath); // Ensure correct format for output
-        //         }
-
-        //         return Json(new { success = true, filePaths });
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return Json(new { success = false, message = "File upload failed: " + ex.Message });
-        //     }
-        // }
-
-        //[HttpPost]
-        //public JsonResult UploadFiles(List<IFormFile> Files)
-        //{
-        //    try
-        //    {
-        //        // Check if files are provided
-        //        if (Files == null || Files.Count == 0)
-        //        {
-        //            return Json(new { success = false, message = "No files uploaded." });
-        //        }
-
-        //        List<string> filePaths = new List<string>();
-
-        //        // Define the directory path to store files
-        //        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
-
-        //        // Create the folder if it doesn't exist
-        //        if (!Directory.Exists(path))
-        //        {
-        //            Directory.CreateDirectory(path);
-        //        }
-
-        //        foreach (var file in Files)
-        //        {
-        //            // Generate a unique file name
-        //            FileInfo fileInfo = new FileInfo(file.FileName);
-        //            string fileName = Guid.NewGuid().ToString() + fileInfo.Extension;
-
-        //            // Combine path with file name
-        //            string fileNameWithPath = Path.Combine(path, fileName);
-
-        //            // Save the file
-        //            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-        //            {
-        //                file.CopyTo(stream);
-        //            }
-
-        //            // Store the relative path for client access
-        //            string storedPath = Path.Combine("Files", fileName);
-        //            filePaths.Add("/" + storedPath.Replace("\\", "/")); // Ensure forward slashes for URL
-        //        }
-
-        //        return Json(new { success = true, filePaths });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = "File upload failed: " + ex.Message });
-        //    }
-        //}
 
         [HttpPost]
         public JsonResult UploadFiles(List<IFormFile> Files)
         {
             try
             {
-                // Check if files are provided
                 if (Files == null || Files.Count == 0)
                 {
                     return Json(new { success = false, message = "No files uploaded." });
                 }
 
                 List<string> filePaths = new List<string>();
+                string path;
+                if (_configuration["AppSetting:EnvironmentName"].ToString().Equals("Production"))
+                {
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "Files");
+                }
+                else
+                {
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
+                }
+                // Corrected path (No extra backslashes)
+               
 
-                // Define the directory path to store files
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
 
-                // Create the folder if it doesn't exist
+
+                // Ensure the directory exists
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -408,22 +324,18 @@ namespace EHRM.Web.Controllers
 
                 foreach (var file in Files)
                 {
-                    // Generate a unique file name
-                    FileInfo fileInfo = new FileInfo(file.FileName);
-                    string fileName = Guid.NewGuid().ToString() + fileInfo.Extension;
-
-                    // Combine path with file name
-                    string fileNameWithPath = Path.Combine(path, fileName);
+                    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    string filePath = Path.Combine(path, fileName); // Corrected file save path
 
                     // Save the file
-                    using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                    using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         file.CopyTo(stream);
                     }
 
-                    // Store the relative path for client access
-                    string storedPath = Path.Combine("Files", fileName);
-                    filePaths.Add("/" + storedPath.Replace("\\", "/")); // Ensure forward slashes for URL
+                    // Store the file path in the correct format: \Files\filename.ext
+                    string storedPath = Path.Combine("Files", fileName);  // Removed leading backslash
+                    filePaths.Add("//" + storedPath); // Ensure correct format for output
                 }
 
                 return Json(new { success = true, filePaths });
@@ -433,6 +345,7 @@ namespace EHRM.Web.Controllers
                 return Json(new { success = false, message = "File upload failed: " + ex.Message });
             }
         }
+
 
 
         [HttpGet]
