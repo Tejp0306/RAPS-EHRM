@@ -24,16 +24,18 @@ namespace EHRM.Web.Controllers
         private readonly ILeaveDashboardService _leaveDashboardService;
         private readonly EhrmContext _context;
         private readonly IUnitOfWork _UnitOfWork;
+        private readonly IConfiguration _configuration;
 
         
         private readonly IEmailService _emailService;
-        public EmployeeController(IEmployeeService employee, EhrmContext context, IEmailService emailService, IUnitOfWork unitOfWork, ILeaveDashboardService leaveDashboardService )
+        public EmployeeController(IEmployeeService employee, IConfiguration configuration,     EhrmContext context, IEmailService emailService, IUnitOfWork unitOfWork, ILeaveDashboardService leaveDashboardService )
         {
             _employee = employee;
             _context = context; 
             _emailService = emailService;
             _UnitOfWork = unitOfWork;
             _leaveDashboardService = leaveDashboardService;
+             _configuration = configuration;
         }
         public IActionResult Index()
         {
