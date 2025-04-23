@@ -118,7 +118,9 @@ namespace EHRM.ServiceLayer.Self
                                        select new GetAllEmployeeViewModel
                                        {
                                            Id = e.Id,
+                                           
                                            EmpId = e.EmpId,
+                                           FileName = string.IsNullOrEmpty(e.Image) ? null : e.Image.Replace("\\", "/"),
                                            FirstName = e.FirstName,
                                            MiddleName = e.MiddleName,
                                            LastName = e.LastName,

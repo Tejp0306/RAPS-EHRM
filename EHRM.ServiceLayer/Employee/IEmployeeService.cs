@@ -26,7 +26,7 @@ namespace EHRM.ServiceLayer.Employee
 
         Task<Result> GetEmployeeDataByEmpIdAsync(int EmpId);
 
-        Task<Result> UpdatePersonalInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model);
+        Task<Result> UpdatePersonalInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model, string FilePath);
 
         Task<Result> UpdateEmploymentInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model);
 

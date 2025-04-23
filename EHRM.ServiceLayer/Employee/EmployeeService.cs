@@ -638,7 +638,7 @@ namespace EHRM.ServiceLayer.Employee
 
 
         //Update Personal Info
-        public async Task<Result> UpdatePersonalInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model)
+        public async Task<Result> UpdatePersonalInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model, string Filepath)
         {
             try
             {
@@ -677,7 +677,7 @@ namespace EHRM.ServiceLayer.Employee
                 existingEmployee[0].Country = model.Country;
                 existingEmployee[0].ZipCode = model.ZipCode;
                 existingEmployee[0].Nationality = model.Nationality;
-                //existingEmployee.Image = model.ProfileImg;
+                existingEmployee[0].Image = Filepath;
 
 
                 await personalinfoRepository.UpdateAsync(existingEmployee[0]);  // Call update method in the generic repository

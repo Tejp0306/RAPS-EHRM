@@ -90,12 +90,12 @@ namespace EHRM.Web.Controllers
 
 
         [NonAction]
-        private async Task<object> UpdatePersonalDetails(int id, string updatedBy, GetAllEmployeeViewModel model)
+        private async Task<object> UpdatePersonalDetails(int id, string updatedBy, GetAllEmployeeViewModel model, string FilePath)
         {
             try
             {
                 // Call the service method to update the role
-                var result = await _employee.UpdatePersonalInfoAsync(id, updatedBy, model);
+                var result = await _employee.UpdatePersonalInfoAsync(id, updatedBy, model, FilePath);
 
                 // Return a structured response based on the result of the update
                 return new
@@ -129,9 +129,19 @@ namespace EHRM.Web.Controllers
 
             if (_employee.CheckUserInDbByEmpId(model.EmpId))
             {
+                // Handle new employee creation
+                if (model.ProfileImg == null)
+                {
+                    TempData["ToastType"] = "warning";
+                    TempData["ToastMessage"] = "Profile image is mandatory!";
+                    return RedirectToAction("AddEmployee");
+                }
+
+                // Upload the profile image
+                string filepath = Upload(model);
                 // Update existing employee details
                 string updatedBy = "waseem"; // Replace with actual logic to fetch the current user ID
-                var updateResult = await UpdatePersonalDetails((int)model.EmpId, updatedBy, model);
+                var updateResult = await UpdatePersonalDetails((int)model.EmpId, updatedBy, model, filepath);
 
                 if (updateResult != null)
                 {
@@ -659,8 +669,16 @@ namespace EHRM.Web.Controllers
             }
 
             // Define the directory path to store files
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\ProfileImage");
+            string path;
 
+            if (_configuration["AppSetting:EnvironmentName"].ToString().Equals("Production"))
+            {
+                path = Path.Combine(Directory.GetCurrentDirectory(), "ProfileImage");
+            }
+            else
+            {
+                path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\ProfileImage");
+            }
 
             // Create the folder if it doesn't exist
             if (!Directory.Exists(path))
