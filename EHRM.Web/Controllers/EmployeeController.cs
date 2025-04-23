@@ -672,14 +672,13 @@ namespace EHRM.Web.Controllers
 
             // Define the directory path to store files
             string path;
-
             if (_configuration["AppSetting:EnvironmentName"].ToString().Equals("Production"))
             {
-                path = Path.Combine(Directory.GetCurrentDirectory(), "ProfileImage");
+                path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
             }
             else
             {
-                path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\ProfileImage");
+                path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files");
             }
 
             // Create the folder if it doesn't exist
@@ -703,7 +702,7 @@ namespace EHRM.Web.Controllers
             }
 
             // Return the full file path or file name
-            return Path.Combine("\\ProfileImage", fileName);
+            return Path.Combine("\\Files", fileName);
         }
         public async Task<JsonResult> GetEmployeeData()
         {
