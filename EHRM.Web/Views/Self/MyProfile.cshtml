@@ -123,7 +123,8 @@
             <div class="card">
                 <div class="card-body text-center profile-header">
                     <!-- Profile Picture -->
-                    <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Profile Picture" class="img-fluid rounded-circle">
+                    <img id="profileImg" alt="Profile Picture" class="img-fluid rounded-circle" width="150" height="auto">
+
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
                         <input asp-for="Name" class="form-control text-center" id="name" value="" readonly />
@@ -235,12 +236,12 @@
 
       function loadEmployeeData(EmpID) {
         $.ajax({
-            url: '/Employee/EmployeeData/' + EmpID,  // API endpoint to get employee details based on EmpID
+            url: '/Self/EmployeeData/' + EmpID,  // API endpoint to get employee details based on EmpID
             method: 'GET',
             success: function (response) {
                 console.log('Full Response:', response);
                 console.log('Data:', response.data);
-
+                debugger;
                 if (response.success && response.data) {
                     const TeamScreenData = response.data[0];
 
@@ -262,6 +263,13 @@
                     $('#instituteName').val(TeamScreenData.qualifications.institutionName || '');
                     $('#passedDate').val(TeamScreenData.qualifications.passedDate || '');
 
+                     // ✅ Set profile image
+                const fileName = TeamScreenData.fileName;
+                if (fileName && fileName !== '') {
+                    $('#profileImg').attr('src', fileName);
+                } else {
+                    $('#profileImg').attr('src', 'https://www.w3schools.com/w3images/avatar2.png');
+                }
                     // Success toast
                     toastr.success("Employee data retrieved successfully!");
                 } else {

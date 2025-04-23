@@ -144,8 +144,8 @@
             <div class="form-group">
                 <label asp-for="Otp">Enter OTP</label>
                 <input asp-for="Otp" type="text" class="form-control"
-                       pattern="[0-9]{5}"
-                       title="Please enter a 5-digit integer"
+                       pattern="[0-9]{6}"
+                       title="Please enter a 6-digit OTP"
                        required />
                 <span asp-validation-for="Otp" class="text-danger"></span>
             </div>

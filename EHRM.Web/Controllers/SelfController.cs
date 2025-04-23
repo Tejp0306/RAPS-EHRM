@@ -111,7 +111,7 @@ namespace EHRM.Web.Controllers
             return View();
         }
 
-        [HttpGet("Employee/EmployeeData/{EmpId?}")]
+        [HttpGet("Self/EmployeeData/{EmpId?}")]
         public async Task<JsonResult> EmployeeData(int? EmpId = null)
         {
             if (EmpId.HasValue)
