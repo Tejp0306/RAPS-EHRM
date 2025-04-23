@@ -23,10 +23,10 @@ namespace EHRM.ServiceLayer.Utility
 
         public void  SendEmail(string toEmail, string subject, string body)
         {
-            var fromAddress = new MailAddress("arjunsingh8545999@gmail.com", "Arjun");
+            var fromAddress = new MailAddress("contact@rapscorp.com", "RAPS");
             var toAddress = new MailAddress(toEmail);
-            string fromPassword = "jhsp tslg ofdp sjmb"; // Use an app-specific password if 2FA is enabled
-            string smtpHost = "smtp.gmail.com";
+            string fromPassword = "cgvddkssgytyqsmf"; // Use an app-specific password if 2FA is enabled
+            string smtpHost = "smtp.office365.com";
             int smtpPort = 587;
 
             var smtp = new SmtpClient

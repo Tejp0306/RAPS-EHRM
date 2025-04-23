@@ -155,17 +155,19 @@
                     </h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
-                    <div class="position-relative">
+                    @* <div class="position-relative">
                         <div class="rounded-circle bg-light d-flex justify-content-center align-items-center"
                              style="width: 60px; height: 60px;">
                             <i class="fa fa-user text-primary"></i>
                         </div>
-                        @* <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div> *@
-                    </div>
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div> *@
                     <div class="ms-3">
+                        <span><b>WELCOME !!!!</b></span>
+                        <h6 class="mb-0 fst-italic">
+                            @((userDetails?["FirstName"]?.ToString() ?? "Guest") + " " + (userDetails?["LastName"]?.ToString() ?? ""))
+                        </h6>
 
-                        <h6 class="mb-0"> @((userDetails?["FirstName"]?.ToString() ?? "Guest") + " " + (userDetails?["LastName"]?.ToString() ?? ""))</h6>
-                        <span>Admin</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
@@ -228,10 +230,21 @@
                 <div class="navbar-nav align-items-center ms-auto">
 
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="~/pic/profile.png" alt="" style="width: 40px; height: 40px;">
-                            @((userDetails?["FirstName"]?.ToString() ?? "Guest") + " " + (userDetails?["LastName"]?.ToString() ?? ""))
+                        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                            @{
+                                var username = (userDetails?["FirstName"]?.ToString() ?? "Guest") + " " + (userDetails?["LastName"]?.ToString() ?? "");
+                                var initials = string.Join("", username.Split(" ").Take(2).Select(n => n[0])).ToUpper();
+                            }
+
+                            <!-- Initials Circle -->
+                            <div class="rounded-circle me-2 d-flex align-items-center justify-content-center bg-secondary text-white" style="width: 40px; height: 40px;">
+                                <span>@initials</span>
+                            </div>
+
+                           @*  <!-- Full Name -->
+                            <span>@username</span> *@
                         </a>
+
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="@Url.Action("MyProfile", "Self")" class="dropdown-item">My Profile</a>
                             <!-- Single Button (Toggling between Punch In and Punch Out) -->
