@@ -10,89 +10,18 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link href="/CustomStyle/AdminPartial.css" rel="stylesheet">
-    <style>
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .card-deck .card {
-            margin-bottom: 20px;
-        }
-
-        .table th, .table td {
-            text-align: center;
-        }
-
-        .leave-status {
-            font-weight: bold;
-            color: #fff;
-            padding: 5px;
-            border-radius: 5px;
-        }
-
-        .approved {
-            background-color: #28a745;
-        }
-
-        .pending {
-            background-color: #ffc107;
-        }
-
-        .rejected {
-            background-color: #dc3545;
-        }
-
-        .footer {
-            background-color: #f1f1f1;
-            padding: 10px;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        h2 {
-            margin-bottom: 25px;
-        }
-
-        .Highlighted a {
-            background-color: Green !important;
-            background-image: none !important;
-            color: White !important;
-            font-weight: bold !important;
-            font-size: 12pt;
-        }
-
-        #calendar-container {
-            width: 1200px; /* Adjust the width as needed */
-            margin-left: 5px;
-            margin: auto;
-        }
-
-        #calendar {
-            font-size: 0.8rem; /* Adjust font size for a smaller appearance */
-        }
-    </style>
-
-
-
+<link href="~/CustomStyle/ManagerPartial.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
 <body>
 
-    <div class="container mt-2">
-        <!-- Main content -->
-        <div class="content-header">
-            <h3>Manager Dashboard</h3>
-        </div>
-
-        <!-- Employee Stats Section -->
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="d-flex">
+        <div class="container-fluid">
+            <!-- Stats Cards -->
+            <div class="row g-4">
             <!-- Total Employees Card -->
-            <div class="col">
-                <div class="card text-white bg-info">
+                <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-4 ">
+                    <div class="stats-card stats text-white bg-info">
                     <div class="card-body">
                         <h5 class="card-title">Gaurav Shukla</h5>
                         <p class="card-text">AVP-Project Services</p>
@@ -100,9 +29,9 @@
                 </div>
             </div>
 
-            <!-- Employees on Leave Card -->
-            <div class="col">
-                <div class="card text-white bg-warning">
+                <!-- Total Employee Card -->
+                <div class="col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4 mb-4">
+                    <div class="stats-card stats text-white bg-warning">
                     <div class="card-body">
                         <h5 class="card-title">Total Employee</h5>
                         <p class="card-text">@Model.Count</p>
@@ -110,9 +39,9 @@
                 </div>
             </div>
 
-            <!-- Employees Available Card -->
-            <div class="col">
-                <div class="card text-white bg-success">
+                <!-- Employees on Leave Card -->
+                <div class="col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4 mb-4">
+                    <div class="stats-card stats text-white bg-success">
                     <div class="card-body">
                         <h5 class="card-title">Employees on Leave</h5>
                         <p class="card-text">12</p>
@@ -122,98 +51,93 @@
         </div>
 
         <!-- Quick Stats -->
-
-
-        <div class="row mt-4">
-
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="card text-white bg-primary mb-3 shadow-sm hover-shadow">
+            <div class="row mb-4 mt-5">
+                <div class="col-6 custom-leave-card mb-3">
+                    <div class="card text-white bg-primary shadow-sm hover-shadow">
                         <div class="card-body text-center">
-                            <h5 class="card-title">
-                                <i class="bi bi-calendar-check"></i> Earned Leave
-                            </h5>
+                            <h5 class="card-title"><i class="bi bi-calendar-check"></i> Earned Leave</h5>
                             <p class="card-text fs-4"><strong id="earnedLeave">0</strong></p>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-3">
-                    <div class="card text-white bg-warning mb-3 shadow-sm hover-shadow">
+                <div class="col-6 custom-leave-card mb-3">
+                    <div class="card text-white bg-warning shadow-sm hover-shadow">
                         <div class="card-body text-center">
-                            <h5 class="card-title">
-                                <i class="bi bi-thermometer-half"></i> Sick Leave
-                            </h5>
+                            <h5 class="card-title"><i class="bi bi-thermometer-half"></i> Sick Leave</h5>
                             <p class="card-text fs-4"><strong id="sickLeave">0</strong></p>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-3">
-                    <div class="card text-white bg-info mb-3 shadow-sm hover-shadow">
+                <div class="col-6 custom-leave-card mb-3">
+                    <div class="card text-white bg-info shadow-sm hover-shadow">
                         <div class="card-body text-center">
-                            <h5 class="card-title">
-                                <i class="bi bi-umbrella"></i> Casual Leave
-                            </h5>
+                            <h5 class="card-title"><i class="bi bi-umbrella"></i> Casual Leave</h5>
                             <p class="card-text fs-4"><strong id="casualLeave">0</strong></p>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-3">
-                    <div class="card text-white bg-success mb-3 shadow-sm hover-shadow">
+                <div class="col-6 custom-leave-card mb-3">
+                    <div class="card text-white bg-success shadow-sm hover-shadow">
                         <div class="card-body text-center">
-                            <h5 class="card-title">
-                                <i class="bi bi-list-task"></i> Total Leave
-                            </h5>
+                            <h5 class="card-title"><i class="bi bi-list-task"></i> Total Leave</h5>
                             <p class="card-text fs-4"><strong id="totalLeave">0</strong></p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Employee Section -->
-        <h4 class="mt-4 mb-2">Employees</h4>
-        <div style="max-height: 300px; overflow-y: auto;  background-color: #f9f9f9; border-radius: 8px;">
+            <!-- Employee List -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="card-title mb-2">Employee List</h4>
+                    <div style="max-height: 300px; overflow-y: auto; background-color: #f9f9f9; border-radius: 8px;">
             @if (Model != null && Model.Count > 0)
             {
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead style="background-color: #0D6EFD; color: white;">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
                         <tr>
-                            <th style="padding: 10px; text-align: left;">S.No</th>
-                            <th style="padding: 10px; text-align: left;">Employee ID</th>
-                            <th style="padding: 10px; text-align: left;">Employee Name</th>
-                            <th style="padding: 10px; text-align: left;">Actions</th>
+                                            <th>S.No</th>
+                                            <th>Name</th>
+                                            <th>Post</th>
+                                            <th>Email-Address</th>
+                                            <th>View (Punch-Status)</th>
                         </tr>
                     </thead>
                     <tbody>
                         @{
-                            int serialNo = 1; // Initialize serial number counter
+                                            int serialNo = 1;
                         }
                         @foreach (var emp in Model)
                         {
-                            <tr style="border-bottom: 1px solid #ddd;">
-                                <td style="padding: 10px; text-align: left;">@serialNo</td> <!-- Serial number column -->
-                                <td style="padding: 10px; text-align: left;">@emp.EmpId</td>
-                                <td style="padding: 10px; text-align: left;">@emp.FirstName @emp.LastName</td>
-                                <td style="padding: 10px; text-align: left;">
-                                    <button class="btn btn-info viewBtn" data-emp-id="@emp.EmpId" data-toggle="modal" data-target="#punchModalManager">View</button>
+                                            <tr>
+                                                <td>@serialNo</td>
+                                                <td>@emp.FirstName @emp.LastName</td>
+                                                <td>@emp.Title</td>
+                                                <td>@emp.EmailAddress</td>
+                                                <td>
+                                                    <button class="btn btn-info viewBtn" data-emp-id="@emp.EmpId" data-toggle="modal" data-target="#punchModal">View</button>
                                 </td>
                             </tr>
-                            serialNo++; // Increment the counter for the next row
+                                            serialNo++;
                         }
                     </tbody>
                 </table>
+                            </div>
             }
             else
             {
                 <p style="text-align: center; color: #555;">No employees found under this manager.</p>
             }
         </div>
+            </div>
+            </div>
 
-        <div class="container mt-4" id="calendar-container">
-            <h2> Calendar</h2>
+            <div class="container-fluid mt-4" id="calendar-container">
+                <h2>Calendar</h2>
             <div id="calendar"></div>
         </div>
     </div>
@@ -240,7 +164,13 @@
                         </table>
                     </div>
                 </div>
+                </div>
+            
             </div>
+    </div>
+
+
+    
 
     
     <!-- Punch Modal -->
