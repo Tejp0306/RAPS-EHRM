@@ -477,7 +477,11 @@ namespace EHRM.Web.Controllers
                 var subMenusFromSession = await _context.SubMenus
                      .Where(x => x.RoleId == employees.RoleId && x.EmpId == employees.EmpId)
                      .ToListAsync();
-
+                Response.Cookies.Append("EmpId", employees.EmpId.ToString(), new CookieOptions
+                {
+                    Secure = true,   // Ensures the cookie is sent only over HTTPS
+                    Expires = DateTimeOffset.UtcNow.AddDays(7) // Sets an expiration date (7 days here)
+                });
                 var mainMenuIdsFromSession = subMenusFromSession.Select(x => x.MainMenuId).Distinct().ToList();
                 var mainMenusFromSession = await _context.MainMenus.Where(m => mainMenuIdsFromSession.Contains(m.Id)).ToListAsync();
 
