@@ -1,77 +1,134 @@
-﻿body {
+﻿
+/* Global Styles */
+body {
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #FFFAFA, #FFFAFA, #ffffff);
+    font-family: 'Roboto', sans-serif;
     height: 100vh;
+    background: url('https://via.placeholder.com/1500') no-repeat center center fixed;
+    background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* Blur Effect */
+.blur-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    filter: blur(10px);
+    z-index: -1;
+}
+
+/* Login Form Container */
 .login-container {
-    width: 350px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 90%; /* Reduced width for smaller screens */
 }
 
 h2 {
     text-align: center;
-    color: #333;
+    color: #2e3b4e;
+    font-size: 72px; /* Larger font size for smaller screens */
+    font-weight: 600;
+    margin-bottom: 20px; /* Reduced margin */
 }
 
-.login-form {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    font-weight: bold;
+.form-group label {
+    font-size: 54px; /* Larger font size for smaller screens */
+    color: #2e3b4e;
     margin-bottom: 5px;
-    display: inline-block;
 }
 
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px;
+.form-control {
+    padding: 10px; /* Reduced padding */
+    font-size: 38px; /* Larger font size for smaller screens */
+    border-radius: 8px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-    font-size: 14px;
+    margin-bottom: 15px; /* Reduced margin */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-    input[type="text"]:focus,
-    input[type="password"]:focus {
-        border-color: #2980b9;
-        box-shadow: 0 0 5px rgba(41, 128, 185, 0.5);
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
     }
 
 button {
-    background-color: #2980b9;
-    color: #fff;
+    background-color: #007bff;
+    color: white;
+    padding: 10px; /* Reduced padding */
+    font-size: 36px; /* Larger font size for smaller screens */
+    width: 100%;
+    border-radius: 8px;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
     transition: background-color 0.3s ease;
-    margin-top: 10px;
 }
 
     button:hover {
-        background-color: #1a5276;
+        background-color: #0056b3;
     }
 
-.text-danger {
-    font-size: 12px;
-    color: #e74c3c;
-    margin-top: 5px;
-    display: block;
+.mt-3 a {
+    color: #007bff;
+    font-size: 14px;
+    text-decoration: none;
 }
+
+    .mt-3 a:hover {
+        text-decoration: underline;
+    }
+
+/* Floating instruction style */
+.floating-instruction {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 123, 255, 0.8);
+    color: white;
+    padding: 8px 16px; /* Reduced padding */
+    border-radius: 8px;
+    font-size: 14px; /* Reduced font size */
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Media queries for larger screens (medium, large, xl) */
+@media (min-width: 768px) {
+    .login-container {
+        max-width: 350px; /* Reduced width for medium and larger screens */
+    }
+
+    h2 {
+        font-size: 24px; /* Smaller font size for medium and larger screens */
+    }
+
+    .form-group label {
+        font-size: 14px; /* Smaller font size for medium and larger screens */
+    }
+
+    .form-control {
+        font-size: 14px; /* Smaller font size for medium and larger screens */
+    }
+
+    button {
+        font-size: 16px; /* Smaller font size for medium and larger screens */
+    }
+
+    .floating-instruction {
+        font-size: 14px; /* Smaller font size for medium and larger screens */
+    }
+}
+
