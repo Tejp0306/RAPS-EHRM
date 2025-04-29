@@ -10,8 +10,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<link href="~/CustomStyle/ManagerPartial.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<link href="~/CustomStyle/ManagerPartial.css" rel="stylesheet" />
 
 <body>
 
@@ -19,8 +19,8 @@
         <div class="container-fluid">
             <!-- Stats Cards -->
             <div class="row g-4">
-            <!-- Total Employees Card -->
-                <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-4 ">
+                <!-- Employee Info Card -->
+                <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-4">
                     <div class="stats-card stats text-white bg-info">
                     <div class="card-body">
                         <h5 class="card-title">Gaurav Shukla</h5>
@@ -29,11 +29,11 @@
                 </div>
             </div>
 
-                <!-- Total Employee Card -->
+                <!-- Total Employees Card -->
                 <div class="col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4 mb-4">
                     <div class="stats-card stats text-white bg-warning">
                     <div class="card-body">
-                        <h5 class="card-title">Total Employee</h5>
+                            <h5 class="card-title">Total Employees</h5>
                         <p class="card-text">@Model.Count</p>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                                             <th>S.No</th>
                                             <th>Name</th>
                                             <th>Post</th>
-                                            <th>Email-Address</th>
+                                            <th>Email Address</th>
                                             <th>View (Punch-Status)</th>
                         </tr>
                     </thead>
@@ -136,12 +136,13 @@
             </div>
             </div>
 
+            <!-- Calendar Section -->
             <div class="container-fluid mt-4" id="calendar-container">
                 <h2>Calendar</h2>
             <div id="calendar"></div>
         </div>
-    </div>
 
+            <!-- Punch Status Table -->
     <div class="card mt-4">
                 <div class="card-body">
             <h4 class="card-title">Punch Status</h4>
@@ -150,28 +151,26 @@
                             <thead>
                                 <tr>
                                     <th>Employee Name</th>
-                                    <th>PunchDate</th>
-                                    <th>PunchIn-Time</th>
-                                    <th>PunchOut-Time</th>
+                                    <th>Punch Date</th>
+                                    <th>Punch In-Time</th>
+                                    <th>Punch Out-Time</th>
                                     <th>Total Hours</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Sample Data (You can dynamically generate this using a backend) -->
-                                <tr>
-                                </tr>
+                                <!-- Sample Data (To be populated dynamically) -->
                             </tbody>
                         </table>
                     </div>
                 </div>
                 </div>
-            
             </div>
     </div>
 
 
     
 
+    
     
     <!-- Punch Modal -->
     <div class="modal fade" id="punchModalManager" tabindex="-1" role="dialog" aria-labelledby="punchModalLabel" aria-hidden="true">

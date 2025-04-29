@@ -348,7 +348,7 @@ thead th {
 }
 /* XS (<576px): 4 columns per row */
 .custom-leave-card {
-    flex: 0 0 23%;
+    flex: 0 0 22%;
     padding: 4px;
     margin: auto;
     max-width: 50%;
@@ -373,7 +373,7 @@ thead th {
 /* LG and XL (≥992px): 4 columns per row */
 @media (min-width: 992px) {
     .custom-leave-card {
-        flex: 0 0 25%;
+        flex: 0 0 21%;
         max-width: 25%;
     }
 }
