@@ -16,7 +16,7 @@ namespace EHRM.ServiceLayer.Employee
 
         Task<Result> SaveDecalarationInfoAsync(GetAllEmployeeViewModel model, int createdById);
 
-        
+        Task MarkProfileCompletedAsync(int employeeId);
         Task<EmployementTypeDetail> SaveEmploymentInfoAsync(GetAllEmployeeViewModel model, int createdById);
         Task<Result> GetRoleAsync();
         Task<Result> GetManagerAsync();

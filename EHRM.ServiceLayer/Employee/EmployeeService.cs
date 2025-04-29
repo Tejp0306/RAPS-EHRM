@@ -897,17 +897,84 @@ namespace EHRM.ServiceLayer.Employee
 
         //Update Declaration Info
 
+        //public async Task<Result> UpdateDeclarationInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model)
+        //{
+        //    try
+        //    {
+        //        var declarationinfoRepository = _unitOfWork.GetRepository<Declaration>();  // Using generic repository
+        //        var existingEmployeeDeclaration = await declarationinfoRepository.GetDeclarationDetailsByIdAsync(id);  // Fetch existing role by ID
+
+        //        if (existingEmployeeDeclaration == null || !existingEmployeeDeclaration.Any())
+        //        {
+        //            var newDecalarationDetails = new Declaration
+
+        //            {
+        //                EmpId = model.Declarations.EmpId,
+        //                HrRepresentativeName = model.Declarations.HrRepresentativeName,
+        //                HrRepresentativeDesignation = model.Declarations.HrRepresentativeDesignation,
+        //                HrContactInfo = model.Declarations.HrContactInfo,
+        //                Date = model.Declarations.Date,
+        //                Signature = model.Declarations.Signature,
+        //                VerificationCrossCheck = model.Declarations.VerificationCrossCheck,
+        //                VerificationMandatory = model.Declarations.VerificationMandatory
+
+
+        //            };
+        //            var declarationdetailRepository = _unitOfWork.GetRepository<Declaration>();
+        //            await declarationdetailRepository.AddAsync(newDecalarationDetails);
+        //            var personalRepository = _unitOfWork.GetRepository<EmployeeDetail>();  // Using generic repository
+        //            var Employee = await personalRepository.GetEmployeeDetailsByIdAsync(id);
+        //            Employee[0].IsProfileCompleted = true;
+        //            await _unitOfWork.SaveAsync();
+
+        //            return new Result
+        //            {
+        //                Success = true,
+        //                Message = "Declaration data saved successfully.",
+
+        //            };
+        //        }
+
+        //        // Update role properties
+        //        existingEmployeeDeclaration[0].EmpId = (int)model.Declarations.EmpId;
+        //        existingEmployeeDeclaration[0].HrRepresentativeName = model.Declarations.HrRepresentativeName;
+        //        existingEmployeeDeclaration[0].HrRepresentativeDesignation = model.Declarations.HrRepresentativeDesignation;
+        //        existingEmployeeDeclaration[0].HrContactInfo = model.Declarations.HrContactInfo;
+        //        existingEmployeeDeclaration[0].Date = model.Declarations.Date;
+        //        existingEmployeeDeclaration[0].Signature = model.Declarations.Signature;
+        //        existingEmployeeDeclaration[0].VerificationCrossCheck = model.Declarations.VerificationCrossCheck;
+        //        existingEmployeeDeclaration[0].VerificationMandatory = model.Declarations.VerificationMandatory;
+
+        //        await declarationinfoRepository.UpdateAsync(existingEmployeeDeclaration[0]);  // Call update method in the generic repository
+        //        await _unitOfWork.SaveAsync();
+
+        //        return new Result
+        //        {
+        //            Success = true,
+        //            Message = "Declaration updated successfully."
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new Result
+        //        {
+        //            Success = false,
+        //            Message = $"Error updating Declaration: {ex.Message}"
+        //        };
+        //    }
+        //}
+
+
         public async Task<Result> UpdateDeclarationInfoAsync(int id, string updatedBy, GetAllEmployeeViewModel model)
         {
             try
             {
-                var declarationinfoRepository = _unitOfWork.GetRepository<Declaration>();  // Using generic repository
-                var existingEmployeeDeclaration = await declarationinfoRepository.GetDeclarationDetailsByIdAsync(id);  // Fetch existing role by ID
+                var declarationinfoRepository = _unitOfWork.GetRepository<Declaration>();
+                var existingEmployeeDeclaration = await declarationinfoRepository.GetDeclarationDetailsByIdAsync(id);
 
                 if (existingEmployeeDeclaration == null || !existingEmployeeDeclaration.Any())
                 {
                     var newDecalarationDetails = new Declaration
-
                     {
                         EmpId = model.Declarations.EmpId,
                         HrRepresentativeName = model.Declarations.HrRepresentativeName,
@@ -917,25 +984,23 @@ namespace EHRM.ServiceLayer.Employee
                         Signature = model.Declarations.Signature,
                         VerificationCrossCheck = model.Declarations.VerificationCrossCheck,
                         VerificationMandatory = model.Declarations.VerificationMandatory
-
-
                     };
+
                     var declarationdetailRepository = _unitOfWork.GetRepository<Declaration>();
                     await declarationdetailRepository.AddAsync(newDecalarationDetails);
-                    var personalRepository = _unitOfWork.GetRepository<EmployeeDetail>();  // Using generic repository
-                    var Employee = await personalRepository.GetEmployeeDetailsByIdAsync(id);
-                    Employee[0].IsProfileCompleted = true;
+
+                   
+
                     await _unitOfWork.SaveAsync();
 
                     return new Result
                     {
                         Success = true,
-                        Message = "Declaration data saved successfully.",
-
+                        Message = "Declaration data saved successfully."
                     };
                 }
 
-                // Update role properties
+                // Update existing declaration
                 existingEmployeeDeclaration[0].EmpId = (int)model.Declarations.EmpId;
                 existingEmployeeDeclaration[0].HrRepresentativeName = model.Declarations.HrRepresentativeName;
                 existingEmployeeDeclaration[0].HrRepresentativeDesignation = model.Declarations.HrRepresentativeDesignation;
@@ -945,7 +1010,7 @@ namespace EHRM.ServiceLayer.Employee
                 existingEmployeeDeclaration[0].VerificationCrossCheck = model.Declarations.VerificationCrossCheck;
                 existingEmployeeDeclaration[0].VerificationMandatory = model.Declarations.VerificationMandatory;
 
-                await declarationinfoRepository.UpdateAsync(existingEmployeeDeclaration[0]);  // Call update method in the generic repository
+                await declarationinfoRepository.UpdateAsync(existingEmployeeDeclaration[0]);
                 await _unitOfWork.SaveAsync();
 
                 return new Result
@@ -965,6 +1030,18 @@ namespace EHRM.ServiceLayer.Employee
         }
 
 
+
+        public async Task MarkProfileCompletedAsync(int employeeId)
+        {
+            var personalRepository = _unitOfWork.GetRepository<EmployeeDetail>();
+            var employee = await personalRepository.GetEmployeeDetailsByIdAsync(employeeId);
+
+            if (employee != null && employee.Any())
+            {
+                employee[0].IsProfileCompleted = true;
+                await _unitOfWork.SaveAsync();
+            }
+        }
 
         public string? GetRoleNameById(int roleId)
         {

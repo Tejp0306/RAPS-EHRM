@@ -1,18 +1,18 @@
-﻿
-/* Global Styles */
+﻿/* Base Reset and Global Styling */
 body {
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    height: 100vh;
+    min-height: 100vh;
     background: url('https://via.placeholder.com/1500') no-repeat center center fixed;
     background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
-/* Blur Effect */
+/* Blur Background */
 .blur-background {
     position: absolute;
     top: 0;
@@ -24,36 +24,57 @@ body {
     z-index: -1;
 }
 
-/* Login Form Container */
-.login-container {
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 90%; /* Reduced width for smaller screens */
+/* Floating Instruction */
+.floating-instruction {
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 123, 255, 0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 
+/* Form Container */
+.login-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+/* Heading */
 h2 {
     text-align: center;
     color: #2e3b4e;
-    font-size: 72px; /* Larger font size for smaller screens */
+    font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 20px; /* Reduced margin */
+    margin-bottom: 1.5rem;
 }
 
+/* Form Group */
 .form-group label {
-    font-size: 54px; /* Larger font size for smaller screens */
+    font-size: 0.9rem;
     color: #2e3b4e;
-    margin-bottom: 5px;
+    margin-bottom: 0.5rem;
+    display: block;
 }
 
 .form-control {
-    padding: 10px; /* Reduced padding */
-    font-size: 38px; /* Larger font size for smaller screens */
+    padding: 0.6rem;
+    font-size: 16px; /* Prevent zoom on iOS */
     border-radius: 8px;
     border: 1px solid #ccc;
-    margin-bottom: 15px; /* Reduced margin */
+    margin-bottom: 1rem;
+    width: 100%;
     box-sizing: border-box;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -61,13 +82,15 @@ h2 {
     .form-control:focus {
         border-color: #007bff;
         box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        outline: none;
     }
 
+/* Submit Button */
 button {
     background-color: #007bff;
     color: white;
-    padding: 10px; /* Reduced padding */
-    font-size: 36px; /* Larger font size for smaller screens */
+    padding: 0.75rem;
+    font-size: 1rem;
     width: 100%;
     border-radius: 8px;
     border: none;
@@ -79,56 +102,43 @@ button {
         background-color: #0056b3;
     }
 
-.mt-3 a {
-    color: #007bff;
-    font-size: 14px;
-    text-decoration: none;
+/* Validation Message */
+.text-danger {
+    font-size: 0.85rem;
 }
 
-    .mt-3 a:hover {
-        text-decoration: underline;
-    }
-
-/* Floating instruction style */
-.floating-instruction {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 123, 255, 0.8);
-    color: white;
-    padding: 8px 16px; /* Reduced padding */
-    border-radius: 8px;
-    font-size: 14px; /* Reduced font size */
-    font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-}
-
-/* Media queries for larger screens (medium, large, xl) */
-@media (min-width: 768px) {
+/* Responsive Media Queries */
+@media (max-width: 768px) {
     .login-container {
-        max-width: 350px; /* Reduced width for medium and larger screens */
+        padding: 1.5rem;
     }
 
     h2 {
-        font-size: 24px; /* Smaller font size for medium and larger screens */
-    }
-
-    .form-group label {
-        font-size: 14px; /* Smaller font size for medium and larger screens */
+        font-size: 1.3rem;
     }
 
     .form-control {
-        font-size: 14px; /* Smaller font size for medium and larger screens */
+        font-size: 16px;
     }
 
     button {
-        font-size: 16px; /* Smaller font size for medium and larger screens */
-    }
-
-    .floating-instruction {
-        font-size: 14px; /* Smaller font size for medium and larger screens */
+        font-size: 0.95rem;
+        padding: 0.6rem;
     }
 }
 
+@media (max-width: 480px) {
+    .floating-instruction {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    .login-container {
+        width: 95%;
+        padding: 1.2rem;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
+    }
+}

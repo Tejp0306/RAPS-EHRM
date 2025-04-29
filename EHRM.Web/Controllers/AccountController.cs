@@ -218,14 +218,14 @@ namespace EHRM.Web.Controllers
 
                     HttpContext.Session.SetString("Otp", otp);
                     HttpContext.Session.SetString("OtpExpiry", DateTime.Now.AddMinutes(3).ToString()); // Store OTP expiry
-                    TempData["ToastType"] = "Success";  // Success, danger, warning, info
-                    TempData["ToastMessage"] = "Login successful. Please enter the OTP sent to your registered email.";
+                    //TempData["ToastType"] = "Success";  // Success, danger, warning, info
+                    //TempData["ToastMessage"] = "Login successful. Please enter the OTP sent to your registered email.";
                 }
                 else
                 {
                     // Magic OTP is enabled, skip OTP generation
-                    TempData["ToastType"] = "Success";  // Success, danger, warning, info
-                    TempData["ToastMessage"] = "Login successful. Since Magic OTP is enabled, no OTP will be sent.";
+                    //TempData["ToastType"] = "Success";  // Success, danger, warning, info
+                    //TempData["ToastMessage"] = "Login successful. Since Magic OTP is enabled, no OTP will be sent.";
                 }
 
                 return RedirectToAction("Otp", "Account");
