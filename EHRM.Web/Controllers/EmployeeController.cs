@@ -1002,7 +1002,8 @@ namespace EHRM.Web.Controllers
             int currentYear = DateTime.Now.Year;
 
             // Generate the LoginId by appending the current year to the first name
-            string loginId = $"{firstName.ToLower()}.{currentYear}";
+            //string loginId = $"{firstName.ToLower()}.{currentYear}";
+            string loginId = $"{firstName.ToLower()}.{DateTime.Now:yyyyMMdd_HHmmss}";
             string password = $"{firstName.ToLower()}{currentYear}@" + GenerateRandomPassword();
             // Return the result as a JSON response
             return Json(new { success = true, loginId , password });
