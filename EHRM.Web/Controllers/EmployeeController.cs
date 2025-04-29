@@ -516,15 +516,46 @@ namespace EHRM.Web.Controllers
 
         // Update Declaration Form
 
-        [NonAction]
+        //[NonAction]
+        //private async Task<object> UpdateDeclarationInfoDetails(int id, string updatedBy, GetAllEmployeeViewModel model)
+        //{
+        //    try
+        //    {
+        //        // Call the service method to update the role
+        //        var result = await _employee.UpdateDeclarationInfoAsync(id, updatedBy, model);
+
+        //        // Return a structured response based on the result of the update
+        //        return new
+        //        {
+        //            success = result.Success,
+        //            message = result.Message
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        return new
+        //        {
+        //            success = false,
+        //            message = "An error occurred while updating the role. Please try again later."
+        //        };
+        //    }
+        //}
+
         private async Task<object> UpdateDeclarationInfoDetails(int id, string updatedBy, GetAllEmployeeViewModel model)
         {
             try
             {
-                // Call the service method to update the role
+                // Call the service method to update the declaration info
                 var result = await _employee.UpdateDeclarationInfoAsync(id, updatedBy, model);
 
-                // Return a structured response based on the result of the update
+                // If update is successful, mark profile as completed
+                if (result.Success)
+                {
+                    await _employee.MarkProfileCompletedAsync(id);
+                }
+
+                // Return a structured response
                 return new
                 {
                     success = result.Success,
@@ -533,7 +564,6 @@ namespace EHRM.Web.Controllers
             }
             catch (Exception ex)
             {
-
                 return new
                 {
                     success = false,
