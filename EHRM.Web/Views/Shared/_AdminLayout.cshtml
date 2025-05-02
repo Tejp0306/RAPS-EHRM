@@ -154,14 +154,15 @@
 
                     </h3>
                 </a>
-                <div class="d-flex align-items-center ms-4 mb-4">
-                    @* <div class="position-relative">
+               @*  <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
                         <div class="rounded-circle bg-light d-flex justify-content-center align-items-center"
                              style="width: 60px; height: 60px;">
                             <i class="fa fa-user text-primary"></i>
                         </div>
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
-                    </div> *@
+                    </div>
+                    
                     <div class="ms-3">
                         <span><b>WELCOME !!!!</b></span>
                         <h6 class="mb-0 fst-italic">
@@ -169,7 +170,29 @@
                         </h6>
 
                     </div>
+                </div> *@
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <!-- Profile Circle with Initials -->
+                    <div class="rounded-circle me-2 d-flex align-items-center justify-content-center bg-secondary text-white position-relative" style="width: 40px; height: 40px;">
+                        @{
+                            var username = (userDetails?["FirstName"]?.ToString() ?? "Guest") + " " + (userDetails?["LastName"]?.ToString() ?? "");
+                            var initials = string.Join("", username.Split(" ").Take(2).Select(n => n[0])).ToUpper();
+                        }
+                        <span>@initials</span>
+
+                        <!-- Online Status Dot -->
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1" style="width: 10px; height: 10px;"></div>
                 </div>
+
+                    <!-- Welcome Text and Full Name -->
+                    <div class="ms-3">
+                        <span><b>WELCOME !!!!</b></span>
+                        <h6 class="mb-0 fst-italic">
+                            @((userDetails?["FirstName"]?.ToString() ?? "Guest") + " " + (userDetails?["LastName"]?.ToString() ?? ""))
+                        </h6>
+                    </div>
+                </div>
+
                 <div class="navbar-nav w-100">
                     <a href="@Url.Action("Dashboard", "Dashboard")"
                        class="nav-item nav-link @(currentController == "dashboard" && currentAction == "dashboard" ? "active" : "")">
@@ -232,13 +255,13 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
                             @{
-                                var username = (userDetails?["FirstName"]?.ToString() ?? "Guest") + " " + (userDetails?["LastName"]?.ToString() ?? "");
-                                var initials = string.Join("", username.Split(" ").Take(2).Select(n => n[0])).ToUpper();
+                                var name = (userDetails?["FirstName"]?.ToString() ?? "Guest") + " " + (userDetails?["LastName"]?.ToString() ?? "");
+                                var Initials = string.Join("", name.Split(" ").Take(2).Select(n => n[0])).ToUpper();
                             }
 
                             <!-- Initials Circle -->
                             <div class="rounded-circle me-2 d-flex align-items-center justify-content-center bg-secondary text-white" style="width: 40px; height: 40px;">
-                                <span>@initials</span>
+                                <span>@Initials</span>
                             </div>
 
                            @*  <!-- Full Name -->
@@ -247,25 +270,27 @@
 
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="@Url.Action("MyProfile", "Self")" class="dropdown-item">My Profile</a>
-                            <!-- Single Button (Toggling between Punch In and Punch Out) -->
+                            <!-- Single Punch Button (In/Out/Cooldown) -->
                             @{
-                                var punchResValue = Context.Request.Cookies["PunchRes"];
-                                var punchCooldown = Context.Request.Cookies["PunchCooldown"];
+                                var punchStatus = ViewBag.PunchStatus as string;
 
-                                if (punchResValue != null)
+                                if (punchStatus == "CanPunchOut")
                                 {
-                                    // User has punched in — show Punch Out
-                                    <a id="punchButton" asp-action="UpdatePunchOutAsync" asp-controller="Dashboard" class="dropdown-item"><b>Punch Out</b></a>
+                                    <a id="punchButton" asp-action="UpdatePunchOutAsync" asp-controller="Dashboard" class="dropdown-item">
+                                        <b>Punch Out</b>
+                                    </a>
                                 }
-                                else if (punchCooldown != null)
+                                else if (punchStatus == "Cooldown")
                                 {
-                                // Within cooldown — disable Punch In
-                                    <button id="punchButton" class="dropdown-item" disabled style="opacity: 0.5; cursor: not-allowed;"><b>Punch In (Locked)</b></button>
+                                    <button id="punchButton" class="dropdown-item" disabled style="opacity: 0.5; cursor: not-allowed;">
+                                        <b>Punch In (Locked)</b>
+                                    </button>
                                 }
                                 else
                                 {
-                                    // Can punch in
-                                    <a asp-action="SavePunchInAsync" asp-controller="Dashboard" id="punchButton" class="dropdown-item"><b>Punch In</b></a>
+                                    <a id="punchButton" asp-action="SavePunchInAsync" asp-controller="Dashboard" class="dropdown-item">
+                                        <b>Punch In</b>
+                                    </a>
                                 }
                             }
 

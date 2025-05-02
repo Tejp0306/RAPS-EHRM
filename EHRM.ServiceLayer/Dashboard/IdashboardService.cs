@@ -19,6 +19,7 @@ namespace EHRM.ServiceLayer.Dashboard
         #region Punch Details
         Task<Result> SavePunchInAsync(int EmpId, string userName);
         Task<Result> UpdatePunchOutAsync(int EmpId);
+        Task<string> GetPunchStatusAsync(int empId);
         #endregion
         
     }
