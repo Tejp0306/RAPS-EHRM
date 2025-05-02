@@ -277,7 +277,7 @@ namespace EHRM.ServiceLayer.Dashboard
                 var today = DateOnly.FromDateTime(DateTime.Now);
 
                 var existingPunch = (await punchRepository.GetAllAsync())
-                    .Where(x => x.Empid == EmpId && x.PunchDate == today && x.Punchouttime == null)
+                    .Where(x => x.Empid == EmpId && x.Punchouttime == null)
                     .OrderByDescending(x => x.Id)
                     .FirstOrDefault();
 
@@ -395,9 +395,9 @@ namespace EHRM.ServiceLayer.Dashboard
                     punchInTime.Second
                 );
 
-                var hoursSincePunchIn = (DateTime.Now - punchInDateTime).TotalMinutes;
+                var hoursSincePunchIn = (DateTime.Now - punchInDateTime).TotalHours;
 
-                if (hoursSincePunchIn < 1)
+                if (hoursSincePunchIn < 10)
         {
                     return "CanPunchOut";
                 }
@@ -420,9 +420,9 @@ namespace EHRM.ServiceLayer.Dashboard
                     punchOutTime.Second
                 );
 
-                var hoursSincePunchOut = (DateTime.Now - punchOutDateTime).TotalMinutes;
+                var hoursSincePunchOut = (DateTime.Now - punchOutDateTime).TotalHours;
 
-                if (hoursSincePunchOut >= 1)
+                if (hoursSincePunchOut >= 8)
                 {
                     return "CanPunchIn"; // Enable punch in after 8 hours cooldown
             }
