@@ -395,9 +395,9 @@ namespace EHRM.ServiceLayer.Dashboard
                     punchInTime.Second
                 );
 
-                var hoursSincePunchIn = (DateTime.Now - punchInDateTime).TotalHours;
+                var hoursSincePunchIn = (DateTime.Now - punchInDateTime).TotalMinutes;
 
-                if (hoursSincePunchIn < 10)
+                if (hoursSincePunchIn < 2)
         {
                     return "CanPunchOut";
                 }
@@ -420,9 +420,9 @@ namespace EHRM.ServiceLayer.Dashboard
                     punchOutTime.Second
                 );
 
-                var hoursSincePunchOut = (DateTime.Now - punchOutDateTime).TotalHours;
+                var hoursSincePunchOut = (DateTime.Now - punchOutDateTime).TotalMinutes;
 
-                if (hoursSincePunchOut >= 8)
+                if (hoursSincePunchOut >= 2)
                 {
                     return "CanPunchIn"; // Enable punch in after 8 hours cooldown
             }
@@ -432,8 +432,11 @@ namespace EHRM.ServiceLayer.Dashboard
                 }
 
             }
-
-            return "CanPunchIn"; // Default fallback
+            else
+            {
+                return "CanPunchIn";
+            }
+            //return "CanPunchIn"; // Default fallback
         }
 
 
