@@ -271,7 +271,7 @@
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="@Url.Action("MyProfile", "Self")" class="dropdown-item">My Profile</a>
                             <!-- Single Punch Button (In/Out/Cooldown) -->
-                            @{
+                           @*  @{
                                 var punchStatus = ViewBag.PunchStatus as string;
 
                                 if (punchStatus == "CanPunchOut")
@@ -292,8 +292,10 @@
                                         <b>Punch In</b>
                                     </a>
                                 }
-                            }
-
+                            } *@
+                            <div id="punchStatusContainer">
+                                <button class="dropdown-item" disabled>Loading...</button>
+                            </div>
                             @* <a href="#" class="dropdown-item">Settings</a> *@
                             <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Log Out</a>
                             <a asp-controller="Account" asp-action="ChangePassword" class="dropdown-item">Change Password</a>
@@ -375,8 +377,47 @@
 
     </script>
 
+
 </body>
 @RenderSection("Scripts", required: false)
 
 
 </html>
+<script>
+    async function fetchPunchStatus() {
+        try {
+            const response = await fetch('/Dashboard/GetPunchStatus');
+            if (!response.ok) throw new Error("Failed to fetch status");
+
+            const data = await response.json();
+            const status = data.punchStatus;
+            const container = document.getElementById('punchStatusContainer');
+
+            if (status === "CanPunchOut") {
+                container.innerHTML = `
+                    <a id="punchButton" href="/Dashboard/UpdatePunchOutAsync" class="dropdown-item">
+                        <b>Punch Out</b>
+                    </a>`;
+            } else if (status === "Cooldown") {
+                container.innerHTML = `
+                    <button id="punchButton" class="dropdown-item" disabled style="opacity: 0.5; cursor: not-allowed;">
+                        <b>Punch In (Locked)</b>
+                    </button>`;
+            } else {
+                container.innerHTML = `
+                    <a id="punchButton" href="/Dashboard/SavePunchInAsync" class="dropdown-item">
+                        <b>Punch In</b>
+                    </a>`;
+            }
+
+        } catch (error) {
+            console.error("Error fetching punch status:", error);
+        }
+    }
+
+    // Fetch status every 60 seconds
+    setInterval(fetchPunchStatus, 60000);
+
+    // Fetch it immediately on load
+    fetchPunchStatus();
+</script>
