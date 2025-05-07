@@ -244,11 +244,11 @@ namespace EHRM.Web.Controllers
                 var roleId = userDetails.roleId;
                 var empId = Convert.ToInt32(userDetails.userId);  // Convert to int
 
-                // Fetch punch status from the service
-                var punchStatus = await _dashboard.GetPunchStatusAsync(empId); // Now passing int empId
+                //// Fetch punch status from the service
+                //var punchStatus = await _dashboard.GetPunchStatusAsync(empId); // Now passing int empId
 
-                // Store the punch status in the ViewBag for the view
-                ViewBag.PunchStatus = punchStatus;
+                //// Store the punch status in the ViewBag for the view
+                //ViewBag.PunchStatus = punchStatus;
 
                 // Logic for Manager (Role 4)
                 if (roleId == 4)
@@ -376,6 +376,23 @@ namespace EHRM.Web.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetPunchStatus()
+        {
+            var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+
+            if (string.IsNullOrEmpty(jwtTokenFromSession))
+            {
+                return Unauthorized();
+            }
+
+            var userDetails = JwtSessionHelper.ExtractSessionData(jwtTokenFromSession);
+            int empId = Convert.ToInt32(userDetails.userId);
+
+            var punchStatus = await _dashboard.GetPunchStatusAsync(empId);
+
+            return Json(new { punchStatus });
+        }
 
 
     }

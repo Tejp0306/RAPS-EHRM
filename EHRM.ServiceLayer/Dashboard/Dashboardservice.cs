@@ -87,6 +87,9 @@ namespace EHRM.ServiceLayer.Dashboard
                                 EmailAddress = reader["EmailAddress"].ToString(),
                                 //DateOfBirth = reader["DateOfBirth"].ToString(),
                                 EmployeeCount = Convert.ToInt32(reader["EmployeeCount"]),
+                                NewEmployeesLast15Days = Convert.ToInt32(reader["NewEmployeesLast15Days"]),
+                                UpcomingBirthdaysNextMonth = Convert.ToInt32(reader["UpcomingBirthdaysNextMonth"]),
+                                UpcomingWorkAnniversariesNextMonth = Convert.ToInt32(reader["UpcomingWorkAnniversariesNextMonth"]),
                                 PunchDetails = new PunchDetailsViewModel
                                 {
                                     Empid = Convert.ToInt32(reader["EmpId"]),
@@ -397,7 +400,7 @@ namespace EHRM.ServiceLayer.Dashboard
 
                 var hoursSincePunchIn = (DateTime.Now - punchInDateTime).TotalMinutes;
 
-                if (hoursSincePunchIn < 1)
+                if (hoursSincePunchIn < 2)
         {
                     return "CanPunchOut";
                 }
@@ -422,7 +425,7 @@ namespace EHRM.ServiceLayer.Dashboard
 
                 var hoursSincePunchOut = (DateTime.Now - punchOutDateTime).TotalMinutes;
 
-                if (hoursSincePunchOut >= 1)
+                if (hoursSincePunchOut >= 2)
                 {
                     return "CanPunchIn"; // Enable punch in after 8 hours cooldown
             }

@@ -30,7 +30,7 @@
                         <i class="fa fa-chart-bar"></i>
                         <div class="ms-3">
                             <p>New Hires</p>
-                            <h5>4</h5>
+                            <h5>@Model[0].NewEmployeesLast15Days</h5>
                         </div>
                     </div>
                 </div>
@@ -38,8 +38,8 @@
                     <div class="stats-card">
                         <i class="fa fa-chart-area"></i>
                         <div class="ms-3">
-                            <p>Employees on Leave</p>
-                            <h5>2</h5>
+                            <p>Upcoming Work Anniversary</p>
+                            <h5>@Model[0].UpcomingWorkAnniversariesNextMonth</h5>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                         <i class="fa fa-chart-pie"></i>
                         <div class="ms-3">
                             <p>Upcoming Birthdays</p>
-                            <h5>3</h5>
+                            <h5>@Model[0].UpcomingBirthdaysNextMonth</h5>
                         </div>
                     </div>
                 </div>

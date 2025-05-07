@@ -70,6 +70,9 @@ namespace EHRM.ViewModel.Employee
 
         // Employee Count for Admin Dynamic Dashboard
         public int EmployeeCount { get; set; }
+        public int NewEmployeesLast15Days { get; set; }
+        public int UpcomingBirthdaysNextMonth { get; set; }
+        public int UpcomingWorkAnniversariesNextMonth { get; set; }
 
         //Adding these property in order to use same model for grabbing data for User Dashboard
 
