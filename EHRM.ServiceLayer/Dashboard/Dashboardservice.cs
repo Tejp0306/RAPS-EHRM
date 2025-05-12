@@ -389,16 +389,9 @@ namespace EHRM.ServiceLayer.Dashboard
             {
                 var punchInTime = todayPunch.Punchintime.Value;
 
-                DateTime punchInDateTime = new DateTime(
-                    DateTime.Now.Year,
-                    DateTime.Now.Month,
-                    DateTime.Now.Day,
-                    punchInTime.Hour,
-                    punchInTime.Minute,
-                    punchInTime.Second
-                );
+                TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);
 
-                var hoursSincePunchIn = (DateTime.Now - punchInDateTime).TotalMinutes;
+                var hoursSincePunchIn = (currentTime - punchInTime).TotalMinutes;
 
                 if (hoursSincePunchIn < 2)
         {
@@ -414,16 +407,8 @@ namespace EHRM.ServiceLayer.Dashboard
                 {
                 var punchOutTime = todayPunch.Punchouttime.Value;
 
-                DateTime punchOutDateTime = new DateTime(
-                    DateTime.Now.Year,
-                    DateTime.Now.Month,
-                    DateTime.Now.Day,
-                    punchOutTime.Hour,
-                    punchOutTime.Minute,
-                    punchOutTime.Second
-                );
-
-                var hoursSincePunchOut = (DateTime.Now - punchOutDateTime).TotalMinutes;
+                TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);
+                var hoursSincePunchOut = (currentTime - punchOutTime).TotalMinutes;
 
                 if (hoursSincePunchOut >= 2)
                 {
@@ -435,10 +420,8 @@ namespace EHRM.ServiceLayer.Dashboard
                 }
 
             }
-            else
-            {
                 return "CanPunchIn";
-            }
+            
             //return "CanPunchIn"; // Default fallback
         }
 
