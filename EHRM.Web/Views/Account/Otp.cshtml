@@ -135,7 +135,7 @@
 
     <!-- Floating Instruction -->
     <div class="floating-instruction">
-        Please enter the OTP sent to your email to verify your account.
+        "Login successful. Since OTP is disabled for this demo session,so no OTP will be sent on your registered email-address. You can enter '12345'."
     </div>
 
     <!-- OTP Verification Form -->
@@ -145,7 +145,7 @@
             <div class="form-group">
                 <label asp-for="Otp">Enter OTP</label>
                 <input asp-for="Otp" type="text" class="form-control"
-                       pattern="[0-9]{6}"
+                       pattern="[0-9]{5}"
                        title="Please enter a 6-digit OTP"
                        required />
                 <span asp-validation-for="Otp" class="text-danger"></span>
