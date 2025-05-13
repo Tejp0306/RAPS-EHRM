@@ -393,7 +393,7 @@ namespace EHRM.ServiceLayer.Dashboard
 
                 var hoursSincePunchIn = (currentTime - punchInTime).TotalMinutes;
 
-                if (hoursSincePunchIn < 2)
+                if (hoursSincePunchIn < 600)
         {
                     return "CanPunchOut";
                 }
@@ -410,7 +410,7 @@ namespace EHRM.ServiceLayer.Dashboard
                 TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);
                 var hoursSincePunchOut = (currentTime - punchOutTime).TotalMinutes;
 
-                if (hoursSincePunchOut >= 2)
+                if (hoursSincePunchOut >= 480)
                 {
                     return "CanPunchIn"; // Enable punch in after 8 hours cooldown
             }
