@@ -365,7 +365,7 @@ namespace EHRM.Web.Controllers
 
                     // Proceed to main menu handling
                     var subMenus = await _context.SubMenus
-                         .Where(x => x.RoleId == employee.RoleId /*&& x.EmpId == employee.EmpId*/)
+                         .Where(x => x.RoleId == employee.RoleId)
                          .ToListAsync();
 
                     var mainMenuIds = subMenus.Select(x => x.MainMenuId).Distinct().ToList();
