@@ -475,7 +475,7 @@ namespace EHRM.Web.Controllers
                 HttpContext.Session.Remove("Otp");
 
                 var subMenusFromSession = await _context.SubMenus
-                     .Where(x => x.RoleId == employees.RoleId && x.EmpId == employees.EmpId)
+                     .Where(x => x.RoleId == employees.RoleId /*&& x.EmpId == employees.EmpId*/)
                      .ToListAsync();
                 Response.Cookies.Append("EmpId", employees.EmpId.ToString(), new CookieOptions
                 {
