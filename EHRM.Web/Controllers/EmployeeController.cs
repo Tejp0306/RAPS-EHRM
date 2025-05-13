@@ -874,7 +874,7 @@ namespace EHRM.Web.Controllers
 
                                         RecipentMail = employeeData[0].EmailAddress,  // Replace with actual recipient email
 
-                                        CcMail = "arjun@rapscorp.com",  // Replace with actual CC email
+                                       // CcMail = "arjun@rapscorp.com",  // Replace with actual CC email
 
                                         Subject = "Welcome to Raps Consulting Inc – Your Account Details",
 
