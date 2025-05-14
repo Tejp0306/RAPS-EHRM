@@ -89,6 +89,8 @@ namespace EHRM.Web.Controllers
         {
             try
             {
+                model.Email = model.Email.Trim();
+                model.Password = model.Password.Trim();
                 if (!ModelState.IsValid)
                 {
                     TempData["ToastType"] = "danger";  // Success, danger, warning, info

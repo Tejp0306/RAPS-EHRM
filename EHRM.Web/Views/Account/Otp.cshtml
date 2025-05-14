@@ -118,6 +118,13 @@
     }
 </style> *@
 
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <body>
     <div class="blur-background"></div>
 
@@ -135,7 +142,7 @@
 
     <!-- Floating Instruction -->
     <div class="floating-instruction">
-        "Since OTP is disabled for this demo session,so no OTP will be sent on your registered email-address. You can enter '12345'."
+        "Since OTP is disabled for this demo session,so no OTP will be sent on your registered email-address."
     </div>
 
     <!-- OTP Verification Form -->
@@ -154,3 +161,60 @@
         </form>
     </div>
 </body>
+<!-- Modal -->
+<div class="modal fade" id="otpHintModal" tabindex="-1" role="dialog" aria-labelledby="otpHintModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="background-color: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);">
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary align-items-center" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                <h6 class="modal-title text-white w-100 text-center" id="otpHintModalLabel" style="font-size: 1.6rem; font-weight: bold;">
+                    Your OTP is
+                </h6>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body text-center" style="color: navy; font-size: 2rem; font-weight: 700;">
+                <span style="background-color: #e6f0ff; padding: 10px 20px; border-radius: 8px; display: inline-block; font-family: 'Courier New', monospace;">
+                    12345
+                </span>
+                <!-- Small Close Button -->
+                <div class="row justify-content-center mt-4">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-primary btn-sm w-100" id="smallCloseBtn" data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Optional: Show TempData-based toast
+    @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+    {
+        <text>
+                    showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+        </text>
+    }
+
+        // Show modal after 2 seconds
+        setTimeout(function () {
+            $('#otpHintModal').modal('show');
+        }, 2000);
+
+        // Close the modal when the small close button is clicked
+        $('#smallCloseBtn').click(function () {
+            $('#otpHintModal').modal('hide');
+        });
+
+        // Alternatively, if you prefer a more general approach, you can also target the button by its class:
+        // $('#otpHintModal .btn').click(function () {
+        //     $('#otpHintModal').modal('hide');
+        // });
+    });
+</script>
+
+
