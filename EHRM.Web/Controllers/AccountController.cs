@@ -466,7 +466,7 @@ namespace EHRM.Web.Controllers
                     return RedirectToAction("Login");
                 }
 
-                if (!ModelState.IsValid)
+                if (string.IsNullOrWhiteSpace(model.Otp))
                 {
                     TempData["ToastType"] = "warning";  // Success, danger, warning, info
                     TempData["ToastMessage"] = "Please enter a valid OTP.";
