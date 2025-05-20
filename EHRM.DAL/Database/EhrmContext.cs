@@ -242,22 +242,16 @@ public partial class EhrmContext : DbContext
             entity.Property(e => e.Signature).HasMaxLength(255);
         });
 
-        modelBuilder.Entity<ContactDetail>(entity =>
+        modelBuilder.Entity<CustomizeLogin>(entity =>
         {
-            entity.HasKey(e => e.ContactId).HasName("PK__ContactD__5C66259B40904D63");
+            entity.HasKey(e => e.Id).HasName("PK__Customiz__3214EC0767C8962F");
 
-            entity.Property(e => e.EmergencyContactName).HasMaxLength(100);
-            entity.Property(e => e.EmergencyContactNumber).HasMaxLength(20);
-            entity.Property(e => e.EmergencyRelationship).HasMaxLength(50);
-            entity.Property(e => e.OfficialContactNo).HasMaxLength(20);
-            entity.Property(e => e.OfficialEmailId).HasMaxLength(100);
-            entity.Property(e => e.PersonalContactNo).HasMaxLength(20);
-            entity.Property(e => e.PersonalEmailId).HasMaxLength(100);
+            entity.ToTable("CustomizeLogin");
 
-            entity.HasOne(d => d.Emp).WithMany(p => p.ContactDetails)
-                .HasForeignKey(d => d.EmpId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__ContactDe__EmpId__51BA1E3A");
+            entity.Property(e => e.Bio).HasMaxLength(2000);
+            entity.Property(e => e.FaviconPath).HasMaxLength(500);
+            entity.Property(e => e.LogoPath).HasMaxLength(500);
+            entity.Property(e => e.OrganizationName).HasMaxLength(200);
         });
 
         modelBuilder.Entity<DailyEntry>(entity =>
