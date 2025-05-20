@@ -22,6 +22,11 @@
     // Current route info
     var currentController = HttpContextAccessor.HttpContext?.Request?.RouteValues["controller"]?.ToString()?.ToLower() ?? string.Empty;
     var currentAction = HttpContextAccessor.HttpContext?.Request?.RouteValues["action"]?.ToString()?.ToLower() ?? string.Empty;
+
+    var favicon = HttpContextAccessor.HttpContext.Session.GetString("FaviconPath");
+    var logo = HttpContextAccessor.HttpContext.Session.GetString("LogoPath");
+    var notification = Context.Session.GetString("NoticeNotification") ?? "No new notices.";
+    
 }
 
 
@@ -35,12 +40,15 @@
     <meta content="" name="keywords">
     <meta content="" name="description">
     <title>Favicon Demo</title>
+    @* <link rel="shortcut icon" type="image/x-icon" href="~/pic/rapslogo.png" /> *@
+    @if (!string.IsNullOrEmpty(favicon))
+    {
+        <link rel="shortcut icon" type="image/x-icon" href="@Url.Content(favicon)" />
+    }
+    else
+    {
     <link rel="shortcut icon" type="image/x-icon" href="~/pic/rapslogo.png" />
-
-
-    <!-- Favicon -->
-    <link href="~/img/favicon.ico" rel="icon">
-
+    }
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -111,7 +119,10 @@
             display: inline-block;
             white-space: nowrap;
             animation: scroll-left 10s linear infinite;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease;
+            background-color:aqua;
+            padding: 8px;
+            border-radius: 26px;
         }
 
         /* Keyframes for scrolling effect */
@@ -149,11 +160,21 @@
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light d-flex flex-column">
                 <a href="@Url.Action("Dashboard", "Dashboard")" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">
-                        <i class="fa fa-briefcase me-2"></i> EHRM
+                    @if (!string.IsNullOrEmpty(logo))
+                    {
+                        <img src="@Url.Content(logo)" alt="Logo" style="height: 50px;" />
+                    }
+                    else
+                    {
+                        <img src="https://www.rapscorp.com/wp-content/uploads/2024/10/RapsConsultingInc-768x105-1.png" alt="Raps Consulting" style="height: 60px;" />
+                    }
 
-                    </h3>
                 </a>
+                @* <div>
+                    <h3 class="text-primary ">
+                        <i class="fa fa-briefcase me-2 "></i> EHRM
+                    </h3>
+                </div> *@
                @*  <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
                         <div class="rounded-circle bg-light d-flex justify-content-center align-items-center"
@@ -245,10 +266,10 @@
                 @*  <form class="d-none d-md-flex ms-4">
                 <input class="form-control border-0" type="search" placeholder="Search">
                 </form> *@
-                @* <div style="overflow: hidden; width: 100%; padding: 10px; color: Black; font-weight: bold;">
+                <div id="noticeNotification" style="overflow: hidden; width: 100%; padding: 10px; color: Black; font-weight: bold;">
                     <i class="fa fa-info-circle me-2"></i>
-                    <span class="notification-text">This is a notification message that will scroll from right to left.</span>
-                </div> *@
+                    <span class="notification-text">Loading notification...</span>
+                </div>
 
                 <div class="navbar-nav align-items-center ms-auto">
 
@@ -420,4 +441,29 @@
 
     // Fetch it immediately on load
     fetchPunchStatus();
+</script>
+<!-- Include your script for fetching data -->
+<script>
+    async function fetchNoticeNotification() {
+        try {
+            // Fetch the current notice count from the server
+            const response = await fetch('/Account/GetTodayNoticeCount'); // Adjust path if necessary
+            if (!response.ok) throw new Error("Failed to fetch notice count");
+            // Parse JSON response
+            const data = await response.json();
+
+            // Update the notification display
+            const container = document.getElementById('noticeNotification');
+            container.querySelector('.notification-text').textContent = data.message;
+
+        } catch (error) {
+            console.error("Error fetching notice notification:", error);
+        }
+    }
+
+    // Fetch the notice count when the page loads
+    fetchNoticeNotification();
+
+    // Fetch the notice count every 60 seconds
+    setInterval(fetchNoticeNotification, 60000);
 </script>

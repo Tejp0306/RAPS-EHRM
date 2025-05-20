@@ -32,6 +32,7 @@ using EHRM.ServiceLayer.PostJoining;
 using EHRM.ServiceLayer.ExitFormalities;
 using EHRM.ServiceLayer;
 using Microsoft.AspNetCore.DataProtection;
+using EHRM.ServiceLayer.Setting;
 
 namespace EHRM.Infrastructure.Configurations
 {
@@ -73,6 +74,7 @@ namespace EHRM.Infrastructure.Configurations
             services.AddScoped<ILeaveDashboardService, LeaveDashboardService>();
             services.AddScoped<IPostJoiningService, PostJoiningService>();
             services.AddScoped<IExitFormalitiesService, ExitFormalitiesService>();
+            services.AddScoped<ISettingService, SettingService>();
 
 
             //services.AddScoped<ISubMenuService, SubMenuService>();

@@ -13,6 +13,8 @@ public partial class NoticeBoard
 
     public string? Image { get; set; }
 
+    public string? ExpiryDate { get; set; }
+
     public bool? IsActive { get; set; }
 
     public bool? IsDeleted { get; set; }

@@ -16,6 +16,10 @@ namespace EHRM.ServiceLayer.Employee
 
         Task<bool> CheckPasswordValidAsync(int empId, string currentPassword, string newPassword);
 
+        string GetFaviconPath();
+        string GetLogoPath();
+        int GetTodayNoticeCount();
+        string GetTodayNoticeMessage(); // Optional for user-friendly display
 
 
     }

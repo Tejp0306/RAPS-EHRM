@@ -10,11 +10,58 @@ namespace EHRM.ServiceLayer.Employee
 
         
         private readonly IUnitOfWork _unitOfWork;
+        private readonly EhrmContext _context;
 
-        public AccountService(IUnitOfWork unitOfWork)
+        public AccountService(IUnitOfWork unitOfWork, EhrmContext context)
         {
             _unitOfWork = unitOfWork;
+            _context = context;
         }
+
+        public string GetFaviconPath()
+        {
+            var loginData = _context.CustomizeLogins.FirstOrDefault();
+            if (loginData != null && !string.IsNullOrEmpty(loginData.FaviconPath))
+            {
+                return loginData.FaviconPath;
+            }
+
+            return "~/pic/rapslogo.png"; // default
+        }
+
+        public string GetLogoPath()
+        {
+            var loginData = _context.CustomizeLogins.FirstOrDefault();
+            if (loginData != null && !string.IsNullOrEmpty(loginData.LogoPath))
+            {
+                return loginData.LogoPath;
+            }
+
+            return "~/pic/rapslogo.png"; // default
+        }
+
+        public int GetTodayNoticeCount()
+        {
+            var today = DateTime.Today;
+
+            return _context.NoticeBoards
+                .Where(n => EF.Functions.DateDiffDay(n.CreateDate, today) == 0)
+                .Count();
+        }
+
+        public string GetTodayNoticeMessage()
+        {
+            var count = GetTodayNoticeCount();
+
+            if (count == 0)
+                return "📭 No new notices today !!!!";
+            else if (count == 1)
+                return "📢 You have 1 new notice today !!!!";
+            else
+                return $"📢 You have {count} new notices today !!!!";
+        }
+
+
         public async Task<(bool Exists, string Email, string TempPassword, string FirstName)> ValidateEmailAsync(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
