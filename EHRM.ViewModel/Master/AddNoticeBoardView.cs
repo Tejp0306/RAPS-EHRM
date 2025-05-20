@@ -19,6 +19,7 @@ namespace EHRM.ViewModel.Master
         //public IFormFile File { get; set; }
         public string? HeadingName { get; set; }
         public string? Description { get; set; }
+        public string? ExpiryDate { get; set; }
 
         // Make sure that the File property is not required
         public IFormFile? File { get; set; }

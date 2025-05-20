@@ -18,10 +18,12 @@ namespace EHRM.ServiceLayer.Master
     public class MasterService : IMasterService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly EhrmContext _context;
 
-        public MasterService(IUnitOfWork unitOfWork)
+        public MasterService(IUnitOfWork unitOfWork,EhrmContext context)
         {
             _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         // Create a new role
@@ -736,6 +738,7 @@ namespace EHRM.ServiceLayer.Master
                     HeadingName = model.HeadingName,
                     Description = model.Description,
                     Image = filepath,
+                    ExpiryDate = model.ExpiryDate,
                     IsActive = true,
                     IsDeleted = false,
                     CreatedBy = createdBy,
@@ -781,6 +784,7 @@ namespace EHRM.ServiceLayer.Master
                 // Update NoticeBoard properties
                 existingNotiecBoard.HeadingName = model.HeadingName;
                 existingNotiecBoard.Description = model.Description;
+                existingNotiecBoard.ExpiryDate = model.ExpiryDate;
                 existingNotiecBoard.UpdatedBy = updatedBy;
                 existingNotiecBoard.UpdateDate = DateTime.Now;
 
@@ -848,6 +852,15 @@ namespace EHRM.ServiceLayer.Master
             }
         }
 
+        public async Task<Result> GetAllAddNoticesAsync()
+        {
+            {
+                var NoticeBoardRepository = _unitOfWork.GetRepository<NoticeBoard>();  // Using generic repository
+                var NoticeBoard = await NoticeBoardRepository.GetAllAsync();  // Fetch all Notices
+                return new Result { Success = true, Data = NoticeBoard };
+            }
+        }
+
         public async Task<Result> GetAllAddNoticeBoardByIdAsync(int id)
         {
 
@@ -870,6 +883,7 @@ namespace EHRM.ServiceLayer.Master
                     Id = nb.Id,
                     HeadingName = nb.HeadingName,
                     Description = nb.Description,
+                    ExpiryDate = nb.ExpiryDate,
                     FilePath = nb.Image
                 };
 
@@ -905,6 +919,7 @@ namespace EHRM.ServiceLayer.Master
                 return ex.Message;
             }
         }
+
 
         #endregion
     }

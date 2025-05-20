@@ -1,0 +1,220 @@
+﻿@model CustomizeSettingViewModel
+@using EHRM.ViewModel.Setting
+@{
+    ViewData["Title"] = "CustomizeLogin";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .page-heading {
+        color: #007bff;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+    .form-container {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<div class="container mt-5">
+    @if (TempData["ToastType"] != null && TempData["ToastMessage"] != null)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                showToast('@TempData["ToastType"]', '@TempData["ToastMessage"]');
+            });
+        </script>
+    }
+
+    <h2 class="page-heading">Customize Login View</h2>
+
+    <div class="form-container">
+        <form asp-controller="Settings" asp-action="CreateCustomLogin" method="post" asp-area-id="Id" enctype="multipart/form-data">
+            <input asp-for="Id" type="hidden" />
+            <div class="row">
+                <div class="mb-3 col-6">
+                    <label class="form-label">Organization Name:</label>
+                    <input asp-for="OrganizationName" class="form-control" required />
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label class="form-label">Bio / Description:</label>
+                    <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-6">
+                    @if (!string.IsNullOrEmpty(Model.ExistingLogoPath))
+                    {
+                        <div class="mt-2 mb-2">
+                            <img id="logoPreview" src="@Model.ExistingLogoPath" alt="Logo Preview" style="max-height: 100px;" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mt-2 mb-2">
+                            <img id="logoPreview" style="max-height: 100px; display:none;" alt="Logo Preview" />
+                        </div>
+                    }
+
+                    <label class="form-label">Upload Logo (Max 150 KB):</label>
+                    <input asp-for="LogoFile" type="file" id="LogoFile" class="form-control" accept="image/*" />
+                </div>
+
+                <div class="mb-3 col-6">
+                    @if (!string.IsNullOrEmpty(Model.ExistingFaviconPath))
+                    {
+                        <div class="mt-2 mb-2">
+                            <img id="faviconPreview" src="@Model.ExistingFaviconPath" alt="Favicon Preview" style="max-height: 32px;" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mt-2 mb-2">
+                            <img id="faviconPreview" style="max-height: 32px; display:none;" alt="Favicon Preview" />
+                        </div>
+                    }
+
+                    <label class="form-label">Upload Tab Icon (Favicon Max 50 KB):</label>
+                    <input asp-for="FaviconFile" type="file" id="FaviconFile" class="form-control" accept="image/x-icon,image/png" />
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-3">
+                    <button type="submit" class="btn btn-success">Save</button>
+                   @*  <button type="button" class="btn btn-primary" onclick="editCustomLoginDetails($('#Id').val())">Edit</button> *@
+
+
+
+                </div>
+               
+            </div>
+            
+        </form>
+    </div>
+</div>
+<script>
+    function readURL(input, previewId) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById(previewId).src = e.target.result;
+                document.getElementById(previewId).style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('LogoFile').addEventListener('change', function () {
+            readURL(this, 'logoPreview');
+        });
+
+        document.getElementById('FaviconFile').addEventListener('change', function () {
+            readURL(this, 'faviconPreview');
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("#customLoginForm"); // Update this ID based on your actual form
+        const logoInput = document.querySelector("#LogoFile");
+        const faviconInput = document.querySelector("#FaviconFile");
+
+        const allowedExtensions = [".png", ".jpg", ".jpeg"];
+
+        form.addEventListener("submit", function (e) {
+            let errorMessages = [];
+
+            if (logoInput && logoInput.files.length > 0) {
+                const file = logoInput.files[0];
+                const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+                const sizeKB = file.size / 1024;
+
+                if (!allowedExtensions.includes(ext)) {
+                    errorMessages.push("Logo must be a PNG, JPG, or JPEG file.");
+                }
+                if (sizeKB > 150) {
+                    errorMessages.push("Logo size must not exceed 150KB.");
+                }
+            }
+
+            if (faviconInput && faviconInput.files.length > 0) {
+                const file = faviconInput.files[0];
+                const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+                const sizeKB = file.size / 1024;
+
+                if (!allowedExtensions.includes(ext)) {
+                    errorMessages.push("Favicon must be a PNG, JPG, or JPEG file.");
+                }
+                if (sizeKB > 50) {
+                    errorMessages.push("Favicon size must not exceed 50KB.");
+                }
+            }
+
+            if (errorMessages.length > 0) {
+                e.preventDefault(); // Prevent form submission
+                alert(errorMessages.join("\n")); // Show errors
+            }
+        });
+    });
+
+    function editCustomLoginDetails(id) {
+        $.ajax({
+            url: '/Settings/GetCustomLoginById', // Updated endpoint
+            method: 'GET',
+            data: { id: id }, // Pass ID as query parameter
+            success: function (response) {
+                console.log('Full Response:', response);
+
+                if (response.success && response.data) {
+                    const data = response.data.data;
+
+                    $('#OrganizationName').val(data.organizationName || '');
+                    $('#Bio').val(data.bio || '');
+
+                    if (data.existingLogoPath) {
+                        $('#logoPreview').attr('src', data.existingLogoPath).show();
+                    }
+
+                    if (data.existingFaviconPath) {
+                        $('#faviconPreview').attr('src', data.existingFaviconPath).show();
+                    }
+                } else {
+                    console.error('Error: ' + (response.message || 'Invalid or missing data in response.'));
+                }
+            },
+            error: function (error) {
+                console.error('AJAX Error:', error);
+                alert('There was an error processing your request.');
+            }
+        });
+    }
+
+
+</script>
+
