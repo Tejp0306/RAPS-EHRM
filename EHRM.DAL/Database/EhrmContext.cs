@@ -28,6 +28,8 @@ public partial class EhrmContext : DbContext
     public virtual DbSet<ClientPropertyDeclaration> ClientPropertyDeclarations { get; set; }
 
     public virtual DbSet<ContactDetail> ContactDetails { get; set; }
+    
+    public virtual DbSet<CustomizeLogin> CustomizeLogins { get; set; }
 
     public virtual DbSet<DailyEntry> DailyEntries { get; set; }
 
@@ -259,8 +261,20 @@ public partial class EhrmContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__ContactDe__EmpId__51BA1E3A");
         });
+        
+         modelBuilder.Entity<CustomizeLogin>(entity =>
+         {
+             entity.HasKey(e => e.Id).HasName("PK__Customiz__3214EC0767C8962F");
 
-        modelBuilder.Entity<DailyEntry>(entity =>
+             entity.ToTable("CustomizeLogin");
+
+             entity.Property(e => e.Bio).HasMaxLength(2000);
+             entity.Property(e => e.FaviconPath).HasMaxLength(500);
+             entity.Property(e => e.LogoPath).HasMaxLength(500);
+             entity.Property(e => e.OrganizationName).HasMaxLength(200);
+         });
+         
+         modelBuilder.Entity<DailyEntry>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__DailyEnt__3214EC07BF70E883");
 
