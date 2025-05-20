@@ -4,6 +4,7 @@ using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.Models;
 using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace EHRM.Web.Controllers
@@ -72,8 +73,14 @@ namespace EHRM.Web.Controllers
                     title = "Punch Details",           // Add a title for the punch event
                     start = formattedDate,             // FullCalendar expects a "start" field
                     allDay = true,                     // Mark it as an all-day event
-                    punchInTime = punch.PunchInTime,   // Include punch in time
-                    punchOutTime = punch.PunchOutTime, // Include punch out time
+                    punchInTime = !string.IsNullOrEmpty(punch.PunchInTime)
+                                  ? DateTime.Parse(punch.PunchInTime).ToString("HH:mm:ss")
+                                  : null,
+
+                    punchOutTime = !string.IsNullOrEmpty(punch.PunchOutTime)
+                                    ? DateTime.Parse(punch.PunchOutTime).ToString("HH:mm:ss")
+                                    : null,
+
                     totalHours = !string.IsNullOrEmpty(punch.PunchInTime) && !string.IsNullOrEmpty(punch.PunchOutTime)
                                  ? CalculateTotalHours(punch.PunchInTime, punch.PunchOutTime) // Calculate total hours
                                  : null  // If no punch times, leave total hours as null
@@ -144,8 +151,14 @@ namespace EHRM.Web.Controllers
                     {
                         EmployeeName = punch.EmployeeName,
                         PunchDate = punch.PunchDate?.ToString("yyyy-MM-dd"),  // Format the DateOnly to string
-                        Punchintime = punch.Punchintime?.ToString("HH:mm:ss"), // Format the TimeOnly to string
-                        Punchouttime = punch.Punchouttime?.ToString("HH:mm:ss"), // Format the TimeOnly to string
+                        Punchintime = !string.IsNullOrEmpty(punch.Punchintime)
+                                  ? DateTime.Parse(punch.Punchintime).ToString("HH:mm:ss")
+                                  : null,
+
+                        Punchouttime = !string.IsNullOrEmpty(punch.Punchouttime)
+                                    ? DateTime.Parse(punch.Punchouttime).ToString("HH:mm:ss")
+                                    : null,
+
                         Totalhours = punch.TotalHours,
                     }).ToList();
 
@@ -183,8 +196,14 @@ namespace EHRM.Web.Controllers
                     {
                         Id = punch.Id,
                         PunchDate = punch.PunchDate,
-                        Punchintime = punch.Punchintime,
-                        Punchouttime = punch.Punchouttime,
+                        Punchintime = !string.IsNullOrEmpty(punch.Punchintime)
+                                      ? DateTime.Parse(punch.Punchintime).ToString("HH:mm:ss")
+                                      : null,
+
+                        Punchouttime = !string.IsNullOrEmpty(punch.Punchouttime)
+                                       ? DateTime.Parse(punch.Punchouttime).ToString("HH:mm:ss")
+                                       : null,
+
                         Totalhours = punch.TotalHours,
                     }).ToList();
 

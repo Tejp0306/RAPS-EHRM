@@ -13,9 +13,9 @@ public partial class EmployeePunchDetail
 
     public DateOnly? PunchDate { get; set; }
 
-    public TimeOnly? Punchintime { get; set; }
+    public string? Punchintime { get; set; }
 
-    public TimeOnly? Punchouttime { get; set; }
+    public string? Punchouttime { get; set; }
 
     public decimal? TotalHours { get; set; }
 
