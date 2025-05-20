@@ -23,7 +23,9 @@ namespace EHRM.ServiceLayer.Master
         Task<Result> UpdateAddNoticeBoardAsync(int id, int updatedBy, AddNoticeBoardViewModel model);
         Task<Result> DeleteAddNoticeBoardAsync(int id);
         Task<Result> GetAllAddNoticeBoardAsync();
+        Task<Result> GetAllAddNoticesAsync();
         Task<Result> GetAllAddNoticeBoardByIdAsync(int id);
+
         Task<string> GetFilePathByIdAsync(int id);
         #endregion NoticeBoard
           

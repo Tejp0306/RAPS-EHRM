@@ -3,6 +3,7 @@ using EHRM.DAL.Database;
 using EHRM.ServiceLayer.Master;
 using EHRM.ViewModel.Master;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 
 namespace EHRM.Web.Controllers
@@ -12,11 +13,13 @@ namespace EHRM.Web.Controllers
         private readonly IMasterService _master;
         private readonly string _fileStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "Files");
         private readonly IConfiguration _configuration;
-        public MasterController(IMasterService master, IConfiguration configuration)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public MasterController(IMasterService master, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
 
             _master = master;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
         public IActionResult Index()
         {
@@ -326,7 +329,6 @@ namespace EHRM.Web.Controllers
             // Return the full file path or file name
             return Path.Combine("\\Files", fileName);
         }
-
         //private string Upload(AddNoticeBoardViewModel model)
         //{
         //    // Check if a file is provided, if not, simply return null (indicating no file upload)
@@ -437,7 +439,8 @@ namespace EHRM.Web.Controllers
                     {
                         Id = noticeBoard.Id,
                         HeadingName = noticeBoard.HeadingName,
-                        Description = noticeBoard.Description
+                        Description = noticeBoard.Description,
+                        ExpiryDate = noticeBoard.ExpiryDate,
                     }).ToList();
 
                     return Json(noticeBoardList);
@@ -454,6 +457,41 @@ namespace EHRM.Web.Controllers
             }
         }
       
+        [HttpGet]
+        public async Task<JsonResult> GetAllAddNotices()
+        {
+            var result = await _master.GetAllAddNoticesAsync();
+
+            if (result.Success && result.Data is IEnumerable<NoticeBoard> noticeBoards)
+            {
+                var today = DateTime.Today;
+
+                var validNotices = noticeBoards
+                    .Where(notice =>
+                    {
+                        // Try to parse ExpiryDate string to DateTime
+                        if (DateTime.TryParse(notice.ExpiryDate, out var expiryDate))
+                        {
+                            return expiryDate.Date >= today; // Show until the end of expiry date
+                        }
+                        return false; // Exclude if parsing fails
+                    })
+                    .Select(notice => new
+                    {
+                        Id = notice.Id,
+                        HeadingName = notice.HeadingName,
+                        Description = notice.Description,
+                        ExpiryDate = notice.ExpiryDate
+                    })
+                    .ToList();
+
+                return Json(validNotices);
+            }
+
+            return Json(new { Success = false, Message = result.Message ?? "No NoticeBoards found or data invalid." });
+        }
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetNoticeBoardDetails(int NoticeBoardID)
@@ -497,6 +535,8 @@ namespace EHRM.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while retrieving the notice details." });
             }
         }
+
+       
 
         #region Starting Holidays
 

@@ -100,6 +100,11 @@
                     <i class="bi bi-clock-history"></i> Activity Log
                 </a>
             </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="notice-tab" data-bs-toggle="tab" href="#notice" role="tab" aria-controls="notice" aria-selected="false">
+                    <i class="bi bi-bell"></i> Notices
+                </a>
+            </li>
         </ul>
 
         <!-- Tab Content -->
@@ -134,6 +139,10 @@
                     <li class="list-group-item">Changed password on Dec 12, 2024</li>
                 </ul>
             </div>
+        </div>
+        <div class="tab-pane fade" id="notice" role="tabpanel" aria-labelledby="notice-tab">
+           
+            @Html.Partial("_NoticePartialView")
         </div>
     </div>
 

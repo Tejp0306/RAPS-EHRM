@@ -256,7 +256,7 @@ namespace EHRM.ServiceLayer.Dashboard
                     EmployeeName = userName,
                     Month = currentTime.ToString("MMMM"),
                     PunchDate = DateOnly.FromDateTime(currentTime),
-                    Punchintime = new TimeOnly(currentTime.Hour, currentTime.Minute, currentTime.Second),
+                    Punchintime = DateTime.Now.ToString(),
                     Punchouttime = null
                 };
 
@@ -293,8 +293,8 @@ namespace EHRM.ServiceLayer.Dashboard
                     };
                 }
 
-                    var currentTime = DateTime.Now;
-                existingPunch.Punchouttime = new TimeOnly(currentTime.Hour, currentTime.Minute, currentTime.Second);
+
+                existingPunch.Punchouttime = DateTime.Now.ToString();
 
                 await punchRepository.UpdateAsync(existingPunch);
                     await _unitOfWork.SaveAsync();
@@ -384,16 +384,14 @@ namespace EHRM.ServiceLayer.Dashboard
                 {
                 return "CanPunchIn"; // No punch yet today
         }
-
-            if (todayPunch.Punchintime.HasValue && !todayPunch.Punchouttime.HasValue)
+            if (!string.IsNullOrEmpty(todayPunch.Punchintime) && string.IsNullOrEmpty(todayPunch.Punchouttime))
             {
-                var punchInTime = todayPunch.Punchintime.Value;
+                DateTime punchInTime = DateTime.Parse(todayPunch.Punchintime);
+                DateTime currentTime = DateTime.Now;
 
-                TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);
+                var minutesSincePunchIn = (currentTime - punchInTime).TotalMinutes;
 
-                var hoursSincePunchIn = (currentTime - punchInTime).TotalMinutes;
-
-                if (hoursSincePunchIn < 600)
+                if (minutesSincePunchIn < 600)
         {
                     return "CanPunchOut";
                 }
@@ -401,16 +399,15 @@ namespace EHRM.ServiceLayer.Dashboard
             {
                     return "CanPunchIn"; // Allow punch in again after long hours
                 }
-
             }
-            else if (todayPunch.Punchintime.HasValue && todayPunch.Punchouttime.HasValue)
+            else if (!string.IsNullOrEmpty(todayPunch.Punchintime) && !string.IsNullOrEmpty(todayPunch.Punchouttime))
                 {
-                var punchOutTime = todayPunch.Punchouttime.Value;
+                DateTime punchOutTime = DateTime.Parse(todayPunch.Punchouttime);
+                DateTime currentTime = DateTime.Now;
 
-                TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);
-                var hoursSincePunchOut = (currentTime - punchOutTime).TotalMinutes;
+                var minutesSincePunchOut = (currentTime - punchOutTime).TotalMinutes;
 
-                if (hoursSincePunchOut >= 480)
+                if (minutesSincePunchOut >= 2)
                 {
                     return "CanPunchIn"; // Enable punch in after 8 hours cooldown
             }
@@ -418,8 +415,9 @@ namespace EHRM.ServiceLayer.Dashboard
                 {
                     return "Cooldown"; // Still in 8-hour cooldown
                 }
-
             }
+
+
                 return "CanPunchIn";
             
             //return "CanPunchIn"; // Default fallback
