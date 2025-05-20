@@ -23,6 +23,7 @@ using EHRM.ViewModel.Models;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 
 
@@ -80,19 +81,55 @@ namespace EHRM.Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+
+            // Get the favicon path (if needed)
+            var faviconPath = _accountService.GetFaviconPath();
+            _httpContextAccessor.HttpContext.Session.SetString("FaviconPath", faviconPath);
+
+            // Get the logo path
+            var logoPath = _accountService.GetLogoPath();  // Assuming _accountService has this method
+            _httpContextAccessor.HttpContext.Session.SetString("LogoPath", logoPath);
+
+        }
+
+        [HttpGet]
+        public IActionResult GetTodayNoticeCount()
+        {
+            var message = _accountService.GetTodayNoticeMessage();
+            return Json(new { message });
+        }
+
         public IActionResult Login()
         {
-            return View();
+            var loginData = _context.CustomizeLogins.FirstOrDefault(); // assuming one record
+
+            LoginViewModel viewModel = new LoginViewModel();
+
+            if (loginData != null)
+            {
+                viewModel.ExistingLogoPath = loginData.LogoPath;
+                viewModel.ExistingFaviconPath = loginData.FaviconPath;
+                viewModel.Bio = loginData.Bio;
+                viewModel.OrganizationName = loginData.OrganizationName;
+               
         }
+
+            return View(viewModel);
+        }
+
+
 
         public async Task<IActionResult> SaveLogin(LoginViewModel model)
         {
             try
             {
-                if (!ModelState.IsValid)
+                if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
                 {
-                    TempData["ToastType"] = "danger";  // Success, danger, warning, info
-                    TempData["ToastMessage"] = "Please fill out all fields correctly!";
+                    TempData["ToastType"] = "danger";
+                    TempData["ToastMessage"] = "Please provide both Email and Password!";
                     return RedirectToAction("Login");
                 }
 
@@ -280,7 +317,16 @@ namespace EHRM.Web.Controllers
 
         public IActionResult Otp()
         {
-            return View();
+            var loginData = _context.CustomizeLogins.FirstOrDefault(); // assuming one record
+
+            OtpViewModel viewModel = new OtpViewModel();
+
+            if (loginData != null)
+            {
+                viewModel.ExistingFaviconPath = loginData.FaviconPath;
+
+            }
+            return View(viewModel);
         }
         //Example method for generating OTP
         private string GenerateOtp()

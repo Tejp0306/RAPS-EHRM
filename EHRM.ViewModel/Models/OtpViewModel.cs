@@ -9,6 +9,7 @@ namespace EHRM.Web.Models
         [StringLength(6, ErrorMessage = "OTP must be 6 digits long.", MinimumLength = 6)]
         [Display(Name = "Enter OTP")]
         public string Otp { get; set; }
+        public string ExistingFaviconPath { get; set; }
 
         // The email of the user (optional, depending on your flow)
         //[Required(ErrorMessage = "Email is required.")]

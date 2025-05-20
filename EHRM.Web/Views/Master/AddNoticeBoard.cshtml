@@ -28,12 +28,18 @@
                         style="position: absolute; top: 10px; right: 10px; z-index: 10;">
                     <i class="bi bi-exclamation-circle" style="font-size: 20px;"></i>
                 </button>
-
                 <!-- News Heading -->
-                <div class="mb-3">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
                     <label for="HeadingName" class="form-label">Notice Heading * :</label>
                     <input asp-for="HeadingName" class="form-control" name="HeadingName" placeholder="Enter notice heading" required>
                 </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="ExpiryDate">Notice Validity</label>
+                        <input asp-for="ExpiryDate" type="date" class="form-control" data-start-day="1" data-picker-type="date" placeholder="Select Expiry Date" required />
+                    </div>
+                </div>
+
 
                 <!-- News Description -->
                 <div class="mb-3">
@@ -65,6 +71,7 @@
                             <th> ID</th>
                             <th>Notice</th>
                             <th>Description</th>
+                            <th>Valid-Till</th>
                             <th> Actions</th>
                         </tr>
                     </thead>
