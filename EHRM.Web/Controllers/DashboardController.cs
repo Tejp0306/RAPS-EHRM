@@ -10,6 +10,7 @@ using EHRM.ViewModel.EmployeeDeclaration;
 using EHRM.ViewModel.PunchDetails;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EHRM.Web.Controllers
 {
@@ -19,11 +20,13 @@ namespace EHRM.Web.Controllers
         private  IdashboardService _dashboard;
         private readonly IAccountService _accountService;
         private readonly IEmailService _emailService;
-        public DashboardController(IdashboardService dashboard, IAccountService accountService, IEmailService emailService)
+        private readonly EhrmContext _context;
+        public DashboardController(EhrmContext context,IdashboardService dashboard, IAccountService accountService, IEmailService emailService)
         {
             _dashboard = dashboard;
             _accountService = accountService;
             _emailService = emailService;
+            _context = context;
         }
         public IActionResult Index()
         {
@@ -258,13 +261,47 @@ namespace EHRM.Web.Controllers
                         throw new Exception("Invalid Manager ID.");
                     }
 
+                    // ✅ Extract JWT token from session
+                    var jwtTokenFromSession = HttpContext.Session.GetString("JwtToken");
+                    var name = userDetails.userName;
+
+                    // ✅ Split name into first and last
+                    // Initialize the userTitle
+                    string userTitle = "Title Not Available";
+
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        var nameParts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        if (nameParts.Length >= 2)
+                        {
+                            var firstName = nameParts[0];
+                            var lastName = nameParts[1];
+
+                            var employee = _context.EmployeeDetails
+                                .FirstOrDefault(e => e.FirstName == firstName && e.LastName == lastName);
+
+                            if (employee != null && !string.IsNullOrEmpty(employee.Title))
+                            {
+                                userTitle = employee.Title;
+                                HttpContext.Session.SetString("UserTitle", userTitle); // ✅ Store title in session
+                            }
+                        }
+                    }
+
+
+                    // ✅ Pass data to view
                     ViewData["roleId"] = roleId;
                     ViewData["empId"] = managerId;
+                    ViewData["Name"] = name;
+
 
                     List<EmployeeViewModel> employees = _dashboard.GetEmployeesByManager(managerId);
+                    ViewBag.TotalApprovedLeave = employees.Sum(e => e.ApprovedLeaveCount);
 
                     return View(employees);
                 }
+
+
 
                 // Logic for Admin (Role 1)
                 if (roleId == 1)
