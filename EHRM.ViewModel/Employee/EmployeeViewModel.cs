@@ -67,6 +67,7 @@ namespace EHRM.ViewModel.Employee
 
         // Employee Count for Manager Dynamic Dashboard
         public int Count { get; set; }
+        public int ApprovedLeaveCount { get; set; } // Approved leave count for the employee
 
         // Employee Count for Admin Dynamic Dashboard
         public int EmployeeCount { get; set; }
