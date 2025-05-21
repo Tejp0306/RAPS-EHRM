@@ -1,10 +1,13 @@
 ﻿using EHRM.DAL.Database;
 using EHRM.DAL.UnitOfWork;
 using EHRM.ServiceLayer.Employee;
+using EHRM.ServiceLayer.Helpers;
 using EHRM.ServiceLayer.Models;
 using EHRM.ViewModel.Employee;
 using EHRM.ViewModel.PunchDetails;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -52,7 +55,10 @@ namespace EHRM.ServiceLayer.Dashboard
                                 EmpId = Convert.ToInt32(reader["EmpId"]),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
-                                Count = Convert.ToInt32(reader["EmployeeCount"])
+                                Title = reader["Title"].ToString(), // Map Title
+                                EmailAddress = reader["EmailAddress"].ToString(), // Map EmailAddress
+                                Count = Convert.ToInt32(reader["EmployeeCount"]), // Map EmployeeCount
+                                ApprovedLeaveCount = Convert.ToInt32(reader["ApprovedLeaveCount"]) // Map ApprovedLeaveCount
                             });
                         }
                     }
@@ -60,6 +66,7 @@ namespace EHRM.ServiceLayer.Dashboard
             }
             return employees;
         }
+
 
         //Get Employee Dynamic Data for the Admin Partial View
 
@@ -145,7 +152,6 @@ namespace EHRM.ServiceLayer.Dashboard
             }
             return useremployees;
         }
-
 
         #region Punch Details
         //public async Task<Result> UpdatePunchOutAsync(int EmpId)
