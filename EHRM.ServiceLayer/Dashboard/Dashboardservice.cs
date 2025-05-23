@@ -261,7 +261,7 @@ namespace EHRM.ServiceLayer.Dashboard
                     Empid = EmpId,
                     EmployeeName = userName,
                     Month = currentTime.ToString("MMMM"),
-                    PunchDate = DateOnly.FromDateTime(currentTime),
+                    PunchDate = currentTime.ToString("yyyy-MM-dd"),
                     Punchintime = DateTime.Now.ToString(),
                     Punchouttime = null
                 };
