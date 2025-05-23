@@ -107,5 +107,41 @@ namespace EHRM.ServiceLayer.Calendar
             var lt = await PunchDetailsRepository.GetAllAsync();
             return new Result { Success = true, Data = lt };
         }
+        public List<LeaveDetailViewModel> GetLeaveDetailsByEmployee(int empId)
+        {
+            List<LeaveDetailViewModel> leaves = new List<LeaveDetailViewModel>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetLeaveDetailsByEmployee", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", empId); // assuming EmpId exists in LeaveApply
+
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            leaves.Add(new LeaveDetailViewModel
+                            {
+                                EmpId = Convert.ToInt32(reader["EmpId"]),  // Retrieve EmpId from database
+                                LeaveApplyId = Convert.ToInt32(reader["LeaveApplyId"]),
+                                LeaveType = reader["LeaveType"].ToString(),
+                                LeaveStatus = reader["LeaveStatus"].ToString(),
+                                LeaveId = Convert.ToInt32(reader["LeaveId"]),
+                                LeaveFrom = reader["LeaveFrom"]?.ToString() ?? "",  // safely read varchar
+                                LeaveTo = reader["LeaveTo"]?.ToString() ?? ""
+                            });
+                        }
+                    }
+                }
+            }
+
+            return leaves;
+        }
+
+
+
     }
 }
