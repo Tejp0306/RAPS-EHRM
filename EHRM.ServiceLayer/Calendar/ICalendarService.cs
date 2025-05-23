@@ -18,5 +18,6 @@ namespace EHRM.ServiceLayer.Calendar
 
         Task<Result> GetPunchAsync();
         Task<Result> GetPunchDetailsAsync();
+        List<LeaveDetailViewModel> GetLeaveDetailsByEmployee(int empId);
     }
 }

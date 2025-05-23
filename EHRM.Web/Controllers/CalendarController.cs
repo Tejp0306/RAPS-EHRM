@@ -128,17 +128,20 @@ namespace EHRM.Web.Controllers
 
                 if (punchData != null)
                 {
+                    // Get today's date string in "yyyy-MM-dd" format
+                    var todayString = DateTime.Now.ToString("yyyy-MM-dd");
+
                     // Filter data by today's date by default
-                    var today = DateOnly.FromDateTime(DateTime.Now);
-                    punchData = punchData.Where(p => p.PunchDate == today);
+                    punchData = punchData.Where(p => p.PunchDate == todayString);
 
                     // If a punchDate filter is provided, filter the data based on that date
                     if (!string.IsNullOrEmpty(punchDate))
                     {
-                        // Convert the punchDate string to DateOnly for comparison
+                        // Validate that the punchDate string is a valid date
                         if (DateOnly.TryParse(punchDate, out var parsedDate))
                         {
-                            punchData = punchData.Where(p => p.PunchDate == parsedDate);
+                            var parsedDateString = parsedDate.ToString("yyyy-MM-dd");
+                            punchData = punchData.Where(p => p.PunchDate == parsedDateString);
                     }
                     else
                     {
@@ -146,11 +149,12 @@ namespace EHRM.Web.Controllers
                     }
                     }
 
+
                     // Return the filtered list as a JSON response
                     var punchList = punchData.Select(punch => new
                     {
                         EmployeeName = punch.EmployeeName,
-                        PunchDate = punch.PunchDate?.ToString("yyyy-MM-dd"),  // Format the DateOnly to string
+                        PunchDate = punch.PunchDate,  // Format the DateOnly to string
                         Punchintime = !string.IsNullOrEmpty(punch.Punchintime)
                                   ? DateTime.Parse(punch.Punchintime).ToString("HH:mm:ss")
                                   : null,
@@ -175,52 +179,159 @@ namespace EHRM.Web.Controllers
         }
 
 
+        //[HttpGet]
+        //public async Task<JsonResult> GetPunch(int empId, int? month) // month is optional
+        //{
+        //    // Fetch the punch details from the service layer
+        //    var result = await _calendar.GetPunchDetailsAsync();
+
+        //    if (result.Success && result.Data != null)
+        //    {
+        //        var punchData = result.Data as IEnumerable<EmployeePunchDetail>;
+        //        if (punchData != null)
+        //        {
+        //            // Filter the data based on empId
+        //            var filteredPunchData = punchData.Where(p => p.Empid == empId);
+
+        //            // If a month is selected, filter the data by the month parsed from the PunchDate string
+        //            if (month.HasValue)
+        //            {
+        //                filteredPunchData = filteredPunchData.Where(p =>
+        //                    DateTime.TryParse(p.PunchDate, out DateTime punchDate) && punchDate.Month == month.Value);
+        //            }
+
+        //            // Map the filtered data to the desired format
+        //            var punchList = filteredPunchData.Select(punch => new
+        //            {
+        //                Id = punch.Id,
+        //                Month = punch.Month,
+        //                PunchDate = punch.PunchDate,
+        //                Punchintime = !string.IsNullOrEmpty(punch.Punchintime)
+        //                              ? DateTime.Parse(punch.Punchintime).ToString("HH:mm:ss")
+        //                              : null,
+        //                Punchouttime = !string.IsNullOrEmpty(punch.Punchouttime)
+        //                               ? DateTime.Parse(punch.Punchouttime).ToString("HH:mm:ss")
+        //                               : null,
+        //                Totalhours = punch.TotalHours,
+        //            }).ToList();
+
+        //            return Json(punchList);
+        //        }
+
+        //        return Json(new { Success = false, Message = "Invalid data format." });
+        //    }
+
+        //    return Json(new { Success = false, Message = result.Message ?? "No data found." });
+        //}
+
+        //[HttpGet]
+        //public async Task<JsonResult> GetPunch(int empId, int month, int year)
+        //{
+        //    var result = await _calendar.GetPunchDetailsAsync();
+
+        //    if (result.Success && result.Data != null)
+        //    {
+        //        var punchData = result.Data as IEnumerable<EmployeePunchDetail>;
+
+        //        var filtered = punchData
+        //            .Where(p => p.Empid == empId && DateTime.TryParse(p.PunchDate, out var date)
+        //                        && date.Month == month && date.Year == year)
+        //            .Select(p => new
+        //            {
+        //                p.Id,
+        //                p.Month,
+        //                PunchDate = DateTime.Parse(p.PunchDate).ToString("yyyy-MM-dd"),
+        //                Punchintime = !string.IsNullOrEmpty(p.Punchintime) ? DateTime.Parse(p.Punchintime).ToString("HH:mm:ss") : "",
+        //                Punchouttime = !string.IsNullOrEmpty(p.Punchouttime) ? DateTime.Parse(p.Punchouttime).ToString("HH:mm:ss") : "",
+        //                Totalhours = p.TotalHours
+        //            });
+
+        //        return Json(filtered);
+        //    }
+
+        //    return Json(new { Success = false, Message = "No data found." });
+        //}
+
         [HttpGet]
-        public async Task<JsonResult> GetPunch(int empId) // Add empId as parameter
+        public async Task<JsonResult> GetPunch(int empId, int month, int year)
         {
-            // Fetch the result from the service layer
             var result = await _calendar.GetPunchDetailsAsync();
 
-            // Check if the result is successful and contains data
             if (result.Success && result.Data != null)
             {
                 var punchData = result.Data as IEnumerable<EmployeePunchDetail>;
 
-                if (punchData != null)
+                // Parse and filter punch data by employee, month, and year
+                var filteredPunches = punchData
+                    .Where(p => p.Empid == empId && DateTime.TryParse(p.PunchDate, out var date)
+                                && date.Month == month && date.Year == year)
+                    .Select(p => new
                 {
-                    // Filter the data based on empId
-                    var filteredPunchData = punchData.Where(punch => punch.Empid == empId); // Filter by empId
+                        p.Id,
+                        p.Month,
+                        PunchDate = DateTime.TryParse(p.PunchDate, out var punchDate) ? punchDate.ToString("yyyy-MM-dd") : "",
+                        PunchDateObj = DateTime.TryParse(p.PunchDate, out var punchDate2) ? punchDate2 : (DateTime?)null,
+                        Punchintime = DateTime.TryParse(p.Punchintime, out var inTime) ? inTime.ToString("HH:mm:ss") : "",
+                        Punchouttime = DateTime.TryParse(p.Punchouttime, out var outTime) ? outTime.ToString("HH:mm:ss") : "",
+                        Totalhours = p.TotalHours
+                    })
+                    .Where(p => p.PunchDateObj != null)
+                    .ToList();
 
-                    // If a punchDate filter is provided, you can still filter based on it if you need
-                    var punchList = filteredPunchData.Select(punch => new
+                // Get leave data from service
+                var leaveData = _calendar.GetLeaveDetailsByEmployee(empId);
+
+                var formattedLeaves = leaveData.Select(ld => new
                     {
-                        Id = punch.Id,
-                        PunchDate = punch.PunchDate,
-                        Punchintime = !string.IsNullOrEmpty(punch.Punchintime)
-                                      ? DateTime.Parse(punch.Punchintime).ToString("HH:mm:ss")
-                                      : null,
+                    ld.EmpId,
+                    ld.LeaveApplyId,
+                    ld.LeaveType,
+                    ld.LeaveStatus,
+                    ld.LeaveId,
+                    LeaveFrom = DateTime.TryParse(ld.LeaveFrom, out var from) ? from : (DateTime?)null,
+                    LeaveTo = DateTime.TryParse(ld.LeaveTo, out var to) ? to : (DateTime?)null
+                }).Where(ld => ld.LeaveFrom != null && ld.LeaveTo != null && ld.LeaveStatus == "Approved").ToList();
 
-                        Punchouttime = !string.IsNullOrEmpty(punch.Punchouttime)
-                                       ? DateTime.Parse(punch.Punchouttime).ToString("HH:mm:ss")
-                                       : null,
+                // Generate all dates in the selected month
+                var daysInMonth = DateTime.DaysInMonth(year, month);
+                var allDatesInMonth = Enumerable.Range(1, daysInMonth)
+                    .Select(day => new DateTime(year, month, day))
+                    .ToList();
 
-                        Totalhours = punch.TotalHours,
+                var filtered = allDatesInMonth.Select(date =>
+                {
+                    var punch = filteredPunches.FirstOrDefault(p => p.PunchDateObj == date);
+
+                    var leaveType = formattedLeaves
+                        .Where(leave => date >= leave.LeaveFrom && date <= leave.LeaveTo)
+                        .Select(leave => leave.LeaveType)
+                        .FirstOrDefault();
+
+                    return new
+                    {
+                        Month = date.ToString("MMMM"),
+                        PunchDate = date.ToString("yyyy-MM-dd"),
+                        Punchintime = punch != null && string.IsNullOrEmpty(leaveType) ? punch.Punchintime : "",
+                        Punchouttime = punch != null && string.IsNullOrEmpty(leaveType) ? punch.Punchouttime : "",
+                        Totalhours = punch != null && string.IsNullOrEmpty(leaveType) ? punch.Totalhours : 0,
+                        LeaveType = leaveType ?? ""
+                    };
                     }).ToList();
 
-                    // Return the filtered list as a JSON response
-                    return Json(punchList);
+                return Json(filtered);
                 }
-                else
-                {
-                    return Json(new { Success = false, Message = "Data is not in the expected format." });
+
+            return Json(new { Success = false, Message = "No data found." });
                 }
-            }
-            else
-            {
-                // Handle the case where the service failed
-                return Json(new { Success = false, Message = result.Message ?? "No data found." });
-            }
-        }
+
+
+
+
+
+
+
+
+
 
 
 
