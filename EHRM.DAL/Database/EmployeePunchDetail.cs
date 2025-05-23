@@ -11,7 +11,7 @@ public partial class EmployeePunchDetail
 
     public string? Month { get; set; }
 
-    public DateOnly? PunchDate { get; set; }
+    public string? PunchDate { get; set; }
 
     public string? Punchintime { get; set; }
 
