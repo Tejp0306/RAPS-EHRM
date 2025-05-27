@@ -737,7 +737,6 @@
                     const leaveStart = new Date(item.punchDate);
                     const leaveTo = new Date(item.punchDate); // initially single-day leave
 
-                    // If backend includes leaveFrom and leaveTo, use that instead
                     if (item.leaveFrom && item.leaveTo) {
                         leaveRanges.push({
                             from: new Date(item.leaveFrom),
@@ -754,8 +753,10 @@
                 }
             });
 
+        const empIdRow = [`Employee ID: ${empId}`];
+        const emptyRow = [];
             const headers = ['Month', 'Punch Date', 'Punch-In Time', 'Punch-Out Time', 'Total Hours', 'Leave Type'];
-            const rows = [headers];
+        const rows = [empIdRow, emptyRow, headers];
 
             const monthName = new Date(year, month - 1).toLocaleString('default', { month: 'long' });
 
@@ -777,11 +778,10 @@
                         p.leaveType || ''
                     ];
                 } else {
-                    // If no punch, check if this date is inside any leave range
                     const currentDate = new Date(dateStr);
                     const leaveMatch = leaveRanges.find(lr => currentDate >= lr.from && currentDate <= lr.to);
                     if (leaveMatch) {
-                        row[5] = leaveMatch.type; // set Leave Type
+                    row[5] = leaveMatch.type; // Leave Type
                     }
                 }
 
@@ -801,8 +801,10 @@
 
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Punch Data");
-            XLSX.writeFile(wb, `punch_data_${year}-${String(month).padStart(2, '0')}.xlsx`);
+            const monthNameForFile = new Date(year, month - 1).toLocaleString('default', { month: 'long' });
+            XLSX.writeFile(wb, `punch_data_${monthNameForFile}_${year}.xlsx`);
         });
+
     });
 
 
